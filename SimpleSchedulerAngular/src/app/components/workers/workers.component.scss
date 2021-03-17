@@ -1,0 +1,11 @@
+:host {
+    width: 100%;
+
+    .card {
+        width: 100%;
+
+        &:nth-child(n + 2) {
+            margin-top: 20px;
+        }
+    }
+  }

@@ -1,0 +1,68 @@
+@import "customize-bootstrap.scss";
+@import "../node_modules/bootstrap/scss/bootstrap";
+
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+main {
+    padding: 15px;
+
+    flex: 1 0 auto;
+}
+
+.table td {
+    padding: 3px;
+}
+
+select.form-control {
+    option, optgroup {
+        background-color: #eee;
+    }
+}
+
+.bg-primary h3 {
+    color: #fff;
+}
+
+@media (max-width: 500px) {
+    .logo-small {
+        display: inline;
+    }
+
+    .logo-full {
+        display: none;
+    }
+
+    .top-level-section {
+        width: 100%;
+    }
+}
+
+@media (min-width: 501px) {
+    .logo-small {
+        display: none;
+    }
+
+    .logo-full {
+        display: inline;
+    }
+
+    .top-level-section {
+        width: 500px;
+    }
+}
+
+.modal-dialog {
+    margin-top: 80px;
+}
+
+a {
+    cursor: pointer;
+}

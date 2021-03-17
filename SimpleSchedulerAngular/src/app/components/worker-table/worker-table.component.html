@@ -1,0 +1,36 @@
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Description</th>
+            <th>Directory Name</th>
+            <th>Executable</th>
+            <th>Arguments</th>
+            <th>Time</th>
+            <th>Schedules</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let wd of workerDetails" [class.d-none]="wd.worker.isActive !== active">
+            <td>
+                <a *ngIf="wd.worker.isActive" [routerLink]="['/workers/edit', wd.worker.workerID]">
+                    <img src="assets/img/pencil.svg" alt="Edit" />
+                </a>
+                <a *ngIf="wd.worker.isActive" (click)="deleteWorker(wd.worker.workerID)">
+                    <img src="assets/img/trash.svg" alt="Delete" />
+                </a>
+            </td>
+            <td>{{ wd.worker.description }}</td>
+            <td>{{ wd.worker.directoryName }}</td>
+            <td>{{ wd.worker.executable }}</td>
+            <td>{{ wd.worker.argumentValues }}</td>
+            <td>
+                Timeout: {{ wd.worker.timeoutMinutes }}<br />
+                Overdue: {{ wd.worker.overdueMinutes }}
+            </td>
+            <td>
+                <p>worker-schedule-cell works!</p>
+            </td>
+        </tr>
+    </tbody>
+</table>

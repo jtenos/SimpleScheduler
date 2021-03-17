@@ -1,0 +1,24 @@
+nav#page-nav {
+    height: 50px;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+
+    .nav-link {
+        padding-top: 0;
+        padding-bottom: 0;
+        height: 50px;
+        line-height: 50px;
+        color: #fff;
+
+        &[disabled] {
+            color: #ccc;
+        }
+    }
+  }
+
+  .nav-link.active {
+    font-weight: bold;
+  }
