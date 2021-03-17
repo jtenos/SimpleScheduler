@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.6.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleSchedulerModels", "SimpleSchedulerModels\SimpleSchedulerModels.csproj", "{5275E483-74B2-46A5-94AE-76D6F2823491}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleSchedulerBusiness", "SimpleSchedulerBusiness\SimpleSchedulerBusiness.csproj", "{A624572A-32FB-4B24-B5A5-BDBAE0C8433B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleSchedulerData", "SimpleSchedulerData\SimpleSchedulerData.csproj", "{16C14813-9931-4B53-9811-48F87BE134C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleSchedulerAPI", "SimpleSchedulerAPI\SimpleSchedulerAPI.csproj", "{D3335E54-70CD-4555-A23D-77E9A25D271E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleSchedulerService", "SimpleSchedulerService\SimpleSchedulerService.csproj", "{0F2BE554-5627-42B4-A480-174F4E5ADCB9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleSchedulerEmail", "SimpleSchedulerEmail\SimpleSchedulerEmail.csproj", "{67B2364E-E7BE-4070-A154-C5DDCBB132CA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5275E483-74B2-46A5-94AE-76D6F2823491}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5275E483-74B2-46A5-94AE-76D6F2823491}.Debug|x64.Build.0 = Debug|Any CPU
+		{5275E483-74B2-46A5-94AE-76D6F2823491}.Release|x64.ActiveCfg = Release|Any CPU
+		{5275E483-74B2-46A5-94AE-76D6F2823491}.Release|x64.Build.0 = Release|Any CPU
+		{A624572A-32FB-4B24-B5A5-BDBAE0C8433B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A624572A-32FB-4B24-B5A5-BDBAE0C8433B}.Debug|x64.Build.0 = Debug|Any CPU
+		{A624572A-32FB-4B24-B5A5-BDBAE0C8433B}.Release|x64.ActiveCfg = Release|Any CPU
+		{A624572A-32FB-4B24-B5A5-BDBAE0C8433B}.Release|x64.Build.0 = Release|Any CPU
+		{16C14813-9931-4B53-9811-48F87BE134C2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{16C14813-9931-4B53-9811-48F87BE134C2}.Debug|x64.Build.0 = Debug|Any CPU
+		{16C14813-9931-4B53-9811-48F87BE134C2}.Release|x64.ActiveCfg = Release|Any CPU
+		{16C14813-9931-4B53-9811-48F87BE134C2}.Release|x64.Build.0 = Release|Any CPU
+		{D3335E54-70CD-4555-A23D-77E9A25D271E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D3335E54-70CD-4555-A23D-77E9A25D271E}.Debug|x64.Build.0 = Debug|Any CPU
+		{D3335E54-70CD-4555-A23D-77E9A25D271E}.Release|x64.ActiveCfg = Release|Any CPU
+		{D3335E54-70CD-4555-A23D-77E9A25D271E}.Release|x64.Build.0 = Release|Any CPU
+		{0F2BE554-5627-42B4-A480-174F4E5ADCB9}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0F2BE554-5627-42B4-A480-174F4E5ADCB9}.Debug|x64.Build.0 = Debug|Any CPU
+		{0F2BE554-5627-42B4-A480-174F4E5ADCB9}.Release|x64.ActiveCfg = Release|Any CPU
+		{0F2BE554-5627-42B4-A480-174F4E5ADCB9}.Release|x64.Build.0 = Release|Any CPU
+		{67B2364E-E7BE-4070-A154-C5DDCBB132CA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{67B2364E-E7BE-4070-A154-C5DDCBB132CA}.Debug|x64.Build.0 = Debug|Any CPU
+		{67B2364E-E7BE-4070-A154-C5DDCBB132CA}.Release|x64.ActiveCfg = Release|Any CPU
+		{67B2364E-E7BE-4070-A154-C5DDCBB132CA}.Release|x64.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
