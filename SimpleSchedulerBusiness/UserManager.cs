@@ -13,7 +13,7 @@ namespace SimpleSchedulerBusiness
         public UserManager(IDatabaseFactory databaseFactory, IServiceProvider serviceProvider, IMemoryCache cache)
             : base(databaseFactory, serviceProvider, cache) { }
 
-        async Task<(bool emailFound, string validationKey)> IUserManager.LoginSubmitAsync(string emailAddress,
+        async Task<(bool EmailFound, string ValidationKey)> IUserManager.LoginSubmitAsync(string emailAddress,
             CancellationToken cancellationToken)
         {
             bool emailFound = await ScalarAsync<bool>(@"
@@ -39,19 +39,24 @@ namespace SimpleSchedulerBusiness
                 .AddNVarCharParam("@EmailAddress", emailAddress, 200),
                 cancellationToken).ConfigureAwait(false);
 
+            // TODO: Send user the email
+
             return (emailFound, validationKey.ToString("N"));
         }
 
         async Task<string> IUserManager.LoginValidateAsync(Guid validationKey, CancellationToken cancellationToken)
         {
             DateTime? submitDate = await ScalarAsync<DateTime>(@"
-                SELECT SubmitDateUTC FROM dbo.LoginAttempts WHERE ValidationKey = @ValidationKey;
+                SELECT SubmitDateUTC
+                FROM dbo.LoginAttempts 
+                WHERE ValidationKey = @ValidationKey
+                AND ValidationDateUTC IS NULL;
             ",
                 CreateDynamicParameters()
                 .AddUniqueIdentifierParam("@ValidationKey", validationKey),
                 cancellationToken).ConfigureAwait(false);
 
-            if (!submitDate.HasValue) { throw new InvalidValidationKeyException(); }
+            if (!submitDate.HasValue || submitDate == default(DateTime)) { throw new InvalidValidationKeyException(); }
             if (submitDate < DateTime.UtcNow.AddMinutes(-5))
             {
                 throw new ValidationKeyExpiredException();
@@ -61,9 +66,9 @@ namespace SimpleSchedulerBusiness
                 DECLARE @Result TABLE(EmailAddress NVARCHAR(200));
 
                 UPDATE dbo.LoginAttempts
-                OUTPUT INSERTED.EmailAddress INTO @Result
                 SET ValidationDateUTC = @Now
-                WHERE LoginAttemptID = @LoginAttemptID;
+                OUTPUT INSERTED.EmailAddress INTO @Result
+                WHERE ValidationKey = @ValidationKey;
 
                 SELECT EmailAddress FROM @Result;
             ",

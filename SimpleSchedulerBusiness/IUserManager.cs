@@ -6,7 +6,7 @@ namespace SimpleSchedulerBusiness
 {
     public interface IUserManager
     {
-        Task<(bool emailFound, string validationKey)> LoginSubmitAsync(string emailAddress,
+        Task<(bool EmailFound, string ValidationKey)> LoginSubmitAsync(string emailAddress,
             CancellationToken cancellationToken);
         Task<string> LoginValidateAsync(Guid validationKey, CancellationToken cancellationToken);
     }

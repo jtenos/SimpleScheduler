@@ -1,4 +1,4 @@
 {
     "_apiUrl": "Base URL of the WebAPI project, without the trailing slash",
-    "apiUrl": "https://localhost:5001"
+    "apiUrl": "https://localhost:21595"
 }
