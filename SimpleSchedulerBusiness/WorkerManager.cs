@@ -6,7 +6,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Caching.Memory;
 using SimpleSchedulerData;
 using SimpleSchedulerModels;
 using SimpleSchedulerModels.Exceptions;
@@ -16,8 +15,8 @@ namespace SimpleSchedulerBusiness
     public class WorkerManager
         : BaseManager, IWorkerManager
     {
-        public WorkerManager(IDatabaseFactory databaseFactory, IServiceProvider serviceProvider, IMemoryCache cache)
-            : base(databaseFactory, serviceProvider, cache) { }
+        public WorkerManager(IDatabaseFactory databaseFactory, IServiceProvider serviceProvider)
+            : base(databaseFactory, serviceProvider) { }
 
         async Task IWorkerManager.RunNowAsync(int workerID, CancellationToken cancellationToken)
         {
@@ -50,30 +49,22 @@ namespace SimpleSchedulerBusiness
             .Select(x => x.WorkerID).ToImmutableArray();
 
         async Task<ImmutableArray<Worker>> IWorkerManager.GetAllWorkersAsync(CancellationToken cancellationToken,
-            bool forceRefresh, bool getActive, bool getInactive)
+            bool getActive, bool getInactive)
         {
             if (!getActive && !getInactive) { return ImmutableArray<Worker>.Empty; }
-
-            // TODO: force refresh on loading the workers page, but not when it's called from other places
-            // TODO: reset the cache when adding, editing, or deleting a worker
-            if (!forceRefresh)
-            {
-                // TODO: Pull from memory cache - cache should last 60 seconds
-            }
 
             var sql = new StringBuilder();
             sql.AppendLine("SELECT * FROM dbo.Workers");
             var allWorkers = await GetManyAsync<Worker>(sql.ToString(), CreateDynamicParameters(), cancellationToken).ConfigureAwait(false);
-            // TODO: Write to cache
             return allWorkers
                 .Where(w => (getActive && w.IsActive) || (getInactive && !w.IsActive))
                 .ToImmutableArray();
         }
 
         async Task<ImmutableArray<WorkerDetail>> IWorkerManager.GetAllWorkerDetailsAsync(CancellationToken cancellationToken,
-            bool forceRefresh, bool getActive, bool getInactive)
+            bool getActive, bool getInactive)
             => await GetWorkerDetailsAsync(
-                await ((IWorkerManager)this).GetAllWorkersAsync(cancellationToken, forceRefresh, getActive, getInactive).ConfigureAwait(false),
+                await ((IWorkerManager)this).GetAllWorkersAsync(cancellationToken, getActive, getInactive).ConfigureAwait(false),
                 cancellationToken).ConfigureAwait(false);
 
         async Task<Worker> IWorkerManager.GetWorkerAsync(int workerID, CancellationToken cancellationToken)
@@ -193,7 +184,7 @@ namespace SimpleSchedulerBusiness
 
         private async Task EnsureNoCircularWorkersAsync(int workerID, CancellationToken cancellationToken)
         {
-            var allWorkers = await ((IWorkerManager)this).GetAllWorkersAsync(cancellationToken, forceRefresh: true, getActive: true, getInactive: true);
+            var allWorkers = await ((IWorkerManager)this).GetAllWorkersAsync(cancellationToken, getActive: true, getInactive: true);
 
             int? GetParentWorkerID(int workerID) => allWorkers.Single(x => x.WorkerID == workerID).ParentWorkerID;
 
@@ -217,7 +208,7 @@ namespace SimpleSchedulerBusiness
         {
             var result = new List<WorkerDetail>();
             var allSchedules = await GetScheduleManager().GetAllSchedulesAsync(
-                cancellationToken, forceRefresh: false).ConfigureAwait(false);
+                cancellationToken).ConfigureAwait(false);
             foreach (var worker in workers)
             {
                 var schedules = allSchedules.Where(x => x.WorkerID == worker.WorkerID).ToImmutableArray();

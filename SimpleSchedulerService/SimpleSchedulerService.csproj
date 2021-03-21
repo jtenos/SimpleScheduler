@@ -19,7 +19,6 @@
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="RunProcessAsTask" Version="1.2.4" />
-		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="5.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="5.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />

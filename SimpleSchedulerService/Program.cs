@@ -24,7 +24,6 @@ namespace SimpleSchedulerService
             await Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddMemoryCache();
                     services.AddSingleton<IConfiguration>(config);
                     services.AddTransient<Emailer>();
                     services.AddHostedService<Worker>();

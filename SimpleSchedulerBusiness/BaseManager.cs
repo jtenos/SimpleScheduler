@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using SimpleSchedulerData;
 using System;
@@ -13,15 +12,12 @@ namespace SimpleSchedulerBusiness
     {
         private readonly IDatabaseFactory _databaseFactory;
         private readonly IServiceProvider _serviceProvider;
-        private readonly IMemoryCache _cache;
-        protected BaseManager(IDatabaseFactory databaseFactory, IServiceProvider serviceProvider, IMemoryCache cache)
-            => (_databaseFactory, _serviceProvider, _cache) = (databaseFactory, serviceProvider, cache);
+        protected BaseManager(IDatabaseFactory databaseFactory, IServiceProvider serviceProvider)
+            => (_databaseFactory, _serviceProvider) = (databaseFactory, serviceProvider);
 
         protected IJobManager GetJobManager() => _serviceProvider.GetRequiredService<IJobManager>();
         protected IScheduleManager GetScheduleManager() => _serviceProvider.GetRequiredService<IScheduleManager>();
         protected IWorkerManager GetWorkerManager() => _serviceProvider.GetRequiredService<IWorkerManager>();
-
-        protected IMemoryCache Cache => _cache;
 
         protected async Task<int> NonQueryAsync(string sql, DynamicParameters parameters, CancellationToken cancellationToken)
             => await (await _databaseFactory.GetDatabaseAsync(cancellationToken).ConfigureAwait(false))

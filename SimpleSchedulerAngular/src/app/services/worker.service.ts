@@ -11,16 +11,17 @@ export class WorkerService {
 
     constructor(private apiService: ApiService) { }
 
-    getAllWorkers(): Observable<WorkerDetail[]> {
-        return this.apiService.get<WorkerDetail[]>("Workers", []);
+    async getAllWorkers(): Promise<WorkerDetail[]> {
+        console.log("in getAllWorkers");
+        return await this.apiService.get<WorkerDetail[]>("Workers", "GetAllWorkers", []);
     }
 
-    getWorker(workerID: number): Observable<Worker[]> {
-        return this.apiService.get<Worker[]>("Workers", [new Kvp("workerID", workerID.toString())]);
+    async getWorker(workerID: number): Promise<WorkerDetail> {
+        return await this.apiService.get<WorkerDetail>("Workers", "GetWorker", [new Kvp("workerID", workerID.toString())]);
     }
 
-    deleteWorker(workerID: number): Observable<boolean> {
+    async deleteWorker(workerID: number): Promise<boolean> {
         //this.workers = this.workers.filter(x => x.workerID !== workerID);
-        return of(true);
+        return true;
     }
 }

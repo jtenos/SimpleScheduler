@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './components/home/home.component';
-import { JobsComponent } from './components/jobs/jobs/jobs.component';
-import { SchedulesComponent } from './components/schedules/schedules/schedules.component';
-import { EditWorkerComponent } from './components/workers/edit-worker/edit-worker.component';
-import { WorkersComponent } from './components/workers/workers/workers.component';
+import { JobsComponent } from './components/jobs/jobs.component';
+import { SchedulesComponent } from './components/schedules/schedules.component';
+import { EditWorkerComponent } from './components/edit-worker/edit-worker.component';
+import { WorkersComponent } from './components/workers/workers.component';
 
 const routes: Routes = [
   { path: "", component: HomeComponent },

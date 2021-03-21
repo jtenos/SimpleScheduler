@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from "@angular/router";
-import Worker from "../../../models/worker";
+import Worker from "../../models/worker";
 import Schedule from 'src/app/models/schedule';
 import { WorkerService } from 'src/app/services/worker.service';
-import WorkerDetail from "../../../models/worker-detail";
+import WorkerDetail from "../../models/worker-detail";
 
 @Component({
     selector: 'app-edit-worker',
@@ -34,7 +34,7 @@ export class EditWorkerComponent implements OnInit {
     constructor(private route: ActivatedRoute, private workerService: WorkerService, private formBuilder: FormBuilder) { }
 
     ngOnInit(): void {
-        this.route.params.subscribe(params => {
+        this.route.params.subscribe(async params => {
             this.loading = true;
             this.workerID = +params.workerID;
 
@@ -62,10 +62,8 @@ export class EditWorkerComponent implements OnInit {
                 setWorkerForm();
                 this.loading = false;
             } else {
-                this.workerService.getWorker(this.workerID).subscribe(workerDetail => {
-                    this.workerDetail = workerDetail;
-                    setWorkerForm();
-                });
+                this.workerDetail = await this.workerService.getWorker(this.workerID);
+                setWorkerForm();
             }
         });
     }

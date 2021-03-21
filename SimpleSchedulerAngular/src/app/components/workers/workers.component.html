@@ -1,6 +1,8 @@
 <h2>Workers</h2>
 
-<div class="card shadow" style="width: 100%; margin-bottom: 10px;">
+<div [class.d-none]="!loading">Loading...</div>
+
+<div class="card shadow" style="width: 100%; margin-bottom: 10px;" [class.d-none]="loading">
     <div class="card-body">
         <button class="btn btn-outline-info btn-sm" (click)="toggleActive()">
             {{ active ? "Show Inactive" : "Show Active" }}
