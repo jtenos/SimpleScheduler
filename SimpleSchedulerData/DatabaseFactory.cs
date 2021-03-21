@@ -24,11 +24,11 @@ namespace SimpleSchedulerData
 
         async ValueTask IAsyncDisposable.DisposeAsync()
         {
-            if (_database != null)
+            if (_database.IsInitialized)
             {
                 if (!_markForRollback) await _database.CommitAsync(default).ConfigureAwait(false);
-                await _database.DisposeAsync().ConfigureAwait(false);
             }
+            await _database.DisposeAsync().ConfigureAwait(false);
         }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using SimpleSchedulerBusiness;
+using SimpleSchedulerEmail;
 using SimpleSchedulerModels.Exceptions;
 using System;
 using System.Security.Claims;
@@ -14,7 +16,10 @@ namespace SimpleSchedulerAPI.Controllers
     public class LogInController : ControllerBase
     {
         private readonly IUserManager _userManager;
-        public LogInController(IUserManager userManager) => _userManager = userManager;
+        private readonly IEmailer _emailer;
+        private readonly IConfiguration _config;
+        public LogInController(IUserManager userManager, IEmailer emailer, IConfiguration config) 
+            => (_userManager, _emailer, _config) = (userManager, emailer, config);
 
         [Route("[action]")]
         [HttpPost]
@@ -25,16 +30,21 @@ namespace SimpleSchedulerAPI.Controllers
             {
                 return StatusCode(401, new { Message = "User not found" });
             }
+            string url = $"{_config["WebUrl"]}/validate-user/{result.ValidationKey}";
+            await _emailer.SendEmailAsync(new[] { request.EmailAddress },
+                $"Scheduler ({_config["EnvironmentName"]}) Log In",
+                $"<a href='{url}' target=_blank>Click here to log in</a>",
+                cancellationToken);
             return Ok(new { Message = "Please check your email for a login link" });
         }
 
         [Route("[action]")]
-        [HttpGet]
-        public async Task<IActionResult> ValidateEmail([FromQuery]ValidateEmailRequest request, CancellationToken cancellationToken)
+        [HttpPost]
+        public async Task<IActionResult> ValidateEmail([FromBody]ValidateEmailRequest request, CancellationToken cancellationToken)
         {
             try
             {
-                string emailAddress = await _userManager.LoginValidateAsync(request.ValidationCode, cancellationToken);
+                string emailAddress = await _userManager.LoginValidateAsync(Guid.Parse(request.ValidationCode), cancellationToken);
                 var claimsIdentity = new ClaimsIdentity(new[]
                 {
                     new Claim("IsAuthenticated", "1"),
@@ -55,6 +65,6 @@ namespace SimpleSchedulerAPI.Controllers
         }
 
         public record SubmitEmailRequest(string EmailAddress);
-        public record ValidateEmailRequest(Guid ValidationCode);
+        public record ValidateEmailRequest(string ValidationCode);
     }
 }

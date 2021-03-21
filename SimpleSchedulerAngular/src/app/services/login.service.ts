@@ -20,4 +20,14 @@ export class LoginService {
             return alert("Unknown error. Please try again");
         }
     }
+
+    async validateUser(validationCode: string) {
+        try {
+            const submitResult = await this.apiService.post("Login", "ValidateEmail", { validationCode });
+            console.log(submitResult);
+        } catch (ex) {
+            console.log("ERROR");
+            console.log(ex);
+        }
+    }
 }

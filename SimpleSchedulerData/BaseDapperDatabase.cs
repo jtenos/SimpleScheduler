@@ -31,8 +31,14 @@ namespace SimpleSchedulerData
 
         protected override async ValueTask DisposeAsync()
         {
-            await _transaction.DisposeAsync().ConfigureAwait(false);
-            await _connection.DisposeAsync().ConfigureAwait(false);
+            if (_transaction != null)
+            {
+                await _transaction.DisposeAsync().ConfigureAwait(false);
+            }
+            if (_connection != null)
+            {
+                await _connection.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         protected override async Task<ImmutableArray<T>> GetManyAsync<T>(string sql, DynamicParameters parameters, CancellationToken cancellationToken)
