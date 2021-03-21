@@ -1,13 +1,11 @@
 <div [class.d-none]="!loading">Loading...</div>
 
-<form [formGroup]="loginForm" [class.d-none]="loading">
-    <div class=card>
-        <div class=form-group>
-            <label>Email Address</label>
-            <input formControlName=emailAddress class=form-control type=email>
-        </div>
-        <div class=form-group>
-            <button class="btn btn-primary" type=submit>Submit</button>
-        </div>
+<form [formGroup]="loginForm" [class.d-none]="loading" (ngSubmit)="onSubmit(loginForm.value)">
+    <div class=form-group>
+        <label>Email Address</label>
+        <input formControlName=emailAddress class=form-control type=email>
+    </div>
+    <div class=form-group>
+        <button class="btn btn-primary" type=submit>Submit</button>
     </div>
 </form>

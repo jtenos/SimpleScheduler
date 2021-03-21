@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { LoginService } from 'src/app/services/login.service';
 
@@ -14,13 +14,13 @@ export class LoginComponent implements OnInit {
         emailAddress: [""]
     });
 
-    constructor(private route: ActivatedRoute, private loginService: LoginService, private formBuilder: FormBuilder) { }
+    constructor(private loginService: LoginService, private formBuilder: FormBuilder) { }
 
     ngOnInit(): void {
         this.loading = false;
     }
 
-    submitEmail() {
-
+    async onSubmit(formData: any) {
+        const response = await this.loginService.submitEmail(formData["emailAddress"] as string);
     }
 }

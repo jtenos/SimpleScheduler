@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import Worker from "../models/worker";
 import WorkerDetail from "../models/worker-detail";
-import { of } from "rxjs";
 import { ApiService } from "./api.service";
 import Kvp from "../models/kvp";
 @Injectable({
@@ -16,8 +15,8 @@ export class WorkerService {
         return await this.apiService.get<WorkerDetail[]>("Workers", "GetAllWorkers", []);
     }
 
-    async getWorker(workerID: number): Promise<WorkerDetail> {
-        return await this.apiService.get<WorkerDetail>("Workers", "GetWorker", [new Kvp("workerID", workerID.toString())]);
+    async getWorker(workerID: number): Promise<Worker> {
+        return await this.apiService.get<Worker>("Workers", "GetWorker", [new Kvp("workerID", workerID.toString())]);
     }
 
     async deleteWorker(workerID: number): Promise<boolean> {

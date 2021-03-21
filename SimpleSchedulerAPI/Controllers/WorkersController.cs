@@ -10,7 +10,7 @@ namespace SimpleSchedulerAPI.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class WorkersController : ControllerBase
     {
         private readonly IWorkerManager _workerManager;
@@ -23,5 +23,10 @@ namespace SimpleSchedulerAPI.Controllers
             bool getActive = true, bool getInactive = false)
             => await _workerManager.GetAllWorkerDetailsAsync(
                 cancellationToken, getActive, getInactive);
+
+        [HttpGet]
+        [Route("[action]")]
+        public async Task<Worker> GetWorker(int workerID, CancellationToken cancellationToken)
+            => await _workerManager.GetWorkerAsync(workerID, cancellationToken);
     }
 }
