@@ -10,7 +10,7 @@ namespace SimpleSchedulerAPI.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize("ValidUser")]
     public class WorkersController : ControllerBase
     {
         private readonly IWorkerManager _workerManager;

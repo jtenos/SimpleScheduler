@@ -1,5 +1,6 @@
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -27,9 +28,11 @@ namespace SimpleSchedulerAPI
             services.AddCors(options => options.AddPolicy("Cors", builder =>
             {
                 builder
-                    .AllowAnyOrigin()
+                    //.AllowAnyOrigin()
+                    .WithOrigins(Configuration["WebUrl"])
                     .AllowAnyMethod()
-                    .AllowAnyHeader();
+                    .AllowAnyHeader()
+                    .AllowCredentials();
             }));
 
             var cookieAuthSection = Configuration.GetSection("CookieAuth");
@@ -44,7 +47,8 @@ namespace SimpleSchedulerAPI
                 .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, config =>
                 {
                     config.Cookie.Name = cookieAuthSection.GetValue<string>("UserCookieName");
-                    config.Cookie.SameSite = SameSiteMode.Strict;
+                    //config.Cookie.SameSite = SameSiteMode.Strict;
+                    config.Cookie.SameSite = SameSiteMode.None;
                     config.Events = new CookieAuthenticationEvents
                     {
                         OnRedirectToLogin = redirectContext =>
@@ -58,13 +62,7 @@ namespace SimpleSchedulerAPI
             services.AddAuthorization(config =>
             {
                 // Only one policy - you must be a valid user. Valid user can see all pages.
-                config.AddPolicy("ValidUser", policy =>
-                {
-                    policy.RequireAssertion(context =>
-                    {
-                        return context?.User?.Claims?.Any(claim => claim.Type == "IsAuthenticated" && claim.Value == "1") == true;
-                    });
-                });
+                config.AddPolicy("ValidUser", policy => policy.RequireClaim(ClaimTypes.Email));
             });
 
             services.AddControllers();
@@ -94,8 +92,8 @@ namespace SimpleSchedulerAPI
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseCors("Cors");
-            app.UseAuthorization();
             app.UseAuthentication();
+            app.UseAuthorization();
             app.UseEndpoints(endpoints => endpoints.MapControllers());
         }
     }

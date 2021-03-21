@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
+import { PostResult } from '../models/post-result';
 import { ApiService } from "./api.service";
 
 @Injectable({
     providedIn: "root"
 })
 export class LoginService {
+    
     constructor(private apiService: ApiService) {
     }
 
@@ -21,13 +23,12 @@ export class LoginService {
         }
     }
 
-    async validateUser(validationCode: string) {
+    async validateUser(validationCode: string): Promise<PostResult> {
         try {
-            const submitResult = await this.apiService.post("Login", "ValidateEmail", { validationCode });
-            console.log(submitResult);
+            return await this.apiService.post("Login", "ValidateEmail", { validationCode });
         } catch (ex) {
             console.log("ERROR");
-            console.log(ex);
+            return { success: false, message: ex?.message };
         }
     }
 }

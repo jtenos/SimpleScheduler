@@ -1,1 +1,7 @@
-validate user component
+<div [class.d-none]="!loading">
+    Loading...    
+</div>
+
+<div [class.d-none]="loading">
+    {{message}}
+</div>
