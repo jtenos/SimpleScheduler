@@ -10,9 +10,9 @@ namespace SimpleSchedulerBusiness
         Task RunNowAsync(int workerID, CancellationToken cancellationToken);
         Task<ImmutableArray<int>> GetChildWorkerIDsByJobAsync(int jobID, CancellationToken cancellationToken);
         Task<ImmutableArray<Worker>> GetAllWorkersAsync(CancellationToken cancellationToken,
-            bool forceRefresh, bool getActive = true, bool getInactive = false);
+            bool getActive = true, bool getInactive = false);
         Task<ImmutableArray<WorkerDetail>> GetAllWorkerDetailsAsync(CancellationToken cancellationToken,
-            bool forceRefresh, bool getActive = true, bool getInactive = false);
+            bool getActive = true, bool getInactive = false);
         Task<Worker> GetWorkerAsync(int workerID, CancellationToken cancellationToken);
         Task<int> AddWorkerAsync(bool isActive, string description,
             string? freeText, string? emailOnSuccess, int? parentWorkerID, int timeoutMinutes, int overdueMinutes,

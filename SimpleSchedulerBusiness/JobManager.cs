@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
-using Microsoft.Extensions.Caching.Memory;
 using SimpleSchedulerData;
 using SimpleSchedulerModels;
 using SimpleSchedulerModels.Exceptions;
@@ -16,8 +15,8 @@ namespace SimpleSchedulerBusiness
     public class JobManager
         : BaseManager, IJobManager
     {
-        public JobManager(IDatabaseFactory databaseFactory, IServiceProvider serviceProvider, IMemoryCache cache)
-            : base(databaseFactory, serviceProvider, cache) { }
+        public JobManager(IDatabaseFactory databaseFactory, IServiceProvider serviceProvider)
+            : base(databaseFactory, serviceProvider) { }
 
         async Task IJobManager.RestartStuckJobsAsync(CancellationToken cancellationToken)
             => await NonQueryAsync(@"
@@ -193,13 +192,12 @@ namespace SimpleSchedulerBusiness
 
         private async Task<ImmutableArray<JobDetail>> GetJobDetailsAsync(IEnumerable<Job> jobs, CancellationToken cancellationToken)
         {
-            var allSchedules = await GetScheduleManager().GetAllSchedulesAsync(cancellationToken, forceRefresh: false).ConfigureAwait(false);
-            var allWorkers = await GetWorkerManager().GetAllWorkersAsync(cancellationToken, forceRefresh: false).ConfigureAwait(false);
+            var allSchedules = await GetScheduleManager().GetAllSchedulesAsync(cancellationToken).ConfigureAwait(false);
+            var allWorkers = await GetWorkerManager().GetAllWorkersAsync(cancellationToken).ConfigureAwait(false);
 
             var result = new List<JobDetail>();
             foreach (var job in jobs)
             {
-                // Try pulling from cache first - if not there, then pull from the database
                 var schedule = allSchedules.SingleOrDefault(s => s.ScheduleID == job.ScheduleID)
                     ?? (await GetScheduleManager().GetScheduleAsync(job.ScheduleID, cancellationToken).ConfigureAwait(false)).Schedule;
                 var worker = allWorkers.SingleOrDefault(w => w.WorkerID == schedule.WorkerID)

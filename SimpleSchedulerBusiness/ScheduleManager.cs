@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Caching.Memory;
 using SimpleSchedulerData;
 using SimpleSchedulerModels;
 
@@ -14,8 +13,8 @@ namespace SimpleSchedulerBusiness
     public class ScheduleManager
         : BaseManager, IScheduleManager
     {
-        public ScheduleManager(IDatabaseFactory databaseFactory, IServiceProvider serviceProvider, IMemoryCache cache)
-            : base(databaseFactory, serviceProvider, cache) { }
+        public ScheduleManager(IDatabaseFactory databaseFactory, IServiceProvider serviceProvider)
+            : base(databaseFactory, serviceProvider) { }
 
         async Task IScheduleManager.DeactivateScheduleAsync(int scheduleID, CancellationToken cancellationToken)
             => await NonQueryAsync(@"
@@ -50,21 +49,13 @@ namespace SimpleSchedulerBusiness
         }
 
         async Task<ImmutableArray<Schedule>> IScheduleManager.GetAllSchedulesAsync(CancellationToken cancellationToken,
-            bool forceRefresh, bool getActive, bool getInactive)
+            bool getActive, bool getInactive)
         {
             if (!getActive && !getInactive) { return ImmutableArray<Schedule>.Empty; }
-
-            // TODO: force refresh on loading the schedules page, but not when it's called from other places
-            // TODO: reset the cache when adding, editing, or deleting a schedule
-            if (!forceRefresh)
-            {
-                // TODO: Pull from memory cache - cache should last 60 seconds
-            }
 
             var sql = new StringBuilder();
             sql.AppendLine("SELECT * FROM dbo.Schedules");
             var allSchedules = await GetManyAsync<Schedule>(sql.ToString(), CreateDynamicParameters(), cancellationToken).ConfigureAwait(false);
-            // TODO: Write to cache
             return allSchedules
                 .Where(s => (getActive && s.IsActive) || (getInactive && !s.IsActive))
                 .ToImmutableArray();
@@ -160,12 +151,11 @@ namespace SimpleSchedulerBusiness
         private async Task<ImmutableArray<ScheduleDetail>> GetScheduleDetailsAsync(IEnumerable<Schedule> schedules,
             CancellationToken cancellationToken)
         {
-            var allWorkers = await GetWorkerManager().GetAllWorkersAsync(cancellationToken, forceRefresh: false).ConfigureAwait(false);
+            var allWorkers = await GetWorkerManager().GetAllWorkersAsync(cancellationToken).ConfigureAwait(false);
 
             var result = new List<ScheduleDetail>();
             foreach (var schedule in schedules)
             {
-                // Try pulling from cache first - if not there, then pull from the database
                 var worker = allWorkers.SingleOrDefault(w => w.WorkerID == schedule.WorkerID)
                     ?? await GetWorkerManager().GetWorkerAsync(schedule.WorkerID, cancellationToken).ConfigureAwait(false);
                 result.Add(new(schedule, worker));

@@ -15,7 +15,8 @@ export class ApiService {
     constructor(private configService: ConfigService, private http: HttpClient) {
     }
 
-    get<T>(controllerName: string, actionName: string, parameters: Kvp<string, string>[]): Observable<T> {
+    async get<T>(controllerName: string, actionName: string, parameters: Kvp<string, string>[]): Promise<T> {
+        console.log("in get");
         let params = new HttpParams();
         if (parameters) {
             for (const kvp of parameters) {
@@ -23,34 +24,24 @@ export class ApiService {
             }
         }
 
-        return new Observable<T>(subscriber => {
-            this.configService.getConfig().subscribe(config => {
-                let url = `${config.apiUrl}/${controllerName}`;
-                if (actionName) {
-                    url += `/${actionName}`;
-                }
-                this.http.get<T>(url, { params })
-                    .subscribe(t => {
-                        subscriber.next(t);
-                        subscriber.complete();
-                    });
-            });
-        });
+        console.log("calling getConfig");
+        const config = await this.configService.getConfig();
+        console.log(`config=${config}`);
+        let url = `${config.apiUrl}/${controllerName}`;
+        if (actionName) {
+            url += `/${actionName}`;
+        }
+        console.log(`url=${url}`);
+        console.log(`params=${params}`)
+        return this.http.get<T>(url, { params }).toPromise();
     }
 
-    post(controllerName: string, actionName: string, body: any): Observable<PostResult> {
-        return new Observable<PostResult>(subscriber => {
-            this.configService.getConfig().subscribe(config => {
-                let url = `${config.apiUrl}/${controllerName}`;
-                if (actionName) {
-                    url += `/${actionName}`;
-                }
-                this.http.post(url, body)
-                    .subscribe(t => {
-                        subscriber.next(t);
-                        subscriber.complete();
-                    });
-            });
-        });
+    async post(controllerName: string, actionName: string, body: any): Promise<PostResult> {
+        const config = await this.configService.getConfig();
+        let url = `${config.apiUrl}/${controllerName}`;
+        if (actionName) {
+            url += `/${actionName}`;
+        }
+        return await this.http.post<PostResult>(url, body).toPromise();
     }
 }

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { WorkerService } from 'src/app/services/worker.service';
-import WorkerDetail from "../../../models/worker-detail";
+import WorkerDetail from "../../models/worker-detail";
 
 @Component({
     selector: 'app-worker-table',
@@ -22,11 +22,10 @@ export class WorkerTableComponent implements OnInit {
     ngOnInit(): void {
     }
 
-    deleteWorker(workerID: number): void {
+    async deleteWorker(workerID: number): Promise<void> {
         if (confirm("Are you sure?")) {
-            this.workerService.deleteWorker(workerID).subscribe(() => {
-                this.refreshWorkers.emit(true);
-            });
+            await this.workerService.deleteWorker(workerID);
+            this.refreshWorkers.emit(true);
         }
     }
 }

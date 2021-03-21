@@ -26,9 +26,9 @@ namespace SimpleSchedulerAPI
             services.AddCors(options => options.AddPolicy("Cors", builder =>
             {
                 builder
-                .AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader();
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
             }));
 
             var cookieAuthSection = Configuration.GetSection("CookieAuth");
@@ -66,18 +66,12 @@ namespace SimpleSchedulerAPI
                 });
             });
 
-            //services.AddCors(options =>
-            //{
-            //    options.AddPolicy("CorsPolicy", builder => builder.AllowAnyOrigin());
-            //});
-
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SimpleSchedulerAPI", Version = "v1" });
             });
 
-            services.AddMemoryCache();
             services.AddScoped<IDatabase, SqlDatabase>();
             services.AddScoped<IDatabaseFactory, DatabaseFactory>();
             services.AddScoped<IWorkerManager, WorkerManager>();
@@ -97,7 +91,7 @@ namespace SimpleSchedulerAPI
 
             app.UseHttpsRedirection();
             app.UseRouting();
-            app.UseCors("CorsPolicy");
+            app.UseCors("Cors");
             app.UseAuthorization();
             app.UseAuthentication();
             app.UseEndpoints(endpoints => endpoints.MapControllers());

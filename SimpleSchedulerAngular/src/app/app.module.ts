@@ -2,29 +2,33 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from "@angular/forms";
-
 import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './components/shared/app/app.component';
-import { WorkersComponent } from './components/workers/workers/workers.component';
+
+import { AppComponent } from './components/app/app.component';
+import { EditWorkerComponent } from './components/edit-worker/edit-worker.component';
 import { HomeComponent } from './components/home/home.component';
-import { NavbarComponent } from './components/shared/navbar/navbar.component';
-import { JobsComponent } from './components/jobs/jobs/jobs.component';
-import { SchedulesComponent } from './components/schedules/schedules/schedules.component';
-import { WorkerTableComponent } from './components/workers/worker-table/worker-table.component';
+import { JobsComponent } from './components/jobs/jobs.component';
+import { LoginComponent } from "./components/login/login.component";
+import { NavbarComponent } from './components/navbar/navbar.component';
+import { SchedulesComponent } from './components/schedules/schedules.component';
+import { WorkersComponent } from './components/workers/workers.component';
+import { WorkerTableComponent } from './components/worker-table/worker-table.component';
+
 import { SemicolonToNewLinePipe } from './pipes/semicolon-to-new-line.pipe';
-import { EditWorkerComponent } from './components/workers/edit-worker/edit-worker.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    WorkersComponent,
+    EditWorkerComponent,
     HomeComponent,
-    NavbarComponent,
     JobsComponent,
+    LoginComponent,
+    NavbarComponent,
     SchedulesComponent,
+    WorkersComponent,
     WorkerTableComponent,
-    SemicolonToNewLinePipe,
-    EditWorkerComponent
+
+    SemicolonToNewLinePipe
   ],
   imports: [
     BrowserModule,

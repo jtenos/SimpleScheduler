@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Caching.Memory;
 using SimpleSchedulerData;
 using SimpleSchedulerModels.Exceptions;
 
@@ -10,8 +9,8 @@ namespace SimpleSchedulerBusiness
     public class UserManager
         : BaseManager, IUserManager
     {
-        public UserManager(IDatabaseFactory databaseFactory, IServiceProvider serviceProvider, IMemoryCache cache)
-            : base(databaseFactory, serviceProvider, cache) { }
+        public UserManager(IDatabaseFactory databaseFactory, IServiceProvider serviceProvider)
+            : base(databaseFactory, serviceProvider) { }
 
         async Task<(bool EmailFound, string ValidationKey)> IUserManager.LoginSubmitAsync(string emailAddress,
             CancellationToken cancellationToken)
