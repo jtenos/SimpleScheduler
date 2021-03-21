@@ -12,6 +12,7 @@
     <ProjectReference Include="..\SimpleSchedulerData\SimpleSchedulerData.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
+    <ProjectReference Include="..\SimpleSchedulerEmail\SimpleSchedulerEmail.csproj" />
     <ProjectReference Include="..\SimpleSchedulerModels\SimpleSchedulerModels.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>

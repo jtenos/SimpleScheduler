@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using SimpleSchedulerBusiness;
 using SimpleSchedulerData;
+using SimpleSchedulerEmail;
 
 namespace SimpleSchedulerAPI
 {
@@ -78,6 +79,7 @@ namespace SimpleSchedulerAPI
             services.AddScoped<IScheduleManager, ScheduleManager>();
             services.AddScoped<IJobManager, JobManager>();
             services.AddScoped<IUserManager, UserManager>();
+            services.AddScoped<IEmailer, Emailer>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
