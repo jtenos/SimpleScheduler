@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ReactiveFormsModule } from "@angular/forms";
 import { AppRoutingModule } from './app-routing.module';
 
@@ -15,6 +15,7 @@ import { WorkersComponent } from './components/workers/workers.component';
 import { WorkerTableComponent } from './components/worker-table/worker-table.component';
 
 import { SemicolonToNewLinePipe } from './pipes/semicolon-to-new-line.pipe';
+import { CustomInterceptor } from './custom-interceptor';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,11 @@ import { SemicolonToNewLinePipe } from './pipes/semicolon-to-new-line.pipe';
     HttpClientModule,
     ReactiveFormsModule
   ],
-  providers: [],
+  providers: [{
+    provide: HTTP_INTERCEPTORS,
+    useClass: CustomInterceptor,
+    multi: true
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

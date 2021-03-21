@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import Worker from "../../models/worker";
 import { LoginService } from 'src/app/services/login.service';
 
@@ -10,14 +10,21 @@ import { LoginService } from 'src/app/services/login.service';
 export class ValidateUserComponent implements OnInit {
 
     loading = false;
+    message? = "";
 
-    constructor(private route: ActivatedRoute, private loginService: LoginService) { }
+    constructor(private route: ActivatedRoute, private router: Router, private loginService: LoginService) { }
 
     ngOnInit(): void {
         console.log("ngOnInit");
         this.route.params.subscribe(async params => {
             const userResult = await this.loginService.validateUser(params.validationCode);
-            console.log(userResult);
+            if (userResult.success) {
+                this.router.navigateByUrl("jobs");
+                this.loading = false;
+            } else {
+                this.message = userResult.message;
+                this.loading = false;
+            }
         });
     }
 }

@@ -6,13 +6,14 @@ import Config from '../models/config';
 import Kvp from '../models/kvp';
 import { ConfigService } from './config.service';
 import { PostResult } from "../models/post-result";
+import { Router } from '@angular/router';
 
 @Injectable({
     providedIn: 'root'
 })
 export class ApiService {
 
-    constructor(private configService: ConfigService, private http: HttpClient) {
+    constructor(private configService: ConfigService, private http: HttpClient, private router: Router) {
     }
 
     async get<T>(controllerName: string, actionName: string, parameters: Kvp<string, string>[]): Promise<T> {
@@ -32,8 +33,17 @@ export class ApiService {
             url += `/${actionName}`;
         }
         console.log(`url=${url}`);
-        console.log(`params=${params}`)
-        return this.http.get<T>(url, { params }).toPromise();
+        console.log(`params=${params}`);
+        try {
+            return await this.http.get<T>(url, { params }).toPromise();
+        } catch (ex) {
+            if (ex?.status === 401) {
+                this.router.navigateByUrl("login");
+            } else {
+                alert(ex);
+            }
+            return new Promise<T>((resolve, reject) => {});
+        }
     }
 
     async post(controllerName: string, actionName: string, body: any): Promise<PostResult> {
@@ -42,6 +52,15 @@ export class ApiService {
         if (actionName) {
             url += `/${actionName}`;
         }
-        return await this.http.post<PostResult>(url, body).toPromise();
+        try {
+            return await this.http.post<PostResult>(url, body).toPromise();
+        } catch (ex) {
+            if (ex?.status === 401) {
+                this.router.navigateByUrl("login");
+            } else {
+                alert(ex);
+            }
+            return { success: false, message: ex };
+        }
     }
 }
