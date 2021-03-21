@@ -5,9 +5,11 @@ import { JobsComponent } from './components/jobs/jobs.component';
 import { SchedulesComponent } from './components/schedules/schedules.component';
 import { EditWorkerComponent } from './components/edit-worker/edit-worker.component';
 import { WorkersComponent } from './components/workers/workers.component';
+import { LoginComponent } from './components/login/login.component';
 
 const routes: Routes = [
   { path: "", component: HomeComponent },
+  { path: "login", component: LoginComponent },
   { path: "jobs", component: JobsComponent },
   { path: "schedules", component: SchedulesComponent },
   { path: "workers", component: WorkersComponent },

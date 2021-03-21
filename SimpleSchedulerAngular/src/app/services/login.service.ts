@@ -9,7 +9,15 @@ export class LoginService {
     }
 
     async submitEmail(emailAddress: string) {
-        const submitResult = await this.apiService.post("Login", "SubmitEmail", { emailAddress });
-        console.log(submitResult);
+        try {
+            const submitResult = await this.apiService.post("Login", "SubmitEmail", { emailAddress });
+            alert(submitResult.message);
+        }
+        catch (ex) {
+            if (ex?.error?.message) {
+                return alert(ex.error.message);
+            }
+            return alert("Unknown error. Please try again");
+        }
     }
 }

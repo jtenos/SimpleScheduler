@@ -2,9 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from "@angular/router";
 import Worker from "../../models/worker";
-import Schedule from 'src/app/models/schedule';
 import { WorkerService } from 'src/app/services/worker.service';
-import WorkerDetail from "../../models/worker-detail";
 
 @Component({
     selector: 'app-edit-worker',
@@ -15,7 +13,7 @@ export class EditWorkerComponent implements OnInit {
     loading = false;
 
     workerID!: number;
-    workerDetail!: WorkerDetail;
+    worker!: Worker;
 
     workerForm = this.formBuilder.group({
         workerID: [""],
@@ -40,29 +38,27 @@ export class EditWorkerComponent implements OnInit {
 
             const setWorkerForm = () => {
                 this.workerForm.setValue({
-                    workerID: this.workerDetail.worker.workerID,
-                    isActive: this.workerDetail.worker.isActive,
-                    description: this.workerDetail.worker.description,
-                    freeText: this.workerDetail.worker.freeText,
-                    emailOnSuccess: this.workerDetail.worker.emailOnSuccess,
-                    directoryName: this.workerDetail.worker.directoryName,
-                    executable: this.workerDetail.worker.executable,
-                    argumentValues: this.workerDetail.worker.argumentValues,
-                    parentWorkerID: this.workerDetail.worker.parentWorkerID || "",
-                    timeoutMinutes: this.workerDetail.worker.timeoutMinutes,
-                    overdueMinutes: this.workerDetail.worker.overdueMinutes
+                    workerID: this.worker.workerID,
+                    isActive: this.worker.isActive,
+                    description: this.worker.description,
+                    freeText: this.worker.freeText,
+                    emailOnSuccess: this.worker.emailOnSuccess,
+                    directoryName: this.worker.directoryName,
+                    executable: this.worker.executable,
+                    argumentValues: this.worker.argumentValues,
+                    parentWorkerID: this.worker.parentWorkerID || "",
+                    timeoutMinutes: this.worker.timeoutMinutes,
+                    overdueMinutes: this.worker.overdueMinutes
                 });
                 this.loading = false;
             }
 
             if (!this.workerID) {
-                const newWorker = new Worker(0, true, "", 20, 20, "", "", "", "", "", undefined);
-                const newSchedule = new Schedule(0, true, 0, true, true, true, true, true, true, true, false);
-                this.workerDetail = new WorkerDetail(newWorker, [newSchedule]);
+                this.worker = new Worker(0, true, "", 20, 20, "", "", "", "", "", undefined);
                 setWorkerForm();
                 this.loading = false;
             } else {
-                this.workerDetail = await this.workerService.getWorker(this.workerID);
+                this.worker = await this.workerService.getWorker(this.workerID);
                 setWorkerForm();
             }
         });
