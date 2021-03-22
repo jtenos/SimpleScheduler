@@ -20,6 +20,9 @@
         <label>Parent Worker (this worker will run after the parent is successful)</label>
         <select formControlName="parentWorkerID" class="form-control">
             <option></option>
+            <option *ngFor="let w of allWorkers" [value]="w.worker.workerID" (selected)="w.worker.workerID === parentWorkerID">
+                {{ w.worker.workerName }}
+            </option>
         </select>
     </div>
     <div class="form-group">
