@@ -78,7 +78,7 @@ namespace SimpleSchedulerBusiness
         {
             bool descriptionExists = await ScalarAsync<bool>(@"
                     SELECT CASE WHEN EXISTS (
-                        SELECT 1 FROM dbo.Worker WHERE WorkerName = @WorkerName
+                        SELECT 1 FROM dbo.Workers WHERE WorkerName = @WorkerName
                     ) THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END;
                 ", CreateDynamicParameters()
                 .AddNVarCharParam("@WorkerName", workerName, 100),
@@ -97,10 +97,10 @@ namespace SimpleSchedulerBusiness
                 )
                 OUTPUT INSERTED.WorkerID INTO @Result
                 VALUES (
-                    @IsActive, WorkerName, DetailedDescription, @EmailOnSuccess, @ParentWorkerID, @TimeoutMinutes, @OverdueMinutes
+                    @IsActive, @WorkerName, @DetailedDescription, @EmailOnSuccess, @ParentWorkerID, @TimeoutMinutes, @OverdueMinutes
                     , @DirectoryName, @Executable, @ArgumentValues
                 );
-                SELECT @WorkerID;
+                SELECT WorkerID from @Result;
             ",
                 CreateDynamicParameters()
                 .AddBitParam("@IsActive", isActive)
@@ -160,7 +160,7 @@ namespace SimpleSchedulerBusiness
                     UPDATE dbo.Workers
                     SET
                         IsActive = 0
-                        ,[Description] = 'INACTIVE: ' + FORMAT(@Now, 'yyyyMMddHHmmss') + ' ' + LEFT([Description], 70)
+                        ,WorkerName = 'INACTIVE: ' + FORMAT(@Now, 'yyyyMMddHHmmss') + ' ' + LEFT(WorkerName, 70)
                     WHERE WorkerID = @WorkerID;
                 ",
                 CreateDynamicParameters()

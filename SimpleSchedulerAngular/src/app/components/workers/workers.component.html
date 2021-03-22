@@ -1,4 +1,4 @@
-<h2>Workers</h2>
+<h2>Workers {{ active ? "" : "(inactive)" }}</h2>
 <button class="btn btn-sm btn-outline-primary" (click)="refresh()">Refresh</button>
 
 <div [class.d-none]="!loading">Loading...</div>

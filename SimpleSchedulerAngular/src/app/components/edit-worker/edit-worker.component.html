@@ -1,6 +1,6 @@
 <div [class.d-none]="!loading">Loading...</div>
 
-<form [formGroup]="workerForm" [class.d-none]="loading">
+<form [formGroup]="workerForm" [class.d-none]="loading" (submit)="workerFormSubmit()">
     <input type="hidden" formControlName="workerID" />
     <input type="checkbox" formControlName="isActive" class="d-none" />
 
@@ -20,7 +20,7 @@
         <label>Parent Worker (this worker will run after the parent is successful)</label>
         <select formControlName="parentWorkerID" class="form-control">
             <option></option>
-            <option *ngFor="let w of allWorkers" [value]="w.worker.workerID" (selected)="w.worker.workerID === parentWorkerID">
+            <option *ngFor="let w of allWorkers" [value]="w.worker.workerID" (selected)="w.worker.workerID === worker.parentWorkerID">
                 {{ w.worker.workerName }}
             </option>
         </select>

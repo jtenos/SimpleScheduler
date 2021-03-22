@@ -48,7 +48,7 @@ export class EditWorkerComponent implements OnInit {
                     directoryName: this.worker.directoryName,
                     executable: this.worker.executable,
                     argumentValues: this.worker.argumentValues,
-                    parentWorkerID: this.worker.parentWorkerID || "",
+                    parentWorkerID: this.worker.parentWorkerID || null,
                     timeoutMinutes: this.worker.timeoutMinutes,
                     overdueMinutes: this.worker.overdueMinutes
                 });
@@ -66,5 +66,16 @@ export class EditWorkerComponent implements OnInit {
                 setWorkerForm();
             }
         });
+    }
+
+    async workerFormSubmit() {
+        this.worker = new Worker(+this.workerForm.value.workerID,
+            this.workerForm.value.isActive, this.workerForm.value.workerName, 
+            +this.workerForm.value.timeoutMinutes, +this.workerForm.value.overdueMinutes,
+            this.workerForm.value.detailedDescription, this.workerForm.value.emailOnSuccess,
+            this.workerForm.value.directoryName, this.workerForm.value.executable,
+            this.workerForm.value.argumentValues, +this.workerForm.value.parentWorkerID || null);
+         this.workerForm.value;
+        await this.workerService.saveWorker(this.worker);
     }
 }
