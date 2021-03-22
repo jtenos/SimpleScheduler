@@ -3,6 +3,7 @@ import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from "@angular/router";
 import Worker from "../../models/worker";
 import { WorkerService } from 'src/app/services/worker.service';
+import WorkerDetail from 'src/app/models/worker-detail';
 
 @Component({
     selector: 'app-edit-worker',
@@ -14,6 +15,7 @@ export class EditWorkerComponent implements OnInit {
 
     workerID!: number;
     worker!: Worker;
+    allWorkers: WorkerDetail[] = [];
 
     workerForm = this.formBuilder.group({
         workerID: [""],
@@ -59,6 +61,8 @@ export class EditWorkerComponent implements OnInit {
                 this.loading = false;
             } else {
                 this.worker = await this.workerService.getWorker(this.workerID);
+                this.allWorkers = await this.workerService.getAllWorkers();
+                this.allWorkers.sort((a, b) => a.worker.workerName > b.worker.workerName ? 1 : -1);
                 setWorkerForm();
             }
         });
