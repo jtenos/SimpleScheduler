@@ -18,8 +18,8 @@ export class EditWorkerComponent implements OnInit {
     workerForm = this.formBuilder.group({
         workerID: [""],
         isActive: [""],
-        description: [""],
-        freeText: [""],
+        workerName: [""],
+        detailedDescription: [""],
         emailOnSuccess: [""],
         directoryName: [""],
         executable: [""],
@@ -40,8 +40,8 @@ export class EditWorkerComponent implements OnInit {
                 this.workerForm.setValue({
                     workerID: this.worker.workerID,
                     isActive: this.worker.isActive,
-                    description: this.worker.description,
-                    freeText: this.worker.freeText,
+                    workerName: this.worker.workerName,
+                    detailedDescription: this.worker.detailedDescription,
                     emailOnSuccess: this.worker.emailOnSuccess,
                     directoryName: this.worker.directoryName,
                     executable: this.worker.executable,

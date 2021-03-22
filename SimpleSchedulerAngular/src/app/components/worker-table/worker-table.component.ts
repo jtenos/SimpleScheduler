@@ -28,4 +28,8 @@ export class WorkerTableComponent implements OnInit {
             this.refreshWorkers.emit(true);
         }
     }
+
+    async runWorker(workerID: number): Promise<void> {
+        
+    }
 }
