@@ -29,6 +29,13 @@ export class WorkerTableComponent implements OnInit {
         }
     }
 
+    async reactivateWorker(workerID: number) : Promise<void> {
+        if (confirm("Are you sure?")) {
+            await this.workerService.reactivateWorker(workerID);
+            this.refreshWorkers.emit(true);
+        }
+    }
+
     async runWorker(workerID: number): Promise<void> {
         
     }

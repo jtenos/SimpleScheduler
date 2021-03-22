@@ -20,6 +20,9 @@
                 <a *ngIf="wd.worker.isActive" (click)="runWorker(wd.worker.workerID)">
                     <img src="assets/img/play.svg" alt="Run Now" />
                 </a>
+                <a *ngIf="!wd.worker.isActive" (click)="reactivateWorker(wd.worker.workerID)" class="btn btn-sm btn-outline-primary">
+                    Reactivate
+                </a>
             </td>
             <td>
                 <div>{{ wd.worker.workerName }}</div>
