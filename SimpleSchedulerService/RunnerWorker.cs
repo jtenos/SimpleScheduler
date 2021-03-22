@@ -27,7 +27,7 @@ namespace SimpleSchedulerService
             var processStartInfo = new ProcessStartInfo
             {
                 FileName = _executable,
-                Arguments = _worker.Arguments,
+                Arguments = _worker.ArgumentValues,
                 WorkingDirectory = _workingDirectory
             };
 

@@ -72,84 +72,84 @@ namespace SimpleSchedulerBusiness
                 CreateDynamicParameters()
                 .AddIntParam("@WorkerID", workerID), cancellationToken).ConfigureAwait(false);
 
-        async Task<int> IWorkerManager.AddWorkerAsync(bool isActive, string description,
-            string? freeText, string? emailOnSuccess, int? parentWorkerID, int timeoutMinutes, int overdueMinutes,
-            string directoryName, string executable, string arguments, CancellationToken cancellationToken)
+        async Task<int> IWorkerManager.AddWorkerAsync(bool isActive, string workerName,
+            string? detailedDescription, string? emailOnSuccess, int? parentWorkerID, int timeoutMinutes, int overdueMinutes,
+            string directoryName, string executable, string argumentValues, CancellationToken cancellationToken)
         {
             bool descriptionExists = await ScalarAsync<bool>(@"
                     SELECT CASE WHEN EXISTS (
-                        SELECT 1 FROM dbo.Worker WHERE [Description] = @Description
+                        SELECT 1 FROM dbo.Worker WHERE WorkerName = @WorkerName
                     ) THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END;
                 ", CreateDynamicParameters()
-                .AddNVarCharParam("@Description", description, 100),
+                .AddNVarCharParam("@WorkerName", workerName, 100),
                 cancellationToken).ConfigureAwait(false);
 
             if (descriptionExists)
             {
-                throw new WorkerAlreadyExistsException(description);
+                throw new WorkerAlreadyExistsException(workerName);
             }
 
             int workerID = (await ScalarAsync<int>(@"
                 DECLARE @Result TABLE (WorkerID INT);
                 INSERT dbo.Workers (
-                    IsActive, [Description], [FreeText], EmailOnSuccess, ParentWorkerID, TimeoutMinutes, OverdueMinutes
-                    , DirectoryName, [Executable], Arguments
+                    IsActive, WorkerName, DetailedDescription, EmailOnSuccess, ParentWorkerID, TimeoutMinutes, OverdueMinutes
+                    , DirectoryName, [Executable], ArgumentValues
                 )
                 OUTPUT INSERTED.WorkerID INTO @Result
                 VALUES (
-                    @IsActive, @Description, @FreeText, @EmailOnSuccess, @ParentWorkerID, @TimeoutMinutes, @OverdueMinutes
-                    , @DirectoryName, @Executable, @Arguments
+                    @IsActive, WorkerName, DetailedDescription, @EmailOnSuccess, @ParentWorkerID, @TimeoutMinutes, @OverdueMinutes
+                    , @DirectoryName, @Executable, @ArgumentValues
                 );
                 SELECT @WorkerID;
             ",
                 CreateDynamicParameters()
                 .AddBitParam("@IsActive", isActive)
-                .AddNVarCharParam("@Description", description, 100)
-                .AddNullableNVarCharParam("@FreeText", freeText, -1)
+                .AddNVarCharParam("@WorkerName", workerName, 100)
+                .AddNullableNVarCharParam("@DetailedDescription", detailedDescription, -1)
                 .AddNullableNVarCharParam("@EmailOnSuccess", emailOnSuccess, -1)
                 .AddNullableIntParam("@ParentWorkerID", parentWorkerID)
                 .AddIntParam("@TimeoutMinutes", timeoutMinutes)
                 .AddIntParam("@OverdueMinutes", overdueMinutes)
                 .AddNVarCharParam("@DirectoryName", directoryName, 1000)
                 .AddNVarCharParam("@Executable", executable, 1000)
-                .AddNVarCharParam("@Arguments", arguments, 1000),
+                .AddNVarCharParam("@ArgumentValues", argumentValues, 1000),
                 cancellationToken).ConfigureAwait(false));
 
             await EnsureNoCircularWorkersAsync(workerID, cancellationToken).ConfigureAwait(false);
             return workerID;
         }
 
-        async Task IWorkerManager.UpdateWorkerAsync(int workerID, bool isActive, string description,
-            string? freeText, string? emailOnSuccess, int? parentWorkerID, int timeoutMinutes, int overdueMinutes,
-            string directoryName, string executable, string arguments, CancellationToken cancellationToken)
+        async Task IWorkerManager.UpdateWorkerAsync(int workerID, bool isActive, string workerName,
+            string? detailedDescription, string? emailOnSuccess, int? parentWorkerID, int timeoutMinutes, int overdueMinutes,
+            string directoryName, string executable, string argumentValues, CancellationToken cancellationToken)
         {
             await NonQueryAsync(@"
                 UPDATE dbo.Workers
                 SET
                     IsActive = @IsActive
-                    ,[Description] = @Description
-                    ,[FreeText] = @FreeText
+                    ,WorkerName = @WorkerName
+                    ,DetailedDescription = @DetailedDescription
                     ,EmailOnSuccess = @EmailOnSuccess
                     ,ParentWorkerID = @ParentWorkerID
                     ,TimeoutMinutes = @TimeoutMinutes
                     ,OverdueMinutes = @OverdueMinutes
                     ,DirectoryName = @DirectoryName
                     ,[Executable] = @Executable
-                    ,Arguments = @Arguments
+                    ,ArgumentValues = @ArgumentValues
                 WHERE WorkerID = @WorkerID;
                 ",
                 CreateDynamicParameters()
                 .AddIntParam("@WorkerID", workerID)
                 .AddBitParam("@IsActive", isActive)
-                .AddNVarCharParam("@Description", description, 100)
-                .AddNullableNVarCharParam("@FreeText", freeText, -1)
+                .AddNVarCharParam("@WorkerName", workerName, 100)
+                .AddNullableNVarCharParam("@DetailedDescription", detailedDescription, -1)
                 .AddNullableNVarCharParam("@EmailOnSuccess", emailOnSuccess, -1)
                 .AddNullableIntParam("@ParentWorkerID", parentWorkerID)
                 .AddIntParam("@TimeoutMinutes", timeoutMinutes)
                 .AddIntParam("@OverdueMinutes", overdueMinutes)
                 .AddNVarCharParam("@DirectoryName", directoryName, 1000)
                 .AddNVarCharParam("@Executable", executable, 1000)
-                .AddNVarCharParam("@Arguments", arguments, 1000),
+                .AddNVarCharParam("@ArgumentValues", argumentValues, 1000),
                 cancellationToken).ConfigureAwait(false);
 
             await EnsureNoCircularWorkersAsync(workerID, cancellationToken).ConfigureAwait(false);
@@ -173,12 +173,12 @@ namespace SimpleSchedulerBusiness
             var worker = await ((IWorkerManager)this).GetWorkerAsync(workerID, cancellationToken).ConfigureAwait(false);
             if (worker.IsActive) { return; }
 
-            if (Regex.IsMatch(worker.Description, @"^INACTIVE\: [0-9]{14}.*$"))
+            if (Regex.IsMatch(worker.WorkerName, @"^INACTIVE\: [0-9]{14}.*$"))
             {
-                string description = $"{worker.Description.Substring(24)} (react {DateTime.UtcNow:yyyyMMddHHmmss})";
-                await ((IWorkerManager)this).UpdateWorkerAsync(worker.WorkerID, isActive: true, description, worker.FreeText,
+                string workerName = $"{worker.WorkerName[24..]} (react {DateTime.UtcNow:yyyyMMddHHmmss})";
+                await ((IWorkerManager)this).UpdateWorkerAsync(worker.WorkerID, isActive: true, workerName, worker.DetailedDescription,
                     worker.EmailOnSuccess, worker.ParentWorkerID, worker.TimeoutMinutes, worker.OverdueMinutes,
-                    worker.DirectoryName, worker.Executable, worker.Arguments, cancellationToken).ConfigureAwait(false);
+                    worker.DirectoryName, worker.Executable, worker.ArgumentValues, cancellationToken).ConfigureAwait(false);
             }
         }
 
@@ -203,7 +203,7 @@ namespace SimpleSchedulerBusiness
             }
         }
 
-        private async Task<ImmutableArray<WorkerDetail>> GetWorkerDetailsAsync(IEnumerable<Worker> workers,
+        private async Task<ImmutableArray<WorkerDetail>> GetWorkerDetailsAsync(IList<Worker> workers,
             CancellationToken cancellationToken)
         {
             var result = new List<WorkerDetail>();
@@ -212,7 +212,9 @@ namespace SimpleSchedulerBusiness
             foreach (var worker in workers)
             {
                 var schedules = allSchedules.Where(x => x.WorkerID == worker.WorkerID).ToImmutableArray();
-                result.Add(new(worker, schedules));
+                result.Add(new(worker,
+                    workers.FirstOrDefault(w => w.WorkerID == worker.ParentWorkerID),
+                    schedules));
             }
             return result.ToImmutableArray();
         }

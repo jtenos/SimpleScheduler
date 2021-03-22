@@ -11,7 +11,6 @@ export class WorkerService {
     constructor(private apiService: ApiService) { }
 
     async getAllWorkers(): Promise<WorkerDetail[]> {
-        console.log("in getAllWorkers");
         return await this.apiService.get<WorkerDetail[]>("Workers", "GetAllWorkers", []);
     }
 

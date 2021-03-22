@@ -2,5 +2,5 @@
 
 namespace SimpleSchedulerModels
 {
-    public record WorkerDetail(Worker Worker, ImmutableArray<Schedule> Schedules);
+    public record WorkerDetail(Worker Worker, Worker? ParentWorker, ImmutableArray<Schedule> Schedules);
 }

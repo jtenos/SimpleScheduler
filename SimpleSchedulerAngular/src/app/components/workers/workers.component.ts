@@ -33,10 +33,14 @@ export class WorkersComponent implements OnInit {
         this.active = !this.active;
     }
 
+    refresh() {
+        this.refreshWorkers();
+    }
+
     async refreshWorkers(): Promise<void> {
         this.loading = true;
-        console.log("in refreshWorkers");
         this.workerDetails = await this.workerService.getAllWorkers();
+        this.workerDetails.sort((a, b) => a.worker.workerName > b.worker.workerName ? 1 : -1);
         this.loading = false;
     }
 }

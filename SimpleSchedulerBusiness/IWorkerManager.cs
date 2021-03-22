@@ -14,12 +14,12 @@ namespace SimpleSchedulerBusiness
         Task<ImmutableArray<WorkerDetail>> GetAllWorkerDetailsAsync(CancellationToken cancellationToken,
             bool getActive = true, bool getInactive = false);
         Task<Worker> GetWorkerAsync(int workerID, CancellationToken cancellationToken);
-        Task<int> AddWorkerAsync(bool isActive, string description,
-            string? freeText, string? emailOnSuccess, int? parentWorkerID, int timeoutMinutes, int overdueMinutes,
-            string directoryName, string executable, string arguments, CancellationToken cancellationToken);
-        Task UpdateWorkerAsync(int workerID, bool isActive, string description,
-            string? freeText, string? emailOnSuccess, int? parentWorkerID, int timeoutMinutes, int overdueMinutes,
-            string directoryName, string executable, string arguments, CancellationToken cancellationToken);
+        Task<int> AddWorkerAsync(bool isActive, string workerName,
+            string? detailedDescription, string? emailOnSuccess, int? parentWorkerID, int timeoutMinutes, int overdueMinutes,
+            string directoryName, string executable, string argumentValues, CancellationToken cancellationToken);
+        Task UpdateWorkerAsync(int workerID, bool isActive, string workerName,
+            string? detailedDescription, string? emailOnSuccess, int? parentWorkerID, int timeoutMinutes, int overdueMinutes,
+            string directoryName, string executable, string argumentValues, CancellationToken cancellationToken);
         Task DeactivateWorkerAsync(int workerID, CancellationToken cancellationToken);
         Task ReactivateWorkerAsync(int workerID, CancellationToken cancellationToken);
 
