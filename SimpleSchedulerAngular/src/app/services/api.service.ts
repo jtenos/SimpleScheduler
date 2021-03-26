@@ -60,7 +60,7 @@ export class ApiService {
             } else {
                 alert(ex);
             }
-            return { success: false, message: ex };
+            return { success: false, message: ex.error?.message || ex.message || "Unknown error. Please try again." };
         }
     }
 }

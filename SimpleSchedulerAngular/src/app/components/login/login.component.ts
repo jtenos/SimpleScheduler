@@ -10,6 +10,10 @@ import { LoginService } from 'src/app/services/login.service';
 export class LoginComponent implements OnInit {
 
     loading = false;
+    submitting = false;
+    submitted = false;
+    message = "";
+
     loginForm = this.formBuilder.group({
         emailAddress: [""]
     });
@@ -21,6 +25,13 @@ export class LoginComponent implements OnInit {
     }
 
     async onSubmit(formData: any) {
-        const response = await this.loginService.submitEmail(formData["emailAddress"] as string);
+        this.submitting = true;
+        const { success, message } = await this.loginService.submitEmail(formData["emailAddress"] as string);
+        this.submitting = false;
+        if (success) {
+            this.submitted = true;
+        } else {
+            this.message = message;
+        }
     }
 }

@@ -35,7 +35,7 @@ namespace SimpleSchedulerAPI.Controllers
                 $"Scheduler ({_config["EnvironmentName"]}) Log In",
                 $"<a href='{url}' target=_blank>Click here to log in</a>",
                 cancellationToken);
-            return Ok(new { Message = "Please check your email for a login link" });
+            return Ok(new { Success = true, Message = "Please check your email for a login link" });
         }
 
         [Route("[action]")]

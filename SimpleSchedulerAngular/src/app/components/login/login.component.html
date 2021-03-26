@@ -1,6 +1,9 @@
 <div [class.d-none]="!loading">Loading...</div>
 
-<form [formGroup]="loginForm" [class.d-none]="loading" (ngSubmit)="onSubmit(loginForm.value)">
+<!-- TODO: Make this fancy -->
+<div>{{message}}</div>
+
+<form [formGroup]="loginForm" [class.d-none]="(loading || submitting || submitted)" (ngSubmit)="onSubmit(loginForm.value)">
     <div class=form-group>
         <label>Email Address</label>
         <input formControlName=emailAddress class=form-control type=email>
@@ -9,3 +12,7 @@
         <button class="btn btn-primary" type=submit>Submit</button>
     </div>
 </form>
+
+<div [class.d-none]="!submitting">Submitting - please wait...</div>
+
+<div [class.d-none]="!submitted">Please check your email for a login link.</div>
