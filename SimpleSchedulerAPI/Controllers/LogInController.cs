@@ -18,18 +18,20 @@ namespace SimpleSchedulerAPI.Controllers
         private readonly IUserManager _userManager;
         private readonly IEmailer _emailer;
         private readonly IConfiguration _config;
-        public LogInController(IUserManager userManager, IEmailer emailer, IConfiguration config) 
+        public LogInController(IUserManager userManager, IEmailer emailer, IConfiguration config)
             => (_userManager, _emailer, _config) = (userManager, emailer, config);
 
         [Route("[action]")]
         [HttpPost]
-        public async Task<IActionResult> SubmitEmail([FromBody]SubmitEmailRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> SubmitEmail([FromBody] SubmitEmailRequest request, CancellationToken cancellationToken)
         {
             var result = await _userManager.LoginSubmitAsync(request.EmailAddress, cancellationToken);
             if (!result.EmailFound)
             {
                 return StatusCode(401, new { Message = "User not found" });
             }
+
+            // TODO: Move this to the business layer
             string url = $"{_config["WebUrl"]}/validate-user/{result.ValidationKey}";
             await _emailer.SendEmailAsync(new[] { request.EmailAddress },
                 $"Scheduler ({_config["EnvironmentName"]}) Log In",
@@ -40,7 +42,7 @@ namespace SimpleSchedulerAPI.Controllers
 
         [Route("[action]")]
         [HttpPost]
-        public async Task<IActionResult> ValidateEmail([FromBody]ValidateEmailRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> ValidateEmail([FromBody] ValidateEmailRequest request, CancellationToken cancellationToken)
         {
             try
             {

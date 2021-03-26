@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using SimpleSchedulerData;
 using SimpleSchedulerModels.Exceptions;
 
-namespace SimpleSchedulerBusiness
+namespace SimpleSchedulerBusiness.SqlServer
 {
     public class UserManager
         : BaseManager, IUserManager

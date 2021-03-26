@@ -1,0 +1,30 @@
+﻿CREATE TABLE [Schedules]
+(
+    [ScheduleID] INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+    ,[UpdateDateTime] DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    ,[IsActive] BOOLEAN NOT NULL DEFAULT 1
+
+    ,[WorkerID] INTEGER NOT NULL
+
+    ,[Sunday] BOOLEAN NOT NULL
+    ,[Monday] BOOLEAN NOT NULL
+    ,[Tuesday] BOOLEAN NOT NULL
+    ,[Wednesday] BOOLEAN NOT NULL
+    ,[Thursday] BOOLEAN NOT NULL
+    ,[Friday] BOOLEAN NOT NULL
+    ,[Saturday] BOOLEAN NOT NULL
+
+    ,[TimeOfDayUTC] TEXT NULL
+    ,[RecurTime] TEXT NULL
+    ,[RecurBetweenStartUTC] TEXT NULL
+    ,[RecurBetweenEndUTC] TEXT NULL
+
+    ,[OneTime] BOOLEAN NOT NULL DEFAULT 0
+
+    ,CHECK ([TimeOfDayUTC] IS NOT NULL OR [RecurTime] IS NOT NULL)
+    ,CHECK ([RecurBetweenStartUTC] IS NULL OR [RecurTime] IS NOT NULL)
+    ,CHECK ([RecurBetweenEndUTC] IS NULL OR [RecurTime] IS NOT NULL)
+    ,FOREIGN KEY ([WorkerID]) REFERENCES [Workers] ([WorkerID])
+);
+
+CREATE INDEX [IX_Schedules_WorkerID] ON [Schedules] ([WorkerID]);

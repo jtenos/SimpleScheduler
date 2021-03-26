@@ -1,0 +1,17 @@
+﻿CREATE TABLE [LoginAttempts]
+(
+    -- When the user submits their email address
+    [EmailAddress] TEXT NOT NULL
+    ,[SubmitDateUTC] DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+
+    -- The unique key that is sent to their email address to log in
+    ,[ValidationKey] TEXT NOT NULL
+
+    -- When the user clicks their email link and gets logged in.
+    ,[ValidationDateUTC] DATETIME NULL
+);
+GO
+
+CREATE UNIQUE INDEX [IX_LoginAttempts_ValidationKey]
+ON [LoginAttempts] ([ValidationKey]);
+GO

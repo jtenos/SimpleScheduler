@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using SimpleSchedulerData;
 using SimpleSchedulerModels;
 
-namespace SimpleSchedulerBusiness
+namespace SimpleSchedulerBusiness.SqlServer
 {
     public class ScheduleManager
         : BaseManager, IScheduleManager
