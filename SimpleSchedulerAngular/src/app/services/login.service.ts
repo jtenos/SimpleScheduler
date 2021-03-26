@@ -6,21 +6,16 @@ import { ApiService } from "./api.service";
     providedIn: "root"
 })
 export class LoginService {
-    
+
     constructor(private apiService: ApiService) {
     }
 
-    async submitEmail(emailAddress: string) {
-        try {
-            const submitResult = await this.apiService.post("Login", "SubmitEmail", { emailAddress });
-            alert(submitResult.message);
-        }
-        catch (ex) {
-            if (ex?.error?.message) {
-                return alert(ex.error.message);
-            }
-            return alert("Unknown error. Please try again");
-        }
+    async submitEmail(emailAddress: string): Promise<{success: boolean, message: string}> {
+        const submitResult = await this.apiService.post("Login", "SubmitEmail", { emailAddress });
+        return {
+            success: submitResult.success,
+            message: submitResult.message || "Unknown error. Please try again"
+        };
     }
 
     async validateUser(validationCode: string): Promise<PostResult> {
