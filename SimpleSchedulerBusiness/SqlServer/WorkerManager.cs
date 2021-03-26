@@ -10,7 +10,7 @@ using SimpleSchedulerData;
 using SimpleSchedulerModels;
 using SimpleSchedulerModels.Exceptions;
 
-namespace SimpleSchedulerBusiness
+namespace SimpleSchedulerBusiness.SqlServer
 {
     public class WorkerManager
         : BaseManager, IWorkerManager
