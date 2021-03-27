@@ -1,4 +1,4 @@
-﻿CREATE TABLE [LoginAttempts]
+CREATE TABLE [LoginAttempts]
 (
     -- When the user submits their email address
     [EmailAddress] TEXT NOT NULL

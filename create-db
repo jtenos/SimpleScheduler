@@ -1,0 +1,7 @@
+rm -rf _db
+mkdir _db
+sqlite3 _db/scheduler.sqlite3 < SqliteDb/Users.txt
+sqlite3 _db/scheduler.sqlite3 < SqliteDb/LoginAttempts.txt
+sqlite3 _db/scheduler.sqlite3 < SqliteDb/Workers.txt
+sqlite3 _db/scheduler.sqlite3 < SqliteDb/Schedules.txt
+sqlite3 _db/scheduler.sqlite3 < SqliteDb/Jobs.txt

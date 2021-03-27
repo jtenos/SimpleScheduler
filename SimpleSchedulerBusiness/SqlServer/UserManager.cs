@@ -12,6 +12,10 @@ namespace SimpleSchedulerBusiness.SqlServer
         public UserManager(IDatabaseFactory databaseFactory, IServiceProvider serviceProvider)
             : base(databaseFactory, serviceProvider) { }
 
+        async Task<int> IUserManager.CountUsersAsync(CancellationToken cancellationToken)
+            => await ScalarAsync<int>("SELECT COUNT(1) FROM dbo.[Users];",
+            CreateDynamicParameters(), cancellationToken).ConfigureAwait(false);
+
         async Task<(bool EmailFound, string ValidationKey)> IUserManager.LoginSubmitAsync(string emailAddress,
             CancellationToken cancellationToken)
         {
