@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SimpleSchedulerBusiness;
-using SimpleSchedulerBusiness.SqlServer;
+using SimpleSchedulerBusiness.Sqlite;
 using SimpleSchedulerData;
 using SimpleSchedulerEmail;
 
@@ -26,12 +26,12 @@ namespace SimpleSchedulerService
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddSingleton<IConfiguration>(config);
-                    services.AddTransient<Emailer>();
+                    services.AddTransient<IEmailer, Emailer>();
                     services.AddHostedService<Worker>();
                     services.AddScoped<JobScheduler>();
                     services.AddScoped<JobExecutor>();
                     services.AddScoped<IDatabaseFactory, DatabaseFactory>();
-                    services.AddScoped<IDatabase, SqlDatabase>();
+                    services.AddScoped<IDatabase, SqliteDatabase>();
                     services.AddScoped<IJobManager, JobManager>();
                     services.AddScoped<IScheduleManager, ScheduleManager>();
                     services.AddScoped<IWorkerManager, WorkerManager>();
