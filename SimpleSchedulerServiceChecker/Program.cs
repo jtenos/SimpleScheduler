@@ -24,7 +24,7 @@ namespace SimpleSchedulerServiceChecker
                     services.AddSingleton<IConfiguration>(config);
                     services.AddScoped<IDatabaseFactory, DatabaseFactory>();
                     services.AddScoped<IDatabase, SqlDatabase>();
-                    services.AddScoped<JobManager>();
+                    services.AddScoped<IJobManager, JobManager>();
                     services.AddScoped<Emailer>();
                 }).UseWindowsService().Build().RunAsync().ConfigureAwait(false);
         }

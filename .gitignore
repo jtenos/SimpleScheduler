@@ -8,3 +8,6 @@ SimpleSchedulerAngular/package-lock.json
 **/node_modules/
 **/*.dbmdl
 **/*.jfm
+_db
+**/.vscode
+

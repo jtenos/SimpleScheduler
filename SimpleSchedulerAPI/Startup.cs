@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using SimpleSchedulerBusiness;
+using SimpleSchedulerBusiness.Sqlite;
 using SimpleSchedulerData;
 using SimpleSchedulerEmail;
 
@@ -71,7 +72,7 @@ namespace SimpleSchedulerAPI
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SimpleSchedulerAPI", Version = "v1" });
             });
 
-            services.AddScoped<IDatabase, SqlDatabase>();
+            services.AddScoped<IDatabase, SqliteDatabase>();
             services.AddScoped<IDatabaseFactory, DatabaseFactory>();
             services.AddScoped<IWorkerManager, WorkerManager>();
             services.AddScoped<IScheduleManager, ScheduleManager>();

@@ -12,6 +12,10 @@ namespace SimpleSchedulerBusiness.Sqlite
         public UserManager(IDatabaseFactory databaseFactory, IServiceProvider serviceProvider)
             : base(databaseFactory, serviceProvider) { }
 
+        async Task<int> IUserManager.CountUsersAsync(CancellationToken cancellationToken)
+            => await ScalarAsync<int>("SELECT COUNT(1) FROM [Users];",
+                CreateDynamicParameters(), cancellationToken).ConfigureAwait(false);
+
         // TODO: This shouldn't return the key - it should send the email and the controller
         // doesn't need to know about the key
         async Task<(bool EmailFound, string ValidationKey)> IUserManager.LoginSubmitAsync(string emailAddress,

@@ -1,4 +1,4 @@
-﻿CREATE TABLE [Users]
+CREATE TABLE [Users]
 (
     [EmailAddress] TEXT NOT NULL
 
