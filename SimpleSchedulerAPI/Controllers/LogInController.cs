@@ -25,18 +25,11 @@ namespace SimpleSchedulerAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> SubmitEmail([FromBody] SubmitEmailRequest request, CancellationToken cancellationToken)
         {
-            var result = await _userManager.LoginSubmitAsync(request.EmailAddress, cancellationToken);
-            if (!result.EmailFound)
+            if (!await _userManager.LoginSubmitAsync(request.EmailAddress, cancellationToken))
             {
                 return StatusCode(401, new { Message = "User not found" });
             }
 
-            // TODO: Move this to the business layer
-            string url = $"{_config["WebUrl"]}/validate-user/{result.ValidationKey}";
-            await _emailer.SendEmailAsync(new[] { request.EmailAddress },
-                $"Scheduler ({_config["EnvironmentName"]}) Log In",
-                $"<a href='{url}' target=_blank>Click here to log in</a>",
-                cancellationToken);
             return Ok(new { Success = true, Message = "Please check your email for a login link" });
         }
 

@@ -57,7 +57,7 @@ namespace SimpleSchedulerServiceChecker
                             var message = new StringBuilder("OVERDUE JOBS<br><br>");
                             foreach (var job in overdueJobs)
                             {
-                                message.Append($"{job.Worker.Description}: ");
+                                message.Append($"{job.Worker.WorkerName}: ");
                                 message.Append($"Queued on {job.Job.QueueDateUTC:yyyy\\-MM\\-dd HH\\:mm\\:ss} (UTC), ");
                                 message.Append($"Status: {job.Job.StatusCode}");
                                 if (job.Job.StatusCode == "ERR")

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using SimpleSchedulerData;
+using SimpleSchedulerEmail;
 using SimpleSchedulerModels.Exceptions;
 
 namespace SimpleSchedulerBusiness.Sqlite
@@ -9,8 +11,12 @@ namespace SimpleSchedulerBusiness.Sqlite
     public class UserManager
         : BaseManager, IUserManager
     {
-        public UserManager(IDatabaseFactory databaseFactory, IServiceProvider serviceProvider)
-            : base(databaseFactory, serviceProvider) { }
+        private readonly IEmailer _emailer;
+        private readonly IConfiguration _config;
+        public UserManager(IDatabaseFactory databaseFactory, IServiceProvider serviceProvider,
+            IEmailer emailer, IConfiguration config)
+            : base(databaseFactory, serviceProvider) 
+            => (_emailer, _config) = (emailer, config);
 
         async Task<int> IUserManager.CountUsersAsync(CancellationToken cancellationToken)
             => await ScalarAsync<int>("SELECT COUNT(1) FROM [Users];",
@@ -18,7 +24,7 @@ namespace SimpleSchedulerBusiness.Sqlite
 
         // TODO: This shouldn't return the key - it should send the email and the controller
         // doesn't need to know about the key
-        async Task<(bool EmailFound, string ValidationKey)> IUserManager.LoginSubmitAsync(string emailAddress,
+        async Task<bool> IUserManager.LoginSubmitAsync(string emailAddress,
             CancellationToken cancellationToken)
         {
             bool emailFound = await ScalarAsync<bool>(@"
@@ -29,7 +35,7 @@ namespace SimpleSchedulerBusiness.Sqlite
                 .AddNVarCharParam("@EmailAddress", emailAddress, 200),
                 cancellationToken).ConfigureAwait(false);
 
-            if (!emailFound) { return (emailFound, ""); }
+            if (!emailFound) { return false; }
 
             Guid validationKey = Guid.NewGuid();
             await NonQueryAsync(@"
@@ -41,9 +47,13 @@ namespace SimpleSchedulerBusiness.Sqlite
                 .AddNVarCharParam("@ValidationKey", validationKey.ToString("N"), 32),
                 cancellationToken).ConfigureAwait(false);
 
-            // TODO: move the email send code here from the controller
+            string url = $"{_config["WebUrl"]}/validate-user/{validationKey}";
+            await _emailer.SendEmailAsync(new[] { emailAddress },
+                $"Scheduler ({_config["EnvironmentName"]}) Log In",
+                $"<a href='{url}' target=_blank>Click here to log in</a>",
+                cancellationToken);
 
-            return (emailFound, validationKey.ToString("N"));
+            return true;
         }
 
         public record LoginValidateItem(DateTimeOffset SubmitDateUTC, string EmailAddress);
