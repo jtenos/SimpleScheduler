@@ -18,29 +18,31 @@ namespace SimpleSchedulerBusiness.Sqlite
 
         async Task IScheduleManager.DeactivateScheduleAsync(int scheduleID, CancellationToken cancellationToken)
             => await NonQueryAsync(@"
-                UPDATE dbo.Schedules
-                SET IsActive = 0
+                UPDATE [Schedules]
+                SET IsActive = 0, UpdateDateTime = @Now
                 WHERE ScheduleID = @ScheduleID;
 
-                DELETE dbo.Jobs WHERE ScheduleID = @ScheduleID AND StatusCode = 'NEW';
+                DELETE FROM [Jobs] WHERE ScheduleID = @ScheduleID AND StatusCode = 'NEW';
             ", CreateDynamicParameters()
-                .AddIntParam("@ScheduleID", scheduleID), cancellationToken).ConfigureAwait(false);
+                .AddIntParam("@ScheduleID", scheduleID)
+                .AddDateTime2Param("@Now", DateTime.UtcNow), cancellationToken).ConfigureAwait(false);
 
         async Task IScheduleManager.ReactivateScheduleAsync(int scheduleID, CancellationToken cancellationToken)
             => await NonQueryAsync(@"
-                UPDATE dbo.Schedules
-                SET IsActive = 1
+                UPDATE [Schedules]
+                SET IsActive = 1, UpdateDateTime = @Now
                 WHERE ScheduleID = @ScheduleID;
             ", CreateDynamicParameters()
-                .AddIntParam("@ScheduleID", scheduleID), cancellationToken).ConfigureAwait(false);
+                .AddIntParam("@ScheduleID", scheduleID)
+                .AddDateTime2Param("@Now", DateTime.UtcNow), cancellationToken).ConfigureAwait(false);
 
         async Task<ImmutableArray<ScheduleDetail>> IScheduleManager.GetSchedulesToInsertAsync(CancellationToken cancellationToken)
         {
             var schedulesToInsert = await GetManyAsync<Schedule>(@"
-                SELECT * FROM dbo.Schedules s
+                SELECT * FROM Schedules s
                 WHERE s.IsActive = 1
                 AND s.ScheduleID NOT IN (
-                    SELECT ScheduleID FROM dbo.Jobs WHERE StatusCode IN ('NEW', 'RUN')
+                    SELECT ScheduleID FROM [Jobs] WHERE StatusCode IN ('NEW', 'RUN')
                 );
             ", CreateDynamicParameters(), cancellationToken);
 
@@ -54,7 +56,7 @@ namespace SimpleSchedulerBusiness.Sqlite
             if (!getActive && !getInactive) { return ImmutableArray<Schedule>.Empty; }
 
             var sql = new StringBuilder();
-            sql.AppendLine("SELECT * FROM dbo.Schedules");
+            sql.AppendLine("SELECT * FROM [Schedules];");
             var allSchedules = await GetManyAsync<Schedule>(sql.ToString(), CreateDynamicParameters(), cancellationToken).ConfigureAwait(false);
             return allSchedules
                 .Where(s => (getActive && s.IsActive) || (getInactive && !s.IsActive))
@@ -64,7 +66,7 @@ namespace SimpleSchedulerBusiness.Sqlite
         async Task<ScheduleDetail> IScheduleManager.GetScheduleAsync(int scheduleID, CancellationToken cancellationToken)
         {
             var schedule = await GetOneAsync<Schedule>(@"
-                    SELECT * FROM dbo.Schedules WHERE ScheduleID = @ScheduleID
+                    SELECT * FROM [Schedules] WHERE ScheduleID = @ScheduleID;
                 ",
                 CreateDynamicParameters()
                 .AddIntParam("@ScheduleID", scheduleID),
@@ -79,19 +81,16 @@ namespace SimpleSchedulerBusiness.Sqlite
             TimeSpan? timeOfDayUTC, TimeSpan? recurTime, TimeSpan? recurBetweenStartUTC,
             TimeSpan? recurBetweenEndUTC, bool oneTime, CancellationToken cancellationToken)
             => (await ScalarAsync<int>(@"
-                DECLARE @Result TABLE (ScheduleID INT);
-
-                INSERT dbo.Schedules (
+                INSERT INTO [Schedules] (
                     WorkerID, IsActive, Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday
                     ,TimeOfDayUTC, RecurTime, RecurBetweenStartUTC, RecurBetweenEndUTC, OneTime
                 )
-                OUTPUT INSERTED.ScheduleID INTO @Result
                 VALUES (
                     @WorkerID, @IsActive, @Sunday, @Monday, @Tuesday, @Wednesday, @Thursday, @Friday, @Saturday
                     ,@TimeOfDayUTC, @RecurTime, @RecurBetweenStartUTC, @RecurBetweenEndUTC, @OneTime
                 );
 
-                SELECT ScheduleID FROM @Result;
+                SELECT last_insert_rowid();
             ", CreateDynamicParameters()
                 .AddIntParam("@WorkerID", workerID)
                 .AddBitParam("@IsActive", isActive)
@@ -114,8 +113,9 @@ namespace SimpleSchedulerBusiness.Sqlite
             TimeSpan? timeOfDayUTC, TimeSpan? recurTime, TimeSpan? recurBetweenStartUTC,
             TimeSpan? recurBetweenEndUTC, CancellationToken cancellationToken)
             => await NonQueryAsync(@"
-            UPDATE dbo.Schedules SET
+            UPDATE [Schedules] SET
                 WorkerID = @WorkerID
+                ,UpdateDateTime = @Now
                 ,Sunday = @Sunday
                 ,Monday = @Monday
                 ,Tuesday = @Tuesday
@@ -130,10 +130,11 @@ namespace SimpleSchedulerBusiness.Sqlite
             WHERE ScheduleID = @ScheduleID;
 
             -- Clears out the job queue so it will create the next one at the right time
-            DELETE dbo.Jobs WHERE ScheduleID = @ScheduleID AND StatusCode = 'NEW';
+            DELETE [Jobs] WHERE ScheduleID = @ScheduleID AND StatusCode = 'NEW';
 
             ", CreateDynamicParameters()
                 .AddIntParam("@ScheduleID", scheduleID)
+                .AddDateTime2Param("@Now", DateTime.UtcNow)
                 .AddIntParam("@WorkerID", workerID)
                 .AddBitParam("@Sunday", sunday)
                 .AddBitParam("@Monday", monday)

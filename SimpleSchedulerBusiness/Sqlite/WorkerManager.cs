@@ -33,16 +33,16 @@ namespace SimpleSchedulerBusiness.Sqlite
             => (await GetManyAsync<WorkerIDContainer>(@"
                 ;WITH parent AS (
                     SELECT s.WorkerID
-                    FROM dbo.Jobs j
-                    JOIN dbo.Schedules s ON j.ScheduleID = s.ScheduleID
-                    JOIN dbo.Workers w on s.WorkerID = w.WorkerID
+                    FROM [Jobs] j
+                    JOIN [Schedules] s ON j.ScheduleID = s.ScheduleID
+                    JOIN [Workers] w ON s.WorkerID = w.WorkerID
                     WHERE j.JobID = @JobID
                     AND s.IsActive = 1
                     AND w.IsActive = 1
                 )
                 SELECT child.WorkerID
-                FROM dbo.Workers child
-                JOIN parent on child.ParentWorkerID = parent.WorkerID
+                FROM [Workers] child
+                JOIN parent ON child.ParentWorkerID = parent.WorkerID
                 WHERE child.IsActive = 1;
             ", CreateDynamicParameters()
                 .AddIntParam("@JobID", jobID), cancellationToken).ConfigureAwait(false))
@@ -54,7 +54,7 @@ namespace SimpleSchedulerBusiness.Sqlite
             if (!getActive && !getInactive) { return ImmutableArray<Worker>.Empty; }
 
             var sql = new StringBuilder();
-            sql.AppendLine("SELECT * FROM dbo.Workers");
+            sql.AppendLine("SELECT * FROM [Workers]");
             var allWorkers = await GetManyAsync<Worker>(sql.ToString(), CreateDynamicParameters(), cancellationToken).ConfigureAwait(false);
             return allWorkers
                 .Where(w => (getActive && w.IsActive) || (getInactive && !w.IsActive))
@@ -68,7 +68,7 @@ namespace SimpleSchedulerBusiness.Sqlite
                 cancellationToken).ConfigureAwait(false);
 
         async Task<Worker> IWorkerManager.GetWorkerAsync(int workerID, CancellationToken cancellationToken)
-            => await GetOneAsync<Worker>("SELECT * FROM dbo.Workers WHERE WorkerID = @WorkerID",
+            => await GetOneAsync<Worker>("SELECT * FROM [Workers] WHERE WorkerID = @WorkerID;",
                 CreateDynamicParameters()
                 .AddIntParam("@WorkerID", workerID), cancellationToken).ConfigureAwait(false);
 
@@ -78,7 +78,7 @@ namespace SimpleSchedulerBusiness.Sqlite
         {
             bool descriptionExists = await ScalarAsync<bool>(@"
                     SELECT CASE WHEN EXISTS (
-                        SELECT 1 FROM dbo.Workers WHERE WorkerName = @WorkerName
+                        SELECT 1 FROM [Workers] WHERE WorkerName = @WorkerName
                     ) THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END;
                 ", CreateDynamicParameters()
                 .AddNVarCharParam("@WorkerName", workerName, 100),
@@ -90,17 +90,15 @@ namespace SimpleSchedulerBusiness.Sqlite
             }
 
             int workerID = (await ScalarAsync<int>(@"
-                DECLARE @Result TABLE (WorkerID INT);
-                INSERT dbo.Workers (
+                INSERT INTO [Workers] (
                     IsActive, WorkerName, DetailedDescription, EmailOnSuccess, ParentWorkerID, TimeoutMinutes, OverdueMinutes
                     , DirectoryName, [Executable], ArgumentValues
                 )
-                OUTPUT INSERTED.WorkerID INTO @Result
                 VALUES (
                     @IsActive, @WorkerName, @DetailedDescription, @EmailOnSuccess, @ParentWorkerID, @TimeoutMinutes, @OverdueMinutes
                     , @DirectoryName, @Executable, @ArgumentValues
                 );
-                SELECT WorkerID from @Result;
+                SELECT last_insert_rowid();
             ",
                 CreateDynamicParameters()
                 .AddBitParam("@IsActive", isActive)
@@ -124,9 +122,10 @@ namespace SimpleSchedulerBusiness.Sqlite
             string directoryName, string executable, string argumentValues, CancellationToken cancellationToken)
         {
             await NonQueryAsync(@"
-                UPDATE dbo.Workers
+                UPDATE [Workers]
                 SET
                     IsActive = @IsActive
+                    ,UpdateDateTime = @Now
                     ,WorkerName = @WorkerName
                     ,DetailedDescription = @DetailedDescription
                     ,EmailOnSuccess = @EmailOnSuccess
@@ -141,6 +140,7 @@ namespace SimpleSchedulerBusiness.Sqlite
                 CreateDynamicParameters()
                 .AddIntParam("@WorkerID", workerID)
                 .AddBitParam("@IsActive", isActive)
+                .AddDateTime2Param("@Now", DateTime.UtcNow)
                 .AddNVarCharParam("@WorkerName", workerName, 100)
                 .AddNullableNVarCharParam("@DetailedDescription", detailedDescription, -1)
                 .AddNullableNVarCharParam("@EmailOnSuccess", emailOnSuccess, -1)
@@ -157,15 +157,15 @@ namespace SimpleSchedulerBusiness.Sqlite
 
         async Task IWorkerManager.DeactivateWorkerAsync(int workerID, CancellationToken cancellationToken)
             => await NonQueryAsync(@"
-                    UPDATE dbo.Workers
+                    UPDATE [Workers]
                     SET
                         IsActive = 0
-                        ,WorkerName = 'INACTIVE: ' + FORMAT(@Now, 'yyyyMMddHHmmss') + ' ' + LEFT(WorkerName, 70)
+                        ,WorkerName = 'INACTIVE: ' + @FormattedNow + ' ' + WorkerName
                     WHERE WorkerID = @WorkerID;
                 ",
                 CreateDynamicParameters()
                 .AddIntParam("@WorkerID", workerID)
-                .AddDateTime2Param("@Now", DateTime.UtcNow),
+                .AddNVarCharParam("@FormattedNow", DateTime.UtcNow.ToString("yyyyMMddHHmmss"), 14),
                 cancellationToken).ConfigureAwait(false);
 
         async Task IWorkerManager.ReactivateWorkerAsync(int workerID, CancellationToken cancellationToken)

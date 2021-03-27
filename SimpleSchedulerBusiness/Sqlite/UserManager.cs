@@ -22,8 +22,6 @@ namespace SimpleSchedulerBusiness.Sqlite
             => await ScalarAsync<int>("SELECT COUNT(1) FROM [Users];",
                 CreateDynamicParameters(), cancellationToken).ConfigureAwait(false);
 
-        // TODO: This shouldn't return the key - it should send the email and the controller
-        // doesn't need to know about the key
         async Task<bool> IUserManager.LoginSubmitAsync(string emailAddress,
             CancellationToken cancellationToken)
         {
@@ -86,7 +84,7 @@ namespace SimpleSchedulerBusiness.Sqlite
             ",
                 CreateDynamicParameters()
                 .AddDateTime2Param("@Now", DateTime.UtcNow)
-                .AddUniqueIdentifierParam("@ValidationKey", validationKey),
+                .AddNVarCharParam("@ValidationKey", validationKey.ToString("N"), 32),
                 cancellationToken).ConfigureAwait(false)!;
         }
     }

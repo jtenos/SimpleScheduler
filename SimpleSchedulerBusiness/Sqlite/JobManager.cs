@@ -20,18 +20,18 @@ namespace SimpleSchedulerBusiness.Sqlite
 
         async Task IJobManager.RestartStuckJobsAsync(CancellationToken cancellationToken)
             => await NonQueryAsync(@"
-                UPDATE dbo.Jobs SET StatusCode = 'NEW' WHERE StatusCode = 'RUN';
+                UPDATE [Jobs] SET StatusCode = 'NEW' WHERE StatusCode = 'RUN';
             ", CreateDynamicParameters(), cancellationToken).ConfigureAwait(false);
 
         async Task IJobManager.AcknowledgeErrorAsync(int jobID, CancellationToken cancellationToken)
             => await NonQueryAsync(@"
-                UPDATE dbo.Jobs SET StatusCode = 'ACK' WHERE JobID = @JobID AND StatusCode = 'ERR';
+                UPDATE [Jobs] SET StatusCode = 'ACK' WHERE JobID = @JobID AND StatusCode = 'ERR';
             ", CreateDynamicParameters()
                 .AddIntParam("@JobID", jobID), cancellationToken).ConfigureAwait(false);
 
         async Task IJobManager.AddJobAsync(int scheduleID, DateTime queueDateUTC, CancellationToken cancellationToken)
             => await NonQueryAsync(@"
-                INSERT dbo.Jobs (ScheduleID, QueueDateUTC)
+                INSERT INTO [Jobs] (ScheduleID, QueueDateUTC)
                 VALUES (@ScheduleID, @QueueDateUTC)
             ", CreateDynamicParameters()
                 .AddIntParam("@ScheduleID", scheduleID)
@@ -40,7 +40,7 @@ namespace SimpleSchedulerBusiness.Sqlite
 
         async Task<Job> IJobManager.GetJobAsync(int jobID, CancellationToken cancellationToken)
             => await GetOneAsync<Job>(@"
-                SELECT * FROM dbo.Jobs WHERE JobID = @JobID
+                SELECT * FROM [Jobs] WHERE JobID = @JobID;
             ",
                 CreateDynamicParameters()
                 .AddIntParam("@JobID", jobID),
@@ -49,12 +49,13 @@ namespace SimpleSchedulerBusiness.Sqlite
         async Task IJobManager.CancelJobAsync(int jobID, CancellationToken cancellationToken)
         {
             int numRecords = await NonQueryAsync(@"
-                UPDATE dbo.Jobs
-                SET StatusCode = 'CAN'
+                UPDATE [Jobs]
+                SET StatusCode = 'CAN', UpdateDateTime = @Now
                 WHERE JobID = @JobID
                 AND StatusCode = 'NEW';
             ", CreateDynamicParameters()
-                .AddIntParam("@JobID", jobID), cancellationToken).ConfigureAwait(false);
+                .AddIntParam("@JobID", jobID)
+                .AddDateTime2Param("@Now", DateTime.UtcNow), cancellationToken).ConfigureAwait(false);
 
             if (numRecords == 1)
             {
@@ -76,11 +77,12 @@ namespace SimpleSchedulerBusiness.Sqlite
             CancellationToken cancellationToken)
         {
             await NonQueryAsync(@"
-                UPDATE dbo.Jobs
-                SET StatusCode = @StatusCode, DetailedMessage = @DetailedMessage, CompleteDateUTC = @Now
+                UPDATE [Jobs]
+                SET UpdateDateTime = @Now, StatusCode = @StatusCode, DetailedMessage = @DetailedMessage, CompleteDateUTC = @Now
                 WHERE JobID = @JobID;
             ",
                 CreateDynamicParameters()
+                .AddDateTime2Param("@Now", DateTime.UtcNow)
                 .AddNCharParam("@StatusCode", statusCode, 3)
                 .AddNullableNVarCharParam("@DetailedMessage", detailedMessage, -1)
                 .AddIntParam("@JobID", jobID)
@@ -106,7 +108,7 @@ namespace SimpleSchedulerBusiness.Sqlite
             parms.AddDateTime2Param("@Now", DateTime.UtcNow);
 
             var sql = new StringBuilder();
-            sql.AppendLine("SELECT * FROM dbo.Jobs WHERE 1=1");
+            sql.AppendLine("SELECT * FROM [Jobs] WHERE 1=1");
             if (statusCode != null)
             {
                 sql.AppendLine("AND StatusCode = @StatusCode");
@@ -114,7 +116,7 @@ namespace SimpleSchedulerBusiness.Sqlite
             }
             if (workerID.HasValue)
             {
-                sql.AppendLine("AND ScheduleID IN (SELECT ScheduleID FROM dbo.Schedules WHERE WorkerID = @WorkerID)");
+                sql.AppendLine("AND ScheduleID IN (SELECT ScheduleID FROM [Schedules] WHERE WorkerID = @WorkerID)");
                 parms.AddIntParam("@WorkerID", workerID.Value);
             }
             if (overdueOnly)
@@ -127,8 +129,7 @@ namespace SimpleSchedulerBusiness.Sqlite
                                 END < @Now");
             }
             sql.AppendLine("ORDER BY QueueDateUTC DESC");
-            sql.AppendLine($"OFFSET {pageNumber * rowsPerPage} ROWS");
-            sql.AppendLine($"FETCH NEXT {rowsPerPage} ROWS ONLY;");
+            sql.AppendLine($"LIMIT {rowsPerPage} OFFSET {pageNumber * rowsPerPage};");
 
             var jobs = await GetManyAsync<Job>(sql.ToString(), parms, cancellationToken).ConfigureAwait(false);
 
@@ -142,41 +143,39 @@ namespace SimpleSchedulerBusiness.Sqlite
 
         async Task<Job?> IJobManager.GetLastQueuedJobAsync(int scheduleID, CancellationToken cancellationToken)
             => (await GetManyAsync<Job>(@"
-                SELECT * FROM dbo.Jobs
+                SELECT * FROM [Jobs]
                 WHERE ScheduleID = @ScheduleID
                 ORDER BY QueueDateUTC DESC
-                OFFSET 0 ROWS FETCH NEXT 1 ROW ONLY;
+                LIMIT 1 OFFSET 0;
             ", CreateDynamicParameters()
                 .AddIntParam("@ScheduleID", scheduleID),
                 cancellationToken).ConfigureAwait(false)).FirstOrDefault();
 
         async Task<string?> IJobManager.GetJobDetailedMessageAsync(int jobID, CancellationToken cancellationToken)
             => await ScalarAsync<string>(@"
-                SELECT DetailedMessage FROM dbo.Jobs WHERE JobID = @JobID;
+                SELECT DetailedMessage FROM [Jobs] WHERE JobID = @JobID;
             ", CreateDynamicParameters()
                 .AddIntParam("@JobID", jobID), cancellationToken).ConfigureAwait(false);
 
         async Task<ImmutableArray<JobDetail>> IJobManager.DequeueScheduledJobsAsync(CancellationToken cancellationToken)
         {
             var dequeuedJobs = await GetManyAsync<Job>(@"
-                DECLARE @Result TABLE (JobID INT);
-                ;WITH three_records AS (
-                    SELECT JobID, StatusCode
-                    FROM dbo.Jobs WITH (ROWLOCK, READPAST, UPDLOCK)
+                CREATE TABLE temp.Result(JobID INTEGER, StatusCode TEXT);
+                INSERT INTO temp.Result
+                    SELECT JobID
+                    FROM [Jobs]
                     WHERE StatusCode = 'NEW'
                     AND QueueDateUTC < @Now
                     ORDER BY QueueDateUTC
-                    OFFSET 0 ROWS
-                    FETCH NEXT 3 ROWS ONLY
-                )
-                UPDATE three_records
+                    LIMIT 3 OFFSET 0;
+
+                UPDATE [Jobs]
                 SET StatusCode = 'RUN'
-                OUTPUT INSERTED.JobID INTO @Result
-                FROM three_records WITH (ROWLOCK, READPAST, UPDLOCK)
+                WHERE JobID in (SELECT JobID FROM temp.Result);
 
                 SELECT j.* 
-                FROM dbo.Jobs j
-                JOIN @Result r on j.JobID = r.JobID;
+                FROM Jobs j
+                JOIN temp.Result r on j.JobID = r.JobID;
             ",
                 CreateDynamicParameters()
                 .AddDateTime2Param("@Now", DateTime.UtcNow),
