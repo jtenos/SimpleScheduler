@@ -15,6 +15,7 @@ namespace SimpleSchedulerAPI.Controllers
         public HelloController(IUserManager userManager) => _userManager = userManager;
 
         [Route("[action]")]
+        [HttpGet]
         public async Task<IActionResult> HelloThere(CancellationToken cancellationToken)
         {
             var users = await _userManager.CountUsersAsync(cancellationToken);
