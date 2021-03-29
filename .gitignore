@@ -10,4 +10,5 @@ SimpleSchedulerAngular/package-lock.json
 **/*.jfm
 _db
 **/.vscode
+**/secrets.json
 

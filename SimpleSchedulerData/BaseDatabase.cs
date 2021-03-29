@@ -1,47 +1,97 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Data.Common;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Dapper;
+using Microsoft.Extensions.Configuration;
 
 namespace SimpleSchedulerData
 {
-    public abstract class BaseDatabase
-        : IDatabase
+    public abstract class BaseDatabase<TConnection, TTransaction, TParam, TDataReader>
+        : IDatabase<TConnection, TTransaction, TParam, TDataReader>
+        where TConnection : DbConnection, new()
+        where TTransaction : DbTransaction
+        where TParam : DbParameter
+        where TDataReader : DbDataReader
     {
+        private readonly IConfiguration _config;
+
+        protected BaseDatabase(IConfiguration config) => _config = config;
+        private TConnection _connection = default!;
+        private TTransaction _transaction = default!;
+
         protected bool MarkForRollback { get; private set; }
 
         public bool IsInitialized { get; private set; }
 
-        async Task IDatabase.InitializeAsync(CancellationToken cancellationToken)
+        async Task IDatabase<TConnection, TTransaction, TParam, TDataReader>.InitializeAsync(
+            CancellationToken cancellationToken)
         {
-            await InitializeAsync(cancellationToken).ConfigureAwait(false);
+            _connection = new TConnection() { ConnectionString = _config.GetConnectionString("SimpleScheduler") };
+            await _connection.OpenAsync(cancellationToken).ConfigureAwait(false);
+            _transaction = (TTransaction)(await _connection.BeginTransactionAsync(cancellationToken).ConfigureAwait(false));
             IsInitialized = true;
         }
-        protected abstract Task InitializeAsync(CancellationToken cancellationToken);
 
-        async Task<ImmutableArray<T>> IDatabase.GetManyAsync<T>(string sql, DynamicParameters parameters, CancellationToken cancellationToken)
-            => await GetManyAsync<T>(sql, parameters, cancellationToken).ConfigureAwait(false);
-        protected abstract Task<ImmutableArray<T>> GetManyAsync<T>(string sql, DynamicParameters parameters, CancellationToken cancellationToken);
+        async Task<ImmutableArray<T>> IDatabase<TConnection, TTransaction, TParam, TDataReader>.GetManyAsync<T>(
+            string sql,
+            IEnumerable<TParam> parameters, Func<TDataReader, T> mapFunc,
+            CancellationToken cancellationToken)
+        {
+            using var comm = _connection.CreateCommand();
+            comm.CommandText = sql;
+            comm.Parameters.AddRange(parameters.ToArray());
+            using var rdr = (TDataReader)await comm.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false);
+            var result = new List<T>();
+            while (await rdr.ReadAsync(cancellationToken).ConfigureAwait(false))
+            {
+                result.Add(mapFunc(rdr));
+            }
+            return result.ToImmutableArray();
+        }
+        async Task<T> IDatabase<TConnection, TTransaction, TParam, TDataReader>.GetOneAsync<T>(
+            string sql, IEnumerable<TParam> parameters, Func<TDataReader, T> mapFunc,
+            CancellationToken cancellationToken)
+            => (await ((IDatabase<TConnection, TTransaction, TParam, TDataReader>)this).GetManyAsync<T>(
+                sql, parameters, mapFunc, cancellationToken).ConfigureAwait(false))[0];
 
-        async Task<T> IDatabase.GetOneAsync<T>(string sql, DynamicParameters parameters, CancellationToken cancellationToken)
-            => await GetOneAsync<T>(sql, parameters, cancellationToken).ConfigureAwait(false);
-        protected abstract Task<T> GetOneAsync<T>(string sql, DynamicParameters parameters, CancellationToken cancellationToken);
+        async Task<int> IDatabase<TConnection, TTransaction, TParam, TDataReader>.NonQueryAsync(
+            string sql, IEnumerable<TParam> parameters, CancellationToken cancellationToken)
+        {
+            using var comm = _connection.CreateCommand();
+            comm.CommandText = sql;
+            comm.Parameters.AddRange(parameters.ToArray());
+            return await comm.ExecuteNonQueryAsync().ConfigureAwait(false);
+        }
 
-        async Task<int> IDatabase.NonQueryAsync(string sql, DynamicParameters parameters, CancellationToken cancellationToken)
-            => await NonQueryAsync(sql, parameters, cancellationToken).ConfigureAwait(false);
-        protected abstract Task<int> NonQueryAsync(string sql, DynamicParameters parameters, CancellationToken cancellationToken);
+        async Task<T> IDatabase<TConnection, TTransaction, TParam, TDataReader>.ScalarAsync<T>(
+            string sql, IEnumerable<TParam> parameters,
+            CancellationToken cancellationToken)
+        {
+            using var comm = _connection.CreateCommand();
+            comm.CommandText = sql;
+            comm.Parameters.AddRange(parameters.ToArray());
+            return (T)(await comm.ExecuteScalarAsync().ConfigureAwait(false))!;
+        }
 
-        async Task<T> IDatabase.ScalarAsync<T>(string sql, DynamicParameters parameters, CancellationToken cancellationToken)
-            => await ScalarAsync<T>(sql, parameters, cancellationToken).ConfigureAwait(false);
-        protected abstract Task<T> ScalarAsync<T>(string sql, DynamicParameters parameters, CancellationToken cancellationToken);
+        async Task IDatabase<TConnection, TTransaction, TParam, TDataReader>.CommitAsync(
+            CancellationToken cancellationToken)
+            => await _transaction.CommitAsync(cancellationToken).ConfigureAwait(false);
 
-        async Task IDatabase.CommitAsync(CancellationToken cancellationToken) => await CommitAsync(cancellationToken).ConfigureAwait(false);
-        protected abstract Task CommitAsync(CancellationToken cancellationToken);
+        void IDatabase<TConnection, TTransaction, TParam, TDataReader>.MarkForRollback() => MarkForRollback = true;
 
-        void IDatabase.MarkForRollback() => MarkForRollback = true;
-
-        async ValueTask IAsyncDisposable.DisposeAsync() => await DisposeAsync().ConfigureAwait(false);
-        protected abstract ValueTask DisposeAsync();
+        async ValueTask IAsyncDisposable.DisposeAsync()
+        {
+            if (_transaction != null)
+            {
+                await _transaction.DisposeAsync().ConfigureAwait(false);
+            }
+            if (_connection != null)
+            {
+                await _connection.DisposeAsync().ConfigureAwait(false);
+            }
+        }
     }
 }

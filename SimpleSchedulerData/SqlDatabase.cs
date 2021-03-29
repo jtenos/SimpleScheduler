@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 namespace SimpleSchedulerData
 {
     public class SqlDatabase
-        : BaseDapperDatabase<SqlConnection, SqlCommand, SqlTransaction>
+        : BaseDatabase<SqlConnection, SqlTransaction, SqlParameter, SqlDataReader>
     {
         public SqlDatabase(IConfiguration config) : base(config) { }
     }
