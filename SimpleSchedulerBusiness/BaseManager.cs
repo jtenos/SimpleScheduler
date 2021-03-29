@@ -1,5 +1,4 @@
-﻿using Dapper;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using SimpleSchedulerData;
 using System;
 using System.Collections.Immutable;
@@ -38,5 +37,3 @@ namespace SimpleSchedulerBusiness
         protected static DynamicParameters CreateDynamicParameters() => new();
     }
 }
-// TODO: Move this to data project
-

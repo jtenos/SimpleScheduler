@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MailKit.Net.Smtp;
 using MailKit.Security;
+using Microsoft.Extensions.Configuration;
 using MimeKit;
 
 namespace SimpleSchedulerEmail
@@ -12,29 +13,23 @@ namespace SimpleSchedulerEmail
     public class Emailer
         : IEmailer
     {
+        private readonly IConfiguration _config;
+
+        public Emailer(IConfiguration config) => _config = config;
+
         async Task IEmailer.SendEmailToAdminAsync(string subject, string bodyHTML, CancellationToken cancellationToken)
             => await ((IEmailer)this).SendEmailAsync(new[] { Environment.GetEnvironmentVariable("SCHEDULER_ADMIN_EMAIL") ?? "" }, subject, bodyHTML,
-                cancellationToken).ConfigureAwait(false);
+        cancellationToken).ConfigureAwait(false);
 
         async Task IEmailer.SendEmailAsync(IEnumerable<string> toAddresses, string subject, string bodyHTML,
             CancellationToken cancellationToken)
         {
-            int smtpPort = GetSmtpPort();
-            bool useSsl = Environment.GetEnvironmentVariable("SCHEDULER_SMTP_SECURE") == "1";
-            string emailFrom = Environment.GetEnvironmentVariable("SCHEDULER_EMAIL_FROM") ?? "";
-            string adminEmail = Environment.GetEnvironmentVariable("SCHEDULER_ADMIN_EMAIL") ?? "";
-            string emailHost = Environment.GetEnvironmentVariable("SCHEDULER_SMTP_HOST") ?? "";
-            string smtpUserName = Environment.GetEnvironmentVariable("SCHEDULER_SMTP_USERNAME") ?? "";
-            string smtpPassword = Environment.GetEnvironmentVariable("SCHEDULER_SMTP_PASSWORD") ?? "";
-
-            if (string.IsNullOrWhiteSpace(emailFrom))
-            {
-                throw new ApplicationException("SCHEDULER_EMAIL_FROM environment variable missing");
-            }
-            if (string.IsNullOrWhiteSpace(emailHost))
-            {
-                throw new ApplicationException("SCHEDULER_SMTP_HOST environment variable missing");
-            }
+            int smtpPort = _config.GetValue<int?>("MailSettings:Port") ?? 0;
+            string emailFrom = _config.GetValue<string>("MailSettings:EmailFrom");
+            string adminEmail = _config.GetValue<string>("MailSettings:AdminEmail");
+            string emailHost = _config.GetValue<string>("MailSettings:Host");
+            string smtpUserName = _config.GetValue<string?>("MailSettings:UserName") ?? "";
+            string smtpPassword = _config.GetValue<string?>("MailSettings:Password") ?? "";
 
             var msg = new MimeMessage();
             foreach (string addr in toAddresses)
@@ -55,16 +50,21 @@ namespace SimpleSchedulerEmail
 
             using var emailClient = new SmtpClient();
 
-            if (useSsl)
+            switch(smtpPort)
             {
-                await emailClient.ConnectAsync(host: emailHost, port: smtpPort, useSsl: true,
-                    cancellationToken: cancellationToken).ConfigureAwait(false);
-            }
-            else
-            {
-                await emailClient.ConnectAsync(host: emailHost,
-                    port: smtpPort, options: SecureSocketOptions.None,
-                    cancellationToken: cancellationToken).ConfigureAwait(false);
+                case 587:
+                    await emailClient.ConnectAsync(emailHost, smtpPort,
+                        SecureSocketOptions.StartTls, cancellationToken).ConfigureAwait(false);
+                    break;
+                case 465:
+                    await emailClient.ConnectAsync(host: emailHost, port: smtpPort, useSsl: true,
+                        cancellationToken: cancellationToken).ConfigureAwait(false);
+                    break;
+                default:
+                    await emailClient.ConnectAsync(host: emailHost,
+                        port: smtpPort, options: SecureSocketOptions.None,
+                        cancellationToken: cancellationToken).ConfigureAwait(false);
+                    break;
             }
 
             if (!string.IsNullOrWhiteSpace(smtpUserName))
@@ -73,20 +73,6 @@ namespace SimpleSchedulerEmail
             }
             await emailClient.SendAsync(msg, cancellationToken: cancellationToken).ConfigureAwait(false);
             await emailClient.DisconnectAsync(quit: true, cancellationToken).ConfigureAwait(false);
-        }
-
-        private static int GetSmtpPort()
-        {
-            string? smtpPortVariable = Environment.GetEnvironmentVariable("SCHEDULER_EMAIL_PORT");
-            if (string.IsNullOrWhiteSpace(smtpPortVariable))
-            {
-                return 0; // This will use the default with MailKit
-            }
-            if (!int.TryParse(smtpPortVariable, out int smtpPort))
-            {
-                smtpPort = 0; // If not in the environment variable, this will use the default
-            }
-            return smtpPort;
         }
     }
 }

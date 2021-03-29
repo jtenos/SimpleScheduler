@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Dapper;
 using SimpleSchedulerData;
 using SimpleSchedulerModels;
 using SimpleSchedulerModels.Exceptions;
@@ -132,7 +131,7 @@ namespace SimpleSchedulerBusiness.SqlServer
 
             var jobs = await GetManyAsync<Job>(sql.ToString(), parms, cancellationToken).ConfigureAwait(false);
 
-            return await GetJobDetailsAsync(jobs, cancellationToken).ConfigureAwait(false);
+            return await GetJobDetailsAsync(jobs.Select(j => j), cancellationToken).ConfigureAwait(false);
         }
 
         async Task<ImmutableArray<JobDetail>> IJobManager.GetOverdueJobsAsync(CancellationToken cancellationToken)

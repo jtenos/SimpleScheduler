@@ -12,12 +12,11 @@
 		<Compile Include="..\SolutionInfo.cs" Link="SolutionInfo.cs" />
 	</ItemGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\SimpleSchedulerModels\SimpleSchedulerModels.csproj" />
-	  <ProjectReference Include="..\SimpleSchedulerData\SimpleSchedulerData.csproj" />
+ 	  <ProjectReference Include="..\SimpleSchedulerData\SimpleSchedulerData.csproj" />
 	  <ProjectReference Include="..\SimpleSchedulerEmail\SimpleSchedulerEmail.csproj" />
+	  <ProjectReference Include="..\SimpleSchedulerModels\SimpleSchedulerModels.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-	  <PackageReference Include="Dapper" Version="2.0.78" />
 	  <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
 	</ItemGroup>
 	<ItemGroup>

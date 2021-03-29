@@ -4,8 +4,9 @@ using Microsoft.Extensions.Configuration;
 namespace SimpleSchedulerData
 {
     public class SqliteDatabase
-        : BaseDapperDatabase<SqliteConnection, SqliteCommand, SqliteTransaction>
+        : BaseDatabase<SqliteConnection, SqliteTransaction, SqliteParameter, SqliteDataReader>
     {
-        public SqliteDatabase(IConfiguration config) : base(config) { }
+        public SqliteDatabase(IConfiguration config)
+            : base(config) { }
     }
 }

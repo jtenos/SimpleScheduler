@@ -54,7 +54,10 @@ namespace SimpleSchedulerBusiness.Sqlite
             return true;
         }
 
-        public record LoginValidateItem(DateTimeOffset SubmitDateUTC, string EmailAddress);
+        public record LoginValidateItem(string SubmitDateUTC, string EmailAddress)
+        {
+            public DateTime SubmitDateUTC_AsDate => DateTime.Parse(SubmitDateUTC);
+        }
 
         async Task<string> IUserManager.LoginValidateAsync(Guid validationKey, CancellationToken cancellationToken)
         {
@@ -70,7 +73,7 @@ namespace SimpleSchedulerBusiness.Sqlite
 
             if (validateItem == null) { throw new InvalidValidationKeyException(); }
 
-            if (validateItem.SubmitDateUTC < DateTime.UtcNow.AddMinutes(-5))
+            if (validateItem.SubmitDateUTC_AsDate < DateTime.UtcNow.AddMinutes(-5))
             {
                 throw new ValidationKeyExpiredException();
             }

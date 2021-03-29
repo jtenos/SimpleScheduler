@@ -2,7 +2,7 @@ CREATE TABLE [Workers]
 (
     [WorkerID] INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
     ,[UpdateDateTime] DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-    ,[IsActive] BOOLEAN NOT NULL DEFAULT 1
+    ,[IsActive] INTEGER NOT NULL DEFAULT 1
     ,[WorkerName] TEXT NOT NULL
     ,[DetailedDescription] TEXT NOT NULL
     ,[EmailOnSuccess] TEXT NOT NULL  

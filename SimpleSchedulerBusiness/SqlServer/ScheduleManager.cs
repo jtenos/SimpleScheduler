@@ -36,13 +36,13 @@ namespace SimpleSchedulerBusiness.SqlServer
 
         async Task<ImmutableArray<ScheduleDetail>> IScheduleManager.GetSchedulesToInsertAsync(CancellationToken cancellationToken)
         {
-            var schedulesToInsert = await GetManyAsync<Schedule>(@"
+            var schedulesToInsert = (await GetManyAsync<Schedule>(@"
                 SELECT * FROM dbo.Schedules s
                 WHERE s.IsActive = 1
                 AND s.ScheduleID NOT IN (
                     SELECT ScheduleID FROM dbo.Jobs WHERE StatusCode IN ('NEW', 'RUN')
                 );
-            ", CreateDynamicParameters(), cancellationToken);
+            ", CreateDynamicParameters(), cancellationToken)).ToImmutableArray();
 
             var scheduleDetails = await GetScheduleDetailsAsync(schedulesToInsert, cancellationToken).ConfigureAwait(false);
             return scheduleDetails.Where(x => x.Worker.IsActive).ToImmutableArray();
