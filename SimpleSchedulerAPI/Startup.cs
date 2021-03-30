@@ -1,5 +1,4 @@
 using System.IO;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -72,8 +71,8 @@ namespace SimpleSchedulerAPI
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SimpleSchedulerAPI", Version = "v1" });
             });
 
-            services.AddScoped<IDatabase, SqliteDatabase>();
-            services.AddScoped<IDatabaseFactory, DatabaseFactory>();
+            services.AddScoped<DatabaseFactory<SqlDatabase>>();
+            services.AddScoped<DatabaseFactory<SqliteDatabase>>();
             services.AddScoped<IWorkerManager, WorkerManager>();
             services.AddScoped<IScheduleManager, ScheduleManager>();
             services.AddScoped<IJobManager, JobManager>();

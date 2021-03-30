@@ -9,8 +9,18 @@ using Microsoft.Extensions.Configuration;
 
 namespace SimpleSchedulerData
 {
+    public abstract class BaseDatabase
+    {
+        protected bool IsMarkedForRollback { get; private set; }
+        public bool IsInitialized { get; protected set; }
+        public void MarkForRollback() => IsMarkedForRollback = true;
+        public abstract Task InitializeAsync(CancellationToken cancellationToken);
+        public abstract Task CommitAsync(CancellationToken cancellationToken);
+        public abstract ValueTask DisposeAsync();
+    }
+
     public abstract class BaseDatabase<TConnection, TTransaction, TParam, TDataReader>
-        : IDatabase<TConnection, TTransaction, TParam, TDataReader>
+        : BaseDatabase
         where TConnection : DbConnection, new()
         where TTransaction : DbTransaction
         where TParam : DbParameter
@@ -22,12 +32,7 @@ namespace SimpleSchedulerData
         private TConnection _connection = default!;
         private TTransaction _transaction = default!;
 
-        protected bool MarkForRollback { get; private set; }
-
-        public bool IsInitialized { get; private set; }
-
-        async Task IDatabase<TConnection, TTransaction, TParam, TDataReader>.InitializeAsync(
-            CancellationToken cancellationToken)
+        public override async Task InitializeAsync(CancellationToken cancellationToken)
         {
             _connection = new TConnection() { ConnectionString = _config.GetConnectionString("SimpleScheduler") };
             await _connection.OpenAsync(cancellationToken).ConfigureAwait(false);
@@ -35,9 +40,8 @@ namespace SimpleSchedulerData
             IsInitialized = true;
         }
 
-        async Task<ImmutableArray<T>> IDatabase<TConnection, TTransaction, TParam, TDataReader>.GetManyAsync<T>(
-            string sql,
-            IEnumerable<TParam> parameters, Func<TDataReader, T> mapFunc,
+        public async Task<ImmutableArray<T>> GetManyAsync<T>(
+            string sql, IEnumerable<TParam> parameters, Func<TDataReader, T> mapFunc,
             CancellationToken cancellationToken)
         {
             using var comm = _connection.CreateCommand();
@@ -51,13 +55,15 @@ namespace SimpleSchedulerData
             }
             return result.ToImmutableArray();
         }
-        async Task<T> IDatabase<TConnection, TTransaction, TParam, TDataReader>.GetOneAsync<T>(
+
+
+        public async Task<T> GetOneAsync<T>(
             string sql, IEnumerable<TParam> parameters, Func<TDataReader, T> mapFunc,
             CancellationToken cancellationToken)
-            => (await ((IDatabase<TConnection, TTransaction, TParam, TDataReader>)this).GetManyAsync<T>(
+            => (await GetManyAsync<T>(
                 sql, parameters, mapFunc, cancellationToken).ConfigureAwait(false))[0];
 
-        async Task<int> IDatabase<TConnection, TTransaction, TParam, TDataReader>.NonQueryAsync(
+        public async Task<int> NonQueryAsync(
             string sql, IEnumerable<TParam> parameters, CancellationToken cancellationToken)
         {
             using var comm = _connection.CreateCommand();
@@ -66,7 +72,7 @@ namespace SimpleSchedulerData
             return await comm.ExecuteNonQueryAsync().ConfigureAwait(false);
         }
 
-        async Task<T> IDatabase<TConnection, TTransaction, TParam, TDataReader>.ScalarAsync<T>(
+        public async Task<T> ScalarAsync<T>(
             string sql, IEnumerable<TParam> parameters,
             CancellationToken cancellationToken)
         {
@@ -76,13 +82,10 @@ namespace SimpleSchedulerData
             return (T)(await comm.ExecuteScalarAsync().ConfigureAwait(false))!;
         }
 
-        async Task IDatabase<TConnection, TTransaction, TParam, TDataReader>.CommitAsync(
-            CancellationToken cancellationToken)
+        public override async Task CommitAsync(CancellationToken cancellationToken)
             => await _transaction.CommitAsync(cancellationToken).ConfigureAwait(false);
 
-        void IDatabase<TConnection, TTransaction, TParam, TDataReader>.MarkForRollback() => MarkForRollback = true;
-
-        async ValueTask IAsyncDisposable.DisposeAsync()
+        public override async ValueTask DisposeAsync()
         {
             if (_transaction != null)
             {

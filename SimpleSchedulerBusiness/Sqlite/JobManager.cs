@@ -14,7 +14,7 @@ namespace SimpleSchedulerBusiness.Sqlite
     public class JobManager
         : BaseManager, IJobManager
     {
-        public JobManager(IDatabaseFactory databaseFactory, IServiceProvider serviceProvider)
+        public JobManager(SqliteDatabaseFactory databaseFactory, IServiceProvider serviceProvider)
             : base(databaseFactory, serviceProvider) { }
 
         async Task IJobManager.RestartStuckJobsAsync(CancellationToken cancellationToken)
