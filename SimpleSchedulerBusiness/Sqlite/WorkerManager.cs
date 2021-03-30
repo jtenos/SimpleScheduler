@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.DependencyInjection;
 using SimpleSchedulerData;
 using SimpleSchedulerModels;
 using SimpleSchedulerModels.Exceptions;
@@ -13,24 +16,31 @@ using SimpleSchedulerModels.Exceptions;
 namespace SimpleSchedulerBusiness.Sqlite
 {
     public class WorkerManager
-        : BaseManager, IWorkerManager
+        : IWorkerManager
     {
-        public WorkerManager(IDatabaseFactory databaseFactory, IServiceProvider serviceProvider)
-            : base(databaseFactory, serviceProvider) { }
+        private readonly DatabaseFactory<SqliteDatabase> _databaseFactory;
+        private readonly IServiceProvider _serviceProvider;
+        public WorkerManager(DatabaseFactory<SqliteDatabase> databaseFactory, IServiceProvider serviceProvider)
+            => (_databaseFactory, _serviceProvider) = (databaseFactory, serviceProvider);
 
         async Task IWorkerManager.RunNowAsync(int workerID, CancellationToken cancellationToken)
         {
-            int scheduleID = await GetScheduleManager().AddScheduleAsync(workerID, isActive: false,
+            int scheduleID = await _serviceProvider.GetRequiredService<IScheduleManager>()
+                .AddScheduleAsync(workerID, isActive: false,
                 sunday: true, monday: true, tuesday: true, wednesday: true, thursday: true,
                 friday: true, saturday: true, timeOfDayUTC: TimeSpan.Zero, recurTime: null,
                 recurBetweenStartUTC: null, recurBetweenEndUTC: null, oneTime: true, cancellationToken).ConfigureAwait(false);
 
-            await GetJobManager().AddJobAsync(scheduleID, DateTime.UtcNow, cancellationToken).ConfigureAwait(false);
+            await _serviceProvider.GetRequiredService<IJobManager>()
+                .AddJobAsync(scheduleID, DateTime.UtcNow, cancellationToken).ConfigureAwait(false);
         }
 
         public record WorkerIDContainer(int WorkerID);
         async Task<ImmutableArray<int>> IWorkerManager.GetChildWorkerIDsByJobAsync(int jobID, CancellationToken cancellationToken)
-            => (await GetManyAsync<WorkerIDContainer>(@"
+        {
+            var parameters = new[] { new SqliteParameter("@JobID", jobID) };
+            Func<IDataReader, WorkerIDContainer> mapFunc = rdr => new WorkerIDContainer(Convert.ToInt32(rdr[0]));
+            const string sql = @"
                 ;WITH parent AS (
                     SELECT s.WorkerID
                     FROM [Jobs] j
@@ -44,9 +54,12 @@ namespace SimpleSchedulerBusiness.Sqlite
                 FROM [Workers] child
                 JOIN parent ON child.ParentWorkerID = parent.WorkerID
                 WHERE child.IsActive = 1;
-            ", CreateDynamicParameters()
-                .AddIntParam("@JobID", jobID), cancellationToken).ConfigureAwait(false))
-            .Select(x => x.WorkerID).ToImmutableArray();
+            ";
+            var db = await _databaseFactory.GetDatabaseAsync(cancellationToken).ConfigureAwait(false);
+            var containers = await db.GetManyAsync<WorkerIDContainer>(sql,
+                parameters, mapFunc, cancellationToken).ConfigureAwait(false);
+            return containers.Select(x => x.WorkerID).ToImmutableArray();
+        }
 
         async Task<ImmutableArray<Worker>> IWorkerManager.GetAllWorkersAsync(CancellationToken cancellationToken,
             bool getActive, bool getInactive)
@@ -55,10 +68,13 @@ namespace SimpleSchedulerBusiness.Sqlite
 
             var sql = new StringBuilder();
             sql.AppendLine("SELECT * FROM [Workers]");
-            var allWorkers = await GetManyAsync<Worker>(sql.ToString(), CreateDynamicParameters(), cancellationToken).ConfigureAwait(false);
-            return allWorkers
-                .Where(w => (getActive && w.IsActive) || (getInactive && !w.IsActive))
-                .ToImmutableArray();
+            if (getActive && getInactive) { sql.Append(";"); }
+            else if (getActive) { sql.Append(" WHERE IsActive = 1;"); }
+            else if (getInactive) { sql.Append(" WHERE IsActive = 0;"); }
+            var db = await _databaseFactory.GetDatabaseAsync(cancellationToken).ConfigureAwait(false);
+            return (await db.GetManyAsync<Worker>(
+                sql.ToString(), ImmutableArray<SqliteParameter>.Empty, MapWorker,
+                cancellationToken).ConfigureAwait(false)).ToImmutableArray();
         }
 
         async Task<ImmutableArray<WorkerDetail>> IWorkerManager.GetAllWorkerDetailsAsync(CancellationToken cancellationToken,
@@ -68,20 +84,22 @@ namespace SimpleSchedulerBusiness.Sqlite
                 cancellationToken).ConfigureAwait(false);
 
         async Task<Worker> IWorkerManager.GetWorkerAsync(int workerID, CancellationToken cancellationToken)
-            => await GetOneAsync<Worker>("SELECT * FROM [Workers] WHERE WorkerID = @WorkerID;",
-                CreateDynamicParameters()
-                .AddIntParam("@WorkerID", workerID), cancellationToken).ConfigureAwait(false);
+        {
+            var db = await _databaseFactory.GetDatabaseAsync(cancellationToken).ConfigureAwait(false);
+            return await db.GetOneAsync<Worker>("SELECT * FROM [Workers] WHERE WorkerID = @WorkerID;",
+                ImmutableArray<SqliteParameter>.Empty, MapWorker, cancellationToken).ConfigureAwait(false);
+        }
 
         async Task<int> IWorkerManager.AddWorkerAsync(bool isActive, string workerName,
             string? detailedDescription, string? emailOnSuccess, int? parentWorkerID, int timeoutMinutes, int overdueMinutes,
             string directoryName, string executable, string argumentValues, CancellationToken cancellationToken)
         {
-            bool descriptionExists = await ScalarAsync<bool>(@"
+            var db = await _databaseFactory.GetDatabaseAsync(cancellationToken).ConfigureAwait(false);
+            bool descriptionExists = await db.ScalarAsync<bool>(@"
                     SELECT CASE WHEN EXISTS (
                         SELECT 1 FROM [Workers] WHERE WorkerName = @WorkerName
                     ) THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END;
-                ", CreateDynamicParameters()
-                .AddNVarCharParam("@WorkerName", workerName, 100),
+                ", new[] { new SqliteParameter("@WorkerName", workerName) },
                 cancellationToken).ConfigureAwait(false);
 
             if (descriptionExists)
@@ -89,29 +107,31 @@ namespace SimpleSchedulerBusiness.Sqlite
                 throw new WorkerAlreadyExistsException(workerName);
             }
 
-            int workerID = (await ScalarAsync<int>(@"
+            int workerID = await db.ScalarAsync<int>(@"
                 INSERT INTO [Workers] (
-                    IsActive, WorkerName, DetailedDescription, EmailOnSuccess, ParentWorkerID, TimeoutMinutes, OverdueMinutes
+                    IsActive, UpdateDateTime, WorkerName, DetailedDescription, EmailOnSuccess, ParentWorkerID, TimeoutMinutes, OverdueMinutes
                     , DirectoryName, [Executable], ArgumentValues
                 )
                 VALUES (
-                    @IsActive, @WorkerName, @DetailedDescription, @EmailOnSuccess, @ParentWorkerID, @TimeoutMinutes, @OverdueMinutes
+                    @IsActive, @UpdateDateTime, @WorkerName, @DetailedDescription, @EmailOnSuccess, @ParentWorkerID, @TimeoutMinutes, @OverdueMinutes
                     , @DirectoryName, @Executable, @ArgumentValues
                 );
                 SELECT last_insert_rowid();
             ",
-                CreateDynamicParameters()
-                .AddBitParam("@IsActive", isActive)
-                .AddNVarCharParam("@WorkerName", workerName, 100)
-                .AddNullableNVarCharParam("@DetailedDescription", detailedDescription, -1)
-                .AddNullableNVarCharParam("@EmailOnSuccess", emailOnSuccess, -1)
-                .AddNullableIntParam("@ParentWorkerID", parentWorkerID)
-                .AddIntParam("@TimeoutMinutes", timeoutMinutes)
-                .AddIntParam("@OverdueMinutes", overdueMinutes)
-                .AddNVarCharParam("@DirectoryName", directoryName, 1000)
-                .AddNVarCharParam("@Executable", executable, 1000)
-                .AddNVarCharParam("@ArgumentValues", argumentValues, 1000),
-                cancellationToken).ConfigureAwait(false));
+                new[]
+                {
+                    new SqliteParameter("@IsActive", isActive ? 1 : 0),
+                    new SqliteParameter("@UpdateDateTime", long.Parse(DateTime.UtcNow.ToString("yyyyMMddHHmmssfff"))),
+                    new SqliteParameter("@WorkerName", workerName),
+                    new SqliteParameter("@DetailedDescription", detailedDescription),
+                    new SqliteParameter("@EmailOnSuccess", emailOnSuccess),
+                    new SqliteParameter("@ParentWorkerID", parentWorkerID ?? (object)DBNull.Value),
+                    new SqliteParameter("@TimeoutMinutes", timeoutMinutes),
+                    new SqliteParameter("@OverdueMinutes", overdueMinutes),
+                    new SqliteParameter("@DirectoryName", directoryName),
+                    new SqliteParameter("@Executable", executable),
+                    new SqliteParameter("@ArgumentValues", argumentValues)
+                }, cancellationToken).ConfigureAwait(false);
 
             await EnsureNoCircularWorkersAsync(workerID, cancellationToken).ConfigureAwait(false);
             return workerID;
@@ -121,11 +141,12 @@ namespace SimpleSchedulerBusiness.Sqlite
             string? detailedDescription, string? emailOnSuccess, int? parentWorkerID, int timeoutMinutes, int overdueMinutes,
             string directoryName, string executable, string argumentValues, CancellationToken cancellationToken)
         {
-            await NonQueryAsync(@"
+            var db = await _databaseFactory.GetDatabaseAsync(cancellationToken).ConfigureAwait(false);
+            await db.NonQueryAsync(@"
                 UPDATE [Workers]
                 SET
                     IsActive = @IsActive
-                    ,UpdateDateTime = @Now
+                    ,UpdateDateTime = @UpdateDateTime
                     ,WorkerName = @WorkerName
                     ,DetailedDescription = @DetailedDescription
                     ,EmailOnSuccess = @EmailOnSuccess
@@ -136,37 +157,41 @@ namespace SimpleSchedulerBusiness.Sqlite
                     ,[Executable] = @Executable
                     ,ArgumentValues = @ArgumentValues
                 WHERE WorkerID = @WorkerID;
-                ",
-                CreateDynamicParameters()
-                .AddIntParam("@WorkerID", workerID)
-                .AddBitParam("@IsActive", isActive)
-                .AddDateTime2Param("@Now", DateTime.UtcNow)
-                .AddNVarCharParam("@WorkerName", workerName, 100)
-                .AddNullableNVarCharParam("@DetailedDescription", detailedDescription, -1)
-                .AddNullableNVarCharParam("@EmailOnSuccess", emailOnSuccess, -1)
-                .AddNullableIntParam("@ParentWorkerID", parentWorkerID)
-                .AddIntParam("@TimeoutMinutes", timeoutMinutes)
-                .AddIntParam("@OverdueMinutes", overdueMinutes)
-                .AddNVarCharParam("@DirectoryName", directoryName, 1000)
-                .AddNVarCharParam("@Executable", executable, 1000)
-                .AddNVarCharParam("@ArgumentValues", argumentValues, 1000),
-                cancellationToken).ConfigureAwait(false);
+                ", new[]
+                {
+                    new SqliteParameter("@WorkerID", workerID),
+                    new SqliteParameter("@IsActive", isActive),
+                    new SqliteParameter("@UpdateDateTime", long.Parse(DateTime.UtcNow.ToString("yyyyMMddHHmmssfff"))),
+                    new SqliteParameter("@WorkerName", workerName),
+                    new SqliteParameter("@DetailedDescription", detailedDescription),
+                    new SqliteParameter("@EmailOnSuccess", emailOnSuccess),
+                    new SqliteParameter("@ParentWorkerID", parentWorkerID ?? (object)DBNull.Value),
+                    new SqliteParameter("@TimeoutMinutes", timeoutMinutes),
+                    new SqliteParameter("@OverdueMinutes", overdueMinutes),
+                    new SqliteParameter("@DirectoryName", directoryName),
+                    new SqliteParameter("@Executable", executable),
+                    new SqliteParameter("@ArgumentValues", argumentValues)
+                }, cancellationToken).ConfigureAwait(false);
 
             await EnsureNoCircularWorkersAsync(workerID, cancellationToken).ConfigureAwait(false);
         }
 
         async Task IWorkerManager.DeactivateWorkerAsync(int workerID, CancellationToken cancellationToken)
-            => await NonQueryAsync(@"
+        {
+            var db = await _databaseFactory.GetDatabaseAsync(cancellationToken).ConfigureAwait(false);
+            await db.NonQueryAsync(@"
                     UPDATE [Workers]
                     SET
                         IsActive = 0
                         ,WorkerName = 'INACTIVE: ' + @FormattedNow + ' ' + WorkerName
                     WHERE WorkerID = @WorkerID;
                 ",
-                CreateDynamicParameters()
-                .AddIntParam("@WorkerID", workerID)
-                .AddNVarCharParam("@FormattedNow", DateTime.UtcNow.ToString("yyyyMMddHHmmss"), 14),
-                cancellationToken).ConfigureAwait(false);
+               new[]
+               {
+                   new SqliteParameter("@WorkerID", workerID),
+                   new SqliteParameter("@FormattedNow", DateTime.UtcNow.ToString("yyyyMMddHHmmss"))
+               }, cancellationToken).ConfigureAwait(false);
+        }
 
         async Task IWorkerManager.ReactivateWorkerAsync(int workerID, CancellationToken cancellationToken)
         {
@@ -181,6 +206,21 @@ namespace SimpleSchedulerBusiness.Sqlite
                     worker.DirectoryName, worker.Executable, worker.ArgumentValues, cancellationToken).ConfigureAwait(false);
             }
         }
+
+        private static Worker MapWorker(IDataReader rdr)
+            => new Worker(
+                Convert.ToInt32(rdr["WorkerID"]),
+                rdr["IsActive"] == (object)1,
+                (string)rdr["WorkerName"],
+                (string)rdr["DetailedDescription"],
+                (string)rdr["EmailOnSuccess"],
+                rdr.IsDBNull(rdr.GetOrdinal("ParentWorkerID")) ? (int?)null : Convert.ToInt32(rdr["ParentWorkerID"]),
+                Convert.ToInt32(rdr["TimeoutMinutes"]),
+                Convert.ToInt32(rdr["OverdueMinutes"]),
+                (string)rdr["DirectoryName"],
+                (string)rdr["Executable"],
+                (string)rdr["ArgumentValues"]
+            );
 
         private async Task EnsureNoCircularWorkersAsync(int workerID, CancellationToken cancellationToken)
         {
@@ -207,7 +247,7 @@ namespace SimpleSchedulerBusiness.Sqlite
             CancellationToken cancellationToken)
         {
             var result = new List<WorkerDetail>();
-            var allSchedules = await GetScheduleManager().GetAllSchedulesAsync(
+            var allSchedules = await _serviceProvider.GetRequiredService<IScheduleManager>().GetAllSchedulesAsync(
                 cancellationToken).ConfigureAwait(false);
             foreach (var worker in workers)
             {

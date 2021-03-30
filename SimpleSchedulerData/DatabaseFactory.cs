@@ -4,14 +4,15 @@ using System.Threading.Tasks;
 
 namespace SimpleSchedulerData
 {
-    public class DatabaseFactory
-        : IDatabaseFactory
+    public class DatabaseFactory<TDatabase>
+        : IAsyncDisposable
+        where TDatabase: BaseDatabase
     {
-        private readonly IDatabase _database;
+        private readonly TDatabase _database;
         private bool _markForRollback;
-        public DatabaseFactory(IDatabase database) => _database = database;
+        public DatabaseFactory(TDatabase database) => _database = database;
 
-        async Task<IDatabase> IDatabaseFactory.GetDatabaseAsync(CancellationToken cancellationToken)
+        public async Task<TDatabase> GetDatabaseAsync(CancellationToken cancellationToken)
         {
             if (!_database.IsInitialized)
             {
