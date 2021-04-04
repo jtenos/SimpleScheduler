@@ -16,4 +16,7 @@
 		<PackageReference Include="Microsoft.Data.SqlClient" Version="2.1.2" />
 		<PackageReference Include="Microsoft.Data.Sqlite" Version="5.0.4" />
 	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\SimpleSchedulerEntities\SimpleSchedulerEntities.csproj" />
+	</ItemGroup>
 </Project>

@@ -30,8 +30,8 @@ namespace SimpleSchedulerService
                     services.AddHostedService<Worker>();
                     services.AddScoped<JobScheduler>();
                     services.AddScoped<JobExecutor>();
-                    services.AddScoped<IDatabaseFactory, DatabaseFactory>();
-                    services.AddScoped<IDatabase, SqliteDatabase>();
+                    services.AddScoped<DatabaseFactory>();
+                    services.AddScoped<BaseDatabase, SqliteDatabase>();
                     services.AddScoped<IJobManager, JobManager>();
                     services.AddScoped<IScheduleManager, ScheduleManager>();
                     services.AddScoped<IWorkerManager, WorkerManager>();

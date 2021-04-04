@@ -11,43 +11,42 @@ namespace SimpleSchedulerData
 {
     public abstract class BaseDatabase
     {
-        protected bool IsMarkedForRollback { get; private set; }
+        protected BaseDatabase(IConfiguration config) => Config = config;
+        private DbConnection _connection = default!;
+        private DbTransaction _transaction = default!;
         public bool IsInitialized { get; protected set; }
         public void MarkForRollback() => IsMarkedForRollback = true;
-        public abstract Task InitializeAsync(CancellationToken cancellationToken);
-        public abstract Task CommitAsync(CancellationToken cancellationToken);
-        public abstract ValueTask DisposeAsync();
-    }
+        protected IConfiguration Config { get; }
+        protected bool IsMarkedForRollback { get; private set; }
 
-    public abstract class BaseDatabase<TConnection, TTransaction, TParam, TDataReader>
-        : BaseDatabase
-        where TConnection : DbConnection, new()
-        where TTransaction : DbTransaction
-        where TParam : DbParameter
-        where TDataReader : DbDataReader
-    {
-        private readonly IConfiguration _config;
+        protected abstract DbConnection GetConnection();
+        public abstract DbParameter GetInt64Parameter(string name, long? value);
+        public DbParameter GetInt64Parameter(string name, bool? value)
+            => GetInt64Parameter(name, value == true ? 1 : value == false ? 0 : default(long?));
+        public DbParameter GetInt64Parameter(string name, DateTime? value)
+            => GetInt64Parameter(name, value.HasValue ? long.Parse(value.Value.ToString("yyyyMMddHHmmssfff")) : default(long?));
+        public DbParameter GetInt64Parameter(string name, TimeSpan? value)
+            => GetInt64Parameter(name, value.HasValue ? long.Parse(value.Value.ToString("HHmmssfff")) : default(long?));
+        public abstract DbParameter GetStringParameter(string name, string? value, bool isFixed, int size);
+        public abstract string GetLastAutoIncrementQuery { get; }
+        public abstract string GetOffsetLimitClause(int offset, int limit);
 
-        protected BaseDatabase(IConfiguration config) => _config = config;
-        private TConnection _connection = default!;
-        private TTransaction _transaction = default!;
-
-        public override async Task InitializeAsync(CancellationToken cancellationToken)
+        public async Task InitializeAsync(CancellationToken cancellationToken)
         {
-            _connection = new TConnection() { ConnectionString = _config.GetConnectionString("SimpleScheduler") };
+            _connection = GetConnection();
             await _connection.OpenAsync(cancellationToken).ConfigureAwait(false);
-            _transaction = (TTransaction)(await _connection.BeginTransactionAsync(cancellationToken).ConfigureAwait(false));
+            _transaction = await _connection.BeginTransactionAsync(cancellationToken).ConfigureAwait(false);
             IsInitialized = true;
         }
 
         public async Task<ImmutableArray<T>> GetManyAsync<T>(
-            string sql, IEnumerable<TParam> parameters, Func<TDataReader, T> mapFunc,
+            string sql, IEnumerable<DbParameter> parameters, Func<DbDataReader, T> mapFunc,
             CancellationToken cancellationToken)
         {
-            using var comm = _connection.CreateCommand();
+            using DbCommand comm = _connection.CreateCommand();
             comm.CommandText = sql;
             comm.Parameters.AddRange(parameters.ToArray());
-            using var rdr = (TDataReader)await comm.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false);
+            using DbDataReader rdr = await comm.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false);
             var result = new List<T>();
             while (await rdr.ReadAsync(cancellationToken).ConfigureAwait(false))
             {
@@ -56,15 +55,14 @@ namespace SimpleSchedulerData
             return result.ToImmutableArray();
         }
 
-
         public async Task<T> GetOneAsync<T>(
-            string sql, IEnumerable<TParam> parameters, Func<TDataReader, T> mapFunc,
+            string sql, IEnumerable<DbParameter> parameters, Func<DbDataReader, T> mapFunc,
             CancellationToken cancellationToken)
             => (await GetManyAsync<T>(
                 sql, parameters, mapFunc, cancellationToken).ConfigureAwait(false))[0];
 
         public async Task<int> NonQueryAsync(
-            string sql, IEnumerable<TParam> parameters, CancellationToken cancellationToken)
+            string sql, IEnumerable<DbParameter> parameters, CancellationToken cancellationToken)
         {
             using var comm = _connection.CreateCommand();
             comm.CommandText = sql;
@@ -73,7 +71,7 @@ namespace SimpleSchedulerData
         }
 
         public async Task<T> ScalarAsync<T>(
-            string sql, IEnumerable<TParam> parameters,
+            string sql, IEnumerable<DbParameter> parameters,
             CancellationToken cancellationToken)
         {
             using var comm = _connection.CreateCommand();
@@ -82,10 +80,10 @@ namespace SimpleSchedulerData
             return (T)(await comm.ExecuteScalarAsync().ConfigureAwait(false))!;
         }
 
-        public override async Task CommitAsync(CancellationToken cancellationToken)
+        public async Task CommitAsync(CancellationToken cancellationToken)
             => await _transaction.CommitAsync(cancellationToken).ConfigureAwait(false);
 
-        public override async ValueTask DisposeAsync()
+        public async ValueTask DisposeAsync()
         {
             if (_transaction != null)
             {

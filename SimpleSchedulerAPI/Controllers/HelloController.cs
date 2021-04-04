@@ -18,10 +18,8 @@ namespace SimpleSchedulerAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> HelloThere(CancellationToken cancellationToken)
         {
-            var users = await _userManager.CountUsersAsync(cancellationToken);
             return Ok(await Task.FromResult(new{
-                Message = "Howdy",
-                NumUsers = users
+                Message = "Howdy"
             }));
         }
     }
