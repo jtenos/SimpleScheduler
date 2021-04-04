@@ -39,7 +39,7 @@ namespace SimpleSchedulerAPI.Controllers
         {
             try
             {
-                string emailAddress = await _userManager.LoginValidateAsync(Guid.Parse(request.ValidationCode), cancellationToken);
+                string emailAddress = await _userManager.LoginValidateAsync(request.ValidationCode, cancellationToken);
                 var claimsIdentity = new ClaimsIdentity(new[]
                 {
                     new Claim("IsAuthenticated", "1"),

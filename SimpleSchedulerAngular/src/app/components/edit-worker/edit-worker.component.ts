@@ -27,8 +27,7 @@ export class EditWorkerComponent implements OnInit {
         executable: [""],
         argumentValues: [""],
         parentWorkerID: [""],
-        timeoutMinutes: [""],
-        overdueMinutes: [""]
+        timeoutMinutes: [""]
     });
 
     constructor(private route: ActivatedRoute, private workerService: WorkerService, private formBuilder: FormBuilder) { }
@@ -49,8 +48,7 @@ export class EditWorkerComponent implements OnInit {
                     executable: this.worker.executable,
                     argumentValues: this.worker.argumentValues,
                     parentWorkerID: this.worker.parentWorkerID || null,
-                    timeoutMinutes: this.worker.timeoutMinutes,
-                    overdueMinutes: this.worker.overdueMinutes
+                    timeoutMinutes: this.worker.timeoutMinutes
                 });
                 this.loading = false;
             }
@@ -71,7 +69,7 @@ export class EditWorkerComponent implements OnInit {
     async workerFormSubmit() {
         this.worker = new Worker(+this.workerForm.value.workerID,
             this.workerForm.value.isActive, this.workerForm.value.workerName, 
-            +this.workerForm.value.timeoutMinutes, +this.workerForm.value.overdueMinutes,
+            +this.workerForm.value.timeoutMinutes,
             this.workerForm.value.detailedDescription, this.workerForm.value.emailOnSuccess,
             this.workerForm.value.directoryName, this.workerForm.value.executable,
             this.workerForm.value.argumentValues, +this.workerForm.value.parentWorkerID || null);

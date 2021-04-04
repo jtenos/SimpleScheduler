@@ -52,14 +52,14 @@ namespace SimpleSchedulerAPI.Controllers
                 {
                     await _workerManager.UpdateWorkerAsync(worker.WorkerID, worker.IsActive, worker.WorkerName,
                         worker.DetailedDescription, worker.EmailOnSuccess, worker.ParentWorkerID,
-                        worker.TimeoutMinutes, worker.OverdueMinutes, worker.DirectoryName,
+                        worker.TimeoutMinutes, worker.DirectoryName,
                         worker.Executable, worker.ArgumentValues, cancellationToken);
                     return Ok();
                 }
 
                 await _workerManager.AddWorkerAsync(worker.IsActive, worker.WorkerName,
                         worker.DetailedDescription, worker.EmailOnSuccess, worker.ParentWorkerID,
-                        worker.TimeoutMinutes, worker.OverdueMinutes, worker.DirectoryName,
+                        worker.TimeoutMinutes, worker.DirectoryName,
                         worker.Executable, worker.ArgumentValues, cancellationToken);
                 return Ok();
             }

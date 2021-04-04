@@ -17,14 +17,14 @@ if not exists (SELECT
 BEGIN
 INSERT dbo.Workers (IsActive, WorkerName, DetailedDescription, dbo.Workers.EmailOnSuccess, dbo.Workers.ParentWorkerID,
 TimeoutMinutes,
-OverdueMinutes, DirectoryName, dbo.Workers.Executable, dbo.Workers.ArgumentValues)
-    VALUES (1, 'hello', 'hello there, this is my job', '', NULL, 20, 20, 'hello', 'hello.exe', 'config.json')
+DirectoryName, dbo.Workers.Executable, dbo.Workers.ArgumentValues)
+    VALUES (1, 'hello', 'hello there, this is my job', '', NULL, 20, 'hello', 'hello.exe', 'config.json')
 
 
 INSERT dbo.Workers (IsActive, WorkerName, DetailedDescription, dbo.Workers.EmailOnSuccess, dbo.Workers.ParentWorkerID,
 TimeoutMinutes,
-OverdueMinutes, DirectoryName, dbo.Workers.Executable, dbo.Workers.ArgumentValues)
-    VALUES (1, 'good morning', '', 'joe.enos@azdhs.gov', NULL, 20, 20, 'good-morning', 'morning.exe', '')
+DirectoryName, dbo.Workers.Executable, dbo.Workers.ArgumentValues)
+    VALUES (1, 'good morning', '', 'joe.enos@azdhs.gov', NULL, 20, 'good-morning', 'morning.exe', '')
 END;
 
 UPDATE dbo.Workers

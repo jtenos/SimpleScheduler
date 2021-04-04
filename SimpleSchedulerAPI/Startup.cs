@@ -71,8 +71,8 @@ namespace SimpleSchedulerAPI
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SimpleSchedulerAPI", Version = "v1" });
             });
 
-            services.AddScoped<DatabaseFactory<SqlDatabase>>();
-            services.AddScoped<DatabaseFactory<SqliteDatabase>>();
+            services.AddScoped<BaseDatabase, SqliteDatabase>();
+            services.AddScoped<DatabaseFactory>();
             services.AddScoped<IWorkerManager, WorkerManager>();
             services.AddScoped<IScheduleManager, ScheduleManager>();
             services.AddScoped<IJobManager, JobManager>();

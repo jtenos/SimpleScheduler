@@ -39,7 +39,7 @@ namespace SimpleSchedulerService
             }
             catch (Exception ex)
             {
-                scope.ServiceProvider.GetRequiredService<IDatabaseFactory>().MarkForRollback();
+                scope.ServiceProvider.GetRequiredService<DatabaseFactory>().MarkForRollback();
                 if (!string.IsNullOrWhiteSpace(_config["AdminEmail"]))
                 {
                     await SendEmailAsync("ERROR: Error calling applicationStarted",

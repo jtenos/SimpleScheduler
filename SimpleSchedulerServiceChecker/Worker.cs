@@ -78,7 +78,7 @@ namespace SimpleSchedulerServiceChecker
                     }
                     catch
                     {
-                        scope.ServiceProvider.GetRequiredService<IDatabaseFactory>().MarkForRollback();
+                        scope.ServiceProvider.GetRequiredService<DatabaseFactory>().MarkForRollback();
                     }
                     finally
                     {

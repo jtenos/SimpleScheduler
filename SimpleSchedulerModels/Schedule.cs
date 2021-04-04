@@ -4,7 +4,7 @@ namespace SimpleSchedulerModels
 {
     public record Schedule
     {
-        public Schedule(int ScheduleID, bool IsActive, int WorkerID, bool Sunday, bool Monday,
+        public Schedule(long ScheduleID, bool IsActive, long WorkerID, bool Sunday, bool Monday,
             bool Tuesday, bool Wednesday, bool Thursday, bool Friday, bool Saturday,
             TimeSpan? TimeOfDayUTC, TimeSpan? RecurTime, TimeSpan? RecurBetweenStartUTC,
             TimeSpan? RecurBetweenEndUTC, bool OneTime)
@@ -15,23 +15,9 @@ namespace SimpleSchedulerModels
             Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, TimeOfDayUTC, RecurTime,
             RecurBetweenStartUTC, RecurBetweenEndUTC, OneTime);
 
-        public Schedule(long ScheduleID, string UpdateDateTime, long IsActive,
-            long WorkerID, long Sunday, long Monday,
-            long Tuesday, long Wednesday, long Thursday, long Friday, long Saturday,
-            string? TimeOfDayUTC, string? RecurTime, string? RecurBetweenStartUTC,
-            string? RecurBetweenEndUTC, string OneTime)
-            : this((int)ScheduleID, IsActive == 1, (int)WorkerID, Sunday == 1, 
-                Monday == 1, Tuesday == 1, Wednesday == 1,
-                Thursday == 1, Friday == 1, Saturday == 1,
-                string.IsNullOrWhiteSpace(TimeOfDayUTC) ? (TimeSpan?)null : TimeSpan.Parse(TimeOfDayUTC),
-                string.IsNullOrWhiteSpace(RecurTime) ? (TimeSpan?)null : TimeSpan.Parse(RecurTime),
-                string.IsNullOrWhiteSpace(RecurBetweenStartUTC) ? (TimeSpan?)null: TimeSpan.Parse(RecurBetweenStartUTC),
-                string.IsNullOrWhiteSpace(RecurBetweenEndUTC) ? (TimeSpan?)null: TimeSpan.Parse(RecurBetweenEndUTC),
-                OneTime == "1"){}
-
-        public int ScheduleID { get; }
+        public long ScheduleID { get; }
         public bool IsActive { get; }
-        public int WorkerID { get; }
+        public long WorkerID { get; }
         public bool Sunday { get; }
         public bool Monday { get; }
         public bool Tuesday { get; }
