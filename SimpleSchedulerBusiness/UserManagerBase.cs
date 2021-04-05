@@ -1,5 +1,6 @@
 using System;
 using System.Data.Common;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -45,7 +46,7 @@ namespace SimpleSchedulerBusiness
                 db.GetStringParameter("@EmailAddress", emailAddress, isFixed: false, size: 200),
                 db.GetStringParameter("@ValidationKey", validationKey, isFixed: true, size: 32)
             };
-            await db.NonQueryAsync(@"
+            int recordsAffected = await db.NonQueryAsync(@"
                 INSERT INTO LoginAttempts (SubmitDateUTC, EmailAddress, ValidationKey)
                 VALUES (@SubmitDateUTC, @EmailAddress, @ValidationKey);
             ", parms, cancellationToken).ConfigureAwait(false);
@@ -65,18 +66,19 @@ namespace SimpleSchedulerBusiness
             var db = await DatabaseFactory.GetDatabaseAsync(cancellationToken).ConfigureAwait(false);
             DbParameter[] parms =
             {
-                db.GetStringParameter("@ValidationKey", validationKey, isFixed: true, size: 32)  
+                db.GetStringParameter("@ValidationKey", validationKey, isFixed: true, size: 32)
             };
-            var validateItem = await db.GetOneAsync<LoginAttemptEntity>(@"
+            var validateItems = await db.GetManyAsync(@"
                 SELECT *
                 FROM LoginAttempts
                 WHERE ValidationKey = @ValidationKey
                 AND ValidationDateUTC IS NULL;
             ", parms, Mapper.MapLoginAttempt, cancellationToken).ConfigureAwait(false);
 
-            if (validateItem == null) { throw new InvalidValidationKeyException(); }
+            if (!validateItems.Any()) { throw new InvalidValidationKeyException(); }
 
-            if (DateTime.Parse(validateItem.SubmitDateUTC.ToString()) < DateTime.UtcNow.AddMinutes(-5))
+            if (DateTime.ParseExact(validateItems[0].SubmitDateUTC.ToString(), "yyyyMMddHHmmssfff", CultureInfo.InvariantCulture.DateTimeFormat)
+                < DateTime.UtcNow.AddMinutes(-5))
             {
                 throw new ValidationKeyExpiredException();
             }
@@ -89,7 +91,7 @@ namespace SimpleSchedulerBusiness
 
             return await db.ScalarAsync<string>(@"
                 UPDATE LoginAttempts
-                SET ValidationDateUTC = @Now
+                SET ValidationDateUTC = @ValidationDateUTC
                 WHERE ValidationKey = @ValidationKey;
 
                 SELECT EmailAddress FROM LoginAttempts WHERE ValidationKey = @ValidationKey;
