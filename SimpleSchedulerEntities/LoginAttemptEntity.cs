@@ -5,6 +5,6 @@ namespace SimpleSchedulerEntities
         long SubmitDateUTC,
         string EmailAddress,
         string ValidationKey,
-        long ValidationDateUTC
+        long? ValidationDateUTC
     );
 }

@@ -39,7 +39,7 @@ namespace SimpleSchedulerData
                 SubmitDateUTC: GetInt64(rdr, nameof(LoginAttemptEntity.SubmitDateUTC)),
                 EmailAddress: GetString(rdr, nameof(LoginAttemptEntity.EmailAddress)),
                 ValidationKey: GetString(rdr, nameof(LoginAttemptEntity.ValidationKey)),
-                ValidationDateUTC: GetInt64(rdr, nameof(LoginAttemptEntity.ValidationDateUTC))
+                ValidationDateUTC: GetInt64Nullable(rdr, nameof(LoginAttemptEntity.ValidationDateUTC))
             );
 
         public static ScheduleEntity MapSchedule(DbDataReader rdr)
