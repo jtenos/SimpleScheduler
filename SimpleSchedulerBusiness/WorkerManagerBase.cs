@@ -116,7 +116,7 @@ namespace SimpleSchedulerBusiness
         }
 
         public virtual async Task<long> AddWorkerAsync(bool isActive, string workerName,
-            string? detailedDescription, string? emailOnSuccess, long? parentWorkerID, long timeoutMinutes,
+            string detailedDescription, string emailOnSuccess, long? parentWorkerID, long timeoutMinutes,
             string directoryName, string executable, string argumentValues, CancellationToken cancellationToken)
         {
             var db = await DatabaseFactory.GetDatabaseAsync(cancellationToken).ConfigureAwait(false);
@@ -163,7 +163,7 @@ namespace SimpleSchedulerBusiness
         }
 
         public virtual async Task UpdateWorkerAsync(long workerID, bool isActive, string workerName,
-            string? detailedDescription, string? emailOnSuccess, long? parentWorkerID, long timeoutMinutes,
+            string detailedDescription, string emailOnSuccess, long? parentWorkerID, long timeoutMinutes,
             string directoryName, string executable, string argumentValues, CancellationToken cancellationToken)
         {
             var db = await DatabaseFactory.GetDatabaseAsync(cancellationToken).ConfigureAwait(false);
@@ -205,7 +205,7 @@ namespace SimpleSchedulerBusiness
             var worker = await GetWorkerAsync(workerID, cancellationToken).ConfigureAwait(false);
             if (!worker.IsActive) { return; }
 
-            string newName = $"INACTIVE: {DateTime.UtcNow:yyyyMMddHHmmss} {worker.WorkerName}";
+            string newName = $"INACTIVE: {DateTime.UtcNow:yyyyMMddHHmmss} {worker.WorkerName}".Trim();
             if (newName.Length > 100) { newName = newName.Substring(0, 100); }
             DbParameter[] parms =
             {
@@ -228,7 +228,7 @@ namespace SimpleSchedulerBusiness
 
             if (Regex.IsMatch(worker.WorkerName, @"^INACTIVE\: [0-9]{14}.*$"))
             {
-                string workerName = $"{worker.WorkerName[24..]} (react {DateTime.UtcNow:yyyyMMddHHmmss})";
+                string workerName = $"{worker.WorkerName[24..]} (react {DateTime.UtcNow:yyyyMMddHHmmss})".Trim();
                 await UpdateWorkerAsync(worker.WorkerID, isActive: true, workerName, worker.DetailedDescription,
                     worker.EmailOnSuccess, worker.ParentWorkerID, worker.TimeoutMinutes, 
                     worker.DirectoryName, worker.Executable, worker.ArgumentValues, cancellationToken).ConfigureAwait(false);

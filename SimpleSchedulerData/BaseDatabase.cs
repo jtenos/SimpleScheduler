@@ -26,7 +26,7 @@ namespace SimpleSchedulerData
         public DbParameter GetInt64Parameter(string name, DateTime? value)
             => GetInt64Parameter(name, value.HasValue ? long.Parse(value.Value.ToString("yyyyMMddHHmmssfff")) : default(long?));
         public DbParameter GetInt64Parameter(string name, TimeSpan? value)
-            => GetInt64Parameter(name, value.HasValue ? long.Parse(value.Value.ToString("HHmmssfff")) : default(long?));
+            => GetInt64Parameter(name, value.HasValue ? long.Parse(value.Value.ToString("hhmmssfff")) : default(long?));
         public abstract DbParameter GetStringParameter(string name, string? value, bool isFixed, int size);
         public abstract string GetLastAutoIncrementQuery { get; }
         public abstract string GetOffsetLimitClause(int offset, int limit);

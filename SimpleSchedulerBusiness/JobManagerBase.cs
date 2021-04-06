@@ -41,11 +41,13 @@ namespace SimpleSchedulerBusiness
             var parms = new[]
             {
                 db.GetInt64Parameter("@ScheduleID", scheduleID),
-                db.GetInt64Parameter("@QueueDateUTC", queueDateUTC)
+                db.GetInt64Parameter("@QueueDateUTC", queueDateUTC),
+                db.GetInt64Parameter("@InsertDateUTC", DateTime.UtcNow),
+                db.GetStringParameter("@AcknowledgementID", Guid.NewGuid().ToString("N"), isFixed: true, size: 32)
             };
             await db.NonQueryAsync(@"
-                INSERT INTO Jobs (ScheduleID, QueueDateUTC)
-                VALUES (@ScheduleID, @QueueDateUTC)
+                INSERT INTO Jobs (ScheduleID, QueueDateUTC, InsertDateUTC, AcknowledgementID)
+                VALUES (@ScheduleID, @QueueDateUTC, @InsertDateUTC, @AcknowledgementID)
             ", parms, cancellationToken).ConfigureAwait(false);
         }
 

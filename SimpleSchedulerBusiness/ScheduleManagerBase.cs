@@ -194,7 +194,7 @@ namespace SimpleSchedulerBusiness
         private static TimeSpan? ConvertToTimeSpan(long? value)
         {
             if (!value.HasValue) return null;
-            return TimeSpan.ParseExact(value.Value.ToString("000000000"), "HHmmssfff",
+            return TimeSpan.ParseExact(value.Value.ToString("000000000"), "hhmmssfff",
                 CultureInfo.InvariantCulture.DateTimeFormat);
         }
 
