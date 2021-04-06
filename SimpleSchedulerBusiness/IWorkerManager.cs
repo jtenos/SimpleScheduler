@@ -17,10 +17,10 @@ namespace SimpleSchedulerBusiness
             bool getActive = true, bool getInactive = false);
         Task<Worker> GetWorkerAsync(long workerID, CancellationToken cancellationToken);
         Task<long> AddWorkerAsync(bool isActive, string workerName,
-            string? detailedDescription, string? emailOnSuccess, long? parentWorkerID, long timeoutMinutes,
+            string detailedDescription, string emailOnSuccess, long? parentWorkerID, long timeoutMinutes,
             string directoryName, string executable, string argumentValues, CancellationToken cancellationToken);
         Task UpdateWorkerAsync(long workerID, bool isActive, string workerName,
-            string? detailedDescription, string? emailOnSuccess, long? parentWorkerID, long timeoutMinutes,
+            string detailedDescription, string emailOnSuccess, long? parentWorkerID, long timeoutMinutes,
             string directoryName, string executable, string argumentValues, CancellationToken cancellationToken);
         Task DeactivateWorkerAsync(long workerID, CancellationToken cancellationToken);
         Task ReactivateWorkerAsync(long workerID, CancellationToken cancellationToken);

@@ -8,7 +8,7 @@ namespace SimpleSchedulerEntities
         long? CompleteDateUTC,
         string StatusCode,
         string? DetailedMessage,
-        string AcknolwedgementID,
+        string AcknowledgementID,
         long? AcknowledgementDate
     );
 }

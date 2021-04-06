@@ -10,7 +10,7 @@ namespace SimpleSchedulerData
         private static long? GetInt64Nullable(DbDataReader rdr, string fieldName)
         {
             int idx = rdr.GetOrdinal(fieldName);
-            return rdr.IsDBNull(idx) ? default : rdr.GetInt64(idx);
+            return rdr.IsDBNull(idx) ? default(long?) : rdr.GetInt64(idx);
         }
         private static string GetString(DbDataReader rdr, string fieldName)
             => rdr.GetString(rdr.GetOrdinal(fieldName));
@@ -29,7 +29,7 @@ namespace SimpleSchedulerData
                 CompleteDateUTC: GetInt64Nullable(rdr, nameof(JobEntity.CompleteDateUTC)),
                 StatusCode: GetString(rdr, nameof(JobEntity.StatusCode)),
                 DetailedMessage: GetStringNullable(rdr, nameof(JobEntity.DetailedMessage)),
-                AcknolwedgementID: GetString(rdr, nameof(JobEntity.AcknolwedgementID)),
+                AcknowledgementID: GetString(rdr, nameof(JobEntity.AcknowledgementID)),
                 AcknowledgementDate: GetInt64Nullable(rdr, nameof(JobEntity.AcknowledgementDate))
             );
 
