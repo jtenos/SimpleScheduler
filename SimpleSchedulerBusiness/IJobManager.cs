@@ -14,7 +14,7 @@ namespace SimpleSchedulerBusiness
         Task AddJobAsync(long scheduleID, DateTime queueDateUTC, CancellationToken cancellationToken);
         Task<Job> GetJobAsync(long jobID, CancellationToken cancellationToken);
         Task CancelJobAsync(long jobID, CancellationToken cancellationToken);
-        Task CompleteJobAsync(long jobID, string statusCode, string? detailedMessage, CancellationToken cancellationToken);
+        Task CompleteJobAsync(long jobID, bool success, string? detailedMessage, CancellationToken cancellationToken);
         Task<ImmutableArray<JobDetail>> GetLatestJobsAsync(int pageNumber, int rowsPerPage, 
             string? statusCode, long? workerID, bool overdueOnly, CancellationToken cancellationToken);
         Task<ImmutableArray<JobDetail>> GetOverdueJobsAsync(CancellationToken cancellationToken);

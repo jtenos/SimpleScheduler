@@ -81,8 +81,9 @@ namespace SimpleSchedulerBusiness
             }
         }
 
-        public virtual async Task CompleteJobAsync(long jobID, string statusCode, string? detailedMessage, CancellationToken cancellationToken)
+        public virtual async Task CompleteJobAsync(long jobID, bool success, string? detailedMessage, CancellationToken cancellationToken)
         {
+            string statusCode = success ? "SUC" : "ERR";
             var db = await DatabaseFactory.GetDatabaseAsync(cancellationToken).ConfigureAwait(false);
             var parms = new[]
             {

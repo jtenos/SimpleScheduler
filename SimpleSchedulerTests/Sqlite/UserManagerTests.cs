@@ -16,7 +16,7 @@ using SimpleSchedulerEmail;
 using SimpleSchedulerEntities;
 using SimpleSchedulerModels.Exceptions;
 
-namespace SimpleSchedulerTests
+namespace SimpleSchedulerTests.Sqlite
 {
     [TestClass]
     public class UserManagerTests
