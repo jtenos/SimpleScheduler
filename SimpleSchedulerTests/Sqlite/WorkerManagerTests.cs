@@ -4,7 +4,6 @@ using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
@@ -57,7 +56,7 @@ namespace SimpleSchedulerTests.Sqlite
             if (File.Exists(_databaseFileName))
             {
                 File.Delete(_databaseFileName);
-                Thread.Sleep(50);
+                await Task.Delay(50);
             }
             await SqliteDatabase.CreateDatabaseAsync(_databaseFileName);
         }

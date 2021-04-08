@@ -62,13 +62,13 @@ namespace SimpleSchedulerServiceChecker
                                 message.Append($"Status: {job.Job.StatusCode}");
                                 if (job.Job.StatusCode == "ERR")
                                 {
-                                    Guid acknowledgeActionID = job.Job.AcknowledgementID;
+                                    string acknowledgeActionID = job.Job.AcknowledgementID;
                                     string url = _config["ApplicationURL"];
                                     if (!url.EndsWith("/"))
                                     {
                                         url = $"{url}/";
                                     }
-                                    url += $"ExecuteAction?ActionID={acknowledgeActionID:N}";
+                                    url += $"ExecuteAction?ActionID={acknowledgeActionID}";
                                     message.Append($" <a href='{url}' target=_blank>Acknowledge</a>");
                                 }
                                 message.Append("<br>");
