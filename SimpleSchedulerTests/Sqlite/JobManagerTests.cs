@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
@@ -70,7 +71,7 @@ namespace SimpleSchedulerTests.Sqlite
             var scope = GetServiceProvider().CreateScope();
             try
             {
-                var jobManager = GetServiceProvider().GetRequiredService<IJobManager>();
+                var jobManager = scope.ServiceProvider.GetRequiredService<IJobManager>();
                 await jobManager.RestartStuckJobsAsync(default);
             }
             finally
@@ -91,7 +92,7 @@ namespace SimpleSchedulerTests.Sqlite
             var scope = GetServiceProvider().CreateScope();
             try
             {
-                var jobManager = GetServiceProvider().GetRequiredService<IJobManager>();
+                var jobManager = scope.ServiceProvider.GetRequiredService<IJobManager>();
                 await jobManager.AcknowledgeErrorAsync(1, default);
             }
             finally
@@ -109,7 +110,7 @@ namespace SimpleSchedulerTests.Sqlite
             var scope = GetServiceProvider().CreateScope();
             try
             {
-                var jobManager = GetServiceProvider().GetRequiredService<IJobManager>();
+                var jobManager = scope.ServiceProvider.GetRequiredService<IJobManager>();
                 await jobManager.AddJobAsync(1, DateTime.UtcNow, default);
             }
             finally
@@ -135,12 +136,12 @@ namespace SimpleSchedulerTests.Sqlite
             var scope = GetServiceProvider().CreateScope();
             try
             {
-                var jobManager = GetServiceProvider().GetRequiredService<IJobManager>();
+                var jobManager = scope.ServiceProvider.GetRequiredService<IJobManager>();
                 var job = await jobManager.GetJobAsync(1, default);
                 Assert.AreEqual(1, job.JobID);
                 Assert.AreEqual(1, job.ScheduleID);
-                var queueDate = DateTime.ParseExact(job.QueueDateUTC.ToString(), "yyyyMMddHHmmssfff", null);
-                var insertDate = DateTime.ParseExact(job.InsertDateUTC.ToString(), "yyyyMMddHHmmssfff", null);
+                var queueDate = job.QueueDateUTC;
+                var insertDate = job.InsertDateUTC;
                 Assert.IsTrue(DateTime.UtcNow.Subtract(queueDate).TotalSeconds < 10);
                 Assert.IsTrue(DateTime.UtcNow.Subtract(insertDate).TotalSeconds < 10);
                 Assert.AreEqual("NEW", job.StatusCode);
@@ -162,7 +163,7 @@ namespace SimpleSchedulerTests.Sqlite
             var scope = GetServiceProvider().CreateScope();
             try
             {
-                var jobManager = GetServiceProvider().GetRequiredService<IJobManager>();
+                var jobManager = scope.ServiceProvider.GetRequiredService<IJobManager>();
                 await jobManager.CancelJobAsync(1, default);
             }
             finally
@@ -184,7 +185,7 @@ namespace SimpleSchedulerTests.Sqlite
             var scope = GetServiceProvider().CreateScope();
             try
             {
-                var jobManager = GetServiceProvider().GetRequiredService<IJobManager>();
+                var jobManager = scope.ServiceProvider.GetRequiredService<IJobManager>();
                 await jobManager.CancelJobAsync(1, default);
             }
             finally
@@ -205,7 +206,7 @@ namespace SimpleSchedulerTests.Sqlite
             var scope = GetServiceProvider().CreateScope();
             try
             {
-                var jobManager = GetServiceProvider().GetRequiredService<IJobManager>();
+                var jobManager = scope.ServiceProvider.GetRequiredService<IJobManager>();
                 await jobManager.CancelJobAsync(1, default);
             }
             finally
@@ -227,7 +228,7 @@ namespace SimpleSchedulerTests.Sqlite
             var scope = GetServiceProvider().CreateScope();
             try
             {
-                var jobManager = GetServiceProvider().GetRequiredService<IJobManager>();
+                var jobManager = scope.ServiceProvider.GetRequiredService<IJobManager>();
                 await jobManager.CancelJobAsync(1, default);
             }
             finally
@@ -248,7 +249,7 @@ namespace SimpleSchedulerTests.Sqlite
             var scope = GetServiceProvider().CreateScope();
             try
             {
-                var jobManager = GetServiceProvider().GetRequiredService<IJobManager>();
+                var jobManager = scope.ServiceProvider.GetRequiredService<IJobManager>();
                 await jobManager.CancelJobAsync(1, default);
             }
             finally
@@ -268,7 +269,7 @@ namespace SimpleSchedulerTests.Sqlite
             var scope = GetServiceProvider().CreateScope();
             try
             {
-                var jobManager = GetServiceProvider().GetRequiredService<IJobManager>();
+                var jobManager = scope.ServiceProvider.GetRequiredService<IJobManager>();
                 await jobManager.CompleteJobAsync(1, success: true, "abc", default);
             }
             finally
@@ -291,7 +292,7 @@ namespace SimpleSchedulerTests.Sqlite
             var scope = GetServiceProvider().CreateScope();
             try
             {
-                var jobManager = GetServiceProvider().GetRequiredService<IJobManager>();
+                var jobManager = scope.ServiceProvider.GetRequiredService<IJobManager>();
                 await jobManager.CompleteJobAsync(1, success: false, "abc", default);
             }
             finally
@@ -312,7 +313,7 @@ namespace SimpleSchedulerTests.Sqlite
             var scope = GetServiceProvider().CreateScope();
             try
             {
-                var jobManager = GetServiceProvider().GetRequiredService<IJobManager>();
+                var jobManager = scope.ServiceProvider.GetRequiredService<IJobManager>();
                 var jobs = await jobManager.GetLatestJobsAsync(1, 10, null, null, false, default);
                 Assert.AreEqual(1, jobs.Length);
                 Assert.AreEqual(1, jobs[0].Job.JobID);
@@ -337,10 +338,10 @@ namespace SimpleSchedulerTests.Sqlite
             var scope = GetServiceProvider().CreateScope();
             try
             {
-                var jobManager = GetServiceProvider().GetRequiredService<IJobManager>();
+                var jobManager = scope.ServiceProvider.GetRequiredService<IJobManager>();
                 var jobs = await jobManager.GetOverdueJobsAsync(default);
                 Assert.AreEqual(1, jobs.Length);
-                Assert.AreEqual(1, jobs[0].Job.JobID);
+                Assert.AreEqual(2, jobs[0].Job.JobID);
                 Assert.AreEqual(1, jobs[0].Schedule.ScheduleID);
                 Assert.AreEqual(1, jobs[0].Worker.WorkerID);
             }
@@ -353,11 +354,19 @@ namespace SimpleSchedulerTests.Sqlite
         [TestMethod]
         public async Task GetLastQueuedJob()
         {
-            await Task.FromException(new NotImplementedException());
+            await CreateWorkerAsync();
+            await CreateScheduleAsync(1);
+            await CreateJobAsync(1);
+            await Task.Delay(10);
+            await CreateJobAsync(1);
+            await Task.Delay(10);
+            await CreateJobAsync(1);
             var scope = GetServiceProvider().CreateScope();
             try
             {
-                var jobManager = GetServiceProvider().GetRequiredService<IJobManager>();
+                var jobManager = scope.ServiceProvider.GetRequiredService<IJobManager>();
+                var lastQueued = await jobManager.GetLastQueuedJobAsync(1, default);
+                Assert.AreEqual(3, lastQueued?.JobID);
             }
             finally
             {
@@ -368,11 +377,16 @@ namespace SimpleSchedulerTests.Sqlite
         [TestMethod]
         public async Task GetJobDetailedMessage()
         {
-            await Task.FromException(new NotImplementedException());
+            await CreateWorkerAsync();
+            await CreateScheduleAsync(1);
+            await CreateJobAsync(1);
+            await SetDetailedMessageAsync(1, "asdf");
             var scope = GetServiceProvider().CreateScope();
             try
             {
-                var jobManager = GetServiceProvider().GetRequiredService<IJobManager>();
+                var jobManager = scope.ServiceProvider.GetRequiredService<IJobManager>();
+                string? message = await jobManager.GetJobDetailedMessageAsync(1, default);
+                Assert.AreEqual("asdf", message);
             }
             finally
             {
@@ -383,11 +397,20 @@ namespace SimpleSchedulerTests.Sqlite
         [TestMethod]
         public async Task DequeueScheduledJobs()
         {
-            await Task.FromException(new NotImplementedException());
+            for (int i = 0; i < 4; ++i)
+            {
+                await CreateWorkerAsync();
+                await CreateScheduleAsync(i + 1);
+                await CreateJobAsync(i + 1);
+                await Task.Delay(10);
+            }
             var scope = GetServiceProvider().CreateScope();
             try
             {
-                var jobManager = GetServiceProvider().GetRequiredService<IJobManager>();
+                var jobManager = scope.ServiceProvider.GetRequiredService<IJobManager>();
+                var dequeuedJobs = await jobManager.DequeueScheduledJobsAsync(default);
+                Assert.AreEqual(3, dequeuedJobs.Length);
+                Assert.IsTrue(new long[] { 1, 2, 3 }.SequenceEqual(dequeuedJobs.Select(x => x.Job.JobID)));
             }
             finally
             {
@@ -476,7 +499,21 @@ namespace SimpleSchedulerTests.Sqlite
             await comm.ExecuteNonQueryAsync();
         }
 
-
+        private async Task SetDetailedMessageAsync(long jobID, string message)
+        {
+            using var conn = new SqliteConnection($"Data Source={_databaseFileName};");
+            await conn.OpenAsync();
+            using var comm = conn.CreateCommand();
+            comm.CommandText = @"
+                UPDATE Jobs SET DetailedMessage = @DetailedMessage WHERE JobID = @JobID;
+            ";
+            comm.Parameters.AddRange(new[]
+            {
+                new SqliteParameter("@DetailedMessage", SqliteType.Text) { Value = message },
+                new SqliteParameter("@JobID", SqliteType.Integer) { Value = jobID }
+            });
+            await comm.ExecuteNonQueryAsync();
+        }
         private async Task SetJobStatusAsync(long jobID, string status)
         {
             using var conn = new SqliteConnection($"Data Source={_databaseFileName};");
