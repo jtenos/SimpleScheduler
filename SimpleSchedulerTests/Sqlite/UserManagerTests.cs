@@ -54,7 +54,7 @@ namespace SimpleSchedulerTests.Sqlite
             if (File.Exists(_databaseFileName))
             {
                 File.Delete(_databaseFileName);
-                Thread.Sleep(50);
+                await Task.Delay(50);
             }
             await SqliteDatabase.CreateDatabaseAsync(_databaseFileName);
             await CreateUserAsync();
