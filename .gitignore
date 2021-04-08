@@ -12,3 +12,4 @@ _db
 **/.vscode
 **/secrets.json
 
+**/dist/

@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from "@angular/router";
-import Worker from "../../models/worker";
+import { Worker } from "../../models/worker";
 import { WorkerService } from 'src/app/services/worker.service';
-import WorkerDetail from 'src/app/models/worker-detail';
+import { WorkerDetail } from 'src/app/models/worker-detail';
 
 @Component({
     selector: 'app-edit-worker',
@@ -54,7 +54,7 @@ export class EditWorkerComponent implements OnInit {
             }
 
             if (!this.workerID) {
-                this.worker = new Worker(0, true, "", 20, 20, "", "", "", "", "", undefined);
+                this.worker = this.getEmptyWorker();
                 setWorkerForm();
                 this.loading = false;
             } else {
@@ -67,13 +67,33 @@ export class EditWorkerComponent implements OnInit {
     }
 
     async workerFormSubmit() {
-        this.worker = new Worker(+this.workerForm.value.workerID,
-            this.workerForm.value.isActive, this.workerForm.value.workerName, 
-            +this.workerForm.value.timeoutMinutes,
-            this.workerForm.value.detailedDescription, this.workerForm.value.emailOnSuccess,
-            this.workerForm.value.directoryName, this.workerForm.value.executable,
-            this.workerForm.value.argumentValues, +this.workerForm.value.parentWorkerID || null);
-         this.workerForm.value;
+        this.worker = {
+            workerID: +this.workerForm.value.workerID,
+            isActive: this.workerForm.value.isActive,
+            workerName: this.workerForm.value.workerName,
+            detailedDescription: this.workerForm.value.detailedDescription,
+            emailOnSuccess: this.workerForm.value.emailOnSuccess,
+            parentWorkerID: +this.workerForm.value.parentWorkerID || null,
+            timeoutMinutes: +this.workerForm.value.timeoutMinutes,
+            directoryName: this.workerForm.value.directoryName,
+            executable: this.workerForm.value.executable,
+            argumentValues: this.workerForm.value.argumentValues
+        };
         await this.workerService.saveWorker(this.worker);
+    }
+
+    private getEmptyWorker() : Worker {
+        return {
+            workerID: 0,
+            isActive: true,
+            workerName: "",
+            detailedDescription: "",
+            emailOnSuccess: "",
+            parentWorkerID: null,
+            timeoutMinutes: 20,
+            directoryName: "",
+            executable: "",
+            argumentValues: ""
+        };
     }
 }
