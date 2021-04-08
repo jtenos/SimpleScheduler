@@ -1,19 +1,19 @@
-export default class Schedule {
-    constructor(
-        public scheduleID: number,
-        public isActive: boolean,
-        public workerID: number,
-        public sunday: boolean,
-        public monday: boolean,
-        public tuesday: boolean,
-        public wednesday: boolean,
-        public thursday: boolean,
-        public friday: boolean,
-        public saturday: boolean,
-        public oneTime: boolean,
-        public timeOfDayUTC?: any,// TODO: TimeSpan data type
-        public recurTime?: any,// TODO: TimeSpan data type
-        public recurBetweenStartUTC?: any,// TODO: TimeSpan data type
-        public recurBetweenEndUTC?: any// TODO: TimeSpan data type
-    ){}
-}
+import TimeSpan from "./timespan";
+
+export type Schedule = {
+    scheduleID: number,
+    isActive: boolean,
+    workerID: number,
+    sunday: boolean,
+    monday: boolean,
+    tuesday: boolean,
+    wednesday: boolean,
+    thursday: boolean,
+    friday: boolean,
+    saturday: boolean,
+    timeOfDayUTC: TimeSpan | null,
+    recurTime: TimeSpan | null,
+    recurBetweenStartUTC: TimeSpan | null,
+    recurBetweenEndUTC: TimeSpan | null,
+    oneTime: boolean
+};

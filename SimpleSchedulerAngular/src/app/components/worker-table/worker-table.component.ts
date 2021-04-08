@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { WorkerService } from 'src/app/services/worker.service';
-import WorkerDetail from "../../models/worker-detail";
+import { WorkerDetail } from "../../models/worker-detail";
 
 @Component({
     selector: 'app-worker-table',

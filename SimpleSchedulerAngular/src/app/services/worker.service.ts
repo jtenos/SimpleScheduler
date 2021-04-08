@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import Worker from "../models/worker";
-import WorkerDetail from "../models/worker-detail";
+import { Worker } from "../models/worker";
+import { WorkerDetail } from "../models/worker-detail";
 import { ApiService } from "./api.service";
 import Kvp from "../models/kvp";
 import { Router } from "@angular/router";

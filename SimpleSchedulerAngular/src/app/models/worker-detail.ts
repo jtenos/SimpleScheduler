@@ -1,6 +1,8 @@
-import Worker from "./worker";
-import Schedule from "./schedule";
+import { Worker } from "./worker";
+import { Schedule } from "./schedule";
 
-export default class WorkerDetail {
-    constructor(public worker: Worker, public parentWorker: Worker, public schedules: Schedule[]){}
-}
+export type WorkerDetail = {
+    worker: Worker,
+    parentWorker: Worker | null,
+    schedules: Schedule[]
+};
