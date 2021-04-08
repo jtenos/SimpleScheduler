@@ -175,7 +175,7 @@ namespace SimpleSchedulerService
                 try
                 {
                     await jobManager.CompleteJobAsync(jobDetail.Job.JobID,
-                        workerResult.Success ? "SUC" : "ERR",
+                        workerResult.Success,
                         workerResult.DetailedMessage, cancellationToken).ConfigureAwait(false);
                 }
                 catch (Exception ex)

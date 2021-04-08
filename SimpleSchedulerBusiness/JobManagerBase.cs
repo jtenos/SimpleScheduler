@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Data.Common;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -111,9 +112,16 @@ namespace SimpleSchedulerBusiness
         }
 
         public Job ConvertToJob(JobEntity entity)
-        {
-            throw new NotImplementedException();
-        }
+            => new Job(entity.JobID, entity.ScheduleID,
+            DateTime.ParseExact(entity.InsertDateUTC.ToString(), "yyyyMMddHHmmssfff", CultureInfo.InvariantCulture.DateTimeFormat),
+            DateTime.ParseExact(entity.QueueDateUTC.ToString(), "yyyyMMddHHmmssfff", CultureInfo.InvariantCulture.DateTimeFormat),
+            entity.CompleteDateUTC.HasValue
+                ? DateTime.ParseExact(entity.CompleteDateUTC.Value.ToString(), "yyyyMMddHHmmssfff", CultureInfo.InvariantCulture.DateTimeFormat)
+                : (DateTime?)null,
+            entity.StatusCode, entity.DetailedMessage, entity.AcknowledgementID,
+            entity.AcknowledgementDate.HasValue
+                ? DateTime.ParseExact(entity.AcknowledgementDate.Value.ToString(), "yyyyMMddHHmmssfff", CultureInfo.InvariantCulture.DateTimeFormat)
+                : (DateTime?)null);
 
         protected abstract string DequeueQuery { get; }
         public virtual async Task<ImmutableArray<JobDetail>> DequeueScheduledJobsAsync(CancellationToken cancellationToken)
@@ -190,7 +198,7 @@ namespace SimpleSchedulerBusiness
                 sql.AppendLine("AND StatusCode IN ('ERR', 'NEW', 'RUN')");
             }
             sql.AppendLine("ORDER BY QueueDateUTC DESC");
-            sql.AppendLine(db.GetOffsetLimitClause(pageNumber * rowsPerPage, rowsPerPage));
+            sql.AppendLine(db.GetOffsetLimitClause((pageNumber - 1) * rowsPerPage, rowsPerPage));
             sql.Append(";");
 
             var entities = await db.GetManyAsync<JobEntity>(sql.ToString(), parms,
@@ -244,7 +252,7 @@ namespace SimpleSchedulerBusiness
         {
             var db = await DatabaseFactory.GetDatabaseAsync(cancellationToken).ConfigureAwait(false);
             await db.NonQueryAsync(@"
-                UPDATE [Jobs] SET StatusCode = 'NEW' WHERE StatusCode = 'RUN';
+                UPDATE Jobs SET StatusCode = 'NEW' WHERE StatusCode = 'RUN';
             ", Array.Empty<DbParameter>(), cancellationToken).ConfigureAwait(false);
         }
 

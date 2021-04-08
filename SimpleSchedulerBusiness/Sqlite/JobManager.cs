@@ -10,7 +10,7 @@ namespace SimpleSchedulerBusiness.Sqlite
             : base(databaseFactory, serviceProvider) { }
 
         protected override string DequeueQuery => @"
-            CREATE TABLE temp.Result(JobID INTEGER, StatusCode TEXT);
+            CREATE TABLE temp.Result(JobID INTEGER);
             INSERT INTO temp.Result
                 SELECT JobID
                 FROM Jobs
