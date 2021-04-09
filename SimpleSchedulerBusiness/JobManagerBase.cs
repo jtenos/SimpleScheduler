@@ -266,7 +266,7 @@ namespace SimpleSchedulerBusiness
             var result = new List<JobDetail>();
             foreach (var job in jobs)
             {
-                var schedule = allSchedules.SingleOrDefault(s => s.ScheduleID == job.ScheduleID)
+                var schedule = allSchedules.SingleOrDefault(s => s.Schedule.ScheduleID == job.ScheduleID)?.Schedule
                     ?? (await scheduleManager.GetScheduleAsync(job.ScheduleID, cancellationToken).ConfigureAwait(false)).Schedule;
                 var worker = allWorkers.SingleOrDefault(w => w.WorkerID == schedule.WorkerID)
                     ?? await workerManager.GetWorkerAsync(schedule.WorkerID, cancellationToken).ConfigureAwait(false);

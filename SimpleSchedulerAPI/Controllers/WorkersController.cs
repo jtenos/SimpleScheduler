@@ -30,7 +30,7 @@ namespace SimpleSchedulerAPI.Controllers
 
         [HttpGet]
         [Route("[action]")]
-        public async Task<Worker> GetWorker(int workerID, CancellationToken cancellationToken)
+        public async Task<Worker> GetWorker(long workerID, CancellationToken cancellationToken)
             => await _workerManager.GetWorkerAsync(workerID, cancellationToken);
 
         [HttpPost]
