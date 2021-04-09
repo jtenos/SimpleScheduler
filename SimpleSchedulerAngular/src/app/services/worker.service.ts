@@ -30,6 +30,11 @@ export class WorkerService {
         return true;
     }
 
+    async runNow(workerID: number): Promise<boolean> {
+        await this.apiService.post("Workers", "RunNow", { workerID });
+        return true;
+    }
+
     async saveWorker(worker: Worker): Promise<void> {
         const result = await this.apiService.post("Workers", "SaveWorker", worker);
         if (result.success) {
