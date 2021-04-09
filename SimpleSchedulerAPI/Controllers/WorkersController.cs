@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SimpleSchedulerBusiness;
+using SimpleSchedulerData;
 using SimpleSchedulerModels;
 using SimpleSchedulerModels.Exceptions;
 using System.Collections.Immutable;
@@ -15,8 +16,10 @@ namespace SimpleSchedulerAPI.Controllers
     public class WorkersController : ControllerBase
     {
         private readonly IWorkerManager _workerManager;
+        private readonly DatabaseFactory _databaseFactory;
 
-        public WorkersController(IWorkerManager workerManager) => _workerManager = workerManager;
+        public WorkersController(IWorkerManager workerManager, DatabaseFactory databaseFactory)
+            => (_workerManager, _databaseFactory) = (workerManager, databaseFactory);
 
         [HttpGet]
         [Route("[action]")]
@@ -54,25 +57,28 @@ namespace SimpleSchedulerAPI.Controllers
                         worker.DetailedDescription, worker.EmailOnSuccess, worker.ParentWorkerID,
                         worker.TimeoutMinutes, worker.DirectoryName,
                         worker.Executable, worker.ArgumentValues, cancellationToken);
-                    return Ok();
+                    return Ok(new { Success = true });
                 }
 
                 await _workerManager.AddWorkerAsync(worker.IsActive, worker.WorkerName,
                         worker.DetailedDescription, worker.EmailOnSuccess, worker.ParentWorkerID,
                         worker.TimeoutMinutes, worker.DirectoryName,
                         worker.Executable, worker.ArgumentValues, cancellationToken);
-                return Ok();
+                return Ok(new { Success = true });
             }
             catch (WorkerAlreadyExistsException)
             {
+                _databaseFactory.MarkForRollback();
                 return BadRequest($"Worker with name {worker.WorkerName} already exists");
             }
             catch (CircularWorkerRelationshipException)
             {
+                _databaseFactory.MarkForRollback();
                 return BadRequest($"This would create a circular relationship (parent->child->parent)");
             }
             catch
             {
+                _databaseFactory.MarkForRollback();
                 return BadRequest("Unknown error, please try again");
             }
         }

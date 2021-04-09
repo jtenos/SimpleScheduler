@@ -57,10 +57,8 @@ export class ApiService {
         } catch (ex) {
             if (ex?.status === 401) {
                 this.router.navigateByUrl("login");
-            } else {
-                alert(ex);
             }
-            return { success: false, message: ex.error?.message || ex.message || "Unknown error. Please try again." };
+            return { success: false, message: ex.error?.message || ex.error as string || ex.message || "Unknown error. Please try again." };
         }
     }
 }

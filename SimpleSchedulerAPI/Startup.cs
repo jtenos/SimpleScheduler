@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -80,7 +81,8 @@ namespace SimpleSchedulerAPI
             services.AddScoped<IEmailer, Emailer>();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
+            IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {

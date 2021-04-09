@@ -2,7 +2,7 @@
     <thead>
         <tr>
             <th></th>
-            <th>Description</th>
+            <th>Name</th>
             <th>Executable</th>
             <th>Time</th>
             <th>Schedules</th>
@@ -31,7 +31,7 @@
                 <div [class.d-none]="!wd.worker.emailOnSuccess" style="font-size: smaller; font-style: italic;">Email: {{ wd.worker.emailOnSuccess }}</div>
             </td>
             <td>
-                <div style="font-weight: bold;">{{ wd.worker.directoryName }}\</div>
+                <div style="font-weight: bold;">{{ wd.worker.directoryName }}/</div>
                 <div>{{ wd.worker.executable }}</div>
                 <div style="font-style: italic;" [class.d-none]="!wd.worker.argumentValues">{{ wd.worker.argumentValues }}</div>
             <td>

@@ -53,14 +53,14 @@ export class EditWorkerComponent implements OnInit {
                 this.loading = false;
             }
 
+            this.allWorkers = await this.workerService.getAllWorkers();
+            this.allWorkers.sort((a, b) => a.worker.workerName > b.worker.workerName ? 1 : -1);
             if (!this.workerID) {
                 this.worker = this.getEmptyWorker();
                 setWorkerForm();
                 this.loading = false;
             } else {
                 this.worker = await this.workerService.getWorker(this.workerID);
-                this.allWorkers = await this.workerService.getAllWorkers();
-                this.allWorkers.sort((a, b) => a.worker.workerName > b.worker.workerName ? 1 : -1);
                 setWorkerForm();
             }
         });
@@ -82,7 +82,7 @@ export class EditWorkerComponent implements OnInit {
         await this.workerService.saveWorker(this.worker);
     }
 
-    private getEmptyWorker() : Worker {
+    private getEmptyWorker(): Worker {
         return {
             workerID: 0,
             isActive: true,
