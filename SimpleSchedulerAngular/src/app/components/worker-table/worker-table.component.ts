@@ -37,6 +37,7 @@ export class WorkerTableComponent implements OnInit {
     }
 
     async runWorker(workerID: number): Promise<void> {
-        
+        await this.workerService.runNow(workerID);
+        this.refreshWorkers.emit(true);
     }
 }

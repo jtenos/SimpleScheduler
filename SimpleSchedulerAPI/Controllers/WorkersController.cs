@@ -47,6 +47,11 @@ namespace SimpleSchedulerAPI.Controllers
 
         [HttpPost]
         [Route("[action]")]
+        public async Task RunNow([FromBody] RunNowRequest runNowRequest, CancellationToken cancellationToken)
+            => await _workerManager.RunNowAsync(runNowRequest.WorkerID, cancellationToken);
+
+        [HttpPost]
+        [Route("[action]")]
         public async Task<IActionResult> SaveWorker(Worker worker, CancellationToken cancellationToken)
         {
             try
@@ -88,7 +93,8 @@ namespace SimpleSchedulerAPI.Controllers
             }
         }
 
-        public record DeleteWorkerRequest(int WorkerID);
-        public record ReactivateWorkerRequest(int WorkerID);
+        public record DeleteWorkerRequest(long WorkerID);
+        public record ReactivateWorkerRequest(long WorkerID);
+        public record RunNowRequest(long WorkerID);
     }
 }
