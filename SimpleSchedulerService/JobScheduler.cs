@@ -28,10 +28,10 @@ namespace SimpleSchedulerService
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(ex.ToString());
+                Debug.WriteLine(ex.ToString());
             }
-            Trace.WriteLine($"WorkerPath={_config["WorkerPath"]}");
-            Trace.WriteLine($"connectionString={_config.GetConnectionString("scheduler")}");
+            Debug.WriteLine($"WorkerPath={_config["WorkerPath"]}");
+            Debug.WriteLine($"connectionString={_config.GetConnectionString("SimpleScheduler")}");
 
             await _jobExecutor.RestartStuckAppsAsync(cancellationToken).ConfigureAwait(false);
 

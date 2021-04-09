@@ -31,11 +31,11 @@ export class WorkerService {
     }
 
     async saveWorker(worker: Worker): Promise<void> {
-        try {
-            await this.apiService.post("Workers", "SaveWorker", worker);
+        const result = await this.apiService.post("Workers", "SaveWorker", worker);
+        if (result.success) {
             this.router.navigateByUrl("workers");
-        } catch (ex) {
-            alert(ex);
+        } else {
+            alert(result.message);
         }
     }
 }
