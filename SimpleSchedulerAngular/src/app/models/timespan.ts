@@ -11,11 +11,24 @@ export default class TimeSpan {
         return new TimeSpan(hours, minutes);
     }
 
-    toString(): string {
-        return `${this.hours}H ${this.minutes}M`;
-    }
-
     toNumber(): number {
         return this.hours * 100 + this.minutes;
     }
+
+    asFormattedTimeOfDay(): string {
+        return `${this.hours}:${zeroPad(this.minutes)}`;
+    }
+    
+    asFormattedTimeSpan(): string {
+        if (this.hours === 1) { return "every hour"; }
+        if (this.hours > 1) { return `every ${this.hours} hours`; }
+        if (this.minutes === 1) { return "every minute"; }
+        if (this.minutes > 1) { return `every ${this.minutes} minutes`; }
+        return "unknown";
+    }
+}
+
+function zeroPad(num: number): string {
+    if (num < 10) { return "0" + num.toString(); }
+    return num.toString();
 }

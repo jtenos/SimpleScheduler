@@ -81,8 +81,10 @@ namespace SimpleSchedulerService
                     if (schedule.Schedule.Saturday) daysOfTheWeek.Add(DayOfWeek.Saturday);
 
                     var newQueueDate = ScheduleFinder.GetNextDate(lastQueueDate, daysOfTheWeek.ToImmutableArray(),
-                        schedule.Schedule.TimeOfDayUTC, schedule.Schedule.RecurTime,
-                        schedule.Schedule.RecurBetweenStartUTC, schedule.Schedule.RecurBetweenEndUTC);
+                        schedule.Schedule.TimeOfDayUTC?.AsTimeSpan(),
+                        schedule.Schedule.RecurTime?.AsTimeSpan(),
+                        schedule.Schedule.RecurBetweenStartUTC?.AsTimeSpan(),
+                        schedule.Schedule.RecurBetweenEndUTC?.AsTimeSpan());
                     await jobManager.AddJobAsync(schedule.Schedule.ScheduleID, newQueueDate, cancellationToken).ConfigureAwait(false);
                 }
 
