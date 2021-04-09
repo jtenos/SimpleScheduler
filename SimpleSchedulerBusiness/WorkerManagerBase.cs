@@ -278,10 +278,10 @@ namespace SimpleSchedulerBusiness
                 cancellationToken).ConfigureAwait(false);
             foreach (var worker in workers)
             {
-                var schedules = allSchedules.Where(x => x.WorkerID == worker.WorkerID).ToImmutableArray();
+                var schedules = allSchedules.Where(x => x.Schedule.WorkerID == worker.WorkerID).ToImmutableArray();
                 result.Add(new(worker,
                     workers.FirstOrDefault(w => w.WorkerID == worker.ParentWorkerID),
-                    schedules));
+                    schedules.Select(x => x.Schedule).ToImmutableArray()));
             }
             return result.ToImmutableArray();
         }

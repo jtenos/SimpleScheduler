@@ -32,6 +32,7 @@ export class WorkerService {
 
     async runNow(workerID: number): Promise<boolean> {
         await this.apiService.post("Workers", "RunNow", { workerID });
+        this.router.navigateByUrl(`jobs?workerID=${workerID}`);
         return true;
     }
 
