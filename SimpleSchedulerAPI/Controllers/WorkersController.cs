@@ -74,7 +74,12 @@ namespace SimpleSchedulerAPI.Controllers
             catch (CircularWorkerRelationshipException)
             {
                 _databaseFactory.MarkForRollback();
-                return BadRequest($"This would create a circular relationship (parent->child->parent)");
+                return BadRequest("This would create a circular relationship (parent->child->parent)");
+            }
+            catch (InvalidExecutableException)
+            {
+                _databaseFactory.MarkForRollback();
+                return BadRequest("Executable not found");
             }
             catch
             {

@@ -21,6 +21,7 @@ namespace SimpleSchedulerService
             var config = new ConfigurationBuilder()
                 .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
                 .AddJsonFile("appsettings.json", optional: false)
+                .AddJsonFile("secrets.json", optional: true)
                 .Build();
             await Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>

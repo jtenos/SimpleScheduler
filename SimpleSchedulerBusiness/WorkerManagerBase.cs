@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Data.Common;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SimpleSchedulerData;
 using SimpleSchedulerEntities;
@@ -119,6 +121,7 @@ namespace SimpleSchedulerBusiness
             string detailedDescription, string emailOnSuccess, long? parentWorkerID, long timeoutMinutes,
             string directoryName, string executable, string argumentValues, CancellationToken cancellationToken)
         {
+            ValidateWorkerExecutable(directoryName, executable);
             var db = await DatabaseFactory.GetDatabaseAsync(cancellationToken).ConfigureAwait(false);
             var parms = new[]
             {
@@ -166,6 +169,7 @@ namespace SimpleSchedulerBusiness
             string detailedDescription, string emailOnSuccess, long? parentWorkerID, long timeoutMinutes,
             string directoryName, string executable, string argumentValues, CancellationToken cancellationToken)
         {
+            ValidateWorkerExecutable(directoryName, executable);
             var db = await DatabaseFactory.GetDatabaseAsync(cancellationToken).ConfigureAwait(false);
             DbParameter[] parms =
             {
@@ -230,7 +234,7 @@ namespace SimpleSchedulerBusiness
             {
                 string workerName = $"{worker.WorkerName[24..]} (react {DateTime.UtcNow:yyyyMMddHHmmss})".Trim();
                 await UpdateWorkerAsync(worker.WorkerID, isActive: true, workerName, worker.DetailedDescription,
-                    worker.EmailOnSuccess, worker.ParentWorkerID, worker.TimeoutMinutes, 
+                    worker.EmailOnSuccess, worker.ParentWorkerID, worker.TimeoutMinutes,
                     worker.DirectoryName, worker.Executable, worker.ArgumentValues, cancellationToken).ConfigureAwait(false);
             }
         }
@@ -280,6 +284,22 @@ namespace SimpleSchedulerBusiness
                     schedules));
             }
             return result.ToImmutableArray();
+        }
+
+        private void ValidateWorkerExecutable(string directoryName, string executable)
+        {
+            if (directoryName.Contains("/") || executable.Contains("/")
+                || directoryName.Contains("\\") || executable.Contains("\\"))
+            {
+                throw new InvalidExecutableException("Executable not found");
+            }
+
+            var config = ServiceProvider.GetRequiredService<IConfiguration>();
+            string fullPath = Path.Combine(config["WorkerPath"], directoryName, executable);
+            if (!File.Exists(fullPath))
+            {
+                throw new InvalidExecutableException("Executable not found");
+            }
         }
     }
 }

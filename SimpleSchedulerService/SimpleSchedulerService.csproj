@@ -18,6 +18,11 @@
 		</None>
 	</ItemGroup>
 	<ItemGroup>
+		<None Update="secrets.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+	<ItemGroup>
 		<PackageReference Include="RunProcessAsTask" Version="1.2.4" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="5.0.1" />
