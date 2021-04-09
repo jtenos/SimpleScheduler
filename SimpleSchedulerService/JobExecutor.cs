@@ -220,7 +220,7 @@ namespace SimpleSchedulerService
                 if (!workerResult.Success)
                 {
                     // For failures, send to the admin
-                    foreach (string addr in _config["AdminEmail"].Split(';').Where(x => !string.IsNullOrWhiteSpace(x)))
+                    foreach (string addr in _config["MailSettings:AdminEmail"].Split(';').Where(x => !string.IsNullOrWhiteSpace(x)))
                     {
                         toAddresses.Add(addr);
                     }
@@ -241,7 +241,10 @@ namespace SimpleSchedulerService
                     url = $"{url}/";
                 }
                 url += $"ExecuteAction?ActionID={jobDetail.Job.AcknowledgementID:N}";
-                body = $"<a href='{url}' target=_blank>Acknowledge error</a><br><br>{body}";
+                if (!workerResult.Success)
+                {
+                    body = $"<a href='{url}' target=_blank>Acknowledge error</a><br><br>{body}";
+                }
 
                 await SendEmailAsync(subject, body, toAddresses, cancellationToken);
             }
@@ -253,6 +256,7 @@ namespace SimpleSchedulerService
 
         private async Task SendEmailAsync(string subject, string htmlBody, IEnumerable<string> toAddresses, CancellationToken cancellationToken)
         {
+            if (!toAddresses.Any()) { return; }
             Trace.TraceInformation($"Sending email to {string.Join(";", toAddresses)}");
 
             await _emailer.SendEmailAsync(toAddresses, subject, htmlBody, cancellationToken).ConfigureAwait(false);
