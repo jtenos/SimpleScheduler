@@ -185,17 +185,18 @@ namespace SimpleSchedulerBusiness
                 entity.WorkerID,
                 entity.Sunday == 1, entity.Monday == 1, entity.Tuesday == 1, entity.Wednesday == 1,
                 entity.Thursday == 1, entity.Friday == 1, entity.Saturday == 1,
-                ConvertToTimeSpan(entity.TimeOfDayUTC),
-                ConvertToTimeSpan(entity.RecurTime),
-                ConvertToTimeSpan(entity.RecurBetweenStartUTC),
-                ConvertToTimeSpan(entity.RecurBetweenEndUTC),
+                ConvertToSimpleTimeSpan(entity.TimeOfDayUTC),
+                ConvertToSimpleTimeSpan(entity.RecurTime),
+                ConvertToSimpleTimeSpan(entity.RecurBetweenStartUTC),
+                ConvertToSimpleTimeSpan(entity.RecurBetweenEndUTC),
                 entity.OneTime == 1);
 
-        private static TimeSpan? ConvertToTimeSpan(long? value)
+        private static SimpleTimeSpan? ConvertToSimpleTimeSpan(long? value)
         {
             if (!value.HasValue) return null;
-            return TimeSpan.ParseExact(value.Value.ToString("000000000"), "hhmmssfff",
+            var ts = TimeSpan.ParseExact(value.Value.ToString("000000000"), "hhmmssfff",
                 CultureInfo.InvariantCulture.DateTimeFormat);
+            return new SimpleTimeSpan(ts.Hours, ts.Minutes);
         }
 
         private async Task<ImmutableArray<ScheduleDetail>> GetScheduleDetailsAsync(IEnumerable<Schedule> schedules,
