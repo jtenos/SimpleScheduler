@@ -16,7 +16,7 @@
                 <a *ngIf="sd.schedule.isActive" (click)="deleteSchedule(sd.schedule.scheduleID)">
                     <img src="assets/img/trash.svg" alt="Delete" />
                 </a>
-                <a *ngIf="!sd.worker.isActive" (click)="reactivateSchedule(sd.schedule.scheduleID)" class="btn btn-sm btn-outline-primary">
+                <a *ngIf="!sd.schedule.isActive" (click)="reactivateSchedule(sd.schedule.scheduleID)" class="btn btn-sm btn-outline-primary">
                     Reactivate
                 </a>
             </td>

@@ -15,8 +15,8 @@ export class ScheduleService {
         return await this.apiService.get<ScheduleDetail[]>("Schedules", "GetAllSchedules", []);
     }
 
-    async getSchedule(scheduleID: number): Promise<Schedule> {
-        return await this.apiService.get<Schedule>("Schedules", "GetSchedule", [new Kvp("scheduleID", scheduleID.toString())]);
+    async getSchedule(scheduleID: number): Promise<ScheduleDetail> {
+        return await this.apiService.get<ScheduleDetail>("Schedules", "GetSchedule", [new Kvp("scheduleID", scheduleID.toString())]);
     }
 
     async deleteSchedule(scheduleID: number): Promise<boolean> {

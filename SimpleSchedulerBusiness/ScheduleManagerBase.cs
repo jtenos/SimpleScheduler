@@ -77,20 +77,23 @@ namespace SimpleSchedulerBusiness
             ", parms, cancellationToken).ConfigureAwait(false);
         }
 
-        public virtual async Task<ImmutableArray<ScheduleDetail>> GetAllSchedulesAsync(CancellationToken cancellationToken, bool getActive = true, bool getInactive = false)
+        public virtual async Task<ImmutableArray<ScheduleDetail>> GetAllSchedulesAsync(
+            CancellationToken cancellationToken, bool getActive = true,
+            bool getInactive = false, bool getOneTime = false)
         {
             if (!getActive && !getInactive) { return ImmutableArray<ScheduleDetail>.Empty; }
 
             var db = await DatabaseFactory.GetDatabaseAsync(cancellationToken).ConfigureAwait(false);
             var sql = new StringBuilder();
-            sql.AppendLine("SELECT * FROM Schedules");
-            if (getActive && !getInactive) { sql.Append(" WHERE IsActive = 1;"); }
-            else if (!getActive && getInactive) { sql.Append(" WHERE IsActive = 0;"); }
+            sql.AppendLine("SELECT * FROM Schedules WHERE 1=1");
+            if (!getOneTime) { sql.Append(" AND OneTime = 0 "); }
+            if (getActive && !getInactive) { sql.Append(" AND IsActive = 1;"); }
+            else if (!getActive && getInactive) { sql.Append(" AND IsActive = 0;"); }
             else { sql.Append(";"); }
             var allScheduleEntities = await db.GetManyAsync<ScheduleEntity>(sql.ToString(),
                 Array.Empty<DbParameter>(), Mapper.MapSchedule, cancellationToken).ConfigureAwait(false);
             var allSchedules = allScheduleEntities.Select(ConvertToSchedule).ToImmutableArray();
-            return await GetScheduleDetailsAsync(allSchedules, cancellationToken).ConfigureAwait(false);;
+            return await GetScheduleDetailsAsync(allSchedules, cancellationToken).ConfigureAwait(false); ;
         }
 
         public virtual async Task<ScheduleDetail> GetScheduleAsync(long scheduleID, CancellationToken cancellationToken)
