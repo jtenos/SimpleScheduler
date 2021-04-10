@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { EditScheduleComponent } from './components/edit-schedule/edit-schedule.component';
 
 import { EditWorkerComponent } from './components/edit-worker/edit-worker.component';
 import { HomeComponent } from './components/home/home.component';
@@ -14,6 +15,7 @@ const routes: Routes = [
   { path: "login", component: LoginComponent },
   { path: "jobs", component: JobsComponent },
   { path: "schedules", component: SchedulesComponent },
+  { path: "schedules/edit/:scheduleID", component: EditScheduleComponent },
   { path: "validate-user/:validationCode", component: ValidateUserComponent },
   { path: "workers", component: WorkersComponent },
   { path: "workers/edit/:workerID", component: EditWorkerComponent }

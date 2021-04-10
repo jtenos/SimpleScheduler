@@ -11,6 +11,10 @@ export default class TimeSpan {
         return new TimeSpan(hours, minutes);
     }
 
+    static fromObject(o: {hours: number, minutes: number}) {
+        return new TimeSpan(o.hours, o.minutes);
+    }
+
     toNumber(): number {
         return this.hours * 100 + this.minutes;
     }

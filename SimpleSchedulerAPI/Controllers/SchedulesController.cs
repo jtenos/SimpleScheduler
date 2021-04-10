@@ -40,7 +40,7 @@ namespace SimpleSchedulerAPI.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public async Task ReactivateWorker([FromBody] ReactivateScheduleRequest reactivateScheduleRequest,
+        public async Task ReactivateSchedule([FromBody] ReactivateScheduleRequest reactivateScheduleRequest,
             CancellationToken cancellationToken)
             => await _scheduleManager.ReactivateScheduleAsync(reactivateScheduleRequest.ScheduleID, cancellationToken);
 

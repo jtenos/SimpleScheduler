@@ -1,50 +1,44 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Schedule } from 'src/app/models/schedule';
 import TimeSpan from 'src/app/models/timespan';
-import { WorkerService } from 'src/app/services/worker.service';
-import { WorkerDetail } from "../../models/worker-detail";
-import { SchedulesComponent } from '../schedules/schedules.component';
+import { ScheduleService } from 'src/app/services/schedule.service';
+import { ScheduleDetail } from "../../models/schedule-detail";
 
 @Component({
-    selector: 'app-worker-table',
-    templateUrl: './worker-table.component.html'
+    selector: 'app-schedule-table',
+    templateUrl: './schedule-table.component.html'
 })
-export class WorkerTableComponent implements OnInit {
+export class ScheduleTableComponent implements OnInit {
 
     @Input()
-    workerDetails!: WorkerDetail[];
+    scheduleDetails!: ScheduleDetail[];
 
     @Input()
     active!: boolean;
 
     @Output()
-    refreshWorkers = new EventEmitter<boolean>();
+    refreshSchedules = new EventEmitter<boolean>();
 
-    constructor(private workerService: WorkerService) { }
+    constructor(private scheduleService: ScheduleService) { }
 
     ngOnInit(): void {
     }
 
-    async deleteWorker(workerID: number): Promise<void> {
+    async deleteSchedule(scheduleID: number): Promise<void> {
         if (confirm("Are you sure?")) {
-            await this.workerService.deleteWorker(workerID);
-            this.refreshWorkers.emit(true);
+            await this.scheduleService.deleteSchedule(scheduleID);
+            this.refreshSchedules.emit(true);
         }
     }
 
-    async reactivateWorker(workerID: number): Promise<void> {
+    async reactivateSchedule(scheduleID: number): Promise<void> {
         if (confirm("Are you sure?")) {
-            await this.workerService.reactivateWorker(workerID);
-            this.refreshWorkers.emit(true);
+            await this.scheduleService.reactivateSchedule(scheduleID);
+            this.refreshSchedules.emit(true);
         }
     }
 
-    async runWorker(workerID: number): Promise<void> {
-        await this.workerService.runNow(workerID);
-        this.refreshWorkers.emit(true);
-    }
-
-    getFormattedSchedule(schedule: Schedule): string {
+    getFormattedDays(schedule: Schedule): string {
         let days = "";
         if (schedule.sunday && schedule.monday && schedule.tuesday && schedule.wednesday && schedule.thursday && schedule.friday && schedule.saturday) {
             days = "Every day";
@@ -59,7 +53,10 @@ export class WorkerTableComponent implements OnInit {
             days += schedule.friday ? "Fr " : "__ ";
             days += schedule.saturday ? "Sa " : "__ ";
         }
+        return days;
+    }
 
+    getFormattedTime(schedule: Schedule): string {
         let times = "";
 
         // TimeSpan objects are simple objects, converting back to the classes
@@ -90,6 +87,6 @@ export class WorkerTableComponent implements OnInit {
             times += ` until ${schedule.recurBetweenEndUTC.asFormattedTimeOfDay()}`;
         }
 
-        return `${days} [${times}]`;
+        return times;
     }
 }

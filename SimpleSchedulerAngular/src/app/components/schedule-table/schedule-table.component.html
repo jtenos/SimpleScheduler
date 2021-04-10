@@ -1,0 +1,33 @@
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Worker</th>
+            <th>Days</th>
+            <th>Time</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let sd of scheduleDetails" [class.d-none]="sd.schedule.isActive !== active">
+            <td class="d-flex justify-content-between" style="width: 90px;">
+                <a *ngIf="sd.schedule.isActive" [routerLink]="['/schedules/edit', sd.schedule.scheduleID]">
+                    <img src="assets/img/pencil.svg" alt="Edit" />
+                </a>
+                <a *ngIf="sd.schedule.isActive" (click)="deleteSchedule(sd.schedule.scheduleID)">
+                    <img src="assets/img/trash.svg" alt="Delete" />
+                </a>
+                <a *ngIf="!sd.worker.isActive" (click)="reactivateSchedule(sd.schedule.scheduleID)" class="btn btn-sm btn-outline-primary">
+                    Reactivate
+                </a>
+            </td>
+            <td>
+                {{ sd.worker.workerName }}
+            </td>
+            <td>
+                {{ getFormattedDays(sd.schedule) }}
+            <td>
+                {{ getFormattedTime(sd.schedule) }}
+            </td>
+        </tr>
+    </tbody>
+</table>

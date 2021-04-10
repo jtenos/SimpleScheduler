@@ -1,1 +1,14 @@
-<p>schedules works!</p>
+<h2>Schedules {{ active ? "" : "(inactive)" }}</h2>
+<button class="btn btn-sm btn-outline-primary" (click)="refresh()">Refresh</button>
+
+<div [class.d-none]="!loading">Loading...</div>
+
+<div class="card shadow" style="width: 100%; margin-bottom: 10px; margin-top: 20px;" [class.d-none]="loading">
+    <div class="card-body">
+        <button class="btn btn-outline-info btn-sm" (click)="toggleActive()">
+            {{ active ? "Show Inactive" : "Show Active" }}
+        </button>
+        <a class="btn btn-sm btn-primary" routerLink="edit/0" style="margin-left: 10px;">Create</a>
+            <app-schedule-table [scheduleDetails]="scheduleDetails" [active]="active" (refreshSchedules)="refreshSchedules()"></app-schedule-table>
+    </div>
+</div>

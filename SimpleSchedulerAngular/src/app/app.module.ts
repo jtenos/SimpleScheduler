@@ -16,6 +16,8 @@ import { WorkerTableComponent } from './components/worker-table/worker-table.com
 
 import { SemicolonToNewLinePipe } from './pipes/semicolon-to-new-line.pipe';
 import { CustomInterceptor } from './custom-interceptor';
+import { ScheduleTableComponent } from './components/schedule-table/schedule-table.component';
+import { EditScheduleComponent } from './components/edit-schedule/edit-schedule.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,11 @@ import { CustomInterceptor } from './custom-interceptor';
     WorkersComponent,
     WorkerTableComponent,
 
-    SemicolonToNewLinePipe
+    SemicolonToNewLinePipe,
+
+    ScheduleTableComponent,
+
+    EditScheduleComponent
   ],
   imports: [
     BrowserModule,
