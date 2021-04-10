@@ -5,7 +5,10 @@ export default class TimeSpan {
     }
 
     // Must be in format hhmm
-    static parse(s: string): TimeSpan {
+    static parse(s: string): TimeSpan | null {
+        if (s.length !== 4) {
+            return null;
+        }
         const hours = parseInt(s.substring(0, 2), 10);
         const minutes = parseInt(s.substring(2, 4), 10);
         return new TimeSpan(hours, minutes);

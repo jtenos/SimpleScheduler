@@ -24,8 +24,8 @@ namespace SimpleSchedulerAPI.Controllers
         [HttpGet]
         [Route("[action]")]
         public async Task<ImmutableArray<ScheduleDetail>> GetAllSchedules(CancellationToken cancellationToken,
-            bool getActive = true, bool getInactive = true)
-            => await _scheduleManager.GetAllSchedulesAsync(cancellationToken, getActive, getInactive);
+            bool getActive = true, bool getInactive = true, bool getOneTime = false)
+            => await _scheduleManager.GetAllSchedulesAsync(cancellationToken, getActive, getInactive, getOneTime);
 
         [HttpGet]
         [Route("[action]")]

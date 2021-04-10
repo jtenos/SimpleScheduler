@@ -13,7 +13,7 @@ namespace SimpleSchedulerBusiness
         Task ReactivateScheduleAsync(long scheduleID, CancellationToken cancellationToken);
         Task<ImmutableArray<ScheduleDetail>> GetSchedulesToInsertAsync(CancellationToken cancellationToken);
         Task<ImmutableArray<ScheduleDetail>> GetAllSchedulesAsync(CancellationToken cancellationToken,
-            bool getActive = true, bool getInactive = false);
+            bool getActive = true, bool getInactive = false, bool getOneTime = false);
         Task<ScheduleDetail> GetScheduleAsync(long scheduleID, CancellationToken cancellationToken);
         Task<long> AddScheduleAsync(long workerID, bool isActive, bool sunday,
             bool monday, bool tuesday, bool wednesday, bool thursday, bool friday, bool saturday,

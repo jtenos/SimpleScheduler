@@ -16,6 +16,12 @@ export class WorkerService {
         return await this.apiService.get<WorkerDetail[]>("Workers", "GetAllWorkers", []);
     }
 
+    async getAllActiveWorkers(): Promise<Worker[]> {
+        return (await this.apiService.get<WorkerDetail[]>("Workers", "GetAllWorkers", [
+            new Kvp("getInactive", "False")
+        ])).map(x => x.worker);
+    }
+
     async getWorker(workerID: number): Promise<Worker> {
         return await this.apiService.get<Worker>("Workers", "GetWorker", [new Kvp("workerID", workerID.toString())]);
     }
