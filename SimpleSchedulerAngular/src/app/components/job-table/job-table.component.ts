@@ -3,7 +3,7 @@ import { Job } from 'src/app/models/job';
 import TimeSpan from 'src/app/models/timespan';
 import { JobService } from 'src/app/services/job.service';
 import { JobDetail } from "../../models/job-detail";
-const moment = require("moment");
+import * as moment from "moment";
 
 @Component({
     selector: 'app-job-table',

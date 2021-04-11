@@ -1,9 +1,9 @@
 export type Job = {
     jobID: number,
     scheduleID: number,
-    insertDateUTC: Date,
-    queueDateUTC: Date,
-    completeDateUTC: Date | null,
+    insertDateUTC: string,
+    queueDateUTC: string,
+    completeDateUTC: string | null,
     statusCode: string, 
     detailedMessage: string | null,
     acknowledgementID: string, 

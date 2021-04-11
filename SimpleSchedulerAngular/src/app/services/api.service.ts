@@ -41,6 +41,7 @@ export class ApiService {
                 this.router.navigateByUrl("login");
             } else {
                 alert(ex);
+                alert(JSON.stringify(ex));
             }
             return new Promise<T>((resolve, reject) => {});
         }

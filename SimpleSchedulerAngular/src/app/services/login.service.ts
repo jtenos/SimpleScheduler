@@ -20,7 +20,11 @@ export class LoginService {
 
     async validateUser(validationCode: string): Promise<PostResult> {
         try {
-            return await this.apiService.post("Login", "ValidateEmail", { validationCode });
+            const userValidationResult = await this.apiService.post("Login", "ValidateEmail", { validationCode });
+            if ((userValidationResult as any).emailAddress) {
+                localStorage.emailAddress = (userValidationResult as any).emailAddress;
+            }
+            return userValidationResult;
         } catch (ex) {
             console.log("ERROR");
             return { success: false, message: ex?.message };
