@@ -53,6 +53,12 @@ export class EditScheduleComponent implements OnInit {
             this.loading = true;
             this.scheduleID = +params.scheduleID;
 
+            function formatTimeOfDay(timeOfDay: TimeSpan | null) {
+                if (!timeOfDay) {return "";}
+                function pad(num: number) { return num < 10 ? "0" + num : num; }
+                return `${pad(timeOfDay.hours)}:${pad(timeOfDay.minutes)}`;
+            }
+
             const setScheduleForm = () => {
                 this.scheduleForm.setValue({
                     scheduleID: this.schedule.scheduleID,
@@ -66,12 +72,12 @@ export class EditScheduleComponent implements OnInit {
                     friday: this.schedule.friday,
                     saturday: this.schedule.saturday,
                     timeType: this.schedule.timeOfDayUTC ? "time-of-day" : this.schedule.recurTime ? "recur" : "",
-                    timeOfDayUTC: this.schedule.timeOfDayUTC,
+                    timeOfDayUTC: formatTimeOfDay(this.schedule.timeOfDayUTC),
                     recurTime: this.schedule.recurTime,
                     recurTimeHours: this.schedule.recurTime?.hours ? this.schedule.recurTime.hours : 0,
                     recurTimeMinutes: this.schedule.recurTime?.minutes ? this.schedule.recurTime.minutes : 0,
-                    recurBetweenStartUTC: this.schedule.recurBetweenStartUTC,
-                    recurBetweenEndUTC: this.schedule.recurBetweenEndUTC,
+                    recurBetweenStartUTC: formatTimeOfDay(this.schedule.recurBetweenStartUTC),
+                    recurBetweenEndUTC: formatTimeOfDay(this.schedule.recurBetweenEndUTC),
                     oneTime: this.schedule.oneTime
                 });
                 this.loading = false;
@@ -106,7 +112,11 @@ export class EditScheduleComponent implements OnInit {
             if (!input.match(/^[0-9]{2}\:[0-9]{2}$/)) {
                 throw "Invalid time";
             }
-            return TimeSpan.parse(`${input.substring(0, 2)}${input.substring(3, 5)}`);
+            result = TimeSpan.parse(`${input.substring(0, 2)}${input.substring(3, 5)}`) as TimeSpan;
+            if (result.hours < 0 || result.hours > 23 || result.minutes < 0 || result.minutes > 59) {
+                throw "Invalid time";
+            }
+            return result;
         }
 
         let timeOfDayUTC: TimeSpan | null = null;
