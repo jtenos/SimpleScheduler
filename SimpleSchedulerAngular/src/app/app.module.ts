@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { ReactiveFormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './components/app/app.component';
@@ -41,6 +41,7 @@ import { JobTableComponent } from './components/job-table/job-table.component';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    FormsModule,
     ReactiveFormsModule
   ],
   providers: [{
