@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using SimpleSchedulerBusiness;
 using SimpleSchedulerData;
 using SimpleSchedulerModels;
-using SimpleSchedulerModels.Exceptions;
 using System.Collections.Immutable;
 using System.Threading;
 using System.Threading.Tasks;

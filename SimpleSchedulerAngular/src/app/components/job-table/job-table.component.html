@@ -1,0 +1,44 @@
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Worker</th>
+            <th>Insert Date</th>
+            <th>Queue Date</th>
+            <th>Status</th>
+            <th>Results</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let jd of jobDetails">
+            <td class="d-flex justify-content-between" style="width: 90px;">
+                <!-- TODO: Actions 
+                <a *ngIf="sd.schedule.isActive" [routerLink]="['/schedules/edit', sd.schedule.scheduleID]">
+                    <img src="assets/img/pencil.svg" alt="Edit" />
+                </a>
+                <a *ngIf="sd.schedule.isActive" (click)="deleteSchedule(sd.schedule.scheduleID)">
+                    <img src="assets/img/trash.svg" alt="Delete" />
+                </a>
+                <a *ngIf="!sd.schedule.isActive" (click)="reactivateSchedule(sd.schedule.scheduleID)" class="btn btn-sm btn-outline-primary">
+                    Reactivate
+                </a>
+                -->
+                ...Actions...
+            </td>
+            <td>
+                {{ jd.worker.workerName }}
+            </td>
+            <td style=white-space:pre-line;>
+                {{ formatDateTime(jd.job.insertDateUTC) }}
+            <td style=white-space:pre-line;>
+                {{ formatDateTime(jd.job.queueDateUTC) }}
+            </td>
+            <td>
+                {{ jd.job.statusCode }}
+            </td>
+            <td>
+                ...results...
+            </td>
+        </tr>
+    </tbody>
+</table>

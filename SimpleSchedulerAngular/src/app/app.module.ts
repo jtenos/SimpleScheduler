@@ -14,10 +14,10 @@ import { SchedulesComponent } from './components/schedules/schedules.component';
 import { WorkersComponent } from './components/workers/workers.component';
 import { WorkerTableComponent } from './components/worker-table/worker-table.component';
 
-import { SemicolonToNewLinePipe } from './pipes/semicolon-to-new-line.pipe';
 import { CustomInterceptor } from './custom-interceptor';
 import { ScheduleTableComponent } from './components/schedule-table/schedule-table.component';
 import { EditScheduleComponent } from './components/edit-schedule/edit-schedule.component';
+import { JobTableComponent } from './components/job-table/job-table.component';
 
 @NgModule({
   declarations: [
@@ -31,11 +31,11 @@ import { EditScheduleComponent } from './components/edit-schedule/edit-schedule.
     WorkersComponent,
     WorkerTableComponent,
 
-    SemicolonToNewLinePipe,
-
     ScheduleTableComponent,
 
-    EditScheduleComponent
+    EditScheduleComponent,
+
+    JobTableComponent
   ],
   imports: [
     BrowserModule,
