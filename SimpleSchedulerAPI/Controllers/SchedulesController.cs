@@ -55,21 +55,22 @@ namespace SimpleSchedulerAPI.Controllers
                     await _scheduleManager.UpdateScheduleAsync(schedule.ScheduleID,
                         schedule.WorkerID, schedule.Sunday, schedule.Monday, schedule.Tuesday,
                         schedule.Wednesday, schedule.Thursday, schedule.Friday, schedule.Saturday,
-                        schedule.TimeOfDayUTC.AsTimeSpan(), schedule.RecurTime.AsTimeSpan(),
-                        schedule.RecurBetweenStartUTC.AsTimeSpan(),
-                        schedule.RecurBetweenEndUTC.AsTimeSpan(), cancellationToken);
+                        schedule.TimeOfDayUTC?.AsTimeSpan(), schedule.RecurTime?.AsTimeSpan(),
+                        schedule.RecurBetweenStartUTC?.AsTimeSpan(),
+                        schedule.RecurBetweenEndUTC?.AsTimeSpan(), cancellationToken);
                     return Ok(new { Success = true });
                 }
 
                 await _scheduleManager.AddScheduleAsync(schedule.WorkerID, isActive: true, schedule.Sunday, schedule.Monday, schedule.Tuesday,
                     schedule.Wednesday, schedule.Thursday, schedule.Friday, schedule.Saturday,
-                    schedule.TimeOfDayUTC.AsTimeSpan(), schedule.RecurTime.AsTimeSpan(),
-                    schedule.RecurBetweenStartUTC.AsTimeSpan(),
-                    schedule.RecurBetweenEndUTC.AsTimeSpan(), oneTime: false, cancellationToken);
+                    schedule.TimeOfDayUTC?.AsTimeSpan(), schedule.RecurTime?.AsTimeSpan(),
+                    schedule.RecurBetweenStartUTC?.AsTimeSpan(),
+                    schedule.RecurBetweenEndUTC?.AsTimeSpan(), oneTime: false, cancellationToken);
                 return Ok(new { Success = true });
             }
-            catch
+            catch (System.Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine(ex);
                 _databaseFactory.MarkForRollback();
                 return BadRequest("Unknown error, please try again");
             }
