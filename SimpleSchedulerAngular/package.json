@@ -24,6 +24,7 @@
     "@angular/router": "^11.2.5",
     "bootstrap": "^4.6.0",
     "jquery": "^3.6.0",
+    "moment": "^2.29.1",
     "rxjs": "^6.6.6",
     "service": "^0.1.4",
     "tslib": "^2.1.0",

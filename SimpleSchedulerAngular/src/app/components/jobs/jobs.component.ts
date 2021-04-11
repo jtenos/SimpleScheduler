@@ -1,14 +1,41 @@
 import { Component, OnInit } from '@angular/core';
+import { JobService } from 'src/app/services/job.service';
+import { WorkerService } from 'src/app/services/worker.service';
+import { Worker } from "../../models/worker";
+import { JobDetail } from "../../models/job-detail";
 
 @Component({
-  selector: 'app-jobs',
-  templateUrl: './jobs.component.html'
+    selector: 'app-jobs',
+    templateUrl: './jobs.component.html',
+    styles: []
 })
 export class JobsComponent implements OnInit {
 
-  constructor() { }
+    jobDetails!: JobDetail[];
+    workerID: number | null = null;
+    statusCode: string | null = null;
+    allWorkers!: Worker[];
+    header: string = "";
 
-  ngOnInit(): void {
-  }
+    loading = false;
+    constructor(private jobService: JobService, private workerService: WorkerService) {
+    }
 
+    ngOnInit(): void {
+        this.refreshJobs();
+    }
+
+    refresh() {
+        this.refreshJobs();
+    }
+
+    async refreshJobs(): Promise<void> {
+        this.loading = true;
+        this.jobDetails = await this.jobService.getJobs({
+          workerID: this.workerID,
+          statusCode: this.statusCode
+        });
+        this.allWorkers = (await this.workerService.getAllWorkers()).map(w => w.worker);
+        this.loading = false;
+    }
 }
