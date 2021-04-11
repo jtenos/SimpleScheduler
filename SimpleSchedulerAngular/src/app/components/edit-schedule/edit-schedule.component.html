@@ -71,22 +71,27 @@
     </div>
 
     <div class=form-group id=time-of-day-section [class.d-none]="scheduleForm.value.timeType !== 'time-of-day'">
-        <label>Time of Day</label>
+        <label>Time of Day (UTC - HH:mm)</label>
+        <input formControlName="timeOfDayUTC" class=form-control />
     </div>
 
     <div class=form-group id=recur-section [class.d-none]="scheduleForm.value.timeType !== 'recur'">
-        <label>Recurrence</label>
+        <label>Recurrence: Every</label>
+        <div>
+            <select formControlName="recurTimeHours" class=form-control>
+                <option *ngFor="let option of hourOptions" [value]="option.value">{{ option.text }}</option>
+            </select>
+        </div>
+        <div>
+            <select formControlName="recurTimeMinutes" class=form-control>
+                <option *ngFor="let option of minuteOptions" [value]="option.value">{{ option.text }}</option>
+            </select>
+        </div>
+        <label>From</label>
+        <input formControlName="recurBetweenStartUTC" class=form-control>
+        <label>To</label>
+        <input formControlName="recurBetweenEndUTC" class=form-control>
     </div>
 
     <button class="btn btn-primary" type="submit">Save</button>
 </form>
-
-
-<!--
-timeOfDayUTC: [""],
-recurTime: [""],
-recurBetweenStartUTC: [""],
-recurBetweenEndUTC: [""],
-oneTime: [""]
-
--->
