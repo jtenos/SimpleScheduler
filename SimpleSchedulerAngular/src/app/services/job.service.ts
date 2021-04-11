@@ -24,4 +24,22 @@ export class JobService {
         }
         return await this.apiService.get<JobDetail[]>("Jobs", "GetJobs", kvps);
     }
+
+    async cancelJob(jobID: number): Promise<string> {
+        try {
+            await this.apiService.post("Jobs", "CancelJob", { jobID });
+            return "";
+        } catch (ex) {
+            return ex.message;
+        }
+    }
+
+    async acknowledgeError(jobID: number): Promise<string> {
+        try {
+            await this.apiService.post("Jobs", "AcknowledgeError", { jobID });
+            return "";
+        } catch (ex) {
+            return ex.message;
+        }
+    }
 }
