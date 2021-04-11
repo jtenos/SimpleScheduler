@@ -28,4 +28,32 @@ export class JobTableComponent implements OnInit {
         const mom = moment(theDate);
         return `${mom.format("MMM DD YYYY")}\n${mom.format("HH:mm:ss")}`
     }
+
+    showDetail(e: MouseEvent, detailedMessage: string) {
+        switch (e.button) {
+            case 0:
+                alert(detailedMessage);
+                break;
+            case 1: 
+                const newWindow = window.open("about:blank", "_blank", "width=400,height=400,resizable");
+                newWindow?.document.write(detailedMessage);
+            break;
+        }
+    }
+
+    async cancelJob(jobID: number): Promise<void> {
+        const message: string = await this.jobService.cancelJob(jobID);
+        if (message) {
+            return alert(message);
+        }
+        this.refreshJobs.emit(true);
+    }
+
+    async acknowledgeError(jobID: number): Promise<void> {
+        const message: string = await this.jobService.acknowledgeError(jobID);
+        if (message) {
+            return alert(message);
+        }
+        this.refreshJobs.emit(true);
+    }
 }

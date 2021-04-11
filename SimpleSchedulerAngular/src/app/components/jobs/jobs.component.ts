@@ -7,7 +7,14 @@ import { JobDetail } from "../../models/job-detail";
 @Component({
     selector: 'app-jobs',
     templateUrl: './jobs.component.html',
-    styles: []
+    styles: [`:host {
+        width: 100%;
+    
+        .card {
+            width: 100%;
+        }
+      }
+    `]
 })
 export class JobsComponent implements OnInit {
 

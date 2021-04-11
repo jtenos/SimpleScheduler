@@ -11,19 +11,8 @@
     </thead>
     <tbody>
         <tr *ngFor="let jd of jobDetails">
-            <td class="d-flex justify-content-between" style="width: 90px;">
-                <!-- TODO: Actions 
-                <a *ngIf="sd.schedule.isActive" [routerLink]="['/schedules/edit', sd.schedule.scheduleID]">
-                    <img src="assets/img/pencil.svg" alt="Edit" />
-                </a>
-                <a *ngIf="sd.schedule.isActive" (click)="deleteSchedule(sd.schedule.scheduleID)">
-                    <img src="assets/img/trash.svg" alt="Delete" />
-                </a>
-                <a *ngIf="!sd.schedule.isActive" (click)="reactivateSchedule(sd.schedule.scheduleID)" class="btn btn-sm btn-outline-primary">
-                    Reactivate
-                </a>
-                -->
-                ...Actions...
+            <td class="d-flex justify-content-between">
+                <a *ngIf="jd.job.statusCode==='NEW'" class="btn btn-outline-primary btn-sm" (click)="cancelJob(jd.job.jobID)">Cancel Job</a>
             </td>
             <td>
                 {{ jd.worker.workerName }}
@@ -34,10 +23,16 @@
                 {{ formatDateTime(jd.job.queueDateUTC) }}
             </td>
             <td>
-                {{ jd.job.statusCode }}
+                <div>{{ jd.job.statusCode }}</div>
+                <div *ngIf="jd.job.statusCode==='ERR'">
+                    <a (click)="acknowledgeError(jd.job.jobID)">Acknowledge</a>
+                </div>
             </td>
             <td>
-                ...results...
+                <a *ngIf="jd.job.detailedMessage" 
+                    class="btn btn-sm btn-outline-primary" 
+                    (click)="showDetail($event, jd.job.detailedMessage)"
+                    >Result Details</a>
             </td>
         </tr>
     </tbody>
