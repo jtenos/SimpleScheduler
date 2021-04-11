@@ -6,6 +6,7 @@ import { ScheduleService } from 'src/app/services/schedule.service';
 import { Worker } from "../../models/worker";
 import { WorkerService } from 'src/app/services/worker.service';
 import TimeSpan from 'src/app/models/timespan';
+import { ThrowStmt } from '@angular/compiler';
 
 @Component({
     selector: 'app-edit-schedule',
@@ -18,6 +19,8 @@ export class EditScheduleComponent implements OnInit {
     scheduleID!: number;
     schedule!: Schedule;
     allWorkers: Worker[] = [];
+    hourOptions: {text: string, value: number}[] = [];
+    minuteOptions: {text: string, value: number}[] = [];
 
     scheduleForm = this.formBuilder.group({
         scheduleID: [""],
@@ -33,6 +36,8 @@ export class EditScheduleComponent implements OnInit {
         timeType: [""],
         timeOfDayUTC: [""],
         recurTime: [""],
+        recurTimeMinutes: [""],
+        recurTimeHours: [""], 
         recurBetweenStartUTC: [""],
         recurBetweenEndUTC: [""],
         oneTime: [""]
@@ -63,6 +68,8 @@ export class EditScheduleComponent implements OnInit {
                     timeType: this.schedule.timeOfDayUTC ? "time-of-day" : this.schedule.recurTime ? "recur" : "",
                     timeOfDayUTC: this.schedule.timeOfDayUTC,
                     recurTime: this.schedule.recurTime,
+                    recurTimeHours: this.schedule.recurTime?.hours ? this.schedule.recurTime.hours : 0,
+                    recurTimeMinutes: this.schedule.recurTime?.minutes ? this.schedule.recurTime.minutes : 0,
                     recurBetweenStartUTC: this.schedule.recurBetweenStartUTC,
                     recurBetweenEndUTC: this.schedule.recurBetweenEndUTC,
                     oneTime: this.schedule.oneTime
@@ -79,10 +86,55 @@ export class EditScheduleComponent implements OnInit {
                 this.schedule = (await this.scheduleService.getSchedule(this.scheduleID)).schedule;
                 setScheduleForm();
             }
+
+            this.hourOptions.length = 0;
+            for (let i = 0; i <= 23; ++i) {
+                this.hourOptions.push({text: `${i} ${i === 1 ? "hour" : "hours"}`, value: i})
+            }
+            this.minuteOptions.length = 0;
+            for (let i = 0; i <= 59; ++i) {
+                this.minuteOptions.push({text: `${i} ${i === 1 ? "minute" : "minutes"}`, value: i});
+            }
         });
     }
 
     async scheduleFormSubmit() {
+
+        function getTimeSpan(input: string | null) {
+            if (!input) { return null; }
+            let result: TimeSpan;
+            if (!input.match(/^[0-9]{2}\:[0-9]{2}$/)) {
+                throw "Invalid time";
+            }
+            return TimeSpan.parse(`${input.substring(0, 2)}${input.substring(3, 5)}`);
+        }
+
+        let timeOfDayUTC: TimeSpan | null = null;
+        if (this.scheduleForm.value.timeType === "time-of-day") {
+            try {
+                timeOfDayUTC = getTimeSpan(this.scheduleForm.value.timeOfDayUTC);
+            } catch (ex) {
+                return alert(ex);
+            }
+        }
+
+        let recurTime: TimeSpan | null = null;
+        let recurBetweenStartUTC: TimeSpan | null = null;
+        let recurBetweenEndUTC: TimeSpan | null = null;
+        if (this.scheduleForm.value.timeType === "recur") {
+            try {
+                recurTime = new TimeSpan(this.scheduleForm.value.recurTimeHours, this.scheduleForm.value.recurTimeMinutes);
+                if (this.scheduleForm.value.recurBetweenStartUTC) {
+                    recurBetweenStartUTC = getTimeSpan(this.scheduleForm.value.recurBetweenStartUTC);
+                }
+                if (this.scheduleForm.value.recurBetweenEndUTC) {
+                    recurBetweenEndUTC = getTimeSpan(this.scheduleForm.value.recurBetweenEndUTC);
+                }
+            } catch (ex) {
+                return alert(ex);
+            }
+        }
+
         this.schedule = {
             scheduleID: +this.scheduleForm.value.scheduleID,
             isActive: !!this.scheduleForm.value.isActive,
@@ -94,10 +146,10 @@ export class EditScheduleComponent implements OnInit {
             thursday: !!this.scheduleForm.value.thursday,
             friday: !!this.scheduleForm.value.friday,
             saturday: !!this.scheduleForm.value.saturday,
-            timeOfDayUTC: TimeSpan.parse(this.scheduleForm.value.timeOfDayUTC),
-            recurTime: TimeSpan.parse(this.scheduleForm.value.recurTime),
-            recurBetweenStartUTC: TimeSpan.parse(this.scheduleForm.value.recurBetweenStartUTC),
-            recurBetweenEndUTC: TimeSpan.parse(this.scheduleForm.value.recurBetweenEndUTC),
+            timeOfDayUTC: timeOfDayUTC,
+            recurTime: recurTime,
+            recurBetweenStartUTC: recurBetweenStartUTC,
+            recurBetweenEndUTC: recurBetweenEndUTC,
             oneTime: this.scheduleForm.value.oneTime
         };
         await this.scheduleService.saveSchedule(this.schedule);
