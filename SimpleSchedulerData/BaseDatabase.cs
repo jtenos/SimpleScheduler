@@ -44,6 +44,7 @@ namespace SimpleSchedulerData
             CancellationToken cancellationToken)
         {
             using DbCommand comm = _connection.CreateCommand();
+            comm.Transaction = _transaction;
             comm.CommandText = sql;
             comm.Parameters.AddRange(parameters.ToArray());
             using DbDataReader rdr = await comm.ExecuteReaderAsync(cancellationToken).ConfigureAwait(false);
@@ -65,6 +66,7 @@ namespace SimpleSchedulerData
             string sql, IEnumerable<DbParameter> parameters, CancellationToken cancellationToken)
         {
             using var comm = _connection.CreateCommand();
+            comm.Transaction = _transaction;
             comm.CommandText = sql;
             comm.Parameters.AddRange(parameters.ToArray());
             return await comm.ExecuteNonQueryAsync().ConfigureAwait(false);
@@ -75,6 +77,7 @@ namespace SimpleSchedulerData
             CancellationToken cancellationToken)
         {
             using var comm = _connection.CreateCommand();
+            comm.Transaction = _transaction;
             comm.CommandText = sql;
             comm.Parameters.AddRange(parameters.ToArray());
             return (T)(await comm.ExecuteScalarAsync().ConfigureAwait(false))!;

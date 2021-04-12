@@ -11,22 +11,22 @@ Post-Deployment Script Template
 */
 -- Junk script for testing data
 
-if not exists (SELECT
-        1
-    FROM dbo.Workers)
-BEGIN
-INSERT dbo.Workers (IsActive, WorkerName, DetailedDescription, dbo.Workers.EmailOnSuccess, dbo.Workers.ParentWorkerID,
-TimeoutMinutes,
-DirectoryName, dbo.Workers.Executable, dbo.Workers.ArgumentValues)
-    VALUES (1, 'hello', 'hello there, this is my job', '', NULL, 20, 'hello', 'hello.exe', 'config.json')
+--if not exists (SELECT
+--        1
+--    FROM dbo.Workers)
+--BEGIN
+--INSERT dbo.Workers (IsActive, WorkerName, DetailedDescription, dbo.Workers.EmailOnSuccess, dbo.Workers.ParentWorkerID,
+--TimeoutMinutes,
+--DirectoryName, dbo.Workers.Executable, dbo.Workers.ArgumentValues)
+--    VALUES (1, 'hello', 'hello there, this is my job', '', NULL, 20, 'hello', 'hello.exe', 'config.json')
 
 
-INSERT dbo.Workers (IsActive, WorkerName, DetailedDescription, dbo.Workers.EmailOnSuccess, dbo.Workers.ParentWorkerID,
-TimeoutMinutes,
-DirectoryName, dbo.Workers.Executable, dbo.Workers.ArgumentValues)
-    VALUES (1, 'good morning', '', 'joe.enos@azdhs.gov', NULL, 20, 'good-morning', 'morning.exe', '')
-END;
+--INSERT dbo.Workers (IsActive, WorkerName, DetailedDescription, dbo.Workers.EmailOnSuccess, dbo.Workers.ParentWorkerID,
+--TimeoutMinutes,
+--DirectoryName, dbo.Workers.Executable, dbo.Workers.ArgumentValues)
+--    VALUES (1, 'good morning', '', 'joe.enos@azdhs.gov', NULL, 20, 'good-morning', 'morning.exe', '')
+--END;
 
-UPDATE dbo.Workers
-SET ParentWorkerID = 1
-WHERE WorkerID = 2
+--UPDATE dbo.Workers
+--SET ParentWorkerID = 1
+--WHERE WorkerID = 2

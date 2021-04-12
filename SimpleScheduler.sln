@@ -9,17 +9,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleSchedulerBusiness", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleSchedulerData", "SimpleSchedulerData\SimpleSchedulerData.csproj", "{16C14813-9931-4B53-9811-48F87BE134C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleSchedulerAPI", "SimpleSchedulerAPI\SimpleSchedulerAPI.csproj", "{D3335E54-70CD-4555-A23D-77E9A25D271E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleSchedulerAPI", "SimpleSchedulerAPI\SimpleSchedulerAPI.csproj", "{D3335E54-70CD-4555-A23D-77E9A25D271E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleSchedulerService", "SimpleSchedulerService\SimpleSchedulerService.csproj", "{0F2BE554-5627-42B4-A480-174F4E5ADCB9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleSchedulerEmail", "SimpleSchedulerEmail\SimpleSchedulerEmail.csproj", "{67B2364E-E7BE-4070-A154-C5DDCBB132CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleSchedulerEmail", "SimpleSchedulerEmail\SimpleSchedulerEmail.csproj", "{67B2364E-E7BE-4070-A154-C5DDCBB132CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleSchedulerServiceChecker", "SimpleSchedulerServiceChecker\SimpleSchedulerServiceChecker.csproj", "{09B2F39D-FB6E-45D3-A628-B4ACC478FB29}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleSchedulerServiceChecker", "SimpleSchedulerServiceChecker\SimpleSchedulerServiceChecker.csproj", "{09B2F39D-FB6E-45D3-A628-B4ACC478FB29}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleSchedulerEntities", "SimpleSchedulerEntities\SimpleSchedulerEntities.csproj", "{4AC0EFDD-3820-412D-BC49-0E65553F133C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleSchedulerEntities", "SimpleSchedulerEntities\SimpleSchedulerEntities.csproj", "{4AC0EFDD-3820-412D-BC49-0E65553F133C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleSchedulerTests", "SimpleSchedulerTests\SimpleSchedulerTests.csproj", "{46FF81EE-5B13-4547-91FC-1282370E5D0B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleSchedulerTests", "SimpleSchedulerTests\SimpleSchedulerTests.csproj", "{46FF81EE-5B13-4547-91FC-1282370E5D0B}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "SimpleSchedulerDB", "SqlDB\SimpleSchedulerDB.sqlproj", "{760899A4-0FCE-4B5C-A9E4-7C0F11CC0831}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -101,6 +103,18 @@ Global
 		{46FF81EE-5B13-4547-91FC-1282370E5D0B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{46FF81EE-5B13-4547-91FC-1282370E5D0B}.Release|x64.ActiveCfg = Release|Any CPU
 		{46FF81EE-5B13-4547-91FC-1282370E5D0B}.Release|x64.Build.0 = Release|Any CPU
+		{760899A4-0FCE-4B5C-A9E4-7C0F11CC0831}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{760899A4-0FCE-4B5C-A9E4-7C0F11CC0831}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{760899A4-0FCE-4B5C-A9E4-7C0F11CC0831}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{760899A4-0FCE-4B5C-A9E4-7C0F11CC0831}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{760899A4-0FCE-4B5C-A9E4-7C0F11CC0831}.Debug|x64.Build.0 = Debug|Any CPU
+		{760899A4-0FCE-4B5C-A9E4-7C0F11CC0831}.Debug|x64.Deploy.0 = Debug|Any CPU
+		{760899A4-0FCE-4B5C-A9E4-7C0F11CC0831}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{760899A4-0FCE-4B5C-A9E4-7C0F11CC0831}.Release|Any CPU.Build.0 = Release|Any CPU
+		{760899A4-0FCE-4B5C-A9E4-7C0F11CC0831}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{760899A4-0FCE-4B5C-A9E4-7C0F11CC0831}.Release|x64.ActiveCfg = Release|Any CPU
+		{760899A4-0FCE-4B5C-A9E4-7C0F11CC0831}.Release|x64.Build.0 = Release|Any CPU
+		{760899A4-0FCE-4B5C-A9E4-7C0F11CC0831}.Release|x64.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
