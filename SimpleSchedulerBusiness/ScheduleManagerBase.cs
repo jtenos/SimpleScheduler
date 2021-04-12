@@ -206,7 +206,8 @@ namespace SimpleSchedulerBusiness
         private async Task<ImmutableArray<ScheduleDetail>> GetScheduleDetailsAsync(IEnumerable<Schedule> schedules,
            CancellationToken cancellationToken)
         {
-            var allWorkers = await ServiceProvider.GetRequiredService<IWorkerManager>().GetAllWorkersAsync(cancellationToken).ConfigureAwait(false);
+            var allWorkers = await ServiceProvider.GetRequiredService<IWorkerManager>().GetAllWorkersAsync(
+                cancellationToken, getActive: true, getInactive: true).ConfigureAwait(false);
 
             var result = new List<ScheduleDetail>();
             foreach (var schedule in schedules)

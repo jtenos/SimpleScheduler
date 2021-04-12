@@ -58,20 +58,6 @@
   <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
     <Folder Include="Properties" />
-    <Folder Include="dbo" />
-    <Folder Include="dbo\Tables" />
-  </ItemGroup>
-  <ItemGroup>
-    <Build Include="dbo\Tables\Jobs.sql" />
-    <Build Include="dbo\Tables\Jobs_Hist.sql" />
-    <Build Include="dbo\Tables\LoginAttempts.sql" />
-    <Build Include="dbo\Tables\LoginAttempts_Hist.sql" />
-    <Build Include="dbo\Tables\Schedules.sql" />
-    <Build Include="dbo\Tables\Schedules_Hist.sql" />
-    <Build Include="dbo\Tables\Users.sql" />
-    <Build Include="dbo\Tables\Users_Hist.sql" />
-    <Build Include="dbo\Tables\Workers.sql" />
-    <Build Include="dbo\Tables\Workers_Hist.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include="$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\130\SqlSchemas\master.dacpac">
@@ -82,8 +68,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="SchedulerDB.publish.xml" />
+    <None Include="SimpleScheduler_UnitTests.publish.xml" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment1.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="Jobs.sql" />
+    <Build Include="LoginAttempts.sql" />
+    <Build Include="Schedules.sql" />
+    <Build Include="Users.sql" />
+    <Build Include="Workers.sql" />
   </ItemGroup>
 </Project>

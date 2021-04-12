@@ -11,5 +11,7 @@ SimpleSchedulerAngular/package-lock.json
 _db
 **/.vscode
 **/secrets.json
+**/secrets.sqlite.json
+**/secrets.sqlserver.json
 
 **/dist/
