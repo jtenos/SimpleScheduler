@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using SimpleSchedulerBusiness;
+using SimpleSchedulerBusiness.SqlServer;
 using SimpleSchedulerBusiness.Sqlite;
 using SimpleSchedulerData;
 using SimpleSchedulerEmail;
@@ -72,12 +73,24 @@ namespace SimpleSchedulerAPI
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SimpleSchedulerAPI", Version = "v1" });
             });
 
-            services.AddScoped<BaseDatabase, SqliteDatabase>();
+            switch (Configuration["DatabaseType"])
+            {
+                case "SqlServer":
+                    services.AddScoped<BaseDatabase, SqlDatabase>();
+                    services.AddScoped<IWorkerManager, SimpleSchedulerBusiness.SqlServer.WorkerManager>();
+                    services.AddScoped<IScheduleManager, SimpleSchedulerBusiness.SqlServer.ScheduleManager>();
+                    services.AddScoped<IJobManager, SimpleSchedulerBusiness.SqlServer.JobManager>();
+                    services.AddScoped<IUserManager, SimpleSchedulerBusiness.SqlServer.UserManager>();
+                break;
+                case "Sqlite":
+                    services.AddScoped<BaseDatabase, SqliteDatabase>();
+                    services.AddScoped<IWorkerManager, SimpleSchedulerBusiness.Sqlite.WorkerManager>();
+                    services.AddScoped<IScheduleManager, SimpleSchedulerBusiness.Sqlite.ScheduleManager>();
+                    services.AddScoped<IJobManager, SimpleSchedulerBusiness.Sqlite.JobManager>();
+                    services.AddScoped<IUserManager, SimpleSchedulerBusiness.Sqlite.UserManager>();
+                break;
+            }
             services.AddScoped<DatabaseFactory>();
-            services.AddScoped<IWorkerManager, WorkerManager>();
-            services.AddScoped<IScheduleManager, ScheduleManager>();
-            services.AddScoped<IJobManager, JobManager>();
-            services.AddScoped<IUserManager, UserManager>();
             services.AddScoped<IEmailer, Emailer>();
         }
 

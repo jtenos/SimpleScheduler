@@ -6,7 +6,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SimpleSchedulerBusiness;
-using SimpleSchedulerBusiness.Sqlite;
 using SimpleSchedulerData;
 using SimpleSchedulerEmail;
 
@@ -32,10 +31,23 @@ namespace SimpleSchedulerService
                     services.AddScoped<JobScheduler>();
                     services.AddScoped<JobExecutor>();
                     services.AddScoped<DatabaseFactory>();
-                    services.AddScoped<BaseDatabase, SqliteDatabase>();
-                    services.AddScoped<IJobManager, JobManager>();
-                    services.AddScoped<IScheduleManager, ScheduleManager>();
-                    services.AddScoped<IWorkerManager, WorkerManager>();
+                    switch (config["DatabaseType"])
+                    {
+                        case "SqlServer":
+                            services.AddScoped<BaseDatabase, SqlDatabase>();
+                            services.AddScoped<IWorkerManager, SimpleSchedulerBusiness.SqlServer.WorkerManager>();
+                            services.AddScoped<IScheduleManager, SimpleSchedulerBusiness.SqlServer.ScheduleManager>();
+                            services.AddScoped<IJobManager, SimpleSchedulerBusiness.SqlServer.JobManager>();
+                            services.AddScoped<IUserManager, SimpleSchedulerBusiness.SqlServer.UserManager>();
+                            break;
+                        case "Sqlite":
+                            services.AddScoped<BaseDatabase, SqliteDatabase>();
+                            services.AddScoped<IWorkerManager, SimpleSchedulerBusiness.Sqlite.WorkerManager>();
+                            services.AddScoped<IScheduleManager, SimpleSchedulerBusiness.Sqlite.ScheduleManager>();
+                            services.AddScoped<IJobManager, SimpleSchedulerBusiness.Sqlite.JobManager>();
+                            services.AddScoped<IUserManager, SimpleSchedulerBusiness.Sqlite.UserManager>();
+                            break;
+                    }
                 }).UseWindowsService().Build().RunAsync().ConfigureAwait(false);
         }
     }
