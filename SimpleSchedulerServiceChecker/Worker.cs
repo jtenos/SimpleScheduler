@@ -68,6 +68,7 @@ namespace SimpleSchedulerServiceChecker
                                     {
                                         url = $"{url}/";
                                     }
+                                    // TODO: This isn't hooked up yet
                                     url += $"ExecuteAction?ActionID={acknowledgeActionID}";
                                     message.Append($" <a href='{url}' target=_blank>Acknowledge</a>");
                                 }
