@@ -32,6 +32,7 @@
                 <a *ngIf="jd.job.detailedMessage" 
                     class="btn btn-sm btn-outline-primary" 
                     (click)="showDetail($event, jd.job.detailedMessage)"
+                    (auxclick)="showDetail($event, jd.job.detailedMessage)"
                     >Result Details</a>
             </td>
         </tr>

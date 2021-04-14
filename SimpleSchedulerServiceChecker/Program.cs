@@ -24,8 +24,17 @@ namespace SimpleSchedulerServiceChecker
                     services.AddHostedService<Worker>();
                     services.AddSingleton<IConfiguration>(config);
                     services.AddScoped<DatabaseFactory>();
-                    services.AddScoped<BaseDatabase, SqlDatabase>();
-                    services.AddScoped<IJobManager, JobManager>();
+                    switch (config["DatabaseType"])
+                    {
+                        case "SqlServer":
+                            services.AddScoped<BaseDatabase, SqlDatabase>();
+                            services.AddScoped<IJobManager, SimpleSchedulerBusiness.SqlServer.JobManager>();
+                            break;
+                        case "Sqlite":
+                            services.AddScoped<BaseDatabase, SqliteDatabase>();
+                            services.AddScoped<IJobManager, SimpleSchedulerBusiness.Sqlite.JobManager>();
+                            break;
+                    }
                     services.AddScoped<IEmailer, Emailer>();
                 }).UseWindowsService().Build().RunAsync().ConfigureAwait(false);
         }
