@@ -43,6 +43,7 @@ export class JobsComponent implements OnInit {
           statusCode: this.statusCode
         });
         this.allWorkers = (await this.workerService.getAllWorkers()).map(w => w.worker);
+        this.allWorkers.sort((x, y) => x.workerName.localeCompare(y.workerName));
         this.loading = false;
     }
 }
