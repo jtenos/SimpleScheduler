@@ -10,6 +10,7 @@ import * as moment from "moment";
 export class AppComponent {
     title = 'sch';
     clockStarted = false;
+    envPopulated = false;
 
     constructor(router: Router, apiService: ApiService) {
         router.events.subscribe(e => {
@@ -32,6 +33,14 @@ export class AppComponent {
             }
             if (localStorage.emailAddress) {
                 (document.querySelector("#user-email") as any).textContent = localStorage.emailAddress;
+            }
+            if (!this.envPopulated) {
+                async function getEnv() {
+                    const envName: string = await apiService.get("Hello", "GetEnvironmentName", []);
+                    (document.querySelector("#env-name") as any).textContent = envName;
+                }
+                getEnv();
+                this.envPopulated = true;
             }
         });
     }
