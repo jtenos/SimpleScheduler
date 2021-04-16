@@ -9,7 +9,6 @@ export class NavbarComponent implements OnInit {
 
   emailAddress = "todo";
   environmentName = "todo";
-  utcNowFormatted = "todo";
 
   constructor() { }
 

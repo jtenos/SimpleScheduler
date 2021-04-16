@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using SimpleSchedulerBusiness;
 using System;
 using System.Text.Json;
+using Microsoft.Extensions.Configuration;
 
 namespace SimpleSchedulerAPI.Controllers
 {
@@ -13,8 +14,10 @@ namespace SimpleSchedulerAPI.Controllers
         : ControllerBase
     {
         private readonly IUserManager _userManager;
+        private readonly IConfiguration _config;
 
-        public HelloController(IUserManager userManager) => _userManager = userManager;
+        public HelloController(IUserManager userManager, IConfiguration config)
+            => (_userManager, _config) = (userManager, config);
 
         [Route("[action]")]
         [HttpGet]
@@ -29,5 +32,8 @@ namespace SimpleSchedulerAPI.Controllers
         [HttpGet("[action]")]
         [ResponseCache(NoStore = true)]
         public IActionResult GetUtcNow() => Ok(JsonSerializer.Serialize(DateTime.UtcNow.ToString("MMM dd yyyy HH\\:mm\\:ss")));
+
+        [HttpGet("[action]")]
+        public IActionResult GetEnvironmentName() => Ok(JsonSerializer.Serialize(_config.GetValue<string>("EnvironmentName")));
     }
 }
