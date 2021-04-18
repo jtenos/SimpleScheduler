@@ -15,6 +15,9 @@ export class JobTableComponent implements OnInit {
     @Input()
     jobDetails!: JobDetail[];
 
+    @Input()
+    filterWorkerName: string | undefined;
+
     @Output()
     refreshJobs = new EventEmitter<boolean>();
 

@@ -3,8 +3,7 @@
         <tr>
             <th></th>
             <th>Worker</th>
-            <th>Days</th>
-            <th>Time</th>
+            <th>Details</th>
         </tr>
     </thead>
     <tbody>
@@ -24,9 +23,7 @@
                 {{ sd.worker.workerName }}
             </td>
             <td>
-                {{ getFormattedDays(sd.schedule) }}
-            <td>
-                {{ getFormattedTime(sd.schedule) }}
+                {{ getFormattedSchedule(sd.schedule) }}
             </td>
         </tr>
     </tbody>

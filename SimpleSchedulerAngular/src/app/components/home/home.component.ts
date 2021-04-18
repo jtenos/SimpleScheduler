@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ApiService } from 'src/app/services/api.service';
 
 @Component({
@@ -7,11 +8,12 @@ import { ApiService } from 'src/app/services/api.service';
 })
 export class HomeComponent implements OnInit {
 
-    constructor(private apiService: ApiService) { }
+    constructor(private router: Router) { }
 
     ngOnInit(): void {
 
-        
+        this.router.navigateByUrl("jobs");
+
     }
 
 }

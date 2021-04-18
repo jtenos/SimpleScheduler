@@ -10,17 +10,17 @@
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let jd of jobDetails">
+        <tr *ngFor="let jd of jobDetails" [class.d-none]="!jd.worker.workerName.toLowerCase().includes(filterWorkerName?.toLowerCase() || '')">
             <td class="d-flex justify-content-between">
-                <a *ngIf="jd.job.statusCode==='NEW'" class="btn btn-outline-primary btn-sm" (click)="cancelJob(jd.job.jobID)">Cancel Job</a>
+                <a [class.invisible]="jd.job.statusCode!=='NEW'" class="btn btn-outline-primary btn-sm" (click)="cancelJob(jd.job.jobID)">Cancel Job</a>
             </td>
             <td>
                 {{ jd.worker.workerName }}
             </td>
             <td style=white-space:pre-line;>
-                {{ formatDateTime(jd.job.insertDateUTC) }}
+                {{ formatDateTime(jd.job.insertDateUTC) }} (UTC)
             <td style=white-space:pre-line;>
-                {{ formatDateTime(jd.job.queueDateUTC) }}
+                {{ formatDateTime(jd.job.queueDateUTC) }} (UTC)
             </td>
             <td>
                 <div>{{ jd.job.statusCode }}</div>

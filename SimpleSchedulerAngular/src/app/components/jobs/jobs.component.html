@@ -1,10 +1,17 @@
 <h2>Jobs {{ header }}</h2>
-<button class="btn btn-sm btn-outline-primary" (click)="refresh()">Refresh</button>
 
 <div [class.d-none]="!loading">Loading...</div>
 
 <div class="card shadow" style="width: 100%; margin-bottom: 10px; margin-top: 20px;" [class.d-none]="loading">
     <div class=form-group style="display: flex; justify-content: center;">
+        <div>
+            <label style=visibility:hidden;>Refresh</label>
+            <button class="btn btn-sm btn-outline-primary form-control" (click)="refresh()">Refresh</button>
+        </div>
+        <div>
+            <label style=visibility:hidden;>&nbsp;</label>
+            <input class=form-control type=text #filterWorkerName autofocus placeholder=Filter... style>
+        </div>
         <div>
             <label>Worker</label>
             <select class=form-control [(ngModel)]="workerID" (change)="refresh()">
@@ -26,6 +33,7 @@
         </div>
     </div>
     <div class="card-body">
-        <app-job-table [jobDetails]="jobDetails" (refreshJobs)="refreshJobs()"></app-job-table>
+        <app-job-table [jobDetails]="jobDetails" (refreshJobs)="refreshJobs()"
+            [filterWorkerName]="filterWorkerName.value"></app-job-table>
     </div>
 </div>
