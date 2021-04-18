@@ -22,3 +22,19 @@ nav#page-nav {
   .nav-link.active {
     font-weight: bold;
   }
+
+  /* https://www.w3docs.com/tools/code-editor/13719 */
+  .blinking-alert {
+    animation: blink-animation 1s steps(5, start) infinite;
+    -webkit-animation: blink-animation 1s steps(5, start) infinite;
+  }
+  @keyframes blink-animation {
+    to {
+      background-color:red;
+    }
+  }
+  @-webkit-keyframes blink-animation {
+    to {
+    background-color:red;
+    }
+  }

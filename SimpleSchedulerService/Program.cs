@@ -16,7 +16,12 @@ namespace SimpleSchedulerService
         static async Task Main(string[] args)
         {
             Trace.Listeners.Add(new ConsoleTraceListener());
-            Trace.Listeners.Add(new CustomTraceListener(Path.Combine(AppDomain.CurrentDomain.BaseDirectory!, "log.txt")));
+            string logDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory!, "logs");
+            if (!Directory.Exists(logDir))
+            {
+                Directory.CreateDirectory(logDir);
+            }
+            Trace.Listeners.Add(new CustomTraceListener(Path.Combine(logDir, "log.txt")));
             var config = new ConfigurationBuilder()
                 .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
                 .AddJsonFile("appsettings.json", optional: false)

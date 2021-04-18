@@ -13,6 +13,7 @@ import { WorkersComponent } from './components/workers/workers.component';
 const routes: Routes = [
   { path: "", component: HomeComponent },
   { path: "login", component: LoginComponent },
+  { path: "jobs/:workerID", component: JobsComponent },
   { path: "jobs", component: JobsComponent },
   { path: "schedules", component: SchedulesComponent },
   { path: "schedules/edit/:scheduleID", component: EditScheduleComponent },

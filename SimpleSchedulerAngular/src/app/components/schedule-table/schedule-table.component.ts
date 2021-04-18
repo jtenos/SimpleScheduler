@@ -38,6 +38,10 @@ export class ScheduleTableComponent implements OnInit {
         }
     }
 
+    getFormattedSchedule(schedule: Schedule) : string {
+        return this.scheduleService.formatSchedule(schedule);
+    }
+
     getFormattedDays(schedule: Schedule): string {
         let days = "";
         if (schedule.sunday && schedule.monday && schedule.tuesday && schedule.wednesday && schedule.thursday && schedule.friday && schedule.saturday) {
@@ -74,17 +78,17 @@ export class ScheduleTableComponent implements OnInit {
         }
 
         if (schedule.timeOfDayUTC) {
-            times = `at ${schedule.timeOfDayUTC.asFormattedTimeOfDay()}`;
+            times = `at ${schedule.timeOfDayUTC.asFormattedTimeOfDay()} (UTC)`;
         } else if (schedule.recurTime) {
             times = schedule.recurTime.asFormattedTimeSpan();
         }
 
         if (schedule.recurBetweenStartUTC && schedule.recurBetweenEndUTC) {
-            times += ` between ${schedule.recurBetweenStartUTC.asFormattedTimeOfDay()} and ${schedule.recurBetweenEndUTC.asFormattedTimeOfDay()}`;
+            times += ` between ${schedule.recurBetweenStartUTC.asFormattedTimeOfDay()} and ${schedule.recurBetweenEndUTC.asFormattedTimeOfDay()} (UTC)`;
         } else if (schedule.recurBetweenStartUTC) {
-            times += ` starting at ${schedule.recurBetweenStartUTC.asFormattedTimeOfDay()}`;
+            times += ` starting at ${schedule.recurBetweenStartUTC.asFormattedTimeOfDay()} (UTC)`;
         } else if (schedule.recurBetweenEndUTC) {
-            times += ` until ${schedule.recurBetweenEndUTC.asFormattedTimeOfDay()}`;
+            times += ` until ${schedule.recurBetweenEndUTC.asFormattedTimeOfDay()} (UTC)`;
         }
 
         return times;

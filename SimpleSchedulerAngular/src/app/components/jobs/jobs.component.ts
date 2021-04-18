@@ -3,6 +3,7 @@ import { JobService } from 'src/app/services/job.service';
 import { WorkerService } from 'src/app/services/worker.service';
 import { Worker } from "../../models/worker";
 import { JobDetail } from "../../models/job-detail";
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'app-jobs',
@@ -25,11 +26,16 @@ export class JobsComponent implements OnInit {
     header: string = "";
 
     loading = false;
-    constructor(private jobService: JobService, private workerService: WorkerService) {
+    constructor(private route: ActivatedRoute, private jobService: JobService, private workerService: WorkerService) {
     }
 
     ngOnInit(): void {
-        this.refreshJobs();
+        this.route.params.subscribe(async params => {
+            if (params.workerID) {
+                this.workerID = params.workerID;
+            }
+            this.refreshJobs();
+        });
     }
 
     refresh() {
