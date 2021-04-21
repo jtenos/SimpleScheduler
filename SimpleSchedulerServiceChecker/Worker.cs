@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SimpleSchedulerEmail;
 using SimpleSchedulerBusiness;
 using SimpleSchedulerData;
+using System.Text.Json;
 
 namespace SimpleSchedulerServiceChecker
 {
@@ -33,14 +34,16 @@ namespace SimpleSchedulerServiceChecker
         {
             async Task GoAsync()
             {
+                Trace.TraceInformation($"GoAsync");
                 try
                 {
                     _serviceNames = _config.GetSection("ServiceNames").GetChildren().Select(x => x.Value).ToArray();
-
+                    Trace.TraceInformation($"Checking services: {JsonSerializer.Serialize(_serviceNames)}");
                     foreach (var serviceName in _serviceNames!)
                     {
                         if (!IsRunning(serviceName))
                         {
+                            Trace.TraceInformation($"Service {serviceName} is not running");
                             await SendEmailAsync($"Service {serviceName} is not running", cancellationToken);
                         }
                     }
@@ -80,6 +83,7 @@ namespace SimpleSchedulerServiceChecker
                     catch
                     {
                         scope.ServiceProvider.GetRequiredService<DatabaseFactory>().MarkForRollback();
+                        throw;
                     }
                     finally
                     {
@@ -88,6 +92,7 @@ namespace SimpleSchedulerServiceChecker
                 }
                 catch (Exception ex)
                 {
+                    Trace.TraceError(ex.ToString());
                     await SendEmailAsync($"EXCEPTION\n{ex}", cancellationToken);
                 }
             }
@@ -96,7 +101,7 @@ namespace SimpleSchedulerServiceChecker
             await GoAsync().ConfigureAwait(false);
         }
 
-        private static bool IsRunning(string serviceName)
+        private bool IsRunning(string serviceName)
         {
             try
             {
@@ -105,8 +110,10 @@ namespace SimpleSchedulerServiceChecker
                 return new ServiceController(serviceName).Status == ServiceControllerStatus.Running;
 #pragma warning restore CA1416 // Validate platform compatibility
             }
-            catch
+            catch (Exception ex)
             {
+                Trace.TraceInformation($"{Environment.MachineName} {_config["EnvironmentName"]}: {serviceName} is not running or an error occurred");
+                Trace.TraceInformation(ex.ToString());
                 return false;
             }
         }
@@ -115,7 +122,7 @@ namespace SimpleSchedulerServiceChecker
         {
             try
             {
-                await _emailer.SendEmailToAdminAsync($"{Environment.MachineName}: Service Checker Alert", bodyHTML, cancellationToken);
+                await _emailer.SendEmailToAdminAsync($"{Environment.MachineName} {_config["EnvironmentName"]}: Service Checker Alert", bodyHTML, cancellationToken);
             }
             catch (Exception ex)
             {

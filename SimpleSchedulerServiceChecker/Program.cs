@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,10 +15,12 @@ namespace SimpleSchedulerServiceChecker
     {
         public static async Task Main()
         {
+            Trace.Listeners.Add(new ConsoleTraceListener());
             var config = new ConfigurationBuilder()
                 .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
                 .AddJsonFile("appsettings.json")
                 .Build();
+            Trace.TraceInformation("Creating host");
             await Host.CreateDefaultBuilder()
                 .ConfigureServices((hostContext, services) =>
                 {
