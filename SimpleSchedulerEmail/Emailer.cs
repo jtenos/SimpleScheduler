@@ -18,7 +18,7 @@ namespace SimpleSchedulerEmail
         public Emailer(IConfiguration config) => _config = config;
 
         async Task IEmailer.SendEmailToAdminAsync(string subject, string bodyHTML, CancellationToken cancellationToken)
-            => await ((IEmailer)this).SendEmailAsync(new[] { Environment.GetEnvironmentVariable("SCHEDULER_ADMIN_EMAIL") ?? "" }, subject, bodyHTML,
+            => await ((IEmailer)this).SendEmailAsync(new[] { _config.GetValue<string>("MailSettings:AdminEmail") ?? "" }, subject, bodyHTML,
         cancellationToken).ConfigureAwait(false);
 
         async Task IEmailer.SendEmailAsync(IEnumerable<string> toAddresses, string subject, string bodyHTML,
