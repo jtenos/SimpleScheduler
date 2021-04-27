@@ -5,7 +5,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SimpleSchedulerBusiness;
-using SimpleSchedulerBusiness.Sqlite;
 using SimpleSchedulerData;
 using SimpleSchedulerEmail;
 
@@ -32,10 +31,14 @@ namespace SimpleSchedulerServiceChecker
                         case "SqlServer":
                             services.AddScoped<BaseDatabase, SqlDatabase>();
                             services.AddScoped<IJobManager, SimpleSchedulerBusiness.SqlServer.JobManager>();
+                            services.AddScoped<IScheduleManager, SimpleSchedulerBusiness.SqlServer.ScheduleManager>();
+                            services.AddScoped<IWorkerManager, SimpleSchedulerBusiness.SqlServer.WorkerManager>();
                             break;
                         case "Sqlite":
                             services.AddScoped<BaseDatabase, SqliteDatabase>();
                             services.AddScoped<IJobManager, SimpleSchedulerBusiness.Sqlite.JobManager>();
+                            services.AddScoped<IScheduleManager, SimpleSchedulerBusiness.Sqlite.ScheduleManager>();
+                            services.AddScoped<IWorkerManager, SimpleSchedulerBusiness.Sqlite.WorkerManager>();
                             break;
                     }
                     services.AddScoped<IEmailer, Emailer>();
