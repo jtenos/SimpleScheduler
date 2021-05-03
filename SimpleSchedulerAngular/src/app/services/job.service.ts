@@ -25,6 +25,12 @@ export class JobService {
         return await this.apiService.get<JobDetail[]>("Jobs", "GetJobs", kvps);
     }
 
+    async getDetailedMessage(jobID: number): Promise<string> {
+        return (await this.apiService.post("Jobs", "GetDetailedMessage", {
+            jobID
+        })).message;
+    }
+
     async cancelJob(jobID: number): Promise<string> {
         try {
             await this.apiService.post("Jobs", "CancelJob", { jobID });

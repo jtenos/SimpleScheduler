@@ -51,7 +51,15 @@ namespace SimpleSchedulerAPI.Controllers
             return Ok();
         }
 
+        [HttpPost("[action]")]
+        public async Task<object> GetDetailedMessage([FromBody] GetDetailedMessageRequest request, CancellationToken cancellationToken)
+        {
+            string message = await _jobManager.GetDetailedMessageAsync(request.JobID, cancellationToken);
+            return Ok(new { message = message });
+        }
+
         public record CancelJobRequest(long JobID);
         public record AcknowledgeErrorRequest(long JobID);
+        public record GetDetailedMessageRequest(long JobID);
     }
 }

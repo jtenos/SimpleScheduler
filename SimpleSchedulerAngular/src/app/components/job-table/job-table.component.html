@@ -32,8 +32,9 @@
                 <!-- href apparently is required to get middle-click to work -->
                 <a href="#" *ngIf="jd.job.detailedMessage" 
                     class="btn btn-sm btn-outline-primary" 
-                    (click)="showDetail($event, jd.job.detailedMessage)"
-                    (auxclick)="showDetail($event, jd.job.detailedMessage)"
+                    (click)="showDetail($event, jd.job.jobID)"
+                    (auxclick)="showDetail($event, jd.job.jobID)"
+                    (mousedown)="showDetail($event, jd.job.jobID)"
                     >Result Details</a>
             </td>
         </tr>
