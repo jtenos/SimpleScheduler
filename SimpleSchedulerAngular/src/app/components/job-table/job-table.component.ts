@@ -33,14 +33,18 @@ export class JobTableComponent implements OnInit {
         return `${mom.format("MMM DD YYYY")}\n${mom.format("HH:mm:ss")}`
     }
 
-    showDetail(e: MouseEvent, detailedMessage: string) {
+    // TODO: Fix this so that it works on regular mice and trackpads, for
+    // Safari, Firefox, and Chromium
+    async showDetail(e: MouseEvent, jobID: number) {
         e.preventDefault();
         e.stopPropagation();
+        const detailedMessage = await this.jobService.getDetailedMessage(jobID);
         switch (e.button) {
             case 0:
                 alert(detailedMessage);
                 break;
             case 1:
+            case 2:
                 const newWindow = window.open("about:blank", "_blank", "width=400,height=400,resizable");
                 let val: string = he.encode(detailedMessage, { strict: true });
                 val = JSON.stringify(val);

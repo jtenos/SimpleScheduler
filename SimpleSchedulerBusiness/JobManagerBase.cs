@@ -182,7 +182,24 @@ namespace SimpleSchedulerBusiness
             var parms = new List<DbParameter>();
 
             var sql = new StringBuilder();
-            sql.AppendLine("SELECT * FROM Jobs WHERE 1=1");
+
+            // Excluding details - not important here
+            sql.AppendLine($@"
+                SELECT
+                    JobID
+                    ,ScheduleID
+                    ,InsertDateUTC
+                    ,QueueDateUTC
+                    ,CompleteDateUTC
+                    ,StatusCode
+                    ,AcknowledgementID
+                    ,AcknowledgementDate
+                    ,CASE
+                        WHEN DetailedMessage IS NULL THEN ''
+                        WHEN DetailedMessage = '' THEN ''
+                        ELSE 'X'
+                    END [DetailedMessage] 
+                FROM Jobs WHERE 1=1");
             if (statusCode != null)
             {
                 sql.AppendLine("AND StatusCode = @StatusCode");
@@ -254,6 +271,14 @@ namespace SimpleSchedulerBusiness
             await db.NonQueryAsync(@"
                 UPDATE Jobs SET StatusCode = 'NEW' WHERE StatusCode = 'RUN';
             ", Array.Empty<DbParameter>(), cancellationToken).ConfigureAwait(false);
+        }
+
+        public virtual async Task<string> GetDetailedMessageAsync(long jobID, CancellationToken cancellationToken)
+        {
+            var db = await DatabaseFactory.GetDatabaseAsync(cancellationToken).ConfigureAwait(false);
+            return await db.ScalarAsync<string>(@"
+                SELECT DetailedMessage FROM Jobs WHERE JobID = @JobID
+            ", new[] { db.GetInt64Parameter("@JobID", jobID)}, cancellationToken).ConfigureAwait(false);
         }
 
         private async Task<ImmutableArray<JobDetail>> GetJobDetailsAsync(IEnumerable<Job> jobs, CancellationToken cancellationToken)

@@ -21,6 +21,7 @@ namespace SimpleSchedulerBusiness
         Task<Job?> GetLastQueuedJobAsync(long scheduleID, CancellationToken cancellationToken);
         Task<string?> GetJobDetailedMessageAsync(long jobID, CancellationToken cancellationToken);
         Task<ImmutableArray<JobDetail>> DequeueScheduledJobsAsync(CancellationToken cancellationToken);
+        Task<string> GetDetailedMessageAsync(long jobID, CancellationToken cancellationToken);
         Job ConvertToJob(JobEntity entity);
     }
 }
