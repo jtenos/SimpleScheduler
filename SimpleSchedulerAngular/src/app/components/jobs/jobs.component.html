@@ -6,11 +6,16 @@
     <div class=form-group style="display: flex; justify-content: center;">
         <div>
             <label style=visibility:hidden;>Refresh</label>
-            <button class="btn btn-sm btn-outline-primary form-control" (click)="refresh()">Refresh</button>
+            <button mat-raised-button color="primary" (click)="refresh()">Refresh</button>
         </div>
         <div>
-            <label style=visibility:hidden;>&nbsp;</label>
-            <input class=form-control type=text #filterWorkerName autofocus placeholder=Filter... style>
+            <mat-form-field>
+                <mat-label>Filter...</mat-label>
+                <input matInput type=text #filterWorkerName autofocus>
+                <button mat-button *ngIf="filterWorkerName.value" matSuffix mat-icon-button aria-label="Clear" (click)="filterWorkerName.value=''">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </mat-form-field>
         </div>
         <div>
             <label>Worker</label>

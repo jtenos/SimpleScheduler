@@ -18,37 +18,47 @@ import { CustomInterceptor } from './custom-interceptor';
 import { ScheduleTableComponent } from './components/schedule-table/schedule-table.component';
 import { EditScheduleComponent } from './components/edit-schedule/edit-schedule.component';
 import { JobTableComponent } from './components/job-table/job-table.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    EditWorkerComponent,
-    HomeComponent,
-    JobsComponent,
-    LoginComponent,
-    NavbarComponent,
-    SchedulesComponent,
-    WorkersComponent,
-    WorkerTableComponent,
+    declarations: [
+        AppComponent,
+        EditWorkerComponent,
+        HomeComponent,
+        JobsComponent,
+        LoginComponent,
+        NavbarComponent,
+        SchedulesComponent,
+        WorkersComponent,
+        WorkerTableComponent,
 
-    ScheduleTableComponent,
+        ScheduleTableComponent,
 
-    EditScheduleComponent,
+        EditScheduleComponent,
 
-    JobTableComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
-    FormsModule,
-    ReactiveFormsModule
-  ],
-  providers: [{
-    provide: HTTP_INTERCEPTORS,
-    useClass: CustomInterceptor,
-    multi: true
-  }],
-  bootstrap: [AppComponent]
+        JobTableComponent
+    ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        HttpClientModule,
+        FormsModule,
+        ReactiveFormsModule,
+        BrowserAnimationsModule,
+
+        MatButtonModule,
+        MatIconModule,
+        MatInputModule
+    ],
+    providers: [{
+        provide: HTTP_INTERCEPTORS,
+        useClass: CustomInterceptor,
+        multi: true
+    }],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }
