@@ -21,6 +21,7 @@ import { JobTableComponent } from './components/job-table/job-table.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 
@@ -51,6 +52,7 @@ import { MatInputModule } from '@angular/material/input';
         BrowserAnimationsModule,
 
         MatButtonModule,
+        MatCardModule,
         MatIconModule,
         MatInputModule
     ],
