@@ -24,6 +24,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatTableModule } from "@angular/material/table";
 
 @NgModule({
     declarations: [
@@ -54,7 +55,8 @@ import { MatInputModule } from '@angular/material/input';
         MatButtonModule,
         MatCardModule,
         MatIconModule,
-        MatInputModule
+        MatInputModule,
+        MatTableModule
     ],
     providers: [{
         provide: HTTP_INTERCEPTORS,

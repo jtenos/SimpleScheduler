@@ -8,7 +8,10 @@ import * as he from "he";
 
 @Component({
     selector: 'app-job-table',
-    templateUrl: './job-table.component.html'
+    templateUrl: './job-table.component.html',
+    styles: [`
+        table { width: 100%; }
+    `]
 })
 export class JobTableComponent implements OnInit {
 
@@ -20,6 +23,10 @@ export class JobTableComponent implements OnInit {
 
     @Output()
     refreshJobs = new EventEmitter<boolean>();
+
+    displayedColumns: string[] = [
+        "cancelJob", "workerName", "insertDateUTC", "queueDateUTC", "completeDateUTC", "statusCode", "message"
+    ];
 
     constructor(private jobService: JobService) { }
 
