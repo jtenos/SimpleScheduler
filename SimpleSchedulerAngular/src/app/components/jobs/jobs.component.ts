@@ -39,10 +39,12 @@ export class JobsComponent implements OnInit {
     }
 
     refresh() {
+        console.log("Calling refresh");
         this.refreshJobs();
     }
 
     async refreshJobs(): Promise<void> {
+        console.log(`this.workerID=${this.workerID}; this.statusCode=${this.statusCode}`);
         this.loading = true;
         this.jobDetails = await this.jobService.getJobs({
           workerID: this.workerID,

@@ -47,7 +47,7 @@ namespace SimpleSchedulerAPI.Controllers
                 }, "Cookies");
                 var principal = new ClaimsPrincipal(claimsIdentity);
                 await HttpContext.SignInAsync(principal);
-                return Ok(new { EmailAddress = emailAddress });
+                return Ok(new { EmailAddress = emailAddress, Success = true });
             }
             catch (InvalidValidationKeyException)
             {

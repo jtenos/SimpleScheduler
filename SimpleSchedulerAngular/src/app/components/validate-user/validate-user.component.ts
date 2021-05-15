@@ -14,9 +14,11 @@ export class ValidateUserComponent implements OnInit {
     constructor(private route: ActivatedRoute, private router: Router, private loginService: LoginService) { }
 
     ngOnInit(): void {
-        console.log("ngOnInit");
+        console.log("validate-user ngOnInit");
         this.route.params.subscribe(async params => {
             const userResult = await this.loginService.validateUser(params.validationCode);
+            console.log("userResult:")
+            console.log(userResult)
             if (userResult.success) {
                 this.router.navigateByUrl("jobs");
                 this.loading = false;
