@@ -26,6 +26,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from "@angular/material/select";
 import { MatTableModule } from "@angular/material/table";
+import { MatToolbarModule } from "@angular/material/toolbar";
 
 @NgModule({
     declarations: [
@@ -58,7 +59,8 @@ import { MatTableModule } from "@angular/material/table";
         MatIconModule,
         MatInputModule,
         MatSelectModule,
-        MatTableModule
+        MatTableModule,
+        MatToolbarModule
     ],
     providers: [{
         provide: HTTP_INTERCEPTORS,

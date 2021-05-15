@@ -1,8 +1,17 @@
-<nav id="page-nav" class="nav nav-pills justify-content-center bg-primary">
-    <a class="nav-link active navbar-brand" routerLink=""><span id=env-name></span></a>
-    <a class="nav-link" disabled>UTC Time: <span id="utc-time"></span></a>
-    <a class="nav-link" disabled>Hello <span id="user-email"></span></a>
-    <a class="nav-link" routerLink="jobs" [class.blinking-alert]="isJobError">Jobs</a>
-    <a class="nav-link" routerLink="schedules">Schedules</a>
-    <a class="nav-link" routerLink="workers">Workers</a>
-</nav>
+<mat-toolbar>
+    <button mat-icon-button class="menu-icon" [matMenuTriggerFor]=menu>
+        <mat-icon>menu</mat-icon>
+    </button>
+    <span>Scheduler: <span id=env-name></span></span>
+    <span class="menu-spacer"></span>
+    <span>UTC Time: <span id="utc-time"></span></span>
+    <span class="menu-spacer"></span>
+    <span>Hello <span id="user-email"></span></span>
+    <span class="menu-spacer"></span>
+    <!-- TODO: Make these proper material menu links-->
+    <button mat-raised-button color="primary" [class.blinking-alert]="isJobError" (click)="goToJobs();">Jobs</button>
+    <span class="menu-spacer"></span>
+    <button mat-raised-button color="primary" (click)="goToSchedules();">Schedules</button>
+    <span class="menu-spacer"></span>
+    <button mat-raised-button color="primary" (click)="goToWorkers();">Workers</button>
+</mat-toolbar>
