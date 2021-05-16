@@ -1,6 +1,37 @@
-<app-navbar></app-navbar>
-<div style="padding: 10px; margin-top: 50px;">
-    <div class="d-flex flex-column align-items-center">
-        <router-outlet></router-outlet>
+<mat-toolbar color="primary">
+    <div fxShow="true" fxHide.gt-sm="true">
+        <button mat-icon-button (click)="sidenav.toggle()">
+            <mat-icon>menu</mat-icon>
+        </button>
     </div>
-</div>
+
+    <a mat-button class="companyName" routerLink="/">
+        <span>Scheduler: <span class=env-name></span></span>
+    </a>
+    <div fxShow="true" fxHide.lt-md="true">
+        <span class="menu-spacer"></span>
+        <a mat-button>UTC Time: <span id="utc-time"></span></a>
+        <span class="menu-spacer"></span>
+        <a mat-button>Hello <span id="user-email"></span></a>
+        <span class="menu-spacer"></span>
+        <a mat-button routerLink="/jobs">Jobs</a>
+        <a mat-button routerLink="/schedules">Schedules</a>
+        <a mat-button routerLink="/workers">Workers</a>
+    </div>
+
+</mat-toolbar>
+<mat-sidenav-container fxFlexFill class="example-container">
+
+    <mat-sidenav color="primary" #sidenav fxLayout="column" mode="over" opened="false" fxHide.gt-sm="true">
+        <div fxLayout="column">
+            <span>Scheduler: <span class=env-name></span></span>
+
+            <a mat-button routerLink="/jobs">Jobs</a>
+            <a mat-button routerLink="/schedules">Schedules</a>
+            <a mat-button routerLink="/workers">Workers</a>
+        </div>
+    </mat-sidenav>
+    <mat-sidenav-content fxFlexFill>
+        <router-outlet></router-outlet>
+    </mat-sidenav-content>
+</mat-sidenav-container>

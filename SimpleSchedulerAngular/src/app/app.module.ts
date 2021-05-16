@@ -9,7 +9,6 @@ import { EditWorkerComponent } from './components/edit-worker/edit-worker.compon
 import { HomeComponent } from './components/home/home.component';
 import { JobsComponent } from './components/jobs/jobs.component';
 import { LoginComponent } from "./components/login/login.component";
-import { NavbarComponent } from './components/navbar/navbar.component';
 import { SchedulesComponent } from './components/schedules/schedules.component';
 import { WorkersComponent } from './components/workers/workers.component';
 import { WorkerTableComponent } from './components/worker-table/worker-table.component';
@@ -36,7 +35,6 @@ import { MatToolbarModule } from "@angular/material/toolbar";
 
         HomeComponent,
         LoginComponent,
-        NavbarComponent,
 
         JobsComponent,
         JobTableComponent,
