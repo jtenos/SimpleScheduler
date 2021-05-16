@@ -1,10 +1,12 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Job } from 'src/app/models/job';
 import TimeSpan from 'src/app/models/timespan';
 import { JobService } from 'src/app/services/job.service';
 import { JobDetail } from "../../models/job-detail";
 import * as moment from "moment";
 import * as he from "he";
+import { MatTableDataSource } from '@angular/material/table';
+import { MatSort } from '@angular/material/sort';
 
 @Component({
     selector: 'app-job-table',
@@ -13,7 +15,7 @@ import * as he from "he";
         table { width: 100%; }
     `]
 })
-export class JobTableComponent implements OnInit {
+export class JobTableComponent implements OnInit, AfterViewInit {
 
     @Input()
     jobDetails!: JobDetail[];
@@ -24,13 +26,28 @@ export class JobTableComponent implements OnInit {
     @Output()
     refreshJobs = new EventEmitter<boolean>();
 
+    dataSource = new MatTableDataSource<JobDetail>();
     displayedColumns: string[] = [
         "cancelJob", "workerName", "insertDateUTC", "queueDateUTC", "completeDateUTC", "statusCode", "message"
     ];
 
-    constructor(private jobService: JobService) { }
+    @ViewChild(MatSort) sort!: MatSort;
+
+    constructor(private jobService: JobService) {
+    }
 
     ngOnInit(): void {
+        this.dataSource.data = this.jobDetails;
+        this.dataSource.filterPredicate = (data: JobDetail, filter: string) => 
+            data.worker.workerName.toLocaleLowerCase().includes(filter.toLocaleLowerCase());
+    }
+
+    ngAfterViewInit(): void {
+        this.dataSource.sort = this.sort;
+    }
+
+    doFilter(value: string) {
+        this.dataSource.filter = value;
     }
 
     formatDateTime(date: string) {

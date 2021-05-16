@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, ViewChild } from '@angular/core';
 import { JobService } from 'src/app/services/job.service';
 import { WorkerService } from 'src/app/services/worker.service';
 import { Worker } from "../../models/worker";
 import { JobDetail } from "../../models/job-detail";
 import { ActivatedRoute } from '@angular/router';
+import { JobTableComponent } from '../job-table/job-table.component';
 
 @Component({
     selector: 'app-jobs',
@@ -26,6 +27,10 @@ export class JobsComponent implements OnInit {
     header: string = "";
 
     loading = false;
+
+    @ViewChild(JobTableComponent)
+    child!: JobTableComponent;
+
     constructor(private route: ActivatedRoute, private jobService: JobService, private workerService: WorkerService) {
     }
 
@@ -41,6 +46,10 @@ export class JobsComponent implements OnInit {
     refresh() {
         console.log("Calling refresh");
         this.refreshJobs();
+    }
+
+    doFilter(value: string) {
+        this.child.doFilter(value);
     }
 
     async refreshJobs(): Promise<void> {

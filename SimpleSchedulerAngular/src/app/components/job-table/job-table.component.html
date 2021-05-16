@@ -1,4 +1,4 @@
-<table mat-table [dataSource]="jobDetails" class=mat-elevation-z8>
+<table mat-table [dataSource]="dataSource" class=mat-elevation-z8 matSort>
 
     <ng-container matColumnDef=cancelJob>
         <th mat-header-cell *matHeaderCellDef></th>
@@ -8,27 +8,27 @@
     </ng-container>
 
     <ng-container matColumnDef=workerName>
-        <th mat-header-cell *matHeaderCellDef>Worker Name</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Worker Name</th>
         <td mat-cell *matCellDef="let jd">{{ jd.worker.workerName }}</td>
     </ng-container>
 
     <ng-container matColumnDef=insertDateUTC>
-        <th mat-header-cell *matHeaderCellDef>Insert Date</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Insert Date</th>
         <td mat-cell *matCellDef="let jd">{{ formatDateTime(jd.job.insertDateUTC) }} (UTC)</td>
     </ng-container>
 
     <ng-container matColumnDef=queueDateUTC>
-        <th mat-header-cell *matHeaderCellDef>Queue Date</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Queue Date</th>
         <td mat-cell *matCellDef="let jd">{{ formatDateTime(jd.job.queueDateUTC) }} (UTC)</td>
     </ng-container>
 
     <ng-container matColumnDef=completeDateUTC>
-        <th mat-header-cell *matHeaderCellDef>Complete Date</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Complete Date</th>
         <td mat-cell *matCellDef="let jd">{{ formatDateTime(jd.job.completeDateUTC) }} (UTC)</td>
     </ng-container>
 
     <ng-container matColumnDef=statusCode>
-        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
         <td mat-cell *matCellDef="let jd">
             <div>{{ jd.job.statusCode }}</div>
             <div *ngIf="jd.job.statusCode==='ERR'">
