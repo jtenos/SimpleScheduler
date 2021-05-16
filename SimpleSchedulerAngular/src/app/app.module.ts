@@ -19,32 +19,33 @@ import { ScheduleTableComponent } from './components/schedule-table/schedule-tab
 import { EditScheduleComponent } from './components/edit-schedule/edit-schedule.component';
 import { JobTableComponent } from './components/job-table/job-table.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FlexLayoutModule } from "@angular/flex-layout";
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from "@angular/material/select";
+import { MatSidenavModule } from "@angular/material/sidenav";
 import { MatTableModule } from "@angular/material/table";
 import { MatToolbarModule } from "@angular/material/toolbar";
 
 @NgModule({
     declarations: [
         AppComponent,
-        EditWorkerComponent,
+
         HomeComponent,
-        JobsComponent,
         LoginComponent,
         NavbarComponent,
+
+        JobsComponent,
+        JobTableComponent,
         SchedulesComponent,
-        WorkersComponent,
-        WorkerTableComponent,
-
-        ScheduleTableComponent,
-
         EditScheduleComponent,
-
-        JobTableComponent
+        ScheduleTableComponent,
+        WorkersComponent,
+        EditWorkerComponent,
+        WorkerTableComponent
     ],
     imports: [
         BrowserModule,
@@ -53,12 +54,14 @@ import { MatToolbarModule } from "@angular/material/toolbar";
         FormsModule,
         ReactiveFormsModule,
         BrowserAnimationsModule,
+        FlexLayoutModule,
 
         MatButtonModule,
         MatCardModule,
         MatIconModule,
         MatInputModule,
         MatSelectModule,
+        MatSidenavModule,
         MatTableModule,
         MatToolbarModule
     ],

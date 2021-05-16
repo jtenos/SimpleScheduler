@@ -1,4 +1,4 @@
-<mat-toolbar>
+<!-- <mat-toolbar>
     <button mat-icon-button class="menu-icon" [matMenuTriggerFor]=menu>
         <mat-icon>menu</mat-icon>
     </button>
@@ -8,10 +8,48 @@
     <span class="menu-spacer"></span>
     <span>Hello <span id="user-email"></span></span>
     <span class="menu-spacer"></span>
-    <!-- TODO: Make these proper material menu links-->
+
+    TODO: Make these proper material menu links
     <button mat-raised-button color="primary" [class.blinking-alert]="isJobError" (click)="goToJobs();">Jobs</button>
     <span class="menu-spacer"></span>
     <button mat-raised-button color="primary" (click)="goToSchedules();">Schedules</button>
     <span class="menu-spacer"></span>
     <button mat-raised-button color="primary" (click)="goToWorkers();">Workers</button>
-</mat-toolbar>
+</mat-toolbar> -->
+
+
+<mat-toolbar color="primary">
+    <div fxShow="true" fxHide.gt-sm="true">
+      <button mat-icon-button (click)="sidenav.toggle()">
+        <mat-icon>menu</mat-icon>
+      </button>
+    </div>
+
+    <a mat-button class="companyName" routerLink="/">
+      <span>Site name</span>
+    </a>
+    <span class="example-spacer"></span>
+    <div fxShow="true" fxHide.lt-md="true">
+      <a mat-button routerLink="/about-us">About us</a>
+      <a mat-button routerLink="/prices">Prices</a>
+      <a mat-button routerLink="/start-page">Start page</a>
+      <a mat-button routerLink="/offer">Offer</a>
+      <a mat-button routerLink="/contact">Contact</a>
+    </div>
+
+  </mat-toolbar>
+  <mat-sidenav-container fxFlexFill class="example-container">
+
+    <mat-sidenav color="primary" #sidenav fxLayout="column" mode="over"  opened="false" fxHide.gt-sm="true">
+      <div fxLayout="column">
+        <a mat-button routerLink="/about-us">About us</a>
+        <a mat-button routerLink="/prices">Prices</a>
+        <a mat-button routerLink="/start-page">Start page</a>
+        <a mat-button routerLink="/offer">Offer</a>
+        <a mat-button routerLink="/contact">Contact</a>
+      </div>
+    </mat-sidenav>
+    <mat-sidenav-content fxFlexFill>
+      Awesome content
+    </mat-sidenav-content>
+  </mat-sidenav-container>
