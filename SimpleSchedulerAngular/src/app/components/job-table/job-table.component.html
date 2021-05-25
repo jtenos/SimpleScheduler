@@ -3,6 +3,7 @@
     <ng-container matColumnDef=cancelJob>
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let jd">
+            <input type=hidden class=job-id [value]="jd.job.jobID" />
             <a *ngIf="jd.job.statusCode==='NEW'" (click)="cancelJob(jd.job.jobID)">Cancel Job</a>
         </td>
     </ng-container>
@@ -40,12 +41,10 @@
     <ng-container matColumnDef=message>
         <th mat-header-cell *matHeaderCellDef>Message</th>
         <td mat-cell *matCellDef="let jd">
-            <a href="#" *ngIf="jd.job.detailedMessage" 
-                class="btn btn-sm btn-outline-primary" 
-                (click)="showDetail($event, jd.job.jobID)"
-                (auxclick)="showDetail($event, jd.job.jobID)"
-                (mousedown)="showDetail($event, jd.job.jobID)"
-            >Result Details</a>
+            <button mat-stroked-button color="primary" *ngIf="jd.job.detailedMessage"
+                (click)="showDetailAlert(jd.job.jobID)">Details</button>
+            <button mat-icon-button color=primary *ngIf="jd.job.detailedMessage"
+                (click)="showDetailPopup(jd.job.jobID)"><mat-icon>open_in_new</mat-icon></button>
         </td>
     </ng-container>
 

@@ -67,52 +67,51 @@ export class JobTableComponent implements OnInit, AfterViewInit {
   }
 
   formatDate(date: string) {
-    if (!date)
-        return "";
+    if (!date) {
+      return "";
+    }
     const theDate = Date.parse(date);
     const mom = moment(theDate);
     return `${mom.format("MMM DD YYYY")}`;
   }
 
   formatTime(date: string) {
-    if (!date)
-        return "";
+    if (!date) {
+      return "";
+    }
     const theDate = Date.parse(date);
     const mom = moment(theDate);
     return `${mom.format("HH:mm:ss")} (UTC)`;
   }
 
   formatDateTime(date: string) {
-    if (!date)
-        return "";
+    if (!date) {
+      return "";
+    }
     return `${this.formatDate(date)}\n${this.formatTime(date)}`;
+  }
+
+  async showDetailAlert(jobID: number) {
+    const detailedMessage = await this.jobService.getDetailedMessage(jobID);
+    // TODO: nicer alert
+    alert(detailedMessage);
   }
 
   // TODO: Fix this so that it works on regular mice and trackpads, for
   // Safari, Firefox, and Chromium
-  async showDetail(e: MouseEvent, jobID: number) {
-    e.preventDefault();
-    e.stopPropagation();
+  async showDetailPopup(jobID: number) {
     const detailedMessage = await this.jobService.getDetailedMessage(jobID);
-    switch (e.button) {
-      case 0:
-        alert(detailedMessage);
-        break;
-      case 1:
-      case 2:
-        const newWindow = window.open(
-          "about:blank",
-          "_blank",
-          "width=400,height=400,resizable",
-        );
-        let val: string = he.encode(detailedMessage, { strict: true });
-        val = JSON.stringify(val);
-        newWindow?.document.write(`<div style="white-space:pre-line;"></div>`);
-        newWindow?.document.write(
-          `<script>document.getElementsByTagName("div")[0].innerText = ${val}</script>`,
-        );
-        break;
-    }
+    const newWindow = window.open(
+      "about:blank",
+      "_blank",
+      "width=400,height=400,resizable",
+    );
+    let val: string = he.encode(detailedMessage, { strict: true });
+    val = JSON.stringify(val);
+    newWindow?.document.write(`<div style="white-space:pre-line;"></div>`);
+    newWindow?.document.write(
+      `<script>document.getElementsByTagName("div")[0].innerText = ${val}</script>`,
+    );
   }
 
   async cancelJob(jobID: number): Promise<void> {
