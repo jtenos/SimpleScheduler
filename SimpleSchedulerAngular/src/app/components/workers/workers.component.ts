@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { WorkerService } from 'src/app/services/worker.service';
 import { WorkerDetail } from "../../models/worker-detail";
+import { WorkerTableComponent } from '../worker-table/worker-table.component';
 
 @Component({
     selector: 'app-workers',
@@ -9,9 +10,6 @@ import { WorkerDetail } from "../../models/worker-detail";
         width: 100%;
         .card {
             width: 100%;
-            &:nth-child(n + 2) {
-                margin-top: 20px;
-            }
         }
       }`]
 })
@@ -21,6 +19,9 @@ export class WorkersComponent implements OnInit {
 
     loading = false;
     active = true;
+
+    @ViewChild(WorkerTableComponent)
+    child!: WorkerTableComponent;
 
     constructor(private workerService: WorkerService) {
     }
@@ -35,6 +36,10 @@ export class WorkersComponent implements OnInit {
 
     refresh() {
         this.refreshWorkers();
+    }
+
+    doFilter(value: string) {
+        //this.child.doFilter(value);
     }
 
     async refreshWorkers(): Promise<void> {

@@ -1,16 +1,34 @@
 <h2>Workers {{ active ? "" : "(inactive)" }}</h2>
-<button class="btn btn-sm btn-outline-primary" (click)="refresh()">Refresh</button>
 
-<input type=text #filterWorkerName autofocus placeholder=Filter... style=margin-left:25px;>
+<div *ngIf="loading">Loading...</div>
 
-<div [class.d-none]="!loading">Loading...</div>
-
-<div class="card shadow" style="width: 100%; margin-bottom: 10px; margin-top: 20px;" [class.d-none]="loading">
+<div class="card shadow" style="width: 100%; margin-bottom: 10px; margin-top: 20px;" *ngIf="!loading">
+    <div class=form-group style="display: flex; justify-content: space-around;">
+        <div>
+            <label style=visibility:hidden;>Refresh</label>
+            <button mat-raised-button color="primary" (click)="refresh()">Refresh</button>
+        </div>
+        <div>
+            <mat-form-field>
+                <mat-label>Filter...</mat-label>
+                <input matInput type=text #filterWorkerName autofocus (keyup)="doFilter(filterWorkerName.value)">
+                <button mat-button *ngIf="filterWorkerName.value" matSuffix mat-icon-button aria-label="Clear"
+                    (click)="filterWorkerName.value=''">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </mat-form-field>
+        </div>
+        <div>
+            <button mat-stroked-button color="primary" (click)="toggleActive()"
+                >{{ active ? "Show Inactive" : "Show Active" }}</button>
+        </div>
+        <div>
+            <button mat-raised-button color=primary routerLink="edit/0">Create</button>
+        </div>
+    </div>
     <div class="card-body">
-        <button class="btn btn-outline-info btn-sm" (click)="toggleActive()">
-            {{ active ? "Show Inactive" : "Show Active" }}
-        </button>
-        <a class="btn btn-sm btn-primary" routerLink="edit/0" style="margin-left: 10px;">Create</a>
-            <app-worker-table [workerDetails]="workerDetails" [active]="active" (refreshWorkers)="refreshWorkers()" [filterWorkerName]="filterWorkerName.value"></app-worker-table>
+
+        <app-worker-table [workerDetails]="workerDetails" [active]="active" (refreshWorkers)="refreshWorkers()"
+            [filterWorkerName]="filterWorkerName.value"></app-worker-table>
     </div>
 </div>
