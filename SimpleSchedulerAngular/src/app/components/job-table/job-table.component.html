@@ -14,17 +14,17 @@
 
     <ng-container matColumnDef=insertDateUTC>
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Insert Date</th>
-        <td mat-cell *matCellDef="let jd">{{ formatDateTime(jd.job.insertDateUTC) }} (UTC)</td>
+        <td mat-cell *matCellDef="let jd">{{ formatDate(jd.job.insertDateUTC) }}<br>{{ formatTime(jd.job.insertDateUTC) }}</td>
     </ng-container>
 
     <ng-container matColumnDef=queueDateUTC>
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Queue Date</th>
-        <td mat-cell *matCellDef="let jd">{{ formatDateTime(jd.job.queueDateUTC) }} (UTC)</td>
+        <td mat-cell *matCellDef="let jd">{{ formatDate(jd.job.queueDateUTC) }}<br>{{ formatTime(jd.job.queueDateUTC) }}</td>
     </ng-container>
 
     <ng-container matColumnDef=completeDateUTC>
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Complete Date</th>
-        <td mat-cell *matCellDef="let jd">{{ formatDateTime(jd.job.completeDateUTC) }} (UTC)</td>
+        <td mat-cell *matCellDef="let jd">{{ formatDate(jd.job.completeDateUTC) }}<br>{{ formatTime(jd.job.completeDateUTC) }}</td>
     </ng-container>
 
     <ng-container matColumnDef=statusCode>
