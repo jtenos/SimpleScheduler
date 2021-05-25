@@ -8,6 +8,8 @@ using SimpleSchedulerBusiness;
 using SimpleSchedulerData;
 using SimpleSchedulerFakeData;
 using SimpleSchedulerEmail;
+using System.Linq;
+using Microsoft.Data.Sqlite;
 
 var config = new ConfigurationBuilder()
     .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
@@ -38,19 +40,49 @@ switch (config["DatabaseType"])
 }
 var serviceCollection = services.BuildServiceProvider();
 
-await serviceCollection.GetRequiredService<Program>().GoAsync();
+await serviceCollection.GetRequiredService<Program>().GoAsync(args);
 
 class Program
 {
+    private readonly IConfiguration _config;
     private readonly IWorkerManager _workerManager;
     private readonly IScheduleManager _scheduleManager;
     private readonly IJobManager _jobManager;
     private readonly DatabaseFactory _databaseFactory;
-    public Program(DatabaseFactory databaseFactory, IWorkerManager workerManager, IScheduleManager scheduleManager, IJobManager jobManager)
-        => (_databaseFactory, _workerManager, _scheduleManager, _jobManager) = (databaseFactory, workerManager, scheduleManager, jobManager);
+    public Program(
+        IConfiguration config,
+        DatabaseFactory databaseFactory,
+        IWorkerManager workerManager,
+        IScheduleManager scheduleManager,
+        IJobManager jobManager)
+        => (_config, _databaseFactory, _workerManager, _scheduleManager, _jobManager)
+         = (config, databaseFactory, workerManager, scheduleManager, jobManager);
 
-    public async Task GoAsync()
+    public async Task GoAsync(string[] args)
     {
+        if (_config["DatabaseType"] == "Sqlite")
+        {
+            try
+            {
+                string cs = _config.GetConnectionString("SimpleScheduler");
+                SqliteConnectionStringBuilder csBuilder = new(cs);
+                await SqliteDatabase.CreateDatabaseAsync(csBuilder.DataSource);
+            }
+            catch (Exception ex) { Console.WriteLine(ex); }
+        }
+        var db = await _databaseFactory.GetDatabaseAsync(default);
+        if (args.Any())
+        {
+            try
+            {
+                Console.WriteLine($"Creating user {args[0]}");
+                await db.NonQueryAsync(@"INSERT INTO [Users] (EmailAddress) VALUES (@EmailAddress);",
+                    new[] { db.GetStringParameter("@EmailAddress", args[0], isFixed: false, size: 200) },
+                    cancellationToken: default);
+            }
+            catch (Exception ex) { Console.WriteLine(ex); }
+        }
+
         var workerIDs = new List<long>();
         for (int i = 0; i < 100; ++i)
         {
