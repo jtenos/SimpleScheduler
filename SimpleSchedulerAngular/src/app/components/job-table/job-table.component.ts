@@ -7,8 +7,6 @@ import {
   Output,
   ViewChild,
 } from "@angular/core";
-import { Job } from "src/app/models/job";
-import TimeSpan from "src/app/models/timespan";
 import { JobService } from "src/app/services/job.service";
 import { JobDetail } from "../../models/job-detail";
 import * as moment from "moment";
@@ -97,8 +95,6 @@ export class JobTableComponent implements OnInit, AfterViewInit {
     alert(detailedMessage);
   }
 
-  // TODO: Fix this so that it works on regular mice and trackpads, for
-  // Safari, Firefox, and Chromium
   async showDetailPopup(jobID: number) {
     const detailedMessage = await this.jobService.getDetailedMessage(jobID);
     const newWindow = window.open(

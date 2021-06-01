@@ -39,7 +39,7 @@ export class WorkersComponent implements OnInit {
     }
 
     doFilter(value: string) {
-        //this.child.doFilter(value);
+        this.child.doFilter(value);
     }
 
     async refreshWorkers(): Promise<void> {
