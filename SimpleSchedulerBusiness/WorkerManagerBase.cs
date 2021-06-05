@@ -69,7 +69,7 @@ namespace SimpleSchedulerBusiness
                     JOIN Schedules s ON j.ScheduleID = s.ScheduleID
                     JOIN Workers w ON s.WorkerID = w.WorkerID
                     WHERE j.JobID = @JobID
-                    AND s.IsActive = 1
+                    AND (s.IsActive = 1 OR s.OneTime = 1)
                     AND w.IsActive = 1
                 )
                 SELECT child.WorkerID
