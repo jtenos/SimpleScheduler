@@ -13,5 +13,6 @@ _db
 **/secrets.json
 **/secrets.sqlite.json
 **/secrets.sqlserver.json
+**/publish-local.bat
 
 **/dist/
