@@ -52,10 +52,14 @@ export class WorkerTableComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.dataSource.data = this.workerDetails;
-    this.dataSource.filterPredicate = (data: WorkerDetail, filter: string) =>
-      data.worker.workerName.toLocaleLowerCase().includes(
-        filter.toLocaleLowerCase(),
-      );
+    const component = this;
+    this.dataSource.filterPredicate = function (data: WorkerDetail, filter: string) {
+      const filterValue = JSON.parse(filter).value;
+      const result = data.worker.workerName.toLocaleLowerCase().includes(
+        filterValue.toLocaleLowerCase(),
+      ) && data.worker.isActive === component.active;
+      return result;
+    };
   }
 
   ngAfterViewInit(): void {
@@ -63,7 +67,12 @@ export class WorkerTableComponent implements OnInit, AfterViewInit {
   }
 
   doFilter(value: string) {
-    this.dataSource.filter = value;
+    this.dataSource.filter = JSON.stringify({ value, active: this.active });
+  }
+
+  toggleActive() {
+    const filterValue = JSON.parse(this.dataSource.filter || `{}`).value || "";
+    this.doFilter(filterValue);
   }
 
   async deleteWorker(workerID: number): Promise<void> {

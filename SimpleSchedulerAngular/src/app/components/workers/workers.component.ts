@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { connectableObservableDescriptor } from 'rxjs/internal/observable/ConnectableObservable';
 import { WorkerService } from 'src/app/services/worker.service';
 import { WorkerDetail } from "../../models/worker-detail";
 import { WorkerTableComponent } from '../worker-table/worker-table.component';
@@ -32,6 +33,10 @@ export class WorkersComponent implements OnInit {
 
     toggleActive(): void {
         this.active = !this.active;
+
+        // TODO: https://stackoverflow.com/questions/45943112/angular-input-data-not-immediately-available-on-child-component-why
+        // Use ngOnChanges instead of a timeout
+        setTimeout(() => this.child.toggleActive(), 50);
     }
 
     refresh() {
