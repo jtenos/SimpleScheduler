@@ -24,12 +24,9 @@
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Worker Name</th>
         <td mat-cell *matCellDef="let wd">
             <div>{{ wd.worker.workerName }}</div>
-            <div *ngIf="wd.parentWorker" style="font-size: smaller; font-weight: bold;">Child of [{{
-                wd.parentWorker?.workerName }}]</div>
-            <div [class.d-none]="!wd.worker.detailedDescription" style="font-size: smaller;">{{
-                wd.worker.detailedDescription }}</div>
-            <div [class.d-none]="!wd.worker.emailOnSuccess" style="font-size: smaller; font-style: italic;">Email:
-                {{ wd.worker.emailOnSuccess }}</div>
+            <div *ngIf="wd.parentWorker" style="font-size: smaller; font-weight: bold;">Child of [{{ wd.parentWorker?.workerName }}]</div>
+            <div *ngIf="wd.worker.detailedDescription" style="font-size: smaller;">{{ wd.worker.detailedDescription }}</div>
+            <div *ngIf="wd.worker.emailOnSuccess" style="font-size: smaller; font-style: italic;">Email: {{ wd.worker.emailOnSuccess }}</div>
             <div style="font-size: smaller;">Timeout: {{ wd.worker.timeoutMinutes }}</div>
         </td>
     </ng-container>
@@ -39,7 +36,7 @@
         <td mat-cell *matCellDef="let wd">
             <div style="font-weight: bold;">{{ wd.worker.directoryName }}/</div>
             <div>{{ wd.worker.executable }}</div>
-            <div style="font-style: italic;" [class.d-none]="!wd.worker.argumentValues">{{ wd.worker.argumentValues }}
+            <div style="font-style: italic;" *ngIf="wd.worker.argumentValues">{{ wd.worker.argumentValues }}
             </div>
         </td>
     </ng-container>
