@@ -52,7 +52,7 @@ namespace SimpleSchedulerData
 
             --------------------------
 
-            CREATE TABLE[LoginAttempts]
+            CREATE TABLE LoginAttempts
             (
                 LoginAttemptID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
                 , EmailAddress TEXT NOT NULL

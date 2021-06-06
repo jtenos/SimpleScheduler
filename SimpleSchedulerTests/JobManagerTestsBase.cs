@@ -404,6 +404,65 @@ namespace SimpleSchedulerTests
             }
         }
 
+        [TestMethod]
+        public async Task ChildRunAfterParent()
+        {
+            await CreateWorkerAsync();
+            await CreateChildWorkerAsync(parentWorkerID: 1);
+            await CreateChildWorkerAsync(parentWorkerID: 2);
+
+            var scope = GetServiceProvider().CreateScope();
+            try
+            {
+                var workerManager = scope.ServiceProvider.GetRequiredService<IWorkerManager>();
+                await workerManager.RunNowAsync(1, default);
+            }
+            finally
+            {
+                await ((IAsyncDisposable)scope).DisposeAsync();
+            }
+
+            scope = GetServiceProvider().CreateScope();
+            try
+            {
+                var jobManager = scope.ServiceProvider.GetRequiredService<IJobManager>();
+                await jobManager.CompleteJobAsync(jobID: 1, success: true, detailedMessage: null, cancellationToken: default);
+            }
+            finally
+            {
+                await ((IAsyncDisposable)scope).DisposeAsync();
+            }
+
+            // Ensure the first job is completed successfully, and the second job exists for schedule 2/worker 2
+            await AssertJobStatusAsync(jobID: 1, status: "SUC");
+            var job2 = await GetJobAsync(jobID: 2);
+            Assert.AreEqual("NEW", job2.StatusCode);
+            Assert.AreEqual(2, job2.ScheduleID);
+            var schedule2 = await GetScheduleAsync(2);
+            await AssertJobStatusAsync(jobID: 2, status: "NEW");
+            Assert.AreEqual(2, schedule2.WorkerID);
+
+            scope = GetServiceProvider().CreateScope();
+            try
+            {
+                var jobManager = scope.ServiceProvider.GetRequiredService<IJobManager>();
+                await jobManager.CompleteJobAsync(jobID: 2, success: true, detailedMessage: null, cancellationToken: default);
+            }
+            finally
+            {
+                await ((IAsyncDisposable)scope).DisposeAsync();
+            }
+
+            // Ensure the second job is completed successfully, and the third job exists for schedule 3/worker 3
+            await AssertJobStatusAsync(jobID: 2, status: "SUC");
+            var job3 = await GetJobAsync(jobID: 3);
+            Assert.AreEqual("NEW", job3.StatusCode);
+            Assert.AreEqual(3, job3.ScheduleID);
+            var schedule3 = await GetScheduleAsync(3);
+            await AssertJobStatusAsync(jobID: 3, status: "NEW");
+            Assert.AreEqual(3, schedule3.WorkerID);
+        }
+
         protected abstract DbConnection GetConnection();
         protected abstract DbParameter Int64Parameter(string name, long? value);
         protected abstract DbParameter StringParameter(string name, string? value, int? size = null);
@@ -473,6 +532,25 @@ namespace SimpleSchedulerTests
             await comm.ExecuteNonQueryAsync();
         }
 
+        private async Task CreateChildWorkerAsync(long parentWorkerID)
+        {
+            using var conn = GetConnection();
+            await conn.OpenAsync();
+            using var comm = conn.CreateCommand();
+            comm.CommandText = $@"
+                INSERT INTO Workers (
+                    IsActive, WorkerName, DetailedDescription, EmailOnSuccess
+                    , ParentWorkerID, TimeoutMinutes, DirectoryName
+                    , Executable, ArgumentValues
+                ) VALUES (
+                    1, 'child of {parentWorkerID} {Guid.NewGuid():N}', '', ''
+                    , {parentWorkerID}, 20, 'test'
+                    ,'test', ''
+                );
+            ";
+            await comm.ExecuteNonQueryAsync();
+        }
+
         private async Task SetQueueDateAsync(long jobID, DateTime queueDateUTC)
         {
             using var conn = GetConnection();
@@ -535,7 +613,7 @@ namespace SimpleSchedulerTests
             Assert.AreEqual(status, (string)(await comm.ExecuteScalarAsync())!);
         }
 
-        private async Task<JobEntity> GetJobAsync(int jobID)
+        private async Task<JobEntity> GetJobAsync(long jobID)
         {
             using var conn = GetConnection();
             await conn.OpenAsync();
@@ -550,6 +628,23 @@ namespace SimpleSchedulerTests
             using var rdr = await comm.ExecuteReaderAsync();
             await rdr.ReadAsync();
             return Mapper.MapJob(rdr);
+        }
+
+        private async Task<ScheduleEntity> GetScheduleAsync(long scheduleID)
+        {
+            using var conn = GetConnection();
+            await conn.OpenAsync();
+            using var comm = conn.CreateCommand();
+            comm.CommandText = @"
+                SELECT * FROM Schedules WHERE ScheduleID = @ScheduleID;
+            ";
+            comm.Parameters.AddRange(new[]
+            {
+                Int64Parameter("@ScheduleID", scheduleID)
+            });
+            using var rdr = await comm.ExecuteReaderAsync();
+            await rdr.ReadAsync();
+            return Mapper.MapSchedule(rdr);
         }
     }
 }
