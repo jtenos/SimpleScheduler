@@ -33,10 +33,7 @@ namespace SimpleSchedulerData
 
         public static async Task CreateDatabaseAsync(string databaseFileName)
         {
-            if (File.Exists(databaseFileName))
-            {
-                throw new ApplicationException($"Database file {databaseFileName} already exists");
-            }
+            Console.WriteLine($"Creating database for file |{databaseFileName}|");
             using var conn = new SqliteConnection($"Data Source={databaseFileName};");
             await conn.OpenAsync().ConfigureAwait(false);
             using var comm = conn.CreateCommand();
