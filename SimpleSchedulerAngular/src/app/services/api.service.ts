@@ -27,7 +27,7 @@ export class ApiService {
 
         console.log("calling getConfig");
         const config = await this.configService.getConfig();
-        console.log(`config=${config}`);
+        console.log(`config=${JSON.stringify(config)}`);
         let url = `${config.apiUrl}/${controllerName}`;
         if (actionName) {
             url += `/${actionName}`;
