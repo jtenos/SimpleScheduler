@@ -112,16 +112,22 @@ namespace SimpleSchedulerBusiness
         }
 
         public Job ConvertToJob(JobEntity entity)
-            => new Job(entity.JobID, entity.ScheduleID,
+            => new(entity.JobID, entity.ScheduleID,
             DateTime.ParseExact(entity.InsertDateUTC.ToString(), "yyyyMMddHHmmssfff", CultureInfo.InvariantCulture.DateTimeFormat),
             DateTime.ParseExact(entity.QueueDateUTC.ToString(), "yyyyMMddHHmmssfff", CultureInfo.InvariantCulture.DateTimeFormat),
             entity.CompleteDateUTC.HasValue
                 ? DateTime.ParseExact(entity.CompleteDateUTC.Value.ToString(), "yyyyMMddHHmmssfff", CultureInfo.InvariantCulture.DateTimeFormat)
-                : (DateTime?)null,
+                : null,
             entity.StatusCode, entity.DetailedMessage, entity.AcknowledgementID,
             entity.AcknowledgementDate.HasValue
                 ? DateTime.ParseExact(entity.AcknowledgementDate.Value.ToString(), "yyyyMMddHHmmssfff", CultureInfo.InvariantCulture.DateTimeFormat)
-                : (DateTime?)null);
+                : null,
+            entity.CompleteDateUTC.HasValue
+                ? (decimal)DateTime.ParseExact(entity.CompleteDateUTC.Value.ToString(), "yyyyMMddHHmmssfff", CultureInfo.InvariantCulture.DateTimeFormat)
+                    .Subtract(DateTime.ParseExact(entity.QueueDateUTC.ToString(), "yyyyMMddHHmmssfff", CultureInfo.InvariantCulture.DateTimeFormat))
+                    .TotalSeconds
+                : null
+        );
 
         protected abstract string DequeueQuery { get; }
         public virtual async Task<ImmutableArray<JobDetail>> DequeueScheduledJobsAsync(CancellationToken cancellationToken)
@@ -216,7 +222,7 @@ namespace SimpleSchedulerBusiness
             }
             sql.AppendLine("ORDER BY QueueDateUTC DESC");
             sql.AppendLine(db.GetOffsetLimitClause((pageNumber - 1) * rowsPerPage, rowsPerPage));
-            sql.Append(";");
+            sql.Append(';');
 
             var entities = await db.GetManyAsync<JobEntity>(sql.ToString(), parms,
                 Mapper.MapJob, cancellationToken).ConfigureAwait(false);
