@@ -7,5 +7,6 @@ export type Job = {
     statusCode: string, 
     detailedMessage: string | null,
     acknowledgementID: string, 
-    acknowledgementDate: Date | null
+    acknowledgementDate: Date | null,
+    durationInSeconds: number | null
 };

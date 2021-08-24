@@ -5,6 +5,7 @@ import { JobService } from 'src/app/services/job.service';
 import { JobDetail } from "../../models/job-detail";
 import * as moment from "moment";
 import * as he from "he";
+import * as numeral from "numeral";
 
 @Component({
     selector: 'app-job-table',
@@ -26,11 +27,18 @@ export class JobTableComponent implements OnInit {
     ngOnInit(): void {
     }
 
-    formatDateTime(date: string) {
+    formatDateTime(date: string | null) {
         if (!date) { return ""; }
         const theDate = Date.parse(date);
         const mom = moment(theDate);
         return `${mom.format("MMM DD YYYY")}\n${mom.format("HH:mm:ss")}`
+    }
+
+    formatDuration(duration: number | null) {
+        if (!duration) {
+            return "";
+        }
+        return numeral(duration).format("0,0.000");
     }
 
     // TODO: Fix this so that it works on regular mice and trackpads, for

@@ -5,6 +5,8 @@
             <th>Worker</th>
             <th>Insert Date</th>
             <th>Queue Date</th>
+            <th>Complete Date</th>
+            <th>Duration</th>
             <th>Status</th>
             <th>Results</th>
         </tr>
@@ -21,6 +23,12 @@
                 {{ formatDateTime(jd.job.insertDateUTC) }} (UTC)
             <td style=white-space:pre-line;>
                 {{ formatDateTime(jd.job.queueDateUTC) }} (UTC)
+            </td>
+            <td>
+                {{ formatDateTime(jd.job.completeDateUTC) }} {{ jd.job.completeDateUTC ? "(UTC)" : ""  }}
+            </td>
+            <td>
+                {{ formatDuration(jd.job.durationInSeconds) }} {{ jd.job.completeDateUTC ? "seconds" : "" }}
             </td>
             <td>
                 <div>{{ jd.job.statusCode }}</div>

@@ -16,10 +16,9 @@ namespace SimpleSchedulerAPI.Controllers
     public class JobsController : ControllerBase
     {
         private readonly IJobManager _jobManager;
-        private readonly DatabaseFactory _databaseFactory;
 
-        public JobsController(IJobManager jobManager, DatabaseFactory databaseFactory)
-            => (_jobManager, _databaseFactory) = (jobManager, databaseFactory);
+        public JobsController(IJobManager jobManager)
+            => _jobManager = jobManager;
 
         [HttpGet("[action]")]
         public async Task<ImmutableArray<JobDetail>> GetJobs(CancellationToken cancellationToken,
@@ -55,7 +54,7 @@ namespace SimpleSchedulerAPI.Controllers
         public async Task<object> GetDetailedMessage([FromBody] GetDetailedMessageRequest request, CancellationToken cancellationToken)
         {
             string message = await _jobManager.GetDetailedMessageAsync(request.JobID, cancellationToken);
-            return Ok(new { message = message });
+            return Ok(new { message });
         }
 
         public record CancelJobRequest(long JobID);
