@@ -41,25 +41,23 @@ export class JobTableComponent implements OnInit {
         return numeral(duration).format("0,0.000");
     }
 
-    // TODO: Fix this so that it works on regular mice and trackpads, for
-    // Safari, Firefox, and Chromium
-    async showDetail(e: MouseEvent, jobID: number) {
+    async alertDetail(e: MouseEvent, jobID: number) {
         e.preventDefault();
         e.stopPropagation();
         const detailedMessage = await this.jobService.getDetailedMessage(jobID);
-        switch (e.button) {
-            case 0:
-                alert(detailedMessage);
-                break;
-            case 1:
-            case 2:
-                const newWindow = window.open("about:blank", "_blank", "width=400,height=400,resizable");
-                let val: string = he.encode(detailedMessage, { strict: true });
-                val = JSON.stringify(val);
-                newWindow?.document.write(`<div style="white-space:pre-line;"></div>`);
-                newWindow?.document.write(`<script>document.getElementsByTagName("div")[0].innerText = ${val}</script>`);
-                break;
-        }
+        alert(detailedMessage);
+    }
+
+    // TODO: Does this get blocked by popup blocker?
+    async popUpDetail(e: MouseEvent, jobID: number) {
+        e.preventDefault();
+        e.stopPropagation();
+        const detailedMessage = await this.jobService.getDetailedMessage(jobID);
+        const newWindow = window.open("about:blank", "_blank", "width=400,height=400,resizable");
+        let val: string = he.encode(detailedMessage, { strict: true });
+        val = JSON.stringify(val);
+        newWindow?.document.write(`<div style="white-space:pre-line;"></div>`);
+        newWindow?.document.write(`<script>document.getElementsByTagName("div")[0].innerText = ${val}</script>`);
     }
 
     async cancelJob(jobID: number): Promise<void> {
