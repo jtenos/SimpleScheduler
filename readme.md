@@ -7,7 +7,25 @@ This puts the distribution files in ./dist/sch
 
 If you're in IIS, make sure you're using the URL Rewrite module, and you'll need a Web.config that looks something like this:
 
---TODO: Copy sample Web.config
+```
+<configuration>
+<system.webServer>
+  <rewrite>
+    <rules>
+      <rule name="Angular Routes" stopProcessing="true">
+        <match url=".*" />
+        <conditions logicalGrouping="MatchAll">
+          <add input="{REQUEST_FILENAME}" matchType="IsFile" negate="true" />
+          <add input="{REQUEST_FILENAME}" matchType="IsDirectory" negate="true" />
+        </conditions>
+        <action type="Rewrite" url="/My-Directory-Name/" />
+        <!--<action type="Rewrite" url="/" />-->
+      </rule>
+    </rules>
+  </rewrite>
+</system.webServer>
+</configuration>
+```
 
 ## API:
 
