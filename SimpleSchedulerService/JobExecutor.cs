@@ -233,7 +233,7 @@ namespace SimpleSchedulerService
                     return;
                 }
 
-                string subject = $"[{_config["EnvironmentName"]}] {(workerResult.Success ? "SUCCESS" : "ERROR")}";
+                string subject = $"[{_config["EnvironmentName"]}] {(workerResult.Success ? "SUCCESS" : "ERROR")} - Worker: [{jobDetail.Worker.WorkerName}]";
                 string detailedMessage = (workerResult.DetailedMessage ?? "").Replace("\r\n", "<br>").Replace("\r", "<br>").Replace("\n", "<br>");
                 string body = $"Job ID: {jobDetail.Job.JobID}<br><br>{detailedMessage}";
 
