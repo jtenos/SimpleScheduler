@@ -11,13 +11,13 @@
         <tr *ngFor="let wd of workerDetails" [class.d-none]="wd.worker.isActive !== active || !wd.worker.workerName.toLowerCase().includes(filterWorkerName?.toLowerCase() || '')">
             <td class="d-flex justify-content-between" style="width: 90px;">
                 <a *ngIf="wd.worker.isActive" [routerLink]="['/workers/edit', wd.worker.workerID]">
-                    <img src="assets/img/pencil.svg" alt="Edit" />
+                    <i class="bi bi-pencil"></i>
                 </a>
                 <a *ngIf="wd.worker.isActive" (click)="deleteWorker(wd.worker.workerID)">
-                    <img src="assets/img/trash.svg" alt="Delete" />
+                    <i class="bi bi-trash"></i>
                 </a>
                 <a *ngIf="wd.worker.isActive" (click)="runWorker(wd.worker.workerID)">
-                    <img src="assets/img/play.svg" alt="Run Now" />
+                    <i class="bi bi-play"></i>
                 </a>
                 <a *ngIf="!wd.worker.isActive" (click)="reactivateWorker(wd.worker.workerID)" class="btn btn-sm btn-outline-primary">
                     Reactivate
