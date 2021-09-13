@@ -8,5 +8,5 @@ export type Job = {
     detailedMessage: string | null,
     acknowledgementID: string, 
     acknowledgementDate: Date | null,
-    durationInSeconds: number | null
+    friendlyDuration: string | null
 };
