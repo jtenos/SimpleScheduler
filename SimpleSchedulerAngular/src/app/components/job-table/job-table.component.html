@@ -28,7 +28,7 @@
                 {{ formatDateTime(jd.job.completeDateUTC) }} {{ jd.job.completeDateUTC ? "(UTC)" : ""  }}
             </td>
             <td>
-                {{ formatDuration(jd.job.durationInSeconds) }} {{ jd.job.completeDateUTC ? "seconds" : "" }}
+                {{ jd.job.friendlyDuration }}
             </td>
             <td>
                 <div>{{ jd.job.statusCode }}</div>

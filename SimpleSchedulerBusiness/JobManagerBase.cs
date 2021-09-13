@@ -12,6 +12,7 @@ using SimpleSchedulerData;
 using SimpleSchedulerEntities;
 using SimpleSchedulerModels;
 using SimpleSchedulerModels.Exceptions;
+using Humanizer;
 
 namespace SimpleSchedulerBusiness
 {
@@ -112,22 +113,46 @@ namespace SimpleSchedulerBusiness
         }
 
         public Job ConvertToJob(JobEntity entity)
-            => new(entity.JobID, entity.ScheduleID,
-            DateTime.ParseExact(entity.InsertDateUTC.ToString(), "yyyyMMddHHmmssfff", CultureInfo.InvariantCulture.DateTimeFormat),
-            DateTime.ParseExact(entity.QueueDateUTC.ToString(), "yyyyMMddHHmmssfff", CultureInfo.InvariantCulture.DateTimeFormat),
-            entity.CompleteDateUTC.HasValue
+        {
+            DateTime insertDateUTC = DateTime.ParseExact(entity.InsertDateUTC.ToString(), "yyyyMMddHHmmssfff", CultureInfo.InvariantCulture.DateTimeFormat);
+            DateTime queueDateUTC = DateTime.ParseExact(entity.QueueDateUTC.ToString(), "yyyyMMddHHmmssfff", CultureInfo.InvariantCulture.DateTimeFormat);
+            DateTime? completeDateUTC = entity.CompleteDateUTC.HasValue
                 ? DateTime.ParseExact(entity.CompleteDateUTC.Value.ToString(), "yyyyMMddHHmmssfff", CultureInfo.InvariantCulture.DateTimeFormat)
-                : null,
-            entity.StatusCode, entity.DetailedMessage, entity.AcknowledgementID,
-            entity.AcknowledgementDate.HasValue
-                ? DateTime.ParseExact(entity.AcknowledgementDate.Value.ToString(), "yyyyMMddHHmmssfff", CultureInfo.InvariantCulture.DateTimeFormat)
-                : null,
-            entity.CompleteDateUTC.HasValue
-                ? (decimal)DateTime.ParseExact(entity.CompleteDateUTC.Value.ToString(), "yyyyMMddHHmmssfff", CultureInfo.InvariantCulture.DateTimeFormat)
-                    .Subtract(DateTime.ParseExact(entity.QueueDateUTC.ToString(), "yyyyMMddHHmmssfff", CultureInfo.InvariantCulture.DateTimeFormat))
-                    .TotalSeconds
-                : null
-        );
+                : null;
+            double? durationInSeconds = null;
+            if (completeDateUTC.HasValue)
+            {
+                DateTime firstDate = insertDateUTC;
+                if (queueDateUTC > insertDateUTC)
+                {
+                    firstDate = queueDateUTC;
+                }
+                durationInSeconds = completeDateUTC.Value.Subtract(firstDate).TotalSeconds;
+            }
+
+            string? friendlyDuration = null;
+            if (durationInSeconds.HasValue)
+            {
+                friendlyDuration = TimeSpan.FromSeconds(durationInSeconds.Value).Humanize(precision: 1,
+                    maxUnit: Humanizer.Localisation.TimeUnit.Minute,
+                    minUnit: Humanizer.Localisation.TimeUnit.Second);
+            }
+
+            return new(
+                entity.JobID,
+                entity.ScheduleID,
+                insertDateUTC,
+                queueDateUTC,
+                completeDateUTC,
+                entity.StatusCode,
+                entity.DetailedMessage,
+                entity.AcknowledgementID,
+                AcknowledgementDate: entity.AcknowledgementDate.HasValue
+                    ? DateTime.ParseExact(entity.AcknowledgementDate.Value.ToString(), "yyyyMMddHHmmssfff", CultureInfo.InvariantCulture.DateTimeFormat)
+                    : null,
+                friendlyDuration
+            );
+        }
 
         protected abstract string DequeueQuery { get; }
         public virtual async Task<ImmutableArray<JobDetail>> DequeueScheduledJobsAsync(CancellationToken cancellationToken)
