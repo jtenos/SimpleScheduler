@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { JobService } from 'src/app/services/job.service';
 import { WorkerService } from 'src/app/services/worker.service';
 import { Worker } from "../../models/worker";
@@ -24,6 +24,8 @@ export class JobsComponent implements OnInit {
     statusCode: string | null = null;
     allWorkers!: Worker[];
     header: string = "";
+
+    @ViewChild("filterWorkerName") filterTextBox: any;
 
     loading = false;
     constructor(private route: ActivatedRoute, private jobService: JobService, private workerService: WorkerService) {
@@ -65,5 +67,11 @@ export class JobsComponent implements OnInit {
             return 0;
         });
         this.loading = false;
+
+        // Not sure why - without the timeout, the box doesn't focus
+        // TODO: Deal with this someday
+        setTimeout(() => {
+            this.filterTextBox?.nativeElement?.focus();
+        }, 500);
     }
 }

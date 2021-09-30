@@ -18,6 +18,7 @@ import { CustomInterceptor } from './custom-interceptor';
 import { ScheduleTableComponent } from './components/schedule-table/schedule-table.component';
 import { EditScheduleComponent } from './components/edit-schedule/edit-schedule.component';
 import { JobTableComponent } from './components/job-table/job-table.component';
+import { AutofocusDirective } from './autofocus.directive';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { JobTableComponent } from './components/job-table/job-table.component';
 
     EditScheduleComponent,
 
-    JobTableComponent
+    JobTableComponent,
+     AutofocusDirective
   ],
   imports: [
     BrowserModule,

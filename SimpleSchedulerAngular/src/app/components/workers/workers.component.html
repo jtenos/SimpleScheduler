@@ -1,7 +1,7 @@
 <h2>Workers {{ active ? "" : "(inactive)" }}</h2>
 <button class="btn btn-sm btn-outline-primary" (click)="refresh()">Refresh</button>
 
-<input type=text #filterWorkerName autofocus placeholder=Filter... style=margin-left:25px;>
+<input type=text #filterWorkerName placeholder=Filter... style=margin-left:25px; [autofocus]>
 
 <div [class.d-none]="!loading">Loading...</div>
 
