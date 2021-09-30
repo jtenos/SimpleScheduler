@@ -18,6 +18,15 @@ export class LoginService {
         };
     }
 
+    async getAllUserEmails(): Promise<string[]> {
+        try {
+            return await this.apiService.get<string[]>("Login", "GetAllUserEmails", []);
+        } catch (ex) {
+            console.error(ex || "Unknown error");
+            return [];
+        }
+    }
+
     async validateUser(validationCode: string): Promise<PostResult> {
         try {
             const userValidationResult = await this.apiService.post("Login", "ValidateEmail", { validationCode });

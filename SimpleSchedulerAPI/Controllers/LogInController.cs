@@ -5,6 +5,7 @@ using SimpleSchedulerBusiness;
 using SimpleSchedulerEmail;
 using SimpleSchedulerModels.Exceptions;
 using System;
+using System.Collections.Immutable;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
@@ -58,6 +59,10 @@ namespace SimpleSchedulerAPI.Controllers
                 return StatusCode(401, new { Message = "Validation code expired. Please try logging in again." });
             }
         }
+
+        [HttpGet("[action]")]
+        public async Task<ImmutableArray<string>> GetAllUserEmails(CancellationToken cancellationToken)
+            => await _userManager.GetAllUserEmailsAsync(cancellationToken);
 
         public record SubmitEmailRequest(string EmailAddress);
         public record ValidateEmailRequest(string ValidationCode);

@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Immutable;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SimpleSchedulerBusiness
@@ -7,6 +8,7 @@ namespace SimpleSchedulerBusiness
     {
         Task<bool> LoginSubmitAsync(string emailAddress,
             CancellationToken cancellationToken);
+        Task<ImmutableArray<string>> GetAllUserEmailsAsync(CancellationToken cancellationToken);
         Task<string> LoginValidateAsync(string validationKey, CancellationToken cancellationToken);
     }
 }

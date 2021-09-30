@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Immutable;
 using System.Data.Common;
 using System.Globalization;
 using System.Linq;
@@ -24,6 +25,20 @@ namespace SimpleSchedulerBusiness
         protected IServiceProvider ServiceProvider { get; }
         protected IEmailer Emailer { get; }
         protected IConfiguration Config { get; }
+
+        public virtual async Task<ImmutableArray<string>> GetAllUserEmailsAsync(CancellationToken cancellationToken)
+        {
+            if (!Config.GetValue<bool>("AllowLoginDropDown"))
+            {
+                return ImmutableArray<string>.Empty;
+            }
+
+            var db = await DatabaseFactory.GetDatabaseAsync(cancellationToken).ConfigureAwait(false);
+            DbParameter[] parms = {};
+            return (await db.GetManyAsync<string>(@"
+                SELECT [EmailAddress] FROM [Users] ORDER BY [EmailAddress];
+            ", parms, rdr => rdr.GetString(0), cancellationToken).ConfigureAwait(false)).ToImmutableArray();
+        }
 
         public virtual async Task<bool> LoginSubmitAsync(string emailAddress,
             CancellationToken cancellationToken)
