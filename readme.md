@@ -1,7 +1,7 @@
 To build from command line:
 
 ## SimpleSchedulerAngular:
-`ng build --prod --base-href /{{url-path-on-web-server}}/`
+`ng build --configuration production --base-href /{{url-path-on-web-server}}/`
 
 This puts the distribution files in ./dist/sch
 
