@@ -19,7 +19,7 @@ namespace SimpleSchedulerBusiness
             bool monday, bool tuesday, bool wednesday, bool thursday, bool friday, bool saturday,
             TimeSpan? timeOfDayUTC, TimeSpan? recurTime, TimeSpan? recurBetweenStartUTC,
             TimeSpan? recurBetweenEndUTC, bool oneTime, CancellationToken cancellationToken);
-        Task UpdateScheduleAsync(long scheduleID, long workerID, bool sunday,
+        Task UpdateScheduleAsync(long scheduleID, bool sunday,
             bool monday, bool tuesday, bool wednesday, bool thursday, bool friday, bool saturday,
             TimeSpan? timeOfDayUTC, TimeSpan? recurTime, TimeSpan? recurBetweenStartUTC,
             TimeSpan? recurBetweenEndUTC, CancellationToken cancellationToken);

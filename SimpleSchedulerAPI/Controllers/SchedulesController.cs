@@ -52,7 +52,7 @@ namespace SimpleSchedulerAPI.Controllers
                 if (schedule.ScheduleID > 0)
                 {
                     await _scheduleManager.UpdateScheduleAsync(schedule.ScheduleID,
-                        schedule.WorkerID, schedule.Sunday, schedule.Monday, schedule.Tuesday,
+                        schedule.Sunday, schedule.Monday, schedule.Tuesday,
                         schedule.Wednesday, schedule.Thursday, schedule.Friday, schedule.Saturday,
                         schedule.TimeOfDayUTC?.AsTimeSpan(), schedule.RecurTime?.AsTimeSpan(),
                         schedule.RecurBetweenStartUTC?.AsTimeSpan(),

@@ -138,7 +138,7 @@ namespace SimpleSchedulerBusiness
             ", parms, cancellationToken).ConfigureAwait(false);
         }
 
-        public virtual async Task UpdateScheduleAsync(long scheduleID, long workerID, bool sunday,
+        public virtual async Task UpdateScheduleAsync(long scheduleID, bool sunday,
             bool monday, bool tuesday, bool wednesday, bool thursday, bool friday, bool saturday,
             TimeSpan? timeOfDayUTC, TimeSpan? recurTime, TimeSpan? recurBetweenStartUTC,
             TimeSpan? recurBetweenEndUTC, CancellationToken cancellationToken)
@@ -147,7 +147,6 @@ namespace SimpleSchedulerBusiness
             var parms = new[]
             {
                 db.GetInt64Parameter("@ScheduleID", scheduleID),
-                db.GetInt64Parameter("@WorkerID", workerID),
                 db.GetInt64Parameter("@Sunday", sunday),
                 db.GetInt64Parameter("@Monday", monday),
                 db.GetInt64Parameter("@Tuesday", tuesday),
@@ -163,8 +162,7 @@ namespace SimpleSchedulerBusiness
 
             await db.NonQueryAsync(@"
                 UPDATE Schedules SET
-                    WorkerID = @WorkerID
-                    ,Sunday = @Sunday
+                    Sunday = @Sunday
                     ,Monday = @Monday
                     ,Tuesday = @Tuesday
                     ,Wednesday = @Wednesday
