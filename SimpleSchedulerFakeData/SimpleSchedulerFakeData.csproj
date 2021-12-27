@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -29,8 +29,8 @@
     <ProjectReference Include="..\SimpleSchedulerEmail\SimpleSchedulerEmail.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Faker.Net" Version="1.5.136" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.0" />
+    <PackageReference Include="Faker.Net" Version="1.5.150" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
   </ItemGroup>
 
 </Project>

@@ -144,7 +144,7 @@ namespace SimpleSchedulerTests
             try
             {
                 var scheduleManager = scope.ServiceProvider.GetRequiredService<IScheduleManager>();
-                await scheduleManager.UpdateScheduleAsync(1, 1, true, true, true, false, true, true, true,
+                await scheduleManager.UpdateScheduleAsync(1, true, true, true, false, true, true, true,
                     null, TimeSpan.FromMinutes(1), null, null, default);
             }
             finally

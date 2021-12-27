@@ -42,7 +42,7 @@ var serviceCollection = services.BuildServiceProvider();
 
 await serviceCollection.GetRequiredService<Program>().GoAsync(args);
 
-class Program
+partial class Program
 {
     private readonly IConfiguration _config;
     private readonly IWorkerManager _workerManager;

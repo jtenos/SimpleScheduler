@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk.Web">
 	<PropertyGroup>
-		<TargetFramework>net5.0</TargetFramework>
+		<TargetFramework>net6.0</TargetFramework>
 		<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<WarningsAsErrors />
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-		<UserSecretsId>a1bc9350-f9ee-4418-80c3-fa427e2e9c66</UserSecretsId>
 	</PropertyGroup>
 	<ItemGroup>
 		<Compile Include="..\SolutionInfo.cs" Link="SolutionInfo.cs" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.1" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\SimpleSchedulerEmail\SimpleSchedulerEmail.csproj" />
