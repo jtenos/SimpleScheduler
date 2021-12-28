@@ -35,6 +35,12 @@ namespace SimpleSchedulerAPI.Controllers
 
         [HttpPost]
         [Route("[action]")]
+        public async Task<IActionResult> CheckCanDeleteWorker([FromBody] DeleteWorkerRequest deleteWorkerRequest,
+            CancellationToken cancellationToken)
+            => Ok(new { Message = await _workerManager.CheckCanDeactivateWorkerAsync(deleteWorkerRequest.WorkerID, cancellationToken) });
+
+        [HttpPost]
+        [Route("[action]")]
         public async Task DeleteWorker([FromBody] DeleteWorkerRequest deleteWorkerRequest,
             CancellationToken cancellationToken)
             => await _workerManager.DeactivateWorkerAsync(deleteWorkerRequest.WorkerID, cancellationToken);

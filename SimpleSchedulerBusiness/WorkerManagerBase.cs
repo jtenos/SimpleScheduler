@@ -202,6 +202,29 @@ namespace SimpleSchedulerBusiness
             await EnsureNoCircularWorkersAsync(workerID, cancellationToken).ConfigureAwait(false);
         }
 
+        public virtual async Task<string> CheckCanDeactivateWorkerAsync(long workerID, CancellationToken cancellationToken)
+        {
+            var db = await DatabaseFactory.GetDatabaseAsync(cancellationToken).ConfigureAwait(false);
+
+            var worker = await GetWorkerAsync(workerID, cancellationToken).ConfigureAwait(false);
+
+            if (worker == null) { return "Already deactivated"; }
+
+            var workerDetail = (await GetWorkerDetailsAsync(new[] { worker }, cancellationToken).ConfigureAwait(false)).Single();
+            if (workerDetail.Schedules.Any(s => s.IsActive))
+            {
+                return "There are still active schedules for this worker";
+            }
+
+            if ((await GetAllWorkersAsync(cancellationToken, getActive: true, getInactive: false))
+                .Any(w => w.ParentWorkerID == workerID))
+            {
+                return "This worker is parent to another worker";
+            }
+
+            return "";
+        }
+
         public virtual async Task DeactivateWorkerAsync(long workerID, CancellationToken cancellationToken)
         {
             var db = await DatabaseFactory.GetDatabaseAsync(cancellationToken).ConfigureAwait(false);

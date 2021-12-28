@@ -28,9 +28,15 @@ export class WorkerService {
         return await this.apiService.get<Worker>("Workers", "GetWorker", [new Kvp("workerID", workerID.toString())]);
     }
 
-    async deleteWorker(workerID: number): Promise<boolean> {
+    async deleteWorker(workerID: number): Promise<string> {
+
+        const result = await this.apiService.post("Workers", "CheckCanDeleteWorker", { workerID });
+        if (result.message) {
+            return result.message;
+        }
+
         await this.apiService.post("Workers", "DeleteWorker", { workerID });
-        return true;
+        return "";
     }
 
     async reactivateWorker(workerID: number): Promise<boolean> {

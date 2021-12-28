@@ -22,6 +22,7 @@ namespace SimpleSchedulerBusiness
         Task UpdateWorkerAsync(long workerID, bool isActive, string workerName,
             string detailedDescription, string emailOnSuccess, long? parentWorkerID, long timeoutMinutes,
             string directoryName, string executable, string argumentValues, CancellationToken cancellationToken);
+        Task<string> CheckCanDeactivateWorkerAsync(long workerID, CancellationToken cancellationToken);
         Task DeactivateWorkerAsync(long workerID, CancellationToken cancellationToken);
         Task ReactivateWorkerAsync(long workerID, CancellationToken cancellationToken);
         Worker ConvertToWorker(WorkerEntity entity);

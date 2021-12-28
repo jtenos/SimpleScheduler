@@ -32,7 +32,11 @@ export class WorkerTableComponent implements OnInit {
 
     async deleteWorker(workerID: number): Promise<void> {
         if (confirm("Are you sure?")) {
-            await this.workerService.deleteWorker(workerID);
+            const resultMessage = await this.workerService.deleteWorker(workerID);
+            if (resultMessage) {
+                alert(resultMessage);
+                return;
+            }
             this.refreshWorkers.emit(true);
         }
     }
