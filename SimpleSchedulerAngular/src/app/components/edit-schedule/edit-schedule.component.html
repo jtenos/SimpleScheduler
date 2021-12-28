@@ -6,13 +6,13 @@
 
     <div class="form-group">
         <label>Worker</label>
-        <select formControlName="workerID" class=form-control *ngIf="schedule.scheduleID === 0">
+        <select formControlName="workerID" class=form-control *ngIf="schedule?.scheduleID === 0">
             <option></option>
             <option *ngFor="let worker of allWorkers" [value]="worker.workerID">
                 {{ worker.workerName }}
             </option>
         </select>
-        <div *ngIf="schedule.scheduleID > 0">{{ schedule.workerID }}</div>
+        <div *ngIf="(schedule?.scheduleID || 0) > 0">{{ schedule?.workerID }}</div>
     </div>
 
     <div class=form-group>

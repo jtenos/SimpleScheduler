@@ -6,7 +6,6 @@ import { ScheduleService } from 'src/app/services/schedule.service';
 import { Worker } from "../../models/worker";
 import { WorkerService } from 'src/app/services/worker.service';
 import TimeSpan from 'src/app/models/timespan';
-import { ThrowStmt } from '@angular/compiler';
 
 @Component({
     selector: 'app-edit-schedule',
