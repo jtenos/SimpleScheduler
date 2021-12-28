@@ -17,9 +17,11 @@ export class WorkerService {
     }
 
     async getAllActiveWorkers(): Promise<Worker[]> {
-        return (await this.apiService.get<WorkerDetail[]>("Workers", "GetAllWorkers", [
+        const result = (await this.apiService.get<WorkerDetail[]>("Workers", "GetAllWorkers", [
             new Kvp("getInactive", "False")
         ])).map(x => x.worker);
+        result.sort((x, y) => (x.workerName > y.workerName) ? 1 : -1);
+        return result;
     }
 
     async getWorker(workerID: number): Promise<Worker> {
