@@ -29,27 +29,27 @@ If you're in IIS, make sure you're using the URL Rewrite module, and you'll need
 
 ## API:
 
-`dotnet publish SimpleSchedulerAPI.csproj --configuration Release --output bin/Release/net5.0/publish --runtime win-x64 --no-self-contained`
+`dotnet publish SimpleSchedulerAPI.csproj --configuration Release --output bin/Release/net6.0/publish --runtime win-x64 --no-self-contained`
 
-This assumes Windows and assumes that .NET 5.0 is installed. Modify appropriately for your needs.
+This assumes Windows and assumes that .NET 6.0 is installed. Modify appropriately for your needs.
 
-This will put your output into ./bin/Release/net5.0/publish/
+This will put your output into ./bin/Release/net6.0/publish/
 
 ## Service:
 
-`dotnet publish SimpleSchedulerService.csproj --configuration Release --output bin/Release/net5.0/publish --runtime win-x64 --no-self-contained`
+`dotnet publish SimpleSchedulerService.csproj --configuration Release --output bin/Release/net6.0/publish --runtime win-x64 --no-self-contained`
 
-This assumes Windows and assumes that .NET 5.0 is installed. Modify appropriately for your needs.
+This assumes Windows and assumes that .NET 6.0 is installed. Modify appropriately for your needs.
 
-This will put your output into ./bin/Release/net5.0/publish/
+This will put your output into ./bin/Release/net6.0/publish/
 
 ## ServiceChecker:
 
-`dotnet publish SimpleSchedulerServiceChecker.csproj --configuration Release --output bin/Release/net5.0/publish --runtime win-x64 --no-self-contained`
+`dotnet publish SimpleSchedulerServiceChecker.csproj --configuration Release --output bin/Release/net6.0/publish --runtime win-x64 --no-self-contained`
 
-This assumes Windows and assumes that .NET 5.0 is installed. Modify appropriately for your needs.
+This assumes Windows and assumes that .NET 6.0 is installed. Modify appropriately for your needs.
 
-This will put your output into ./bin/Release/net5.0/publish/
+This will put your output into ./bin/Release/net6.0/publish/
 
 ## SQL Server:
 
