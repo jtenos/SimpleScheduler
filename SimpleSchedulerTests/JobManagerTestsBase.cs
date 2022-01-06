@@ -371,7 +371,7 @@ namespace SimpleSchedulerTests
             try
             {
                 var jobManager = scope.ServiceProvider.GetRequiredService<IJobManager>();
-                string? message = await jobManager.GetJobDetailedMessageAsync(1, default);
+                string? message = await jobManager.GetDetailedMessageAsync(1, default);
                 Assert.AreEqual("asdf", message);
             }
             finally

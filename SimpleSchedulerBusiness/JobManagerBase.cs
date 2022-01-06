@@ -186,7 +186,7 @@ namespace SimpleSchedulerBusiness
             return ConvertToJob(entity);
         }
 
-        public virtual async Task<string?> GetJobDetailedMessageAsync(long jobID, CancellationToken cancellationToken)
+        public virtual async Task<string?> GetDetailedMessageAsync(long jobID, CancellationToken cancellationToken)
         {
             var db = await DatabaseFactory.GetDatabaseAsync(cancellationToken).ConfigureAwait(false);
             var parms = new[] { db.GetInt64Parameter("@JobID", jobID) };
@@ -307,12 +307,53 @@ namespace SimpleSchedulerBusiness
             ", Array.Empty<DbParameter>(), cancellationToken).ConfigureAwait(false);
         }
 
-        public virtual async Task<string> GetDetailedMessageAsync(long jobID, CancellationToken cancellationToken)
+        public virtual async Task<ImmutableArray<long>> GetOldJobIDsAsync(int numDays, CancellationToken cancellationToken)
+        {
+            DateTime maxQueueDateUTC = DateTime.UtcNow.AddDays(-1 * numDays);
+            var db = await DatabaseFactory.GetDatabaseAsync(cancellationToken).ConfigureAwait(false);
+            return await db.GetManyAsync(@"
+                SELECT JobID FROM Jobs WHERE QueueDateUTC <= @MaxQueueDateUTC
+            ", new[] { db.GetInt64Parameter("@MaxQueueDateUTC", maxQueueDateUTC) }, rdr => rdr.GetInt64(0), cancellationToken).ConfigureAwait(false);
+        }
+
+        public virtual async Task ArchiveJobAsync(long jobID, CancellationToken cancellationToken)
+        {
+            string? detailedMessage = await GetDetailedMessageAsync(jobID, cancellationToken).ConfigureAwait(false);
+            byte[]? detailedMessageCompressed = string.IsNullOrWhiteSpace(detailedMessage) ? null
+                : Brotli.CompressString(detailedMessage.Trim());
+            var db = await DatabaseFactory.GetDatabaseAsync(cancellationToken).ConfigureAwait(false);
+            await db.NonQueryAsync(@"
+                INSERT JobsArchive (
+                    JobID, ScheduleID, InsertDateUTC, QueueDateUTC, CompleteDateUTC, StatusCode, DetailedMessage,
+                    AcknowledgementID, AcknowledgementDate, DetailedMessageSize
+                )
+                SELECT
+                    JobID, ScheduleID, InsertDateUTC, QueueDateUTC, CompleteDateUTC, StatusCode, @DetailedMessage,
+                    AcknowledgementID, AcknowledgementDate, DetailedMessageSize
+                FROM Jobs
+                WHERE JobID = @JobID;
+
+                DELETE Jobs WHERE JobID = @JobID;
+            ", new[] {
+                db.GetInt64Parameter("@JobID", jobID),
+                db.GetBinaryParameter("@DetailedMessage", detailedMessageCompressed, isFixed: true, size: -1)
+            }, cancellationToken).ConfigureAwait(false);
+        }
+
+        public virtual async Task<string> GetArchivedDetailedMessageAsync(long jobArchiveID, CancellationToken cancellationToken)
         {
             var db = await DatabaseFactory.GetDatabaseAsync(cancellationToken).ConfigureAwait(false);
-            return await db.ScalarAsync<string>(@"
-                SELECT DetailedMessage FROM Jobs WHERE JobID = @JobID
-            ", new[] { db.GetInt64Parameter("@JobID", jobID)}, cancellationToken).ConfigureAwait(false);
+
+            byte[]? detailedMessageCompressed = (await db.GetManyAsync(@"
+                SELECT DetailedMessage FROM JobsArchive WHERE JobArchiveID = @JobArchiveID AND DetailedMessage IS NOT NULL;
+            ", new[] { db.GetInt64Parameter("@JobArchiveID", jobArchiveID) }, rdr => (byte[])rdr[0], cancellationToken).ConfigureAwait(false)).FirstOrDefault();
+
+            if (detailedMessageCompressed == null || detailedMessageCompressed.Length == 0)
+            {
+                return "";
+            }
+
+            return Brotli.DecompressToString(detailedMessageCompressed);
         }
 
         private async Task<ImmutableArray<JobDetail>> GetJobDetailsAsync(IEnumerable<Job> jobs, CancellationToken cancellationToken)

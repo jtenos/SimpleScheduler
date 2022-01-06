@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleSchedulerFakeData", "
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "SimpleSchedulerDB", "SqlDB\SimpleSchedulerDB.sqlproj", "{760899A4-0FCE-4B5C-A9E4-7C0F11CC0831}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleSchedulerJobArchive", "SimpleSchedulerJobArchive\SimpleSchedulerJobArchive.csproj", "{6AB9DBF4-EF77-4B97-8BFA-9DDB54741C86}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -125,6 +127,14 @@ Global
 		{760899A4-0FCE-4B5C-A9E4-7C0F11CC0831}.Release|x64.ActiveCfg = Release|Any CPU
 		{760899A4-0FCE-4B5C-A9E4-7C0F11CC0831}.Release|x64.Build.0 = Release|Any CPU
 		{760899A4-0FCE-4B5C-A9E4-7C0F11CC0831}.Release|x64.Deploy.0 = Release|Any CPU
+		{6AB9DBF4-EF77-4B97-8BFA-9DDB54741C86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AB9DBF4-EF77-4B97-8BFA-9DDB54741C86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AB9DBF4-EF77-4B97-8BFA-9DDB54741C86}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6AB9DBF4-EF77-4B97-8BFA-9DDB54741C86}.Debug|x64.Build.0 = Debug|Any CPU
+		{6AB9DBF4-EF77-4B97-8BFA-9DDB54741C86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AB9DBF4-EF77-4B97-8BFA-9DDB54741C86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6AB9DBF4-EF77-4B97-8BFA-9DDB54741C86}.Release|x64.ActiveCfg = Release|Any CPU
+		{6AB9DBF4-EF77-4B97-8BFA-9DDB54741C86}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

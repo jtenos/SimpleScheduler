@@ -19,9 +19,11 @@ namespace SimpleSchedulerBusiness
             string? statusCode, long? workerID, bool overdueOnly, CancellationToken cancellationToken);
         Task<ImmutableArray<JobDetail>> GetOverdueJobsAsync(CancellationToken cancellationToken);
         Task<Job?> GetLastQueuedJobAsync(long scheduleID, CancellationToken cancellationToken);
-        Task<string?> GetJobDetailedMessageAsync(long jobID, CancellationToken cancellationToken);
+        Task<string?> GetDetailedMessageAsync(long jobID, CancellationToken cancellationToken);
         Task<ImmutableArray<JobDetail>> DequeueScheduledJobsAsync(CancellationToken cancellationToken);
-        Task<string> GetDetailedMessageAsync(long jobID, CancellationToken cancellationToken);
         Job ConvertToJob(JobEntity entity);
+        Task<ImmutableArray<long>> GetOldJobIDsAsync(int numDays, CancellationToken cancellationToken);
+        Task ArchiveJobAsync(long jobID, CancellationToken cancellationToken);
+        Task<string> GetArchivedDetailedMessageAsync(long jobArchiveID, CancellationToken cancellationToken);
     }
 }

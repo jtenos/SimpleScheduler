@@ -24,6 +24,9 @@ namespace SimpleSchedulerData
         public override DbParameter GetStringParameter(string name, string? value, bool isFixed, int size)
             => new SqlParameter(name, isFixed ? SqlDbType.NChar : SqlDbType.NVarChar, size) { Value = value ?? (object)DBNull.Value };
 
+        public override DbParameter GetBinaryParameter(string name, byte[]? value, bool isFixed, int size)
+            => new SqlParameter(name, isFixed ? SqlDbType.Binary : SqlDbType.VarBinary, size) { Value = value ?? (object)DBNull.Value };
+
         public override string GetLastAutoIncrementQuery => "SELECT CAST(SCOPE_IDENTITY() AS BIGINT);";
 
         public override string GetOffsetLimitClause(int offset, int limit)

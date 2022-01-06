@@ -53,7 +53,7 @@ namespace SimpleSchedulerAPI.Controllers
         [HttpPost("[action]")]
         public async Task<object> GetDetailedMessage([FromBody] GetDetailedMessageRequest request, CancellationToken cancellationToken)
         {
-            string message = await _jobManager.GetDetailedMessageAsync(request.JobID, cancellationToken);
+            string? message = await _jobManager.GetDetailedMessageAsync(request.JobID, cancellationToken);
             return Ok(new { message });
         }
 

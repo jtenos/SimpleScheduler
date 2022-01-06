@@ -19,12 +19,14 @@ namespace SimpleSchedulerData
                 ConnectionString = Config.GetConnectionString("SimpleScheduler")
             };
 
-
         public override DbParameter GetInt64Parameter(string name, long? value)
             => new SqliteParameter(name, SqliteType.Integer) { Value = value ?? (object)DBNull.Value };
 
         public override DbParameter GetStringParameter(string name, string? value, bool isFixed, int size)
             => new SqliteParameter(name, SqliteType.Text) { Value = value ?? (object)DBNull.Value };
+
+        public override DbParameter GetBinaryParameter(string name, byte[]? value, bool isFixed, int size)
+            => new SqliteParameter(name, SqliteType.Blob) { Value = value ?? (object)DBNull.Value };
 
         public override string GetLastAutoIncrementQuery => "SELECT last_insert_rowid();";
 
@@ -156,6 +158,23 @@ namespace SimpleSchedulerData
             CREATE INDEX IX_Jobs_Status ON Jobs(StatusCode);
             CREATE INDEX IX_Jobs_ScheduleID ON Jobs(ScheduleID);
             CREATE INDEX IX_Jobs_AcknowledgementID ON Jobs(AcknowledgementID);
+
+            --------------------------
+
+            CREATE TABLE JobsArchive
+            (
+                JobArchiveID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+                ,JobID INTEGER NOT NULL
+                ,ScheduleID INTEGER NOT NULL
+                ,InsertDateUTC INTEGER NOT NULL
+                ,QueueDateUTC INTEGER NOT NULL
+                ,CompleteDateUTC INTEGER NULL
+                ,StatusCode TEXT NOT NULL
+                ,DetailedMessage BLOB NULL -- Brotli-compressed
+                ,AcknowledgementID TEXT NOT NULL
+                ,AcknowledgementDate BIGINT NULL
+                ,DetailedMessageSize INTEGER NOT NULL
+            );
 
             --------------------------
         ";

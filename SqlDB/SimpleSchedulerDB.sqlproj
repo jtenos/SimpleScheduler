@@ -79,5 +79,6 @@
     <Build Include="Schedules.sql" />
     <Build Include="Users.sql" />
     <Build Include="Workers.sql" />
+    <Build Include="JobsArchive.sql" />
   </ItemGroup>
 </Project>
