@@ -24,7 +24,7 @@ Post-Deployment Script Template
 --INSERT dbo.Workers (IsActive, WorkerName, DetailedDescription, dbo.Workers.EmailOnSuccess, dbo.Workers.ParentWorkerID,
 --TimeoutMinutes,
 --DirectoryName, dbo.Workers.Executable, dbo.Workers.ArgumentValues)
---    VALUES (1, 'good morning', '', 'joe.enos@azdhs.gov', NULL, 20, 'good-morning', 'morning.exe', '')
+--    VALUES (1, 'good morning', '', 'test@example.com', NULL, 20, 'good-morning', 'morning.exe', '')
 --END;
 
 --UPDATE dbo.Workers
