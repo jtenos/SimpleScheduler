@@ -323,7 +323,7 @@ namespace SimpleSchedulerBusiness
                 : Brotli.CompressString(detailedMessage.Trim());
             var db = await DatabaseFactory.GetDatabaseAsync(cancellationToken).ConfigureAwait(false);
             await db.NonQueryAsync(@"
-                INSERT JobsArchive (
+                INSERT INTO JobsArchive (
                     JobID, ScheduleID, InsertDateUTC, QueueDateUTC, CompleteDateUTC, StatusCode, DetailedMessage,
                     AcknowledgementID, AcknowledgementDate, DetailedMessageSize
                 )
@@ -333,7 +333,7 @@ namespace SimpleSchedulerBusiness
                 FROM Jobs
                 WHERE JobID = @JobID;
 
-                DELETE Jobs WHERE JobID = @JobID;
+                DELETE FROM Jobs WHERE JobID = @JobID;
             ", new[] {
                 db.GetInt64Parameter("@JobID", jobID),
                 db.GetBinaryParameter("@DetailedMessage", detailedMessageCompressed, isFixed: true, size: -1)
