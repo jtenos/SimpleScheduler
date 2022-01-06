@@ -144,7 +144,8 @@ namespace SimpleSchedulerData
                 -- If the job does not error, this is ignored
                 , AcknowledgementID TEXT NOT NULL
                 , AcknowledgementDate BIGINT NULL
-
+                
+                , DetailedMessageSize INTEGER NOT NULL DEFAULT 0
 
                 , FOREIGN KEY ([ScheduleID]) REFERENCES [Schedules] ([ScheduleID])
                 , CHECK (

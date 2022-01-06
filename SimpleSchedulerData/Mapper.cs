@@ -30,7 +30,8 @@ namespace SimpleSchedulerData
                 StatusCode: GetString(rdr, nameof(JobEntity.StatusCode)),
                 DetailedMessage: GetStringNullable(rdr, nameof(JobEntity.DetailedMessage)),
                 AcknowledgementID: GetString(rdr, nameof(JobEntity.AcknowledgementID)),
-                AcknowledgementDate: GetInt64Nullable(rdr, nameof(JobEntity.AcknowledgementDate))
+                AcknowledgementDate: GetInt64Nullable(rdr, nameof(JobEntity.AcknowledgementDate)),
+                DetailedMessageSize: GetInt64(rdr, nameof(JobEntity.DetailedMessageSize))
             );
 
         public static LoginAttemptEntity MapLoginAttempt(DbDataReader rdr)

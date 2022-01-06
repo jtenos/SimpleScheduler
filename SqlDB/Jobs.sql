@@ -5,7 +5,6 @@
 
     ,ScheduleID BIGINT NOT NULL
     ,CONSTRAINT FK_Jobs_ScheduleID FOREIGN KEY (ScheduleID) REFERENCES dbo.Schedules (ScheduleID)
-    ,INDEX IX_ScheduleID (ScheduleID)
 
     -- Dates are YYYYMMDDHHMMSSFFF
     ,InsertDateUTC BIGINT NOT NULL
@@ -17,7 +16,6 @@
         StatusCode = 'NEW' OR StatusCode = 'CAN' OR StatusCode = 'ERR'
         OR StatusCode = 'RUN' OR StatusCode = 'ACK' OR StatusCode = 'SUC'
     )
-    ,INDEX IX_StatusCode (StatusCode)
 
     ,DetailedMessage NVARCHAR(MAX) NULL
 
@@ -26,5 +24,29 @@
     ,AcknowledgementID NCHAR(32) NOT NULL
     ,INDEX IX_AcknowledgementID (AcknowledgementID)
     ,AcknowledgementDate BIGINT NULL
+
+    ,DetailedMessageSize BIGINT NOT NULL
+        CONSTRAINT DF_Jobs_DetailedMessageSize DEFAULT (0)
+);
+GO
+
+CREATE INDEX IX_ScheduleID ON dbo.Jobs (
+    ScheduleID
+) INCLUDE (
+    InsertDateUTC, QueueDateUTC, CompleteDateUTC, StatusCode, DetailedMessageSize
+);
+GO
+
+CREATE INDEX IX_StatusCode ON dbo.Jobs (
+    StatusCode
+) INCLUDE (
+    InsertDateUTC, QueueDateUTC, CompleteDateUTC, DetailedMessageSize
+);
+GO
+
+CREATE INDEX IX_QueueDateUTC_Desc ON dbo.Jobs (
+	QueueDateUTC DESC
+) INCLUDE (
+    InsertDateUTC, CompleteDateUTC, StatusCode, DetailedMessageSize
 );
 GO

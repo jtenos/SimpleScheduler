@@ -9,6 +9,7 @@ namespace SimpleSchedulerEntities
         string StatusCode,
         string? DetailedMessage,
         string AcknowledgementID,
-        long? AcknowledgementDate
+        long? AcknowledgementDate,
+        long DetailedMessageSize
     );
 }

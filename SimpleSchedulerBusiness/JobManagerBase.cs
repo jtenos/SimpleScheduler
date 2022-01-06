@@ -92,11 +92,16 @@ namespace SimpleSchedulerBusiness
                 db.GetInt64Parameter("@CompleteDateUTC", DateTime.UtcNow),
                 db.GetStringParameter("@StatusCode", statusCode, isFixed: true, size: 3),
                 db.GetStringParameter("@DetailedMessage", detailedMessage, isFixed: false, size: -1),
-                db.GetInt64Parameter("@JobID", jobID)
+                db.GetInt64Parameter("@JobID", jobID),
+                db.GetInt64Parameter("@DetailedMessageSize", detailedMessage?.Length ?? 0)
             };
             await db.NonQueryAsync(@"
                 UPDATE [Jobs]
-                SET StatusCode = @StatusCode, DetailedMessage = @DetailedMessage, CompleteDateUTC = @CompleteDateUTC
+                SET
+                    StatusCode = @StatusCode
+                    ,DetailedMessage = @DetailedMessage
+                    ,CompleteDateUTC = @CompleteDateUTC
+                    ,DetailedMessageSize = @DetailedMessageSize
                 WHERE JobID = @JobID;
             ", parms, cancellationToken).ConfigureAwait(false);
 
@@ -146,6 +151,7 @@ namespace SimpleSchedulerBusiness
                 completeDateUTC,
                 entity.StatusCode,
                 entity.DetailedMessage,
+                entity.DetailedMessageSize,
                 entity.AcknowledgementID,
                 AcknowledgementDate: entity.AcknowledgementDate.HasValue
                     ? DateTime.ParseExact(entity.AcknowledgementDate.Value.ToString(), "yyyyMMddHHmmssfff", CultureInfo.InvariantCulture.DateTimeFormat)
@@ -225,11 +231,8 @@ namespace SimpleSchedulerBusiness
                     ,StatusCode
                     ,AcknowledgementID
                     ,AcknowledgementDate
-                    ,CASE
-                        WHEN DetailedMessage IS NULL THEN ''
-                        WHEN DetailedMessage = '' THEN ''
-                        ELSE 'X'
-                    END [DetailedMessage] 
+                    ,'' [DetailedMessage]
+                    ,DetailedMessageSize
                 FROM Jobs WHERE 1=1");
             if (statusCode != null)
             {

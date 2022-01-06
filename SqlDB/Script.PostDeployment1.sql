@@ -30,3 +30,21 @@ Post-Deployment Script Template
 --UPDATE dbo.Workers
 --SET ParentWorkerID = 1
 --WHERE WorkerID = 2
+
+---------------------------------------------------------------------
+-- Adding DetailedMessageSize to the table:
+
+--ALTER TABLE [dbo].[Jobs]
+--ADD [DetailedMessageSize] BIGINT NULL;
+--GO
+
+--UPDATE dbo.Jobs
+--SET DetailedMessageSize = CASE 
+--	WHEN DetailedMessage IS NULL THEN 0
+--	ELSE LEN(DetailedMessage)
+--END;
+--GO
+
+--ALTER TABLE [dbo].[Jobs]
+--ALTER COLUMN [DetailedMessageSize] BIGINT NOT NULL;
+--GO
