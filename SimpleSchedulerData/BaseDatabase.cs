@@ -81,7 +81,14 @@ namespace SimpleSchedulerData
             comm.Transaction = _transaction;
             comm.CommandText = sql;
             comm.Parameters.AddRange(parameters.ToArray());
-            return (T)(await comm.ExecuteScalarAsync().ConfigureAwait(false))!;
+
+            object result = (await comm.ExecuteScalarAsync().ConfigureAwait(false))!;
+            if (result == null || result == DBNull.Value)
+            {
+                return default!;
+            }
+
+            return ((T)result)!;
         }
 
         public async Task CommitAsync(CancellationToken cancellationToken)

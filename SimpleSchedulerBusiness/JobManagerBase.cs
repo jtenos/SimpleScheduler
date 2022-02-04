@@ -190,7 +190,7 @@ namespace SimpleSchedulerBusiness
         {
             var db = await DatabaseFactory.GetDatabaseAsync(cancellationToken).ConfigureAwait(false);
             var parms = new[] { db.GetInt64Parameter("@JobID", jobID) };
-            return await db.ScalarAsync<string>(@"
+            return await db.ScalarAsync<string?>(@"
                 SELECT DetailedMessage FROM Jobs WHERE JobID = @JobID;
             ", parms, cancellationToken).ConfigureAwait(false);
         }
