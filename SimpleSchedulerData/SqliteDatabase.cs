@@ -158,6 +158,7 @@ namespace SimpleSchedulerData
             CREATE INDEX IX_Jobs_Status ON Jobs(StatusCode);
             CREATE INDEX IX_Jobs_ScheduleID ON Jobs(ScheduleID);
             CREATE INDEX IX_Jobs_AcknowledgementID ON Jobs(AcknowledgementID);
+            CREATE INDEX IX_QueueDateSchComplStatus ON Jobs (QueueDateUTC, ScheduleID, CompleteDateUTC, StatusCode);
 
             --------------------------
 

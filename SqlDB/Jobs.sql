@@ -50,3 +50,8 @@ CREATE INDEX IX_QueueDateUTC_Desc ON dbo.Jobs (
     InsertDateUTC, CompleteDateUTC, StatusCode, DetailedMessageSize
 );
 GO
+
+CREATE INDEX IX_QueueDateSchComplStatus ON dbo.Jobs (
+    QueueDateUTC, ScheduleID, CompleteDateUTC, StatusCode
+);
+GO
