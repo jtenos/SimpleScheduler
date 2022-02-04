@@ -53,13 +53,14 @@ This will put your output into ./bin/Release/net6.0/publish/
 
 ## SQL Server:
 
-If you're using SQL Server, you can publish from Visual Studio, or there are just five tables, so run them in this order:
+If you're using SQL Server, you can publish from Visual Studio, or there are just six tables, so run them in this order:
 
 * Users.sql
 * LoginAttempts.sql
 * Workers.sql
 * Schedules.sql
 * Jobs.sql
+* JobsArchive.sql
 
 You'll need to add an email address to the Users table manually.
 
