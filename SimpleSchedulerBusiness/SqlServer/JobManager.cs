@@ -11,19 +11,19 @@ namespace SimpleSchedulerBusiness.SqlServer
 
         protected override string DequeueQuery => @"
             DECLARE @Result TABLE (JobID INT);
-            ;WITH three_records AS (
+            ;WITH five_records AS (
                 SELECT JobID, StatusCode
                 FROM dbo.Jobs WITH (ROWLOCK, READPAST, UPDLOCK)
                 WHERE StatusCode = 'NEW'
                 AND QueueDateUTC < @Now
                 ORDER BY QueueDateUTC
                 OFFSET 0 ROWS
-                FETCH NEXT 3 ROWS ONLY
+                FETCH NEXT 5 ROWS ONLY
             )
-            UPDATE three_records
+            UPDATE five_records
             SET StatusCode = 'RUN'
             OUTPUT INSERTED.JobID INTO @Result
-            FROM three_records WITH (ROWLOCK, READPAST, UPDLOCK)
+            FROM five_records WITH (ROWLOCK, READPAST, UPDLOCK)
 
             SELECT j.* 
             FROM dbo.Jobs j

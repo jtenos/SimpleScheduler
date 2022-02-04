@@ -18,7 +18,7 @@ namespace SimpleSchedulerBusiness.Sqlite
                 WHERE StatusCode = 'NEW'
                 AND QueueDateUTC < @Now
                 ORDER BY QueueDateUTC
-                LIMIT 3 OFFSET 0;
+                LIMIT 5 OFFSET 0;
 
             UPDATE Jobs
             SET StatusCode = 'RUN'
