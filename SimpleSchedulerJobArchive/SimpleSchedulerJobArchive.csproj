@@ -24,10 +24,5 @@
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>
-	<ItemGroup>
-		<None Update="secrets.json">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-	</ItemGroup>
 
 </Project>

@@ -82,13 +82,18 @@ namespace SimpleSchedulerData
             comm.CommandText = sql;
             comm.Parameters.AddRange(parameters.ToArray());
 
-            object result = (await comm.ExecuteScalarAsync().ConfigureAwait(false))!;
+            // https://github.com/dotnet/SqlClient/issues/593
+            // This should be Async, but there's a flaw when dealing with large values.
+            // TODO: Rewrite this to sequentially pull the data rather than using scalar
+            // For now, using the non-async version to get things working
+            //object result = (await comm.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false))!;
+            object result = comm.ExecuteScalar()!;
             if (result == null || result == DBNull.Value)
             {
                 return default!;
             }
 
-            return ((T)result)!;
+            return await Task.FromResult(((T)result)!);
         }
 
         public async Task CommitAsync(CancellationToken cancellationToken)

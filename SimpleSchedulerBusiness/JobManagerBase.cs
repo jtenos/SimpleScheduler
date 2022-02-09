@@ -318,10 +318,14 @@ namespace SimpleSchedulerBusiness
 
         public virtual async Task ArchiveJobAsync(long jobID, CancellationToken cancellationToken)
         {
+            Console.WriteLine("Getting detailed message");
             string? detailedMessage = await GetDetailedMessageAsync(jobID, cancellationToken).ConfigureAwait(false);
+            Console.WriteLine($"Got detailed message, length={detailedMessage?.Length}, compressing");
             byte[]? detailedMessageCompressed = string.IsNullOrWhiteSpace(detailedMessage) ? null
                 : Brotli.CompressString(detailedMessage.Trim());
+            Console.WriteLine($"Detailed message length: {detailedMessageCompressed?.Length}");
             var db = await DatabaseFactory.GetDatabaseAsync(cancellationToken).ConfigureAwait(false);
+            Console.WriteLine("Executing archive query");
             await db.NonQueryAsync(@"
                 INSERT INTO JobsArchive (
                     JobID, ScheduleID, InsertDateUTC, QueueDateUTC, CompleteDateUTC, StatusCode, DetailedMessage,
@@ -338,6 +342,7 @@ namespace SimpleSchedulerBusiness
                 db.GetInt64Parameter("@JobID", jobID),
                 db.GetBinaryParameter("@DetailedMessage", detailedMessageCompressed, isFixed: true, size: -1)
             }, cancellationToken).ConfigureAwait(false);
+            Console.WriteLine("Archive query executed");
         }
 
         public virtual async Task<string> GetArchivedDetailedMessageAsync(long jobArchiveID, CancellationToken cancellationToken)
