@@ -1,0 +1,16 @@
+﻿@import "bootstrap-4.0.0/bootstrap.scss";
+
+#workers-table-header-row {
+    font-weight: bold;
+}
+
+#workers-table > .row:nth-of-type(odd) {
+    background-color: $table-accent-bg;
+}
+
+#workers-table > .row > .col {
+    padding: {
+        top: 10px;
+        bottom: 10px
+    }
+}

@@ -2,26 +2,26 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
-		<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<WarningsAsErrors />
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 	<ItemGroup>
 		<Compile Include="..\SolutionInfo.cs" Link="SolutionInfo.cs" />
 	</ItemGroup>
 	<ItemGroup>
- 	  <ProjectReference Include="..\SimpleSchedulerData\SimpleSchedulerData.csproj" />
-	  <ProjectReference Include="..\SimpleSchedulerEmail\SimpleSchedulerEmail.csproj" />
-	  <ProjectReference Include="..\SimpleSchedulerModels\SimpleSchedulerModels.csproj" />
-	  <ProjectReference Include="..\SimpleSchedulerEntities\SimpleSchedulerEntities.csproj" />
+		<ProjectReference Include="..\SimpleSchedulerData\SimpleSchedulerData.csproj" />
+		<ProjectReference Include="..\SimpleSchedulerEmail\SimpleSchedulerEmail.csproj" />
+		<ProjectReference Include="..\SimpleSchedulerModels\SimpleSchedulerModels.csproj" />
+		<ProjectReference Include="..\SimpleSchedulerEntities\SimpleSchedulerEntities.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-	  <PackageReference Include="Humanizer.Core" Version="2.13.14" />
-	  <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+		<PackageReference Include="Humanizer.Core" Version="2.13.14" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="Sqlite\" />
+		<Folder Include="Sqlite\" />
 	</ItemGroup>
 </Project>

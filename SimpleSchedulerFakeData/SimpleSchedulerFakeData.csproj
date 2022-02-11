@@ -1,36 +1,36 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-    <LangVersion>latest</LangVersion>
-    <Nullable>enable</Nullable>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <WarningsAsErrors />
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net6.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<WarningsAsErrors />
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
 	<ItemGroup>
 		<Compile Include="..\SolutionInfo.cs" Link="SolutionInfo.cs" />
 	</ItemGroup>
-  <ItemGroup>
-    <None Update="appsettings.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="secrets.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SimpleSchedulerBusiness\SimpleSchedulerBusiness.csproj" />
-    <ProjectReference Include="..\SimpleSchedulerData\SimpleSchedulerData.csproj" />
-    <ProjectReference Include="..\SimpleSchedulerModels\SimpleSchedulerModels.csproj" />
-    <ProjectReference Include="..\SimpleSchedulerEmail\SimpleSchedulerEmail.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Faker.Net" Version="1.5.150" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Update="appsettings.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+	<ItemGroup>
+		<None Update="secrets.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\SimpleSchedulerBusiness\SimpleSchedulerBusiness.csproj" />
+		<ProjectReference Include="..\SimpleSchedulerData\SimpleSchedulerData.csproj" />
+		<ProjectReference Include="..\SimpleSchedulerModels\SimpleSchedulerModels.csproj" />
+		<ProjectReference Include="..\SimpleSchedulerEmail\SimpleSchedulerEmail.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Faker.Net" Version="1.5.150" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+	</ItemGroup>
 
 </Project>
