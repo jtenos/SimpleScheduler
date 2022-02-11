@@ -1,18 +1,19 @@
-﻿using SimpleSchedulerModels;
+﻿using Microsoft.AspNetCore.Components;
+using SimpleSchedulerModels;
+using System.Net.Http.Json;
 
 namespace SimpleSchedulerBlazor.Client.Pages;
 
 partial class Workers
 {
-    public IEnumerable<Worker> WorkerList { get; set; } = Array.Empty<Worker>();
+    [Inject]
+    private HttpClient Http { get; set; } = default!;
+
+    public IEnumerable<WorkerDetail> WorkerList { get; set; } = Array.Empty<WorkerDetail>();
 
     protected override async Task OnInitializedAsync()
     {
-        WorkerList = new[]
-        {
-            new Worker(1, true, "First Name", "First Detail", "", null, 20, "First Dir", "First Exe", "First Args"),
-            new Worker(2, true, "Second Name", "Second Detail", "", null, 20, "Second Dir", "Second Exe", "Second Args"),
-        };
-        await Task.CompletedTask;
+        WorkerList = await Http.GetFromJsonAsync<IEnumerable<WorkerDetail>>("Workers/GetAllWorkers")
+            ?? Array.Empty<WorkerDetail>();
     }
 }

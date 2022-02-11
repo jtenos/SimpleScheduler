@@ -5,13 +5,13 @@
         Actions
     </div>
     <div class="col col-md-4 col-sm-12">
-        Worker Name
+        @Worker.Worker.WorkerName
     </div>
     <div class="col col-md-4 col-sm-12">
-        Executable
+        @Worker.Worker.Executable
     </div>
     <div class="col col-md-2 col-sm-12">
-        Schedule
+        todo schedule
     </div>
 </div>
 @*
@@ -72,5 +72,5 @@
 @code {
 
     [Parameter, EditorRequired]
-    public Worker Worker { get; set; } = default!;
+    public WorkerDetail Worker { get; set; } = default!;
 }
