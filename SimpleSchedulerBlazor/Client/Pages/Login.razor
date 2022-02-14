@@ -1,0 +1,14 @@
+﻿@page "/login"
+
+<div class="card">
+    <div class="card-body">
+        <EditForm Model="@Model" OnValidSubmit="@HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <InputText id="email-address" @bind-Value="Model.Email" />
+
+            <button type="submit">Submit</button>
+        </EditForm>
+    </div>
+</div>

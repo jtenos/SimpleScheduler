@@ -4,4 +4,4 @@ byte[] buffer = new byte[32];
 using RandomNumberGenerator rng = RandomNumberGenerator.Create();
 rng.GetBytes(buffer);
 
-Console.WriteLine(Convert.ToBase64String(buffer));
+Console.WriteLine(Convert.ToHexString(buffer));
