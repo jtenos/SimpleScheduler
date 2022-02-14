@@ -6,10 +6,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using OneOf;
+using OneOf.Types;
 using SimpleSchedulerData;
 using SimpleSchedulerEmail;
 using SimpleSchedulerEntities;
 using SimpleSchedulerModels.Exceptions;
+using SimpleSchedulerModels.ResultTypes;
 
 namespace SimpleSchedulerBusiness
 {
@@ -75,7 +78,7 @@ namespace SimpleSchedulerBusiness
             return true;
         }
 
-        public virtual async Task<string> LoginValidateAsync(string validationKey,
+        public virtual async Task<OneOf<string, NotFound, Expired>> LoginValidateAsync(string validationKey,
             CancellationToken cancellationToken)
         {
             var db = await DatabaseFactory.GetDatabaseAsync(cancellationToken).ConfigureAwait(false);
@@ -90,12 +93,12 @@ namespace SimpleSchedulerBusiness
                 AND ValidationDateUTC IS NULL;
             ", parms, Mapper.MapLoginAttempt, cancellationToken).ConfigureAwait(false);
 
-            if (!validateItems.Any()) { throw new InvalidValidationKeyException(); }
+            if (!validateItems.Any()) { return new NotFound(); }
 
             if (DateTime.ParseExact(validateItems[0].SubmitDateUTC.ToString(), "yyyyMMddHHmmssfff", CultureInfo.InvariantCulture.DateTimeFormat)
                 < DateTime.UtcNow.AddMinutes(-5))
             {
-                throw new ValidationKeyExpiredException();
+                return new Expired();
             }
 
             parms = new[]

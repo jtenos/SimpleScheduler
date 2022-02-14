@@ -11,4 +11,10 @@
 	<ItemGroup>
 		<Compile Include="..\SolutionInfo.cs" Link="SolutionInfo.cs" />
 	</ItemGroup>
+	<ItemGroup>
+	  <None Remove="ResultTypes\" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="ResultTypes\" />
+	</ItemGroup>
 </Project>

@@ -20,8 +20,12 @@
 	<ItemGroup>
 		<PackageReference Include="Humanizer.Core" Version="2.13.14" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+		<PackageReference Include="OneOf" Version="3.0.211" />
 	</ItemGroup>
 	<ItemGroup>
 		<Folder Include="Sqlite\" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Remove="OneOf" />
 	</ItemGroup>
 </Project>

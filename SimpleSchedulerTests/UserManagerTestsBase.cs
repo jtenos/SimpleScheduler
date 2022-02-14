@@ -111,8 +111,13 @@ namespace SimpleSchedulerTests
                 FakeEmailer.CurrentGuid = guid;
                 var result = await userManager.LoginSubmitAsync(VALID_EMAIL_ADDRESS, default);
                 string validationKey = Regex.Match(FakeEmailer.Messages[guid].bodyHTML, @"[a-f0-9]{32}").ToString();
-                string validateResult = await userManager.LoginValidateAsync(validationKey, default);
-                Assert.AreEqual(VALID_EMAIL_ADDRESS, validateResult);
+                var validateResult = await userManager.LoginValidateAsync(validationKey, default);
+                validateResult.Switch(
+                    emailAddress => Assert.AreEqual(VALID_EMAIL_ADDRESS, validateResult),
+                    notFound => Assert.Fail("Should have found"),
+                    expired => Assert.Fail("Should have found")
+                );
+                
             }
             finally
             {
@@ -121,14 +126,18 @@ namespace SimpleSchedulerTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidValidationKeyException))]
         public async Task ValidateCodeNotFound()
         {
             var scope = GetServiceProvider().CreateScope();
             try
             {
                 var userManager = scope.ServiceProvider.GetRequiredService<IUserManager>();
-                string validateResult = await userManager.LoginValidateAsync(Guid.NewGuid().ToString("N"), default);
+                var validateResult = await userManager.LoginValidateAsync(Guid.NewGuid().ToString("N"), default);
+                validateResult.Switch(
+                    emailAddress => Assert.Fail("Should not have found the result"),
+                    notFound => { },
+                    expired => Assert.Fail("Should have not found the result")
+                );
             }
             finally
             {
@@ -137,7 +146,6 @@ namespace SimpleSchedulerTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ValidationKeyExpiredException))]
         public async Task ValidateCodeExpired()
         {
             Guid guid = Guid.NewGuid();

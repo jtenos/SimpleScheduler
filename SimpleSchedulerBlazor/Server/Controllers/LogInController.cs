@@ -4,7 +4,10 @@ using SimpleSchedulerBusiness;
 using SimpleSchedulerEmail;
 using SimpleSchedulerModels.Exceptions;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Security.Claims;
+using System.Text;
+using System.Text.Json;
 
 namespace SimpleSchedulerBlazor.Server.Controllers;
 
@@ -36,23 +39,38 @@ public class LogInController : ControllerBase
     {
         try
         {
-            string emailAddress = await _userManager.LoginValidateAsync(request.ValidationCode, cancellationToken);
-            var claimsIdentity = new ClaimsIdentity(new[]
-            {
-                    new Claim("IsAuthenticated", "1"),
-                    new Claim(ClaimTypes.Email, emailAddress)
-                }, "Cookies");
-            var principal = new ClaimsPrincipal(claimsIdentity);
-            await HttpContext.SignInAsync(principal);
-            return Ok(new { EmailAddress = emailAddress, Success = true });
+            return (await _userManager.LoginValidateAsync(request.ValidationCode, cancellationToken))
+                .Match(
+                    emailAddress =>
+                    {
+                        object authObject = new
+                        {
+                            EmailAddress = emailAddress,
+                            ExpirationDate = DateTime.Now.AddHours(8),
+                            AuthCode = _config["AuthCode"]
+                        };
+
+                        string authJson = JsonSerializer.Serialize(authObject);
+                        byte[] authBytes = Encoding.UTF8.GetBytes(authJson);
+                        byte[] encryptedAuth = Crypto.Encrypt(authBytes,
+                            Convert.FromBase64String(_config["CryptoKey"]),
+                            Convert.FromBase64String(_config["AuthKey"]));
+                        string encryptedAuthHex = BitConverter.ToString(encryptedAuth).Replace("-", "");
+
+                        return Ok(new { EmailAddress = emailAddress, Success = true, Auth = encryptedAuthHex });
+                    }, notFound =>
+                    {
+                        return StatusCode(401, new { Message = "Invalid validation code" });
+                    }, expired =>
+                    {
+                        return StatusCode(401, new { Message = "Validation code expired. Please try logging in again." });
+                    }
+                );
         }
-        catch (InvalidValidationKeyException)
+        catch (Exception ex)
         {
-            return StatusCode(401, new { Message = "Invalid validation code" });
-        }
-        catch (ValidationKeyExpiredException)
-        {
-            return StatusCode(401, new { Message = "Validation code expired. Please try logging in again." });
+            Trace.TraceError(ex.ToString());
+            return Problem(ex.Message);
         }
     }
 
