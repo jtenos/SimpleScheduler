@@ -1,4 +1,26 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿namespace SimpleSchedulerBlazor.Server;
+
+public static class JobsApiExtensions
+{
+    public static WebApplicationBuilder AddJobsApi(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddScoped<JobsApi>();
+        return builder;
+    }
+
+    public static WebApplication MapJobsApi(this WebApplication app)
+    {
+        // 
+
+        return app;
+    }
+}
+
+internal class JobsApi
+{
+}
+/*
+ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SimpleSchedulerBusiness;
 using SimpleSchedulerModels;
@@ -58,3 +80,5 @@ public class JobsController : ControllerBase
     public record AcknowledgeErrorRequest(long JobID);
     public record GetDetailedMessageRequest(long JobID);
 }
+
+ */

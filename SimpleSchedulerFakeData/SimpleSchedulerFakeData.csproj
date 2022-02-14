@@ -29,7 +29,7 @@
 		<ProjectReference Include="..\SimpleSchedulerEmail\SimpleSchedulerEmail.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Faker.Net" Version="1.5.150" />
+		<PackageReference Include="Faker.Net" Version="2.0.154" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
 	</ItemGroup>
 

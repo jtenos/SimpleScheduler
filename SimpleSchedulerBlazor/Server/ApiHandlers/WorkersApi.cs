@@ -1,4 +1,26 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿namespace SimpleSchedulerBlazor.Server.ApiHandlers;
+
+public static class WorkersApiExtensions
+{
+    public static WebApplicationBuilder AddWorkersApi(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddScoped<WorkersApi>();
+        return builder;
+    }
+
+    public static WebApplication MapWorkersApi(this WebApplication app)
+    {
+        // 
+
+        return app;
+    }
+}
+
+internal class WorkersApi
+{
+}
+/*
+ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SimpleSchedulerBusiness;
 using SimpleSchedulerData;
@@ -102,3 +124,5 @@ public class WorkersController
     public record ReactivateWorkerRequest(long WorkerID);
     public record RunNowRequest(long WorkerID);
 }
+
+ */

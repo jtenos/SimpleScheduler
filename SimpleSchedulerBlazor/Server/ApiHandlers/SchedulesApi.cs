@@ -1,4 +1,26 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿namespace SimpleSchedulerBlazor.Server.ApiHandlers;
+
+public static class SchedulesApiExtensions
+{
+    public static WebApplicationBuilder AddSchedulesApi(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddScoped<SchedulesApi>();
+        return builder;
+    }
+
+    public static WebApplication MapSchedulesApi(this WebApplication app)
+    {
+        // 
+
+        return app;
+    }
+}
+
+internal class SchedulesApi
+{
+}
+/*
+ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SimpleSchedulerBusiness;
 using SimpleSchedulerData;
@@ -76,3 +98,5 @@ public class SchedulesController : ControllerBase
     public record DeleteScheduleRequest(long ScheduleID);
     public record ReactivateScheduleRequest(long ScheduleID);
 }
+
+ */
