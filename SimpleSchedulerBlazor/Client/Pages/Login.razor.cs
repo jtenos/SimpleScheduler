@@ -1,7 +1,7 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Components;
+using SimpleSchedulerModels.ApiModels;
 
 namespace SimpleSchedulerBlazor.Client.Pages;
 
@@ -12,6 +12,8 @@ partial class Login
 
     private LoginModel Model { get; set; } = new();
 
+    private string? Message { get; set; }
+
     private class LoginModel
     {
         [Required]
@@ -19,11 +21,25 @@ partial class Login
         public string? Email { get; set; }
     }
 
-    private async void HandleValidSubmit()
+    private async Task HandleValidSubmit()
     {
-        object postData = new { EmailAddress = Model.Email };
-        HttpResponseMessage response = await Http.PostAsJsonAsync("Login/SubmitEmail", postData);
-        Console.WriteLine(response);
+        SubmitEmailRequest postData = new(EmailAddress: Model.Email!);
+        try
+        {
+            HttpResponseMessage response = await Http.PostAsJsonAsync("api/Login/SubmitEmail", postData);
+            if (response.IsSuccessStatusCode)
+            {
+                SubmitEmailResponse submitResponse = (await response.Content.ReadFromJsonAsync<SubmitEmailResponse>())!;
+                Message = submitResponse.Message;
+            }
+            else
+            {
+                Message = await response.Content.ReadAsStringAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            Message = ex.Message;
+        }
     }
 }
-

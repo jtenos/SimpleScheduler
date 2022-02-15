@@ -2,7 +2,7 @@
 
 <div class="card">
     <div class="card-body">
-        <EditForm Model="@Model" OnValidSubmit="@HandleValidSubmit">
+        <EditForm id="email-form" Model="@Model" OnValidSubmit="@HandleValidSubmit">
             <DataAnnotationsValidator />
             <ValidationSummary />
 
@@ -10,5 +10,8 @@
 
             <button type="submit">Submit</button>
         </EditForm>
+        <div id="message-container">
+            @Message
+        </div>
     </div>
 </div>

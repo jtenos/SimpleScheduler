@@ -37,7 +37,10 @@ public class JwtMiddleware
                 }, out SecurityToken validatedToken);
 
                 JwtSecurityToken jwtToken = (JwtSecurityToken)validatedToken;
-                context.Items["EmailAddress"] = jwtToken.Claims.First(x => x.Type == ClaimTypes.Email).Value;
+                context.User = new ClaimsPrincipal(new[]
+                {
+                    new ClaimsIdentity(jwtToken.Claims)
+                });
             }
             catch
             {

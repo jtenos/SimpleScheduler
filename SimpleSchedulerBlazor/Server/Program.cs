@@ -1,5 +1,7 @@
+global using SimpleSchedulerModels;
+global using System.Collections.Immutable;
+
 using SimpleSchedulerBlazor.Server;
-using SimpleSchedulerBlazor.Server.ApiHandlers;
 using SimpleSchedulerBusiness;
 using SimpleSchedulerData;
 using SimpleSchedulerEmail;
@@ -8,12 +10,9 @@ using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Configuration.AddJsonFile("secrets.json", optional: true);
+builder.Services.AddControllers();
 
-builder.AddLoginApi();
-builder.AddWorkersApi();
-builder.AddSchedulesApi();
-builder.AddJobsApi();
+builder.Configuration.AddJsonFile("secrets.json", optional: true);
 
 switch (builder.Configuration["DatabaseType"])
 {
@@ -71,6 +70,8 @@ app.UseMiddleware<JwtMiddleware>();
 //app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapControllers();
+
 app.MapGet("/EnvironmentName", (IConfiguration config) =>
 {
     return Results.Ok(config["EnvironmentName"]);
@@ -85,11 +86,6 @@ app.MapGet("/GetUtcNow", () =>
 {
     return Results.Ok(JsonSerializer.Serialize(DateTime.UtcNow.ToString("MMM dd yyyy HH\\:mm\\:ss")));
 });
-
-app.MapLoginApi();
-app.MapWorkersApi();
-app.MapSchedulesApi();
-app.MapJobsApi();
 
 app.MapFallbackToFile("index.html");
 
