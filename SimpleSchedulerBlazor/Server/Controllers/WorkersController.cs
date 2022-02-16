@@ -1,70 +1,33 @@
-﻿//using Microsoft.AspNetCore.Authorization;
-//using SimpleSchedulerBusiness;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using SimpleSchedulerBusiness;
+using SimpleSchedulerData;
 
-//namespace SimpleSchedulerBlazor.Server.ApiHandlers;
+namespace SimpleSchedulerBlazor.Server.Controllers;
+[Route("api/[controller]")]
+[ApiController]
+public class WorkersController
+    : ControllerBase
+{
+    private readonly IWorkerManager _workerManager;
+    private readonly DatabaseFactory _databaseFactory;
 
-//public static class WorkersApiExtensions
-//{
-//    public static WebApplicationBuilder AddWorkersApi(this WebApplicationBuilder builder)
-//    {
-//        builder.Services.AddScoped<WorkersApi>();
-//        return builder;
-//    }
+    public WorkersController(IWorkerManager workerManager, DatabaseFactory databaseFactory)
+    {
+        _workerManager = workerManager;
+        _databaseFactory = databaseFactory;
+    }
 
-//    public static WebApplication MapWorkersApi(this WebApplication app)
-//    {
-//        [Authorize]
-//        IResult GetAllWorkers(WorkersApi workersApi, CancellationToken cancellationToken)
-//        {
-//            return workersApi.GetAllWorkers(cancellationToken);
-//        }
-//        app.MapGet("/Workers/GetAllWorkers", [Authorize](WorkersApi workersApi, CancellationToken cancellationToken) =>
-//        {
-//            return workersApi.GetAllWorkers(cancellationToken);
-//        });
+    [Authorize]
+    [HttpPost]
+    [Route("[action]")]
+    public async Task<ActionResult<ImmutableArray<WorkerDetail>>> GetAllWorkers(CancellationToken cancellationToken)
+    {
+        var workers = await _workerManager.GetAllWorkerDetailsAsync(cancellationToken);
+        return Ok(workers);
+    }
+}
 
-//        return app;
-//    }
-//}
-
-//internal class WorkersApi
-//{
-//    private readonly IWorkerManager _workerManager;
-
-//    public WorkersApi(IWorkerManager workerManager, DatabaseFactory databaseFactory)
-//        {
-//            _workerManager = workerManager;
-//            _databaseFactory = databaseFactory;
-//        }
-
-//        public async Task<IResult> GetAllWorkers(CancellationToken cancellationToken,
-//        bool getActive = true, bool getInactive = true)
-//    {
-//        return Ok(await _workerManager.GetAllWorkerDetailsAsync(cancellationToken, getActive, getInactive));
-//    }
-//}
-///*
-// using Microsoft.AspNetCore.Authorization;
-//using Microsoft.AspNetCore.Mvc;
-//using SimpleSchedulerBusiness;
-//using SimpleSchedulerData;
-//using SimpleSchedulerModels;
-//using SimpleSchedulerModels.Exceptions;
-//using System.Collections.Immutable;
-
-//namespace SimpleSchedulerBlazor.Server.Controllers;
-
-//[ApiController]
-//[Route("[controller]")]
-////[Authorize("ValidUser")]
-//public class WorkersController
-//    : ControllerBase
-//{
-//    private readonly DatabaseFactory _databaseFactory;
-
-
-//    [HttpGet]
-//    [Route("[action]")]
 
 //    [HttpGet]
 //    [Route("[action]")]

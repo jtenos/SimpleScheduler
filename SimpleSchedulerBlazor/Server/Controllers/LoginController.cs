@@ -17,11 +17,20 @@ public class LoginController
 {
     private readonly IUserManager _userManager;
     private readonly byte[] _jwtSecret;
+    private readonly string _cookieName;
 
     public LoginController(IUserManager userManager, IConfiguration config)
     {
         _userManager = userManager;
         _jwtSecret = Convert.FromHexString(config["JwtSecret"]);
+        _cookieName = config["CookieName"];
+    }
+
+    [HttpGet]
+    [Route("[action]")]
+    public ActionResult<bool> IsLoggedIn()
+    {
+        return HttpContext.User != null;
     }
 
     [HttpGet]
@@ -33,7 +42,7 @@ public class LoginController
 
     [HttpPost]
     [Route("[action]")]
-    public async Task<ActionResult<SubmitEmailResponse>> SubmitEmailAsync(SubmitEmailRequest request, CancellationToken cancellationToken)
+    public async Task<ActionResult<SubmitEmailResponse>> SubmitEmail(SubmitEmailRequest request, CancellationToken cancellationToken)
     {
         if (!await _userManager.LoginSubmitAsync(request.EmailAddress, cancellationToken))
         {
@@ -45,7 +54,7 @@ public class LoginController
 
     [HttpPost]
     [Route("[action]")]
-    public async Task<IActionResult> ValidateEmailAsync(ValidateEmailRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> ValidateEmail(ValidateEmailRequest request, CancellationToken cancellationToken)
     {
         try
         {
@@ -53,7 +62,14 @@ public class LoginController
                 .Match<IActionResult>(
                     (string emailAddress) =>
                     {
-                        return Ok(new { JwtToken = GenerateJwtToken(emailAddress) });
+                        string jwt = GenerateJwtToken(emailAddress);
+                        Response.Cookies.Append(_cookieName, jwt, new CookieOptions
+                        {
+                            HttpOnly = true,
+                            Secure = true,
+                            SameSite = SameSiteMode.Strict
+                        });
+                        return Ok("Successfully authenticated");
                     }, (NotFound notFound) =>
                     {
                         return BadRequest("Validation code not found");

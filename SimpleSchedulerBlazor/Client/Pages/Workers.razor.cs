@@ -13,7 +13,10 @@ partial class Workers
 
     protected override async Task OnInitializedAsync()
     {
-        WorkerList = await Http.GetFromJsonAsync<IEnumerable<WorkerDetail>>("Workers/GetAllWorkers")
-            ?? Array.Empty<WorkerDetail>();
+        HttpResponseMessage response = await Http.PostAsJsonAsync("api/Workers/GetAllWorkers", new { });
+        if (response.IsSuccessStatusCode)
+        {
+            WorkerList = (await response.Content.ReadFromJsonAsync<IEnumerable<WorkerDetail>>())!;
+        }
     }
 }

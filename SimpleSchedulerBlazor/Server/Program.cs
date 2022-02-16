@@ -1,18 +1,21 @@
 global using SimpleSchedulerModels;
 global using System.Collections.Immutable;
-
-using SimpleSchedulerBlazor.Server;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using SimpleSchedulerBusiness;
 using SimpleSchedulerData;
 using SimpleSchedulerEmail;
-using System.Security.Claims;
-using System.Text.Json;
+using SimpleSchedulerBlazor.Server.Auth;
+using Microsoft.IdentityModel.Tokens;
 
-var builder = WebApplication.CreateBuilder(args);
+// TODO: Strongly typed configuration
+
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
 builder.Configuration.AddJsonFile("secrets.json", optional: true);
+
+builder.Services.AddSingleton<ITokenService, TokenService>();
 
 switch (builder.Configuration["DatabaseType"])
 {
@@ -36,13 +39,22 @@ builder.Services.AddScoped<IEmailer, Emailer>();
 
 builder.Services.AddCors();
 
-builder.Services.AddAuthorization(config =>
+builder.Services.AddAuthorization();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
-    // Only one policy - you must be a valid user. Valid user can see all pages.
-    config.AddPolicy("ValidUser", policy => policy.RequireClaim(ClaimTypes.Email));
+    options.TokenValidationParameters = new()
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Issuer"],
+        IssuerSigningKey = new SymmetricSecurityKey(Convert.FromHexString(builder.Configuration["Jwt:Key"]))
+    };
 });
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -65,27 +77,10 @@ app.UseRouting();
 
 app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
-app.UseMiddleware<JwtMiddleware>();
-
-//app.UseAuthentication();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-app.MapGet("/EnvironmentName", (IConfiguration config) =>
-{
-    return Results.Ok(config["EnvironmentName"]);
-});
-
-app.MapGet("/HelloThere", () =>
-{
-    return Results.Ok(new { Message = "Howdy" });
-});
-
-app.MapGet("/GetUtcNow", () =>
-{
-    return Results.Ok(JsonSerializer.Serialize(DateTime.UtcNow.ToString("MMM dd yyyy HH\\:mm\\:ss")));
-});
 
 app.MapFallbackToFile("index.html");
 

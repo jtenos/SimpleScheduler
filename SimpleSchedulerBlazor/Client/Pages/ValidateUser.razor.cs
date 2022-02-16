@@ -1,5 +1,4 @@
-﻿using Blazored.LocalStorage;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using System.Net.Http.Json;
 using System.Text.Json;
 
@@ -9,9 +8,6 @@ partial class ValidateUser
 {
     [Inject]
     private HttpClient Http { get; set; } = default!;
-
-    [Inject]
-    private ILocalStorageService LocalStorage { get; set; } = default!;
 
     [Inject]
     private NavigationManager NavigationManager { get; set; } = default!;
@@ -24,14 +20,12 @@ partial class ValidateUser
     protected override async Task OnInitializedAsync()
     {
         object postData = new { ValidationCode };
-        HttpResponseMessage response = await Http.PostAsJsonAsync("Login/ValidateEmail", postData);
+        HttpResponseMessage response = await Http.PostAsJsonAsync("api/Login/ValidateEmail", postData);
         if (response.IsSuccessStatusCode)
         {
             try
             {
-                ValidationResponse vr = JsonSerializer.Deserialize<ValidationResponse>(await response.Content.ReadAsStringAsync())!;
-                await LocalStorage.SetItemAsStringAsync("JwtToken", vr.jwtToken);
-                NavigationManager.NavigateTo("/jobs");
+                NavigationManager.NavigateTo("/");
             }
             catch (Exception ex)
             {
