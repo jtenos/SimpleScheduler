@@ -13,19 +13,13 @@ using SimpleSchedulerBusiness;
 using SimpleSchedulerData;
 using SimpleSchedulerEmail;
 using SimpleSchedulerEntities;
+using SimpleSchedulerModels.Configuration;
 using SimpleSchedulerModels.Exceptions;
 
 namespace SimpleSchedulerTests
 {
     public abstract class WorkerManagerTestsBase
     {
-        public WorkerManagerTestsBase()
-        {
-            Config = GetServiceProvider().GetRequiredService<IConfiguration>();
-        }
-
-        protected IConfiguration Config { get; }
-
         protected IServiceProvider GetServiceProvider()
         {
             var configBuilder = new ConfigurationBuilder()

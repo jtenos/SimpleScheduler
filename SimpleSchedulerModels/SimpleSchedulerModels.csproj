@@ -12,9 +12,6 @@
 		<Compile Include="..\SolutionInfo.cs" Link="SolutionInfo.cs" />
 	</ItemGroup>
 	<ItemGroup>
-	  <None Remove="ResultTypes\" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="ResultTypes\" />
+		<PackageReference Include="Humanizer.Core" Version="2.14.1" />
 	</ItemGroup>
 </Project>

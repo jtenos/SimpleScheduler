@@ -24,9 +24,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\SimpleSchedulerData\SimpleSchedulerData.csproj" />
-		<ProjectReference Include="..\SimpleSchedulerEntities\SimpleSchedulerEntities.csproj" />
 		<ProjectReference Include="..\SimpleSchedulerModels\SimpleSchedulerModels.csproj" />
-		<ProjectReference Include="..\SimpleSchedulerBusiness\SimpleSchedulerBusiness.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 		<None Update="appsettings.json">

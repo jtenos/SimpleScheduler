@@ -1,4 +1,3 @@
-﻿namespace SimpleSchedulerModels
-{
-    public record ScheduleDetail(Schedule Schedule, Worker Worker);
-}
+﻿namespace SimpleSchedulerModels;
+
+public record class ScheduleDetail(Schedule Schedule, Worker Worker);

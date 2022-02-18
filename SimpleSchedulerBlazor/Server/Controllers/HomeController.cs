@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SimpleSchedulerModels.Configuration;
 
 namespace SimpleSchedulerBlazor.Server.Controllers;
 
@@ -7,18 +8,18 @@ namespace SimpleSchedulerBlazor.Server.Controllers;
 public class HomeController 
     : ControllerBase
 {
-    private readonly IConfiguration _config;
+    private readonly AppSettings _appSettings;
 
-    public HomeController(IConfiguration config)
+    public HomeController(AppSettings appSettings)
     {
-        _config = config;
+        _appSettings = appSettings;
     }
 
     [HttpGet]
     [Route("[action]")]
     public ActionResult<string> EnvironmentName()
     {
-        return Ok(_config["EnvironmentName"]);
+        return Ok(_appSettings.EnvironmentName);
     }
 
     [HttpGet]

@@ -1,4 +1,3 @@
-﻿using System;
-namespace SimpleSchedulerModels.ResultTypes;
+﻿namespace SimpleSchedulerModels.ResultTypes;
 
 public struct Expired { }

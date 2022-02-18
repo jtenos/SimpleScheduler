@@ -16,7 +16,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\SimpleSchedulerBusiness\SimpleSchedulerBusiness.csproj" />
+		<ProjectReference Include="..\..\SimpleSchedulerConfiguration\SimpleSchedulerConfiguration.csproj" />
 		<ProjectReference Include="..\Client\SimpleSchedulerBlazor.Client.csproj" />
 	</ItemGroup>
 

@@ -23,7 +23,6 @@
 		</None>
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\SimpleSchedulerBusiness\SimpleSchedulerBusiness.csproj" />
 		<ProjectReference Include="..\SimpleSchedulerData\SimpleSchedulerData.csproj" />
 		<ProjectReference Include="..\SimpleSchedulerModels\SimpleSchedulerModels.csproj" />
 		<ProjectReference Include="..\SimpleSchedulerEmail\SimpleSchedulerEmail.csproj" />

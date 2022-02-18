@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using OneOf.Types;
+using SimpleSchedulerBlazor.Server.Config;
 using SimpleSchedulerBusiness;
 using SimpleSchedulerModels.ApiModels;
 using SimpleSchedulerModels.ResultTypes;
-using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
@@ -16,14 +16,10 @@ public class LoginController
     : ControllerBase
 {
     private readonly IUserManager _userManager;
-    private readonly byte[] _jwtSecret;
-    private readonly string _cookieName;
 
-    public LoginController(IUserManager userManager, IConfiguration config)
+    public LoginController(IUserManager userManager)
     {
         _userManager = userManager;
-        _jwtSecret = Convert.FromHexString(config["JwtSecret"]);
-        _cookieName = config["CookieName"];
     }
 
     [HttpGet]
