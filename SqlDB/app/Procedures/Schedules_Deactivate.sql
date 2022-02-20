@@ -1,6 +1,5 @@
-﻿CREATE PROCEDURE [app].[Schedules_Deactivate] (
+﻿CREATE PROCEDURE [app].[Schedules_Deactivate]
 	@ID BIGINT
-)
 AS
 BEGIN
 	SET TRANSACTION ISOLATION LEVEL SNAPSHOT;

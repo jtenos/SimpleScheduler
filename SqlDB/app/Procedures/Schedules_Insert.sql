@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [app].[Schedules_Insert] (
+﻿CREATE PROCEDURE [app].[Schedules_Insert]
 	@WorkerID BIGINT
 	,@Sunday BIT
 	,@Monday BIT
@@ -11,7 +11,6 @@
 	,@RecurTime TIME
 	,@RecurBetweenStartUTC TIME
 	,@RecurBetweenEndUTC TIME
-)
 AS
 BEGIN
 	SET TRANSACTION ISOLATION LEVEL SNAPSHOT;

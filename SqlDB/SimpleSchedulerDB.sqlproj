@@ -77,7 +77,6 @@
     <None Include="SimpleScheduler_UnitTests.publish.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="JobsArchive.sql" />
     <Build Include="app\app.sql" />
     <Build Include="app\Tables\Jobs.sql" />
     <Build Include="app\Tables\LoginAttempts.sql" />
@@ -102,6 +101,20 @@
     <Build Include="app\Procedures\Jobs_RestartStuck.sql" />
     <Build Include="app\Procedures\Schedules_Insert.sql" />
     <Build Include="app\Procedures\Schedules_Deactivate.sql" />
-    <Build Include="app\Procedures\Schedules_Search.sql" />
+    <Build Include="app\Procedures\Schedules_SelectAll.sql" />
+    <Build Include="app\Procedures\Schedules_SelectForJobInsertion.sql" />
+    <Build Include="app\Procedures\Schedules_Reactivate.sql" />
+    <Build Include="app\Procedures\Schedules_Update.sql" />
+    <Build Include="app\Procedures\Users_SubmitLogin.sql" />
+    <Build Include="app\Procedures\Users_ValidateLogin.sql" />
+    <Build Include="app\Procedures\Jobs_RunNow.sql" />
+    <Build Include="app\Procedures\Workers_SelectAll.sql" />
+    <Build Include="app\Procedures\Workers_Select.sql" />
+    <Build Include="app\Procedures\Workers_Insert.sql" />
+    <Build Include="app\Procedures\Workers_CheckForCircularReference.sql" />
+    <Build Include="app\Procedures\Workers_Update.sql" />
+    <Build Include="app\Procedures\Workers_Deactivate.sql" />
+    <Build Include="app\Procedures\Workers_Reactivate.sql" />
+    <Build Include="app\Procedures\Schedules_Select.sql" />
   </ItemGroup>
 </Project>

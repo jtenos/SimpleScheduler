@@ -1,26 +1,22 @@
 ﻿using System.Collections.Immutable;
-using SimpleSchedulerEntities;
+using OneOf;
+using OneOf.Types;
 using SimpleSchedulerModels;
+using SimpleSchedulerModels.ResultTypes;
 
 namespace SimpleSchedulerAppServices.Interfaces;
 
 public interface IWorkerManager
 {
-    Task RunNowAsync(long workerID, CancellationToken cancellationToken);
-    Task<ImmutableArray<long>> GetChildWorkerIDsByJobAsync(long jobID, CancellationToken cancellationToken);
-    Task<ImmutableArray<Worker>> GetAllWorkersAsync(CancellationToken cancellationToken,
-        bool getActive = true, bool getInactive = false);
-    Task<ImmutableArray<WorkerDetail>> GetAllWorkerDetailsAsync(CancellationToken cancellationToken,
-        bool getActive = true, bool getInactive = false);
-    Task<Worker> GetWorkerAsync(long workerID, CancellationToken cancellationToken);
-    Task<long> AddWorkerAsync(bool isActive, string workerName,
-        string detailedDescription, string emailOnSuccess, long? parentWorkerID, long timeoutMinutes,
+    Task RunNowAsync(long id, CancellationToken cancellationToken);
+    Task<ImmutableArray<Worker>> GetAllWorkersAsync(CancellationToken cancellationToken);
+    Task<Worker> GetWorkerAsync(long id, CancellationToken cancellationToken);
+    Task<OneOf<Success, InvalidExecutable, NameAlreadyExists, CircularReference>> AddWorkerAsync(string workerName,
+        string detailedDescription, string emailOnSuccess, long? parentWorkerID, int timeoutMinutes,
         string directoryName, string executable, string argumentValues, CancellationToken cancellationToken);
-    Task UpdateWorkerAsync(long workerID, bool isActive, string workerName,
-        string detailedDescription, string emailOnSuccess, long? parentWorkerID, long timeoutMinutes,
+    Task<OneOf<Success, InvalidExecutable, NameAlreadyExists, CircularReference>> UpdateWorkerAsync(long id, 
+        string workerName, string detailedDescription, string emailOnSuccess, long? parentWorkerID, int timeoutMinutes,
         string directoryName, string executable, string argumentValues, CancellationToken cancellationToken);
-    Task<string> CheckCanDeactivateWorkerAsync(long workerID, CancellationToken cancellationToken);
-    Task DeactivateWorkerAsync(long workerID, CancellationToken cancellationToken);
-    Task ReactivateWorkerAsync(long workerID, CancellationToken cancellationToken);
-    Worker ConvertToWorker(WorkerEntity entity);
+    Task DeactivateWorkerAsync(long id, CancellationToken cancellationToken);
+    Task ReactivateWorkerAsync(long id, CancellationToken cancellationToken);
 }

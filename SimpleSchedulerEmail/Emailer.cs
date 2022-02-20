@@ -1,37 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Collections.Immutable;
 using MailKit.Net.Smtp;
 using MailKit.Security;
-using Microsoft.Extensions.Configuration;
 using MimeKit;
+using SimpleSchedulerConfiguration.Models;
 
 namespace SimpleSchedulerEmail;
 
 public class Emailer
     : IEmailer
 {
-    private readonly IConfiguration _config;
+    private readonly AppSettings _appSettings;
 
-    public Emailer(IConfiguration config) => _config = config;
+    public Emailer(AppSettings appSettings)
+    {
+        _appSettings = appSettings;
+    }
 
     async Task IEmailer.SendEmailToAdminAsync(string subject, string bodyHTML, CancellationToken cancellationToken)
-        => await ((IEmailer)this).SendEmailAsync(new[] { _config.GetValue<string>("MailSettings:AdminEmail") ?? "" }, subject, bodyHTML,
-    cancellationToken).ConfigureAwait(false);
+    {
+        ImmutableArray<string> toAddresses = new[]
+        {
+            _appSettings.MailSettings.AdminEmail
+        }.ToImmutableArray();
+        await ((IEmailer)this).SendEmailAsync(toAddresses, subject, bodyHTML, cancellationToken).ConfigureAwait(false);
+    }
 
-    async Task IEmailer.SendEmailAsync(IEnumerable<string> toAddresses, string subject, string bodyHTML,
+    async Task IEmailer.SendEmailAsync(ImmutableArray<string> toAddresses, string subject, string bodyHTML,
         CancellationToken cancellationToken)
     {
-        int smtpPort = _config.GetValue<int?>("MailSettings:Port") ?? 25;
-        string emailFrom = _config.GetValue<string>("MailSettings:EmailFrom");
-        string adminEmail = _config.GetValue<string>("MailSettings:AdminEmail");
-        string emailHost = _config.GetValue<string>("MailSettings:Host");
-        string smtpUserName = _config.GetValue<string?>("MailSettings:UserName") ?? "";
-        string smtpPassword = _config.GetValue<string?>("MailSettings:Password") ?? "";
+        int smtpPort = _appSettings.MailSettings.Port;
+        string emailFrom = _appSettings.MailSettings.EmailFrom;
+        string adminEmail = _appSettings.MailSettings.AdminEmail;
+        string emailHost = _appSettings.MailSettings.Host;
+        string? smtpUserName = _appSettings.MailSettings.UserName;
+        string? smtpPassword = _appSettings.MailSettings.Password;
 
-        var msg = new MimeMessage();
+        MimeMessage msg = new();
         foreach (string addr in toAddresses)
         {
             msg.To.Add(new MailboxAddress(addr, addr));
@@ -45,10 +49,10 @@ public class Emailer
         msg.From.Add(new MailboxAddress("Scheduler", emailFrom));
         msg.Subject = subject;
 
-        var bodyBuilder = new BodyBuilder { HtmlBody = bodyHTML };
+        BodyBuilder bodyBuilder = new() { HtmlBody = bodyHTML };
         msg.Body = bodyBuilder.ToMessageBody();
 
-        using var emailClient = new SmtpClient();
+        using SmtpClient emailClient = new();
 
         switch (smtpPort)
         {

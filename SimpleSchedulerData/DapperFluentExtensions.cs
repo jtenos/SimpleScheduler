@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using System.Collections.Immutable;
 using System.Data;
 
 namespace SimpleSchedulerData;
@@ -80,7 +81,6 @@ public static class DapperFluentExtensions
         return dynamicParameters;
     }
     public static DynamicParameters AddNullableVarBinaryParam(this DynamicParameters dynamicParameters, string paramName, string value, int size)
-
     {
         dynamicParameters.Add(paramName, value, DbType.Binary, ParameterDirection.Input, size);
         return dynamicParameters;
@@ -97,4 +97,23 @@ public static class DapperFluentExtensions
         => AddParameter(dynamicParameters, paramName, xml, DbType.Xml);
     public static DynamicParameters AddNullableXmlParam(this DynamicParameters dynamicParameters, string paramName, string? xml)
         => AddParameter(dynamicParameters, paramName, xml ?? (object)DBNull.Value, DbType.Xml);
+
+    // [app].[BigIntArray]
+    public static DynamicParameters AddBigIntArrayParam(this DynamicParameters dynamicParameters, string paramName, ImmutableArray<long> values)
+    {
+        DataTable dt = new();
+        dt.Columns.Add("IdentityVal", typeof(long));
+        dt.Columns.Add("Value", typeof(long));
+        for (int i = 0; i < values.Length; ++i)
+        {
+            DataRow row = dt.NewRow();
+            row["IdentityVal"] = i + 1;
+            row["Value"] = values[i];
+            dt.Rows.Add(row);
+        }
+
+        dynamicParameters.Add(paramName, dt.AsTableValuedParameter("[app].[BigIntArray]"));
+
+        return dynamicParameters;
+    }
 }

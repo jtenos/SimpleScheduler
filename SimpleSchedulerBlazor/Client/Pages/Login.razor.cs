@@ -1,14 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Net.Http.Json;
 using Microsoft.AspNetCore.Components;
-using SimpleSchedulerModels.ApiModels;
+using SimpleSchedulerApiProxy;
+using SimpleSchedulerModels.ApiModels.Login;
 
 namespace SimpleSchedulerBlazor.Client.Pages;
 
 partial class Login
 {
     [Inject]
-    private HttpClient Http { get; set; } = default!;
+    private LoginProxy LoginProxy { get; set; } = default!;
 
     private LoginModel Model { get; set; } = new();
 
@@ -24,22 +24,15 @@ partial class Login
     private async Task HandleValidSubmit()
     {
         SubmitEmailRequest postData = new(EmailAddress: Model.Email!);
-        try
+
+        var result = await LoginProxy.SubmitEmail(postData);
+        if (result.Success)
         {
-            HttpResponseMessage response = await Http.PostAsJsonAsync("api/Login/SubmitEmail", postData);
-            if (response.IsSuccessStatusCode)
-            {
-                SubmitEmailResponse submitResponse = (await response.Content.ReadFromJsonAsync<SubmitEmailResponse>())!;
-                Message = submitResponse.Message;
-            }
-            else
-            {
-                Message = await response.Content.ReadAsStringAsync();
-            }
+            Message = "Please check your email for a login link";
         }
-        catch (Exception ex)
+        else
         {
-            Message = ex.Message;
+            Message = result.ErrorMessage;
         }
     }
 }

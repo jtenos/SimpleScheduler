@@ -1,10 +1,9 @@
-﻿CREATE PROCEDURE [app].[Jobs_Search] (
+﻿CREATE PROCEDURE [app].[Jobs_Search]
 	@StatusCode NCHAR(3) = NULL
     ,@WorkerID BIGINT = NULL
     ,@OverdueOnly BIT = 0
     ,@Offset INT = 0
     ,@NumRows INT = 100
-)
 AS
 BEGIN
 	SET TRANSACTION ISOLATION LEVEL SNAPSHOT;
@@ -13,13 +12,7 @@ BEGIN
 	BEGIN TRY
 		BEGIN TRANSACTION;
 
-        IF OBJECT_ID('tempdb..#Jobs') IS NOT NULL
-            DROP TABLE #Jobs;
-
-	    SELECT * INTO #Jobs FROM [app].[Jobs] WHERE 1 = 0;
-
         DECLARE @SQL NVARCHAR(MAX) = N'
-            INSERT INTO #Jobs
 		    SELECT * FROM [app].[Jobs]
             WHERE 1 = 1
         ';
@@ -50,26 +43,6 @@ BEGIN
             ,N'@StatusCode NCHAR(3), @WorkerID BIGINT'
             ,@StatusCode = @StatusCode
             ,@WorkerID = @WorkerID;
-
-        SELECT * FROM #Jobs;
-
-        IF EXISTS (SELECT TOP 1 1 FROM #Jobs)
-        BEGIN
-
-            DECLARE @Schedules [app].[SchedulesType];
-            INSERT @Schedules
-            SELECT * FROM [app].[Schedules]
-            WHERE [ID] IN (SELECT [ScheduleID] FROM #Jobs);
-
-            SELECT * FROM @Schedules;
-
-            DECLARE @Workers [app].[WorkersType];
-            INSERT @Workers
-            SELECT * FROM [app].[Workers]
-            WHERE [ID] IN (SELECT s.[WorkerID] FROM @Schedules s);
-
-            SELECT * FROM @Workers;
-        END;
 
 		COMMIT TRANSACTION;
 	END TRY

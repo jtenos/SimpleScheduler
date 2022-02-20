@@ -29,8 +29,7 @@
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\SimpleSchedulerData\SimpleSchedulerData.csproj" />
-		<ProjectReference Include="..\SimpleSchedulerModels\SimpleSchedulerModels.csproj" />
 		<ProjectReference Include="..\SimpleSchedulerEmail\SimpleSchedulerEmail.csproj" />
+		<ProjectReference Include="..\SimpleSchedulerModels\SimpleSchedulerModels.csproj" />
 	</ItemGroup>
 </Project>

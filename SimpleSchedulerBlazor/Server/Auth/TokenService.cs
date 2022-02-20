@@ -5,7 +5,8 @@ using System.Text;
 
 namespace SimpleSchedulerBlazor.Server.Auth;
 
-public class TokenService : ITokenService
+public class TokenService
+    : ITokenService
 {
     private static readonly TimeSpan _duration = TimeSpan.FromHours(8);
 
@@ -13,9 +14,7 @@ public class TokenService : ITokenService
     {
         Claim[] claims =
         {
-            // TODO: Complete these
-            //new(ClaimTypes.Name, user.UserName),
-            //new(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString())
+            new (ClaimTypes.Email, emailAddress)
         };
 
         SymmetricSecurityKey securityKey = new(Encoding.UTF8.GetBytes(key));

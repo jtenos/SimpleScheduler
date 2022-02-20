@@ -12,5 +12,5 @@
 );
 GO
 
-CREATE INDEX [IX_ValidationCode] ON [app].[LoginAttempts] ([ValidationCode]);
+CREATE UNIQUE INDEX [IX_ValidationCode] ON [app].[LoginAttempts] ([ValidationCode]);
 GO

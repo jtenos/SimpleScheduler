@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using SimpleSchedulerModels.Configuration;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using SimpleSchedulerConfiguration.Models;
+using SimpleSchedulerModels.ApiModels.Home;
 
 namespace SimpleSchedulerBlazor.Server.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class HomeController 
+public class HomeController
     : ControllerBase
 {
     private readonly AppSettings _appSettings;
@@ -15,24 +17,27 @@ public class HomeController
         _appSettings = appSettings;
     }
 
-    [HttpGet]
-    [Route("[action]")]
-    public ActionResult<string> EnvironmentName()
+    [HttpPost("[action]")]
+    [AllowAnonymous]
+    public async Task<ActionResult<EnvironmentNameResponse>> EnvironmentName(
+        EnvironmentNameRequest request, CancellationToken cancellationToken)
     {
-        return Ok(_appSettings.EnvironmentName);
+        return await Task.FromResult(new EnvironmentNameResponse(_appSettings.EnvironmentName));
     }
 
-    [HttpGet]
-    [Route("[action]")]
-    public ActionResult<string> HelloThere()
+    [HttpPost("[action]")]
+    [AllowAnonymous]
+    public async Task<ActionResult<HelloThereResponse>> HelloThere(
+        HelloThereRequest request, CancellationToken cancellationToken)
     {
-        return Ok("Howdy");
+        return await Task.FromResult(new HelloThereResponse("Howdy"));
     }
 
-    [HttpGet]
-    [Route("[action]")]
-    public ActionResult<string> GetUtcNow()
+    [HttpPost("[action]")]
+    [AllowAnonymous]
+    public async Task<ActionResult<UtcNowResponse>> UtcNow(
+        UtcNowRequest request, CancellationToken cancellationToken)
     {
-        return Ok(DateTime.UtcNow.ToString("MMM dd yyyy HH\\:mm\\:ss"));
+        return await Task.FromResult(new UtcNowResponse(DateTime.UtcNow.ToString("MMM dd yyyy HH\\:mm\\:ss")));
     }
 }

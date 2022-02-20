@@ -1,25 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using SimpleSchedulerEmail;
+﻿using SimpleSchedulerEmail;
+using System.Collections.Immutable;
 
-namespace SimpleSchedulerTests
+namespace SimpleSchedulerTests;
+
+public class FakeEmailer
+    : IEmailer
 {
-    public class FakeEmailer
-        : IEmailer
+    private readonly List<(ImmutableArray<string> toAddresses, string subject, string bodyHTML)> _messages = new();
+
+    public List<(ImmutableArray<string> toAddresses, string subject, string bodyHTML)> Messages => _messages;
+
+    Task IEmailer.SendEmailAsync(ImmutableArray<string> toAddresses, string subject, string bodyHTML, CancellationToken cancellationToken)
     {
-        public static readonly Dictionary<Guid, (IEnumerable<string> toAddresses, string subject, string bodyHTML)> Messages = new();
+        _messages.Add((toAddresses, subject, bodyHTML));
+        return Task.CompletedTask;
+    }
 
-        public static Guid CurrentGuid { get; set; }
-
-        public Task SendEmailAsync(IEnumerable<string> toAddresses, string subject, string bodyHTML, CancellationToken cancellationToken)
-        {
-            Messages[CurrentGuid] = (toAddresses, subject, bodyHTML);
-            return Task.CompletedTask;
-        }
-
-        public Task SendEmailToAdminAsync(string subject, string bodyHTML, CancellationToken cancellationToken)
-            => Task.CompletedTask;
+    Task IEmailer.SendEmailToAdminAsync(string subject, string bodyHTML, CancellationToken cancellationToken)
+    {
+        return ((IEmailer)this).SendEmailAsync(new[] { "admin@example.com" }.ToImmutableArray(), subject, bodyHTML, cancellationToken);
     }
 }

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
@@ -7,18 +7,29 @@
 		<WarningsAsErrors />
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	</PropertyGroup>
+	<ItemGroup>
+		<Compile Include="..\..\SolutionInfo.cs" Link="SolutionInfo.cs" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.2" />
-		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.15.1" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.16.0" />
+		<PackageReference Include="Serilog" Version="2.10.0" />
+		<PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0" />
+		<PackageReference Include="Serilog.Settings.Configuration" Version="3.3.0" />
+		<PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
+		<!--<PackageReference Include="Serilog.Sinks.Email" Version="2.4.0" />-->
+		<PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\SimpleSchedulerAppServices\SimpleSchedulerAppServices.csproj" />
 		<ProjectReference Include="..\..\SimpleSchedulerConfiguration\SimpleSchedulerConfiguration.csproj" />
 		<ProjectReference Include="..\Client\SimpleSchedulerBlazor.Client.csproj" />
+		<ProjectReference Include="..\..\Serilog.Sinks.Email\Serilog.Sinks.Email.csproj" />
 	</ItemGroup>
-
 
 </Project>

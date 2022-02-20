@@ -1,6 +1,5 @@
-﻿CREATE PROCEDURE [app].[Jobs_AcknowledgeError] (
+﻿CREATE PROCEDURE [app].[Jobs_AcknowledgeError]
 	@ID BIGINT
-)
 AS
 BEGIN
 	SET TRANSACTION ISOLATION LEVEL SNAPSHOT;

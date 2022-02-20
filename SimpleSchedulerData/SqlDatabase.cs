@@ -1,7 +1,7 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
 using Polly.Retry;
+using SimpleSchedulerConfiguration.Models;
 using System.Collections.Immutable;
 using System.Data;
 
@@ -12,17 +12,16 @@ public sealed class SqlDatabase
     private readonly string _connectionString;
     private readonly AsyncRetryPolicy _retryPolicy;
 
-    public SqlDatabase(IConfiguration config, AsyncRetryPolicy retryPolicy)
+    public SqlDatabase(AppSettings appSettings, AsyncRetryPolicy retryPolicy)
     {
-        _connectionString = config.GetConnectionString("SimpleScheduler");
+        _connectionString = appSettings.ConnectionString;
         _retryPolicy = retryPolicy;
     }
 
     public async Task<ImmutableArray<T>> GetManyAsync<T>(
         string procedureName,
-        DynamicParameters? parameters = null,
-        int commandTimeoutSeconds = 30,
-        CancellationToken cancellationToken = default
+        DynamicParameters? parameters,
+        CancellationToken cancellationToken
     )
     {
         parameters ??= new();
@@ -32,7 +31,6 @@ public sealed class SqlDatabase
             CommandDefinition comm = new(
                 commandText: procedureName,
                 parameters: parameters,
-                commandTimeout: commandTimeoutSeconds,
                 commandType: CommandType.StoredProcedure,
                 cancellationToken: cancellationToken
             );
@@ -42,115 +40,104 @@ public sealed class SqlDatabase
         }).ConfigureAwait(false);
     }
 
-    public async Task<(ImmutableArray<T1>, ImmutableArray<T2>)> GetManyAsync<T1, T2>(
-        string procedureName,
-        DynamicParameters? parameters = null,
-        int commandTimeoutSeconds = 30,
-        CancellationToken cancellationToken = default
-    )
-    {
-        parameters ??= new();
+    //public async Task<(ImmutableArray<T1>, ImmutableArray<T2>)> GetManyAsync<T1, T2>(
+    //    string procedureName,
+    //    DynamicParameters? parameters,
+    //    CancellationToken cancellationToken
+    //)
+    //{
+    //    parameters ??= new();
 
-        return await _retryPolicy.ExecuteAsync(async () =>
-        {
-            CommandDefinition comm = new(
-                commandText: procedureName,
-                parameters: parameters,
-                commandTimeout: commandTimeoutSeconds,
-                commandType: CommandType.StoredProcedure,
-                cancellationToken: cancellationToken
-            );
+    //    return await _retryPolicy.ExecuteAsync(async () =>
+    //    {
+    //        CommandDefinition comm = new(
+    //            commandText: procedureName,
+    //            parameters: parameters,
+    //            commandType: CommandType.StoredProcedure,
+    //            cancellationToken: cancellationToken
+    //        );
 
-            using SqlConnection conn = await GetOpenConnectionAsync().ConfigureAwait(false);
+    //        using SqlConnection conn = await GetOpenConnectionAsync().ConfigureAwait(false);
 
-            using SqlMapper.GridReader multi = await conn.QueryMultipleAsync(comm).ConfigureAwait(false);
+    //        using SqlMapper.GridReader multi = await conn.QueryMultipleAsync(comm).ConfigureAwait(false);
 
-            ImmutableArray<T1> result1 = (await multi.ReadAsync<T1>().ConfigureAwait(false)).ToImmutableArray();
-            ImmutableArray<T2> result2 = (await multi.ReadAsync<T2>().ConfigureAwait(false)).ToImmutableArray();
-            return (result1, result2);
-        }).ConfigureAwait(false);
-    }
+    //        ImmutableArray<T1> result1 = (await multi.ReadAsync<T1>().ConfigureAwait(false)).ToImmutableArray();
+    //        ImmutableArray<T2> result2 = (await multi.ReadAsync<T2>().ConfigureAwait(false)).ToImmutableArray();
+    //        return (result1, result2);
+    //    }).ConfigureAwait(false);
+    //}
 
-    public async Task<(ImmutableArray<T1>, ImmutableArray<T2>, ImmutableArray<T3>)> GetManyAsync<T1, T2, T3>(
-        string procedureName,
-        DynamicParameters? parameters = null,
-        int commandTimeoutSeconds = 30,
-        CancellationToken cancellationToken = default
-    )
-    {
-        parameters ??= new();
+    //public async Task<(ImmutableArray<T1>, ImmutableArray<T2>, ImmutableArray<T3>)> GetManyAsync<T1, T2, T3>(
+    //    string procedureName,
+    //    DynamicParameters? parameters,
+    //    CancellationToken cancellationToken
+    //)
+    //{
+    //    parameters ??= new();
 
-        return await _retryPolicy.ExecuteAsync(async () =>
-        {
-            CommandDefinition comm = new(
-                commandText: procedureName,
-                parameters: parameters,
-                commandTimeout: commandTimeoutSeconds,
-                commandType: CommandType.StoredProcedure,
-                cancellationToken: cancellationToken
-            );
+    //    return await _retryPolicy.ExecuteAsync(async () =>
+    //    {
+    //        CommandDefinition comm = new(
+    //            commandText: procedureName,
+    //            parameters: parameters,
+    //            commandType: CommandType.StoredProcedure,
+    //            cancellationToken: cancellationToken
+    //        );
 
-            using SqlConnection conn = await GetOpenConnectionAsync().ConfigureAwait(false);
+    //        using SqlConnection conn = await GetOpenConnectionAsync().ConfigureAwait(false);
 
-            using SqlMapper.GridReader multi = await conn.QueryMultipleAsync(comm).ConfigureAwait(false);
+    //        using SqlMapper.GridReader multi = await conn.QueryMultipleAsync(comm).ConfigureAwait(false);
 
-            ImmutableArray<T1> result1 = (await multi.ReadAsync<T1>().ConfigureAwait(false)).ToImmutableArray();
-            ImmutableArray<T2> result2 = (await multi.ReadAsync<T2>().ConfigureAwait(false)).ToImmutableArray();
-            ImmutableArray<T3> result3 = (await multi.ReadAsync<T3>().ConfigureAwait(false)).ToImmutableArray();
-            return (result1, result2, result3);
-        }).ConfigureAwait(false);
-    }
+    //        ImmutableArray<T1> result1 = (await multi.ReadAsync<T1>().ConfigureAwait(false)).ToImmutableArray();
+    //        ImmutableArray<T2> result2 = (await multi.ReadAsync<T2>().ConfigureAwait(false)).ToImmutableArray();
+    //        ImmutableArray<T3> result3 = (await multi.ReadAsync<T3>().ConfigureAwait(false)).ToImmutableArray();
+    //        return (result1, result2, result3);
+    //    }).ConfigureAwait(false);
+    //}
 
-    public async Task<(ImmutableArray<T1>, ImmutableArray<T2>, ImmutableArray<T3>, ImmutableArray<T4>)> GetManyAsync<T1, T2, T3, T4>(
-        string procedureName,
-        DynamicParameters? parameters = null,
-        int commandTimeoutSeconds = 30,
-        CancellationToken cancellationToken = default
-    )
-    {
-        parameters ??= new();
+    //public async Task<(ImmutableArray<T1>, ImmutableArray<T2>, ImmutableArray<T3>, ImmutableArray<T4>)> GetManyAsync<T1, T2, T3, T4>(
+    //    string procedureName,
+    //    DynamicParameters? parameters,
+    //    CancellationToken cancellationToken
+    //)
+    //{
+    //    parameters ??= new();
 
-        return await _retryPolicy.ExecuteAsync(async () =>
-        {
-            CommandDefinition comm = new(
-                commandText: procedureName,
-                parameters: parameters,
-                commandTimeout: commandTimeoutSeconds,
-                commandType: CommandType.StoredProcedure,
-                cancellationToken: cancellationToken
-            );
+    //    return await _retryPolicy.ExecuteAsync(async () =>
+    //    {
+    //        CommandDefinition comm = new(
+    //            commandText: procedureName,
+    //            parameters: parameters,
+    //            commandType: CommandType.StoredProcedure,
+    //            cancellationToken: cancellationToken
+    //        );
 
-            using SqlConnection conn = await GetOpenConnectionAsync().ConfigureAwait(false);
+    //        using SqlConnection conn = await GetOpenConnectionAsync().ConfigureAwait(false);
 
-            using SqlMapper.GridReader multi = await conn.QueryMultipleAsync(comm).ConfigureAwait(false);
+    //        using SqlMapper.GridReader multi = await conn.QueryMultipleAsync(comm).ConfigureAwait(false);
 
-            ImmutableArray<T1> result1 = (await multi.ReadAsync<T1>().ConfigureAwait(false)).ToImmutableArray();
-            ImmutableArray<T2> result2 = (await multi.ReadAsync<T2>().ConfigureAwait(false)).ToImmutableArray();
-            ImmutableArray<T3> result3 = (await multi.ReadAsync<T3>().ConfigureAwait(false)).ToImmutableArray();
-            ImmutableArray<T4> result4 = (await multi.ReadAsync<T4>().ConfigureAwait(false)).ToImmutableArray();
-            return (result1, result2, result3, result4);
-        }).ConfigureAwait(false);
-    }
+    //        ImmutableArray<T1> result1 = (await multi.ReadAsync<T1>().ConfigureAwait(false)).ToImmutableArray();
+    //        ImmutableArray<T2> result2 = (await multi.ReadAsync<T2>().ConfigureAwait(false)).ToImmutableArray();
+    //        ImmutableArray<T3> result3 = (await multi.ReadAsync<T3>().ConfigureAwait(false)).ToImmutableArray();
+    //        ImmutableArray<T4> result4 = (await multi.ReadAsync<T4>().ConfigureAwait(false)).ToImmutableArray();
+    //        return (result1, result2, result3, result4);
+    //    }).ConfigureAwait(false);
+    //}
 
     public async Task<T> GetOneAsync<T>(
         string procedureName,
-        DynamicParameters? parameters = null,
-        int commandTimeoutSeconds = 30,
-        CancellationToken cancellationToken = default
+        DynamicParameters? parameters,
+        CancellationToken cancellationToken
     )
         where T : class
     {
-        return await _retryPolicy.ExecuteAsync(async () =>
-        {
-            return (await GetZeroOrOneAsync<T>(procedureName, parameters, commandTimeoutSeconds, cancellationToken).ConfigureAwait(false))!;
-        }).ConfigureAwait(false);
+        return (await GetZeroOrOneAsync<T>(procedureName, parameters, cancellationToken).ConfigureAwait(false))!;
     }
 
     public async Task<T?> GetZeroOrOneAsync<T>(
         string procedureName,
-        DynamicParameters? parameters = null,
-        int commandTimeoutSeconds = 30,
-        CancellationToken cancellationToken = default
+        DynamicParameters? parameters,
+        CancellationToken cancellationToken
     )
         where T : class
     {
@@ -161,7 +148,6 @@ public sealed class SqlDatabase
             CommandDefinition comm = new(
                 commandText: procedureName,
                 parameters: parameters,
-                commandTimeout: commandTimeoutSeconds,
                 commandType: CommandType.StoredProcedure,
                 cancellationToken: cancellationToken,
                 flags: CommandFlags.None
@@ -178,9 +164,8 @@ public sealed class SqlDatabase
 
     public async Task NonQueryAsync(
         string procedureName,
-        DynamicParameters? parameters = null,
-        int commandTimeoutSeconds = 30,
-        CancellationToken cancellationToken = default
+        DynamicParameters? parameters,
+        CancellationToken cancellationToken
     )
     {
         parameters ??= new();
@@ -190,7 +175,6 @@ public sealed class SqlDatabase
             CommandDefinition comm = new(
                 commandText: procedureName,
                 parameters: parameters,
-                commandTimeout: commandTimeoutSeconds,
                 cancellationToken: cancellationToken
             );
 

@@ -1,6 +1,5 @@
-﻿CREATE PROCEDURE [app].[Schedules_SelectMany] (
+﻿CREATE PROCEDURE [app].[Schedules_SelectMany]
 	@IDs [app].[BigIntArray] READONLY
-)
 AS
 BEGIN
 	SET TRANSACTION ISOLATION LEVEL SNAPSHOT;

@@ -27,24 +27,6 @@ BEGIN
 
         SELECT * FROM @Jobs;
 
-        IF EXISTS (SELECT TOP 1 1 FROM @Jobs)
-        BEGIN
-
-            DECLARE @Schedules [app].[SchedulesType];
-            INSERT @Schedules
-            SELECT * FROM [app].[Schedules]
-            WHERE [ID] IN (SELECT [ScheduleID] FROM @Jobs);
-
-            SELECT * FROM @Schedules;
-
-            DECLARE @Workers [app].[WorkersType];
-            INSERT @Workers
-            SELECT * FROM [app].[Workers]
-            WHERE [ID] IN (SELECT s.[WorkerID] FROM @Schedules s);
-
-            SELECT * FROM @Workers;
-        END;
-
 		COMMIT TRANSACTION;
 	END TRY
 	BEGIN CATCH

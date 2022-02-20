@@ -17,4 +17,7 @@
 	<ItemGroup>
 		<Compile Include="..\SolutionInfo.cs" Link="SolutionInfo.cs" />
 	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\SimpleSchedulerConfiguration\SimpleSchedulerConfiguration.csproj" />
+	</ItemGroup>
 </Project>

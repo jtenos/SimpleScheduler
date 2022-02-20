@@ -1,29 +1,25 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
+	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<WarningsAsErrors />
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-		<ImplicitUsings>enable</ImplicitUsings>
-	  <TargetFramework>net6.0</TargetFramework>
-	  <Nullable>enable</Nullable>
-	  <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-	  <WarningsAsErrors />
-	  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-	    </PropertyGroup>
+	</PropertyGroup>
 	<ItemGroup>
 		<Compile Include="..\SolutionInfo.cs" Link="SolutionInfo.cs" />
 	</ItemGroup>
 	<ItemGroup>
-	  <PackageReference Include="OneOf" Version="3.0.211" />
+		<PackageReference Include="OneOf" Version="3.0.211" />
 	</ItemGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\SimpleSchedulerConfiguration\SimpleSchedulerConfiguration.csproj" />
-	  <ProjectReference Include="..\SimpleSchedulerData\SimpleSchedulerData.csproj" />
-	  <ProjectReference Include="..\SimpleSchedulerModels\SimpleSchedulerModels.csproj" />
-	  <ProjectReference Include="..\SqlDB\SimpleSchedulerDB.sqlproj" />
+		<ProjectReference Include="..\SimpleSchedulerConfiguration\SimpleSchedulerConfiguration.csproj" />
+		<ProjectReference Include="..\SimpleSchedulerData\SimpleSchedulerData.csproj" />
+		<ProjectReference Include="..\SimpleSchedulerEmail\SimpleSchedulerEmail.csproj" />
+		<ProjectReference Include="..\SimpleSchedulerModels\SimpleSchedulerModels.csproj" />
+		<ProjectReference Include="..\SqlDB\SimpleSchedulerDB.sqlproj" />
 	</ItemGroup>
 
 </Project>

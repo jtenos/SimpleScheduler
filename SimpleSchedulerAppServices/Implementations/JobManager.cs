@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Data;
 using Dapper;
 using OneOf;
 using OneOf.Types;
@@ -7,7 +8,7 @@ using SimpleSchedulerData;
 using SimpleSchedulerModels;
 using SimpleSchedulerModels.ResultTypes;
 
-namespace SimpleSchedulerAppServices.Implementations.SqlServer;
+namespace SimpleSchedulerAppServices.Implementations;
 
 public sealed class JobManager
     : IJobManager
@@ -19,15 +20,15 @@ public sealed class JobManager
         _db = db;
     }
 
-    async Task IJobManager.AcknowledgeErrorAsync(long jobID, CancellationToken cancellationToken)
+    async Task IJobManager.AcknowledgeErrorAsync(long id, CancellationToken cancellationToken)
     {
         DynamicParameters param = new DynamicParameters()
-            .AddLongParam("@ID", jobID);
+            .AddLongParam("@ID", id);
 
         await _db.NonQueryAsync(
             "[app].[Jobs_AcknowledgeError]",
             param,
-            cancellationToken: cancellationToken
+            cancellationToken
         ).ConfigureAwait(false);
     }
 
@@ -40,7 +41,7 @@ public sealed class JobManager
         await _db.NonQueryAsync(
             "[app].[Jobs_Insert]",
             param,
-            cancellationToken: cancellationToken
+            cancellationToken
         ).ConfigureAwait(false);
     }
 
@@ -53,7 +54,7 @@ public sealed class JobManager
         CancelJobResult cancelResult = await _db.GetOneAsync<CancelJobResult>(
             "[app].[Jobs_Cancel]",
             param,
-            cancellationToken: cancellationToken
+            cancellationToken
         ).ConfigureAwait(false);
 
         if (cancelResult.Success) { return new Success(); }
@@ -63,7 +64,7 @@ public sealed class JobManager
         throw new ApplicationException("Invalid cancel result");
     }
 
-    async Task IJobManager.CompleteJobAsync(long jobID, bool success, string? detailedMessage, CancellationToken cancellationToken)
+    async Task IJobManager.CompleteJobAsync(long id, bool success, string? detailedMessage, CancellationToken cancellationToken)
     {
         if (!string.IsNullOrWhiteSpace(detailedMessage))
         {
@@ -71,49 +72,39 @@ public sealed class JobManager
         }
 
         DynamicParameters param = new DynamicParameters()
-            .AddLongParam("@ID", jobID)
+            .AddLongParam("@ID", id)
             .AddBitParam("@Success", success)
             .AddBitParam("@HasDetailedMessage", !string.IsNullOrWhiteSpace(detailedMessage));
 
         await _db.NonQueryAsync(
             "[app].[Jobs_Complete]",
             param,
-            cancellationToken: cancellationToken
+            cancellationToken
         ).ConfigureAwait(false);
     }
 
-    async Task<ImmutableArray<JobDetail>> IJobManager.DequeueScheduledJobsAsync(CancellationToken cancellationToken)
+    async Task<ImmutableArray<Job>> IJobManager.DequeueScheduledJobsAsync(CancellationToken cancellationToken)
     {
-        (ImmutableArray<Job> jobs, ImmutableArray<Schedule> schedules, ImmutableArray<Worker> workers)
-            = await _db.GetManyAsync<Job, Schedule, Worker>(
+        return await _db.GetManyAsync<Job>(
             "[app].[Jobs_Dequeue]",
-            cancellationToken: cancellationToken
+            parameters: null,
+            cancellationToken
         ).ConfigureAwait(false);
-
-        List<JobDetail> jobDetails = new();
-        foreach (Job job in jobs)
-        {
-            Schedule schedule = schedules.Single(s => s.ID == job.ScheduleID);
-            Worker worker = workers.Single(w => w.ID == schedule.WorkerID);
-            jobDetails.Add(new(job, schedule, worker));
-        }
-
-        return jobDetails.ToImmutableArray();
     }
 
-    async Task<Job> IJobManager.GetJobAsync(long jobID, CancellationToken cancellationToken)
+    async Task<Job> IJobManager.GetJobAsync(long id, CancellationToken cancellationToken)
     {
         DynamicParameters param = new DynamicParameters()
-            .AddLongParam("@ID", jobID);
+            .AddLongParam("@ID", id);
 
         return await _db.GetOneAsync<Job>(
             "[app].[Jobs_Select]",
             param,
-            cancellationToken: cancellationToken
+            cancellationToken
         ).ConfigureAwait(false);
     }
 
-    async Task<string?> IJobManager.GetDetailedMessageAsync(long jobID, CancellationToken cancellationToken)
+    async Task<string?> IJobManager.GetDetailedMessageAsync(long id, CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
         throw new NotImplementedException("GetDetailedMessageAsync");
@@ -127,11 +118,11 @@ public sealed class JobManager
         return await _db.GetZeroOrOneAsync<Job>(
             "[app].[Jobs_SelectMostRecentBySchedule]",
             param,
-            cancellationToken: cancellationToken
+            cancellationToken
         ).ConfigureAwait(false);
     }
 
-    async Task<ImmutableArray<JobDetail>> IJobManager.GetLatestJobsAsync(int pageNumber,
+    async Task<ImmutableArray<Job>> IJobManager.GetLatestJobsAsync(int pageNumber,
         int rowsPerPage, string? statusCode, long? workerID, bool overdueOnly,
         CancellationToken cancellationToken)
     {
@@ -142,61 +133,73 @@ public sealed class JobManager
             .AddIntParam("@Offset", (pageNumber - 1) * rowsPerPage)
             .AddIntParam("@NumRows", rowsPerPage);
 
-
-        (ImmutableArray<Job> jobs, ImmutableArray<Schedule> schedules, ImmutableArray<Worker> workers)
-            = await _db.GetManyAsync<Job, Schedule, Worker>(
-                "[app].[Jobs_Search]",
-                param,
-                cancellationToken: cancellationToken
+        ImmutableArray<Job> jobs = await _db.GetManyAsync<Job>(
+            "[app].[Jobs_Search]",
+            param,
+            cancellationToken
         ).ConfigureAwait(false);
 
-        List<JobDetail> jobDetails = new();
-        foreach (Job job in jobs)
+        if (!overdueOnly)
         {
-            Schedule schedule = schedules.Single(s => s.ID == job.ScheduleID);
-            Worker worker = workers.Single(w => w.ID == schedule.WorkerID);
-            jobDetails.Add(new(job, schedule, worker));
+            return jobs;
         }
 
-        List<JobDetail> filteredJobs;
-        if (overdueOnly)
+        // For overdue only, filter RUN/ERR/NEW status, and different levels based on the status
+        List<Job> filteredJobs;
+        filteredJobs = new();
+
+        param = new DynamicParameters()
+            .AddBigIntArrayParam("@IDs", jobs.Select(j => j.ScheduleID).Distinct().ToImmutableArray());
+
+        Dictionary<long, Schedule> schedules = (await _db.GetManyAsync<Schedule>(
+            "[app].[Schedules_SelectMany]",
+            parameters: param,
+            cancellationToken: cancellationToken
+        ).ConfigureAwait(false))
+        .ToDictionary(s => s.ID, s => s);
+
+        param = new DynamicParameters()
+            .AddBigIntArrayParam("@IDs", schedules.Select(s => s.Value.WorkerID).Distinct().ToImmutableArray());
+
+        Dictionary<long, Worker> workers = (await _db.GetManyAsync<Worker>(
+            "[app].[Workers_SelectMany]",
+            parameters: param,
+            cancellationToken: cancellationToken
+        ).ConfigureAwait(false))
+        .ToDictionary(w => w.ID, w => w);
+
+        foreach (Job job in jobs)
         {
-            // For overdue only, filter RUN/ERR/NEW status, and different levels based on the status
-            filteredJobs = new();
-            foreach (JobDetail jobDetail in jobDetails)
+            Schedule schedule = schedules[job.ScheduleID];
+            Worker worker = workers[schedule.WorkerID];
+
+            if (job.JobStatus == JobStatus.Running)
             {
-                if (jobDetail.Job.JobStatus == JobStatus.Running)
+                // Greater than the timeout period for the worker
+                if (job.QueueDateUTC.AddMinutes(worker.TimeoutMinutes) < DateTime.UtcNow)
                 {
-                    // Greater than the timeout period for the worker
-                    if (jobDetail.Job.QueueDateUTC.AddMinutes(jobDetail.Worker.TimeoutMinutes) < DateTime.UtcNow)
-                    {
-                        filteredJobs.Add(jobDetail);
-                    }
-                }
-                else if (jobDetail.Job.JobStatus == JobStatus.Error)
-                {
-                    // All errors show up here
-                    filteredJobs.Add(jobDetail);
-                }
-                else if (jobDetail.Job.JobStatus == JobStatus.New)
-                {
-                    // Been stuck in NEW for more than one minute
-                    if (jobDetail.Job.QueueDateUTC.AddMinutes(1) < DateTime.UtcNow)
-                    {
-                        filteredJobs.Add(jobDetail);
-                    }
+                    filteredJobs.Add(job);
                 }
             }
-        }
-        else
-        {
-            filteredJobs = jobDetails;
+            else if (job.JobStatus == JobStatus.Error)
+            {
+                // All errors show up here
+                filteredJobs.Add(job);
+            }
+            else if (job.JobStatus == JobStatus.New)
+            {
+                // Been stuck in NEW for more than one minute
+                if (job.QueueDateUTC.AddMinutes(1) < DateTime.UtcNow)
+                {
+                    filteredJobs.Add(job);
+                }
+            }
         }
 
         return filteredJobs.ToImmutableArray();
     }
 
-    async Task<ImmutableArray<JobDetail>> IJobManager.GetOverdueJobsAsync(CancellationToken cancellationToken)
+    async Task<ImmutableArray<Job>> IJobManager.GetOverdueJobsAsync(CancellationToken cancellationToken)
     {
         return (await ((IJobManager)this).GetLatestJobsAsync(
             pageNumber: 1,
@@ -204,17 +207,18 @@ public sealed class JobManager
             statusCode: null,
             workerID: null,
             overdueOnly: true,
-            cancellationToken: cancellationToken
+            cancellationToken
         ).ConfigureAwait(false))
-        .OrderBy(x => x.Job.QueueDateUTC)
+        .OrderBy(x => x.QueueDateUTC)
         .ToImmutableArray();
     }
 
     async Task IJobManager.RestartStuckJobsAsync(CancellationToken cancellationToken)
     {
         await _db.NonQueryAsync(
-            "[dbo].[Jobs_RestartStuck]", 
-            cancellationToken: cancellationToken
+            "[app].[Jobs_RestartStuck]",
+            parameters: null,
+            cancellationToken
         ).ConfigureAwait(false);
     }
 }

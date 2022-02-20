@@ -1,37 +1,37 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using SimpleSchedulerBlazor.Server.Auth;
 using Microsoft.IdentityModel.Tokens;
-using SimpleSchedulerConfiguration;
+using SimpleSchedulerBlazor.Server;
+using SimpleSchedulerConfiguration.Models;
+using SimpleSchedulerAppServices.Interfaces;
+using SimpleSchedulerAppServices.Implementations;
+using Polly;
+using Polly.Retry;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-ApplicationConfiguration.SetUpConfiguration(builder.Configuration);
-ApplicationConfiguration.SetUpAppSettings(builder.Configuration, builder.Services);
-
 builder.Services.AddSingleton<ITokenService, TokenService>();
 
-ApplicationConfiguration.SetUpDatabase(builder.Services);
-if (appSettings.Database.IsSqlServer)
-{
-    builder.Services.AddScoped<BaseDatabase, SqlDatabase>();
-    builder.Services.AddScoped<IWorkerManager, SimpleSchedulerBusiness.SqlServer.WorkerManager>();
-    builder.Services.AddScoped<IScheduleManager, SimpleSchedulerBusiness.SqlServer.ScheduleManager>();
-    builder.Services.AddScoped<IJobManager, SimpleSchedulerBusiness.SqlServer.JobManager>();
-    builder.Services.AddScoped<IUserManager, SimpleSchedulerBusiness.SqlServer.UserManager>();
-}
-else if (appSettings.Database.IsSqlite)
-{
-    builder.Services.AddScoped<BaseDatabase, SqliteDatabase>();
-    builder.Services.AddScoped<IWorkerManager, SimpleSchedulerBusiness.Sqlite.WorkerManager>();
-    builder.Services.AddScoped<IScheduleManager, SimpleSchedulerBusiness.Sqlite.ScheduleManager>();
-    builder.Services.AddScoped<IJobManager, SimpleSchedulerBusiness.Sqlite.JobManager>();
-    builder.Services.AddScoped<IUserManager, SimpleSchedulerBusiness.Sqlite.UserManager>();
-}
+builder.Services.AddScoped<IJobManager, JobManager>();
+builder.Services.AddScoped<IScheduleManager, ScheduleManager>();
+builder.Services.AddScoped<IUserManager, UserManager>();
+builder.Services.AddScoped<IWorkerManager, WorkerManager>();
 
-builder.Services.AddScoped<DatabaseFactory>();
+builder.Services.AddScoped<SqlDatabase>();
+
+builder.Services.AddSingleton<AsyncRetryPolicy>(Policy
+    .Handle<Exception>()
+    .WaitAndRetryAsync(retryCount: 2,
+        sleepDurationProvider: times => TimeSpan.FromSeconds(3),
+        onRetry: async (ex, ts) => { await Task.CompletedTask; })
+);
+
 builder.Services.AddScoped<IEmailer, Emailer>();
+
+AppSettings appSettings = builder.Configuration.GetSection("AppSettings").Get<AppSettings>();
+builder.Services.AddSingleton(appSettings);
 
 builder.Services.AddCors();
 
@@ -51,6 +51,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 });
 
 WebApplication app = builder.Build();
+
+app.UseMiddleware(typeof(ExceptionHandlingMiddleware));
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

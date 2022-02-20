@@ -2,6 +2,7 @@
 
 public record class AppSettings
 {
+    public string ConnectionString { get; init; } = default!;
     public MailSettings MailSettings { get; init; } = default!;
     public string WorkerPath { get; init; } = default!;
     public string WebUrl { get; init; } = default!;

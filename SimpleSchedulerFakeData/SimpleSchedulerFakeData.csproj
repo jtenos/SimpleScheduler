@@ -23,13 +23,10 @@
 		</None>
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\SimpleSchedulerData\SimpleSchedulerData.csproj" />
-		<ProjectReference Include="..\SimpleSchedulerModels\SimpleSchedulerModels.csproj" />
-		<ProjectReference Include="..\SimpleSchedulerEmail\SimpleSchedulerEmail.csproj" />
-	</ItemGroup>
-	<ItemGroup>
 		<PackageReference Include="Faker.Net" Version="2.0.154" />
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="4.1.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
 	</ItemGroup>
 
 </Project>

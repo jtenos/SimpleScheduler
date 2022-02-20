@@ -13,7 +13,7 @@
         CONSTRAINT [FK_Workers_ParentWorkerID]
         FOREIGN KEY REFERENCES [app].[Workers] ([ID])
     
-    ,[TimeoutMinutes] BIGINT NOT NULL
+    ,[TimeoutMinutes] INT NOT NULL
     ,[DirectoryName] NVARCHAR(1000) NOT NULL
     ,[Executable] NVARCHAR(1000) NOT NULL
     ,[ArgumentValues] NVARCHAR(1000) NOT NULL

@@ -8,10 +8,14 @@
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	</PropertyGroup>
+	<ItemGroup>
+		<Compile Include="..\..\SolutionInfo.cs" Link="SolutionInfo.cs" />
+	</ItemGroup>
 
 	<PropertyGroup Condition=" '$(RunConfiguration)' == 'SimpleSchedulerBlazor' ">
-	  <ExternalConsole>true</ExternalConsole>
+		<ExternalConsole>true</ExternalConsole>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Blazored.LocalStorage" Version="4.2.0" />
@@ -20,6 +24,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\SimpleSchedulerApiProxy\SimpleSchedulerApiProxy.csproj" />
 		<ProjectReference Include="..\..\SimpleSchedulerModels\SimpleSchedulerModels.csproj" />
 	</ItemGroup>
 

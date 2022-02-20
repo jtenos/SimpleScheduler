@@ -1,6 +1,5 @@
-﻿CREATE PROCEDURE [app].[Jobs_SelectMostRecentBySchedule] (
+﻿CREATE PROCEDURE [app].[Jobs_SelectMostRecentBySchedule]
 	@ScheduleID BIGINT
-)
 AS
 BEGIN
 	SET TRANSACTION ISOLATION LEVEL SNAPSHOT;

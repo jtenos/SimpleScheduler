@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using OneOf.Types;
-using SimpleSchedulerBlazor.Server.Config;
-using SimpleSchedulerBusiness;
-using SimpleSchedulerModels.ApiModels;
+using SimpleSchedulerAppServices.Interfaces;
+using SimpleSchedulerConfiguration.Models;
+using SimpleSchedulerModels.ApiModels.Login;
 using SimpleSchedulerModels.ResultTypes;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -15,71 +15,56 @@ namespace SimpleSchedulerBlazor.Server.Controllers;
 public class LoginController
     : ControllerBase
 {
+    private readonly AppSettings _appSettings;
     private readonly IUserManager _userManager;
 
-    public LoginController(IUserManager userManager)
+    public LoginController(AppSettings appSettings, IUserManager userManager)
     {
+        _appSettings = appSettings;
         _userManager = userManager;
     }
 
-    [HttpGet]
-    [Route("[action]")]
-    public ActionResult<bool> IsLoggedIn()
+    [HttpPost("[action]")]
+    public async Task<ActionResult<IsLoggedInResponse>> IsLoggedIn(
+        IsLoggedInRequest request, CancellationToken cancellationToken)
     {
-        return HttpContext.User != null;
+        return await Task.FromResult(new IsLoggedInResponse(HttpContext.User != null));
     }
 
-    [HttpGet]
-    [Route("[action]")]
-    public async Task<ActionResult<ImmutableArray<string>>> GetAllUserEmails(CancellationToken cancellationToken)
+    [HttpPost("[action]")]
+    public async Task<ActionResult<GetAllUserEmailsResponse>> GetAllUserEmails(
+        GetAllUserEmailsRequest request, CancellationToken cancellationToken)
     {
-        return Ok(await _userManager.GetAllUserEmailsAsync(cancellationToken));
+        return new GetAllUserEmailsResponse(await _userManager.GetAllUserEmailsAsync(cancellationToken));
     }
 
-    [HttpPost]
-    [Route("[action]")]
-    public async Task<ActionResult<SubmitEmailResponse>> SubmitEmail(SubmitEmailRequest request, CancellationToken cancellationToken)
+    [HttpPost("[action]")]
+    public async Task<ActionResult<SubmitEmailResponse>> SubmitEmail(
+        SubmitEmailRequest request, CancellationToken cancellationToken)
     {
-        if (!await _userManager.LoginSubmitAsync(request.EmailAddress, cancellationToken))
-        {
-            return NotFound(new SubmitEmailResponse(Success: false, Message: "User not found"));
-        }
-
-        return Ok(new SubmitEmailResponse(Success: true, Message: "Please check your email for a login link"));
+        return await _userManager.LoginSubmitAsync(request.EmailAddress, cancellationToken)
+            ? new SubmitEmailResponse()
+            : NotFound();
     }
 
-    [HttpPost]
-    [Route("[action]")]
-    public async Task<IActionResult> ValidateEmail(ValidateEmailRequest request, CancellationToken cancellationToken)
+    [HttpPost("[action]")]
+    public async Task<ActionResult<ValidateEmailResponse>> ValidateEmail(
+        ValidateEmailRequest request, CancellationToken cancellationToken)
     {
-        try
-        {
-            return (await _userManager.LoginValidateAsync(request.ValidationCode, cancellationToken))
-                .Match<IActionResult>(
-                    (string emailAddress) =>
-                    {
-                        string jwt = GenerateJwtToken(emailAddress);
-                        Response.Cookies.Append(_cookieName, jwt, new CookieOptions
-                        {
-                            HttpOnly = true,
-                            Secure = true,
-                            SameSite = SameSiteMode.Strict
-                        });
-                        return Ok("Successfully authenticated");
-                    }, (NotFound notFound) =>
-                    {
-                        return BadRequest("Validation code not found");
-                    }, (Expired expired) =>
-                    {
-                        return BadRequest("Validation code expired. Please try logging in again.");
-                    }
-                );
-        }
-        catch (Exception ex)
-        {
-            Trace.TraceError(ex.ToString());
-            return Problem(ex.Message);
-        }
+        return (await _userManager.LoginValidateAsync(request.ValidationCode, cancellationToken))
+            .Match<ActionResult<ValidateEmailResponse>>(
+                (string emailAddress) =>
+                {
+                    string jwt = GenerateJwtToken(emailAddress);
+                    return new ValidateEmailResponse(jwt);
+                }, (NotFound notFound) =>
+                {
+                    return NotFound();
+                }, (Expired expired) =>
+                {
+                    return BadRequest("Validation code expired");
+                }
+            )!;
     }
 
     private string GenerateJwtToken(string emailAddress)
@@ -91,7 +76,12 @@ public class LoginController
                 new Claim(ClaimTypes.Email, emailAddress)
             }),
             Expires = DateTime.UtcNow.AddDays(1),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(_jwtSecret), SecurityAlgorithms.HmacSha256Signature)
+            SigningCredentials = new SigningCredentials(
+                new SymmetricSecurityKey(
+                    Convert.FromHexString(_appSettings.Jwt.Key)
+                ),
+                SecurityAlgorithms.HmacSha256Signature
+            )
         };
         SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);

@@ -1,15 +1,11 @@
 using System.Collections.Immutable;
-using System.Data.Common;
-using System.Globalization;
-using Microsoft.Extensions.Configuration;
+using Dapper;
 using OneOf;
 using OneOf.Types;
 using SimpleSchedulerAppServices.Interfaces;
 using SimpleSchedulerConfiguration.Models;
 using SimpleSchedulerData;
 using SimpleSchedulerEmail;
-using SimpleSchedulerEntities;
-using SimpleSchedulerModels.Configuration;
 using SimpleSchedulerModels.ResultTypes;
 
 namespace SimpleSchedulerAppServices.Implementations;
@@ -17,100 +13,72 @@ namespace SimpleSchedulerAppServices.Implementations;
 public sealed class UserManager
     : IUserManager
 {
-    protected UserManager(DatabaseFactory databaseFactory, IServiceProvider serviceProvider,
-        IEmailer emailer, AppSettings appSettings)
-    {
-        DatabaseFactory = databaseFactory;
-        ServiceProvider = serviceProvider;
-        Emailer = emailer;
-        AppSettings = appSettings;
-    }
+    private readonly SqlDatabase _db;
+    private readonly AppSettings _appSettings;
+    private readonly IEmailer _emailer;
 
-    protected DatabaseFactory DatabaseFactory { get; }
-    protected IServiceProvider ServiceProvider { get; }
-    protected IEmailer Emailer { get; }
-    protected AppSettings AppSettings { get; }
+    public UserManager(SqlDatabase db, AppSettings appSettings, IEmailer emailer)
+    {
+        _db = db;
+        _appSettings = appSettings;
+        _emailer = emailer;
+    }
 
     async Task<ImmutableArray<string>> IUserManager.GetAllUserEmailsAsync(CancellationToken cancellationToken)
     {
-        if (!AppSettings.AllowLoginDropDown)
+        if (!_appSettings.AllowLoginDropDown)
         {
             return ImmutableArray<string>.Empty;
         }
 
-        return await _db.GetManyAsync<string>("[app].[Users_SelectAll]", cancellationToken).ConfigureAwait(false);
+        return await _db.GetManyAsync<string>(
+            "[app].[Users_SelectAll]",
+            parameters: null,
+            cancellationToken
+        ).ConfigureAwait(false);
     }
 
-    public virtual async Task<bool> LoginSubmitAsync(string emailAddress,
-        CancellationToken cancellationToken)
+    private record class LoginSubmitResult(bool Success, Guid ValidationCode);
+    async Task<bool> IUserManager.LoginSubmitAsync(string emailAddress, CancellationToken cancellationToken)
     {
-        var db = await DatabaseFactory.GetDatabaseAsync(cancellationToken).ConfigureAwait(false);
-        DbParameter[] parms =
-        {
-            db.GetStringParameter("@EmailAddress", emailAddress, isFixed: false, size: 200)
-        };
-        var users = await db.GetManyAsync<UserEntity>(@"
-            SELECT * FROM [Users] WHERE [EmailAddress] = @EmailAddress
-        ", parms, Mapper.MapUser, cancellationToken).ConfigureAwait(false);
+        DynamicParameters param = new DynamicParameters()
+            .AddNVarCharParam("@EmailAddress", emailAddress, 200);
 
-        if (!users.Any()) { return false; }
+        LoginSubmitResult result = await _db.GetOneAsync<LoginSubmitResult>(
+            "[app].[Users_SubmitLogin]",
+            param,
+            cancellationToken
+        ).ConfigureAwait(false);
 
-        string validationKey = Guid.NewGuid().ToString("N");
-        parms = new[]
-        {
-            db.GetInt64Parameter("@SubmitDateUTC", DateTime.UtcNow),
-            db.GetStringParameter("@EmailAddress", emailAddress, isFixed: false, size: 200),
-            db.GetStringParameter("@ValidationKey", validationKey, isFixed: true, size: 32)
-        };
-        int recordsAffected = await db.NonQueryAsync(@"
-            INSERT INTO LoginAttempts (SubmitDateUTC, EmailAddress, ValidationKey)
-            VALUES (@SubmitDateUTC, @EmailAddress, @ValidationKey);
-        ", parms, cancellationToken).ConfigureAwait(false);
+        if (!result.Success) { return false; }
 
-        string url = $"{AppSettings.WebUrl}/validate-user/{validationKey}";
-        await Emailer.SendEmailAsync(new[] { emailAddress },
-            $"Scheduler ({AppSettings.EnvironmentName}) Log In",
+        string url = $"{_appSettings.WebUrl}/validate-user/{result.ValidationCode}";
+        await _emailer.SendEmailAsync(new[] { emailAddress }.ToImmutableArray(),
+            $"Scheduler ({_appSettings.EnvironmentName}) Log In",
             $"<a href='{url}' target=_blank>Click here to log in</a>",
             cancellationToken);
 
         return true;
     }
 
-    public virtual async Task<OneOf<string, NotFound, Expired>> LoginValidateAsync(string validationKey,
+    private record class LoginValidateResult(
+        bool Success, string? EmailAddress, bool NotFound, bool Expired
+    );
+    async Task<OneOf<string, NotFound, Expired>> IUserManager.LoginValidateAsync(Guid validationCode,
         CancellationToken cancellationToken)
     {
-        var db = await DatabaseFactory.GetDatabaseAsync(cancellationToken).ConfigureAwait(false);
-        DbParameter[] parms =
-        {
-                db.GetStringParameter("@ValidationKey", validationKey, isFixed: true, size: 32)
-            };
-        var validateItems = await db.GetManyAsync(@"
-                SELECT *
-                FROM LoginAttempts
-                WHERE ValidationKey = @ValidationKey
-                AND ValidationDateUTC IS NULL;
-            ", parms, Mapper.MapLoginAttempt, cancellationToken).ConfigureAwait(false);
+        DynamicParameters param = new DynamicParameters()
+            .AddUniqueIdentifierParam("@ValidationCode", validationCode);
 
-        if (!validateItems.Any()) { return new NotFound(); }
+        LoginValidateResult result = await _db.GetOneAsync<LoginValidateResult>(
+            "[app].[Users_ValidateLogin]",
+            param,
+            cancellationToken
+        ).ConfigureAwait(false);
 
-        if (DateTime.ParseExact(validateItems[0].SubmitDateUTC.ToString(), "yyyyMMddHHmmssfff", CultureInfo.InvariantCulture.DateTimeFormat)
-            < DateTime.UtcNow.AddMinutes(-5))
-        {
-            return new Expired();
-        }
-
-        parms = new[]
-        {
-            db.GetInt64Parameter("@ValidationDateUTC", DateTime.UtcNow),
-            db.GetStringParameter("@ValidationKey", validationKey, isFixed: true, size: 32)
-        };
-
-        return await db.ScalarAsync<string>(@"
-            UPDATE LoginAttempts
-            SET ValidationDateUTC = @ValidationDateUTC
-            WHERE ValidationKey = @ValidationKey;
-
-            SELECT EmailAddress FROM LoginAttempts WHERE ValidationKey = @ValidationKey;
-        ", parms, cancellationToken).ConfigureAwait(false)!;
+        if (result.NotFound) { return new NotFound(); }
+        if (result.Expired) { return new Expired(); }
+        if (!result.Success || result.EmailAddress is null) { throw new ApplicationException("Invalid call to LoginValidate"); }
+        return result.EmailAddress;
     }
 }
