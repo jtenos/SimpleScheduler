@@ -7,7 +7,6 @@
 		<WarningsAsErrors />
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	</PropertyGroup>
 	<ItemGroup>
 		<Compile Include="..\..\SolutionInfo.cs" Link="SolutionInfo.cs" />
@@ -23,10 +22,14 @@
 		<PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
 		<!--<PackageReference Include="Serilog.Sinks.Email" Version="2.4.0" />-->
 		<PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+		<PackageReference Include="Grpc.AspNetCore" Version="2.42.0" />
+		<PackageReference Include="Grpc.AspNetCore.Web" Version="2.42.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.1" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\SimpleSchedulerAppServices\SimpleSchedulerAppServices.csproj" />
+		<ProjectReference Include="..\..\SimpleSchedulerBlazor.ProtocolBuffers\SimpleSchedulerBlazor.ProtocolBuffers.csproj" />
 		<ProjectReference Include="..\..\SimpleSchedulerConfiguration\SimpleSchedulerConfiguration.csproj" />
 		<ProjectReference Include="..\Client\SimpleSchedulerBlazor.Client.csproj" />
 		<ProjectReference Include="..\..\Serilog.Sinks.Email\Serilog.Sinks.Email.csproj" />

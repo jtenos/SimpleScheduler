@@ -1,0 +1,64 @@
+﻿syntax = "proto3";
+option csharp_namespace = "SimpleSchedulerBlazor.ProtocolBuffers.Messages.Workers";
+package SimpleSchedulerBlazorProtocolBuffers;
+
+import "types.proto";
+import "models.worker.proto";
+
+message CreateWorkerRequest {
+    string WorkerName = 1;
+    string DetailedDescription = 2;
+    string EmailOnSuccess = 3;
+    NullableInt64 ParentWorkerID = 4;
+    sint32 TimeoutMinutes = 5;
+    string DirectoryName = 6;
+    string Executable = 7;
+    string ArgumentValues = 8;
+}
+message CreateWorkerReply {
+}
+
+message DeleteWorkerRequest {
+    sint64 ID = 1;
+}
+message DeleteWorkerReply {
+}
+
+message GetAllWorkersRequest {
+}
+message GetAllWorkersReply {
+    repeated WorkerMessage Workers = 1;
+}
+
+message GetWorkerRequest {
+    sint64 ID = 1;
+}
+message GetWorkerReply {
+    WorkerMessage Worker = 1;
+}
+
+message ReactivateWorkerRequest {
+    sint64 ID = 1;
+}
+message ReactivateWorkerReply {
+}
+
+message RunNowRequest {
+    sint64 ID = 1;
+}
+message RunNowReply {
+}
+
+message UpdateWorkerRequest {
+    sint64 ID = 1;
+    string WorkerName = 2;
+    string DetailedDescription = 3;
+    string EmailOnSuccess = 4;
+    NullableInt64 ParentWorkerID = 5;
+    sint32 TimeoutMinutes = 6;
+    string DirectoryName = 7;
+    string Executable = 8;
+    string ArgumentValues = 9;
+}
+message UpdateWorkerReply {
+}

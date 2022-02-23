@@ -1,0 +1,11 @@
+﻿syntax = "proto3";
+option csharp_namespace = "SimpleSchedulerBlazor.ProtocolBuffers.Services";
+package SimpleSchedulerBlazorProtocolBuffers;
+
+import "messages.home.proto";
+
+service HomeService {
+    rpc GetEnvironmentName(GetEnvironmentNameRequest) returns (GetEnvironmentNameReply);
+    rpc GetUtcNow(GetUtcNowRequest) returns (GetUtcNowReply);
+    rpc HelloThere(HelloThereRequest) returns (HelloThereReply);
+}

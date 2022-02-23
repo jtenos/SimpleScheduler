@@ -1,0 +1,12 @@
+﻿syntax = "proto3";
+option csharp_namespace = "SimpleSchedulerBlazor.ProtocolBuffers.Services";
+package SimpleSchedulerBlazorProtocolBuffers;
+
+import "messages.jobs.proto";
+
+service JobsService {
+    rpc AcknowledgeError(AcknowledgeErrorRequest) returns (AcknowledgeErrorReply);
+    rpc CancelJob(CancelJobRequest) returns (CancelJobReply);
+    rpc GetDetailedMessage(GetDetailedMessageRequest) returns (GetDetailedMessageReply);
+    rpc GetJobs(GetJobsRequest) returns (GetJobsReply);
+}

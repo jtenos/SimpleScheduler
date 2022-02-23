@@ -1,0 +1,35 @@
+﻿syntax = "proto3";
+option csharp_namespace = "SimpleSchedulerBlazor.ProtocolBuffers.Messages.Jobs";
+package SimpleSchedulerBlazorProtocolBuffers;
+
+import "models.job.proto";
+import "types.proto";
+
+message AcknowledgeErrorRequest {
+    sint64 ID = 1;
+}
+message AcknowledgeErrorReply {
+}
+
+message CancelJobRequest {
+    sint64 ID = 1;
+}
+message CancelJobReply {
+}
+
+message GetDetailedMessageRequest {
+    sint64 ID = 1;
+}
+message GetDetailedMessageReply {
+    NullableString DetailedMessage = 1;
+}
+
+message GetJobsRequest {
+    NullableInt64 WorkerID = 1;
+    string StatusCode = 2;
+    sint32 PageNumber = 3;
+    bool OverdueOnly = 4;
+}
+message GetJobsReply {
+    repeated JobMessage Jobs = 1;
+}

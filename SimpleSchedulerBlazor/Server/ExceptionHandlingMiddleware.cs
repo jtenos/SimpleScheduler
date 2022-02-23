@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using Grpc.Core;
+using System.Net;
 
 namespace SimpleSchedulerBlazor.Server;
 
@@ -18,6 +19,19 @@ public class ExceptionHandlingMiddleware
         try
         {
             await _next(context);
+        }
+        catch (RpcException ex)
+        {
+            _logger.LogError(ex, "Error calling {path}", context.Request.Path);
+            context.Response.ContentType = "application/json";
+            context.Response.StatusCode = ex.StatusCode switch
+            {
+                StatusCode.NotFound => (int)HttpStatusCode.NotFound,
+                StatusCode.OutOfRange or StatusCode.InvalidArgument => (int)HttpStatusCode.BadRequest,
+                StatusCode.PermissionDenied => (int)HttpStatusCode.Unauthorized,
+                _ => (int)HttpStatusCode.InternalServerError,
+            };
+            await context.Response.WriteAsync(ex.Message);
         }
         catch (Exception ex)
         {

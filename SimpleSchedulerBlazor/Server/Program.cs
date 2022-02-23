@@ -7,10 +7,12 @@ using SimpleSchedulerAppServices.Interfaces;
 using SimpleSchedulerAppServices.Implementations;
 using Polly;
 using Polly.Retry;
+using SimpleSchedulerBlazor.Server.GrpcServices;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+//builder.Services.AddControllers();
+builder.Services.AddGrpc();
 
 builder.Services.AddSingleton<ITokenService, TokenService>();
 
@@ -52,7 +54,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 
 WebApplication app = builder.Build();
 
-app.UseMiddleware(typeof(ExceptionHandlingMiddleware));
+//app.UseMiddleware(typeof(ExceptionHandlingMiddleware));
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -73,12 +75,22 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
+app.UseGrpcWeb();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapGrpcService<HomeService>().EnableGrpcWeb();
+    endpoints.MapGrpcService<JobsService>().EnableGrpcWeb();
+    endpoints.MapGrpcService<LoginService>().EnableGrpcWeb();
+    endpoints.MapGrpcService<SchedulesService>().EnableGrpcWeb();
+    endpoints.MapGrpcService<WorkersService>().EnableGrpcWeb();
+});
+
+app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
+//app.MapControllers();
 
 app.MapFallbackToFile("index.html");
 

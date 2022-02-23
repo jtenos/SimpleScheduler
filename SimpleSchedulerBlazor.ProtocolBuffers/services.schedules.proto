@@ -1,0 +1,14 @@
+﻿syntax = "proto3";
+option csharp_namespace = "SimpleSchedulerBlazor.ProtocolBuffers.Services";
+package SimpleSchedulerBlazorProtocolBuffers;
+
+import "messages.schedules.proto";
+
+service SchedulesService {
+	rpc CreateSchedule (CreateScheduleRequest) returns (CreateScheduleReply);
+	rpc DeleteSchedule (DeleteScheduleRequest) returns (DeleteScheduleReply);
+	rpc GetAllSchedules (GetAllSchedulesRequest) returns (GetAllSchedulesReply);
+	rpc GetSchedule (GetScheduleRequest) returns (GetScheduleReply);
+	rpc ReactivateSchedule (ReactivateScheduleRequest) returns (ReactivateScheduleReply);
+	rpc UpdateSchedule (UpdateScheduleRequest) returns (UpdateScheduleReply);
+}

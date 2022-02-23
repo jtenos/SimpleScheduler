@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Components;
 using SimpleSchedulerApiProxy;
-using SimpleSchedulerModels.ApiModels.Login;
+using SimpleSchedulerBlazor.ProtocolBuffers.Login;
 
 namespace SimpleSchedulerBlazor.Client.Pages;
 

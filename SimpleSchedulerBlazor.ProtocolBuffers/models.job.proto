@@ -1,0 +1,18 @@
+﻿syntax = "proto3";
+option csharp_namespace = "SimpleSchedulerBlazor.ProtocolBuffers.Messages";
+package SimpleSchedulerBlazorProtocolBuffers;
+
+import "google/protobuf/timestamp.proto";
+import "types.proto";
+
+message JobMessage {
+    sint64 ID = 1;
+    sint64 ScheduleID = 2;
+    google.protobuf.Timestamp InsertDateUTC = 3;
+    google.protobuf.Timestamp QueueDateUTC = 4;
+    NullableTimestamp CompleteDateUTC = 5;
+    string StatusCode = 6;
+    string AcknowledgementCode = 7;
+    NullableTimestamp AcknowledgementDate = 8;
+    bool HasDetailedMessage = 9;
+}

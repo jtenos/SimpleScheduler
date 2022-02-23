@@ -1,0 +1,23 @@
+﻿syntax = "proto3";
+option csharp_namespace = "SimpleSchedulerBlazor.ProtocolBuffers.Messages";
+package SimpleSchedulerBlazorProtocolBuffers;
+
+import "types.proto";
+
+message ScheduleMessage {
+    sint64 ID = 1;
+    bool IsActive = 2;
+    sint64 WorkerID = 3;
+    bool Sunday = 4;
+    bool Monday = 5;
+    bool Tuesday = 6;
+    bool Wednesday = 7;
+    bool Thursday = 8;
+    bool Friday = 9;
+    bool Saturday = 10;
+    NullableTimeSpan TimeOfDayUTC = 11;
+    NullableTimeSpan RecurTime = 12;
+    NullableTimeSpan RecurBetweenStartUTC = 13;
+    NullableTimeSpan RecurBetweenEndUTC = 14;
+    bool OneTime = 15;
+}
