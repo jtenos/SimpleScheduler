@@ -1,17 +1,30 @@
 ﻿@page "/login"
 
 <div class="card">
+    <div class="card-header">
+        Log In
+    </div>
     <div class="card-body">
-        <EditForm id="email-form" Model="@Model" OnValidSubmit="@HandleValidSubmit">
-            <DataAnnotationsValidator />
-            <ValidationSummary />
+        @if (Loading)
+        {
+            <LoadingAnimation />
+        }
+        else
+        {
+            <EditForm id="email-form" Model="@Model" OnValidSubmit="@HandleValidSubmit">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
 
-            <InputText id="email-address" @bind-Value="Model.Email" />
-
-            <button type="submit">Submit</button>
-        </EditForm>
-        <div id="message-container">
-            @Message
-        </div>
+                <div class="input-group mb-3">
+                    <InputText id="email-address" @bind-Value="Model.Email" class="form-control" placeholder="Email Address" />
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </EditForm>
+            <p>
+                @Message
+            </p>
+        }
     </div>
 </div>

@@ -5,7 +5,11 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using SimpleSchedulerBlazor.Client;
-using static SimpleSchedulerBlazor.ProtocolBuffers.Home.HomeService;
+using static SimpleSchedulerBlazor.ProtocolBuffers.Services.HomeService;
+using static SimpleSchedulerBlazor.ProtocolBuffers.Services.JobsService;
+using static SimpleSchedulerBlazor.ProtocolBuffers.Services.LoginService;
+using static SimpleSchedulerBlazor.ProtocolBuffers.Services.SchedulesService;
+using static SimpleSchedulerBlazor.ProtocolBuffers.Services.WorkersService;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 

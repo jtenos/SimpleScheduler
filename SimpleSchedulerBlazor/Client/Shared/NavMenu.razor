@@ -1,8 +1,4 @@
-﻿@using SimpleSchedulerApiProxy
-@using SimpleSchedulerModels.ApiModels.Home
-@inject HomeProxy HomeProxy
-
-<div class="top-row ps-3 navbar navbar-dark">
+﻿<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">Scheduler (@EnvironmentName)</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -30,29 +26,3 @@
         </div>
     </nav>
 </div>
-
-@code {
-    private bool collapseNavMenu = true;
-
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    public string EnvironmentName { get; set; } = "...";
-
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        var envResult = await HomeProxy.EnvironmentName(new EnvironmentNameRequest());
-        if (envResult.Success)
-        {
-            EnvironmentName = envResult.Response!.EnvironmentName;
-        }
-        else
-        {
-                EnvironmentName = "Unknown";
-        }
-    }
-}

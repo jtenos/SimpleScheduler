@@ -5,3 +5,4 @@ using RandomNumberGenerator rng = RandomNumberGenerator.Create();
 rng.GetBytes(buffer);
 
 Console.WriteLine(Convert.ToHexString(buffer));
+Console.ReadLine();

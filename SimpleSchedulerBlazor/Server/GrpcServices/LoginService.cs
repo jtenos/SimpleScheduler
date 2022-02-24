@@ -39,11 +39,17 @@ public class LoginService
 
     public override async Task<SubmitEmailReply> SubmitEmail(SubmitEmailRequest request, ServerCallContext context)
     {
-        if (!await _userManager.LoginSubmitAsync(request.EmailAddress, context.CancellationToken))
+        try
         {
-            throw new RpcException(new Status(StatusCode.NotFound, "Email address not found"));
+            if (!await _userManager.LoginSubmitAsync(request.EmailAddress, context.CancellationToken))
+            {
+                throw new RpcException(new Status(StatusCode.NotFound, "Email address not found"));
+            }
         }
-
+        catch (Exception ex)
+        {
+            throw new RpcException(new Status(StatusCode.Internal, ex.Message));
+        }
         return new SubmitEmailReply();
     }
 
