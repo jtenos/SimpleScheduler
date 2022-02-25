@@ -1,47 +1,50 @@
 ﻿using Grpc.Core;
 using Microsoft.IdentityModel.Tokens;
 using OneOf.Types;
+using SimpleScheduler.Blazor.Shared.ServiceContracts;
+using SimpleSchedulerApiModels.Reply.Login;
+using SimpleSchedulerApiModels.Request.Login;
 using SimpleSchedulerAppServices.Interfaces;
-using SimpleSchedulerBlazor.ProtocolBuffers.Messages.Login;
 using SimpleSchedulerConfiguration.Models;
 using SimpleSchedulerModels.ResultTypes;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using static SimpleSchedulerBlazor.ProtocolBuffers.Services.LoginService;
 
 namespace SimpleSchedulerBlazor.Server.GrpcServices;
 
 public class LoginService
-    : LoginServiceBase
+    : ILoginService
 {
     private readonly AppSettings _appSettings;
     private readonly IUserManager _userManager;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public LoginService(AppSettings appSettings, IUserManager userManager)
+    public LoginService(AppSettings appSettings, IUserManager userManager, IHttpContextAccessor httpContextAccessor)
     {
         _appSettings = appSettings;
         _userManager = userManager;
+        _httpContextAccessor = httpContextAccessor;
     }
 
-    public override async Task<GetAllUserEmailsReply> GetAllUserEmails(GetAllUserEmailsRequest request, ServerCallContext context)
+    async Task<GetAllUserEmailsReply> ILoginService.GetAllUserEmailsAsync(GetAllUserEmailsRequest request)
     {
         return new GetAllUserEmailsReply(
-            emailAddresses: await _userManager.GetAllUserEmailsAsync(context.CancellationToken)
+            emailAddresses: await _userManager.GetAllUserEmailsAsync()
         );
     }
 
-    public override Task<IsLoggedInReply> IsLoggedIn(IsLoggedInRequest request, ServerCallContext context)
+    Task<IsLoggedInReply> ILoginService.IsLoggedInAsync(IsLoggedInRequest request)
     {
         return Task.FromResult(new IsLoggedInReply(
-            isLoggedIn: context.GetHttpContext()?.User is not null
+            isLoggedIn: _httpContextAccessor.HttpContext?.User is not null
         ));
     }
 
-    public override async Task<SubmitEmailReply> SubmitEmail(SubmitEmailRequest request, ServerCallContext context)
+    async Task<SubmitEmailReply> ILoginService.SubmitEmailAsync(SubmitEmailRequest request)
     {
         try
         {
-            if (!await _userManager.LoginSubmitAsync(request.EmailAddress, context.CancellationToken))
+            if (!await _userManager.LoginSubmitAsync(request.EmailAddress))
             {
                 throw new RpcException(new Status(StatusCode.NotFound, "Email address not found"));
             }
@@ -53,13 +56,20 @@ public class LoginService
         return new SubmitEmailReply();
     }
 
-    public override async Task<ValidateEmailReply> ValidateEmail(ValidateEmailRequest request, ServerCallContext context)
+    async Task<ValidateEmailReply> ILoginService.ValidateEmailAsync(ValidateEmailRequest request)
     {
-        return (await _userManager.LoginValidateAsync(Guid.Parse(request.ValidationCode), context.CancellationToken))
+        return (await _userManager.LoginValidateAsync(request.ValidationCode))
             .Match<ValidateEmailReply>((string emailAddress) =>
             {
-                string jwt = GenerateJwtToken(emailAddress);
-                return new(jwtToken: jwt);
+                try
+                {
+                    string jwt = GenerateJwtToken(emailAddress);
+                    return new(jwtToken: jwt);
+                }
+                catch (Exception ex)
+                {
+                    throw new RpcException(new Status(StatusCode.Internal, $"{ex.GetType().Name}: {ex.Message}"));
+                }
             }, (NotFound notFound) =>
             {
                 throw new RpcException(new Status(StatusCode.NotFound, "Validation code not found"));

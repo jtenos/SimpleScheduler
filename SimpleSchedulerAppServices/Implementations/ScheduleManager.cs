@@ -1,7 +1,7 @@
-using System.Collections.Immutable;
 using Dapper;
 using SimpleSchedulerAppServices.Interfaces;
 using SimpleSchedulerData;
+using SimpleSchedulerDataEntities;
 using SimpleSchedulerModels;
 
 namespace SimpleSchedulerAppServices.Implementations;
@@ -18,8 +18,7 @@ public sealed class ScheduleManager
 
     async Task IScheduleManager.AddScheduleAsync(long workerID,
         bool sunday, bool monday, bool tuesday, bool wednesday, bool thursday, bool friday, bool saturday,
-        TimeSpan? timeOfDayUTC, TimeSpan? recurTime, TimeSpan? recurBetweenStartUTC, TimeSpan? recurBetweenEndUTC,
-        CancellationToken cancellationToken)
+        TimeSpan? timeOfDayUTC, TimeSpan? recurTime, TimeSpan? recurBetweenStartUTC, TimeSpan? recurBetweenEndUTC)
     {
         DynamicParameters param = new DynamicParameters()
             .AddLongParam("@WorkerID", workerID)
@@ -37,69 +36,67 @@ public sealed class ScheduleManager
 
         await _db.NonQueryAsync(
             "[app].[Schedules_Insert]",
-            param,
-            cancellationToken
+            param
         ).ConfigureAwait(false);
     }
 
-    async Task IScheduleManager.DeactivateScheduleAsync(long id, CancellationToken cancellationToken)
+    async Task IScheduleManager.DeactivateScheduleAsync(long id)
     {
         DynamicParameters param = new DynamicParameters()
             .AddLongParam("@ID", id);
 
         await _db.NonQueryAsync(
             "[Schedules_Deactivate]",
-            param,
-            cancellationToken
+            param
         ).ConfigureAwait(false);
     }
 
-    async Task<ImmutableArray<Schedule>> IScheduleManager.GetAllSchedulesAsync(CancellationToken cancellationToken)
+    async Task<Schedule[]> IScheduleManager.GetAllSchedulesAsync()
     {
-        return await _db.GetManyAsync<Schedule>(
+        return (await _db.GetManyAsync<ScheduleEntity>(
             "[app].[Schedules_SelectAll]",
-            parameters: null,
-            cancellationToken: cancellationToken
-        ).ConfigureAwait(false);
+            parameters: null
+        ).ConfigureAwait(false))
+        .Select(s => ModelBuilders.GetSchedule(s))
+        .ToArray();
     }
 
-    async Task<Schedule> IScheduleManager.GetScheduleAsync(long id, CancellationToken cancellationToken)
+    async Task<Schedule> IScheduleManager.GetScheduleAsync(long id)
     {
         DynamicParameters param = new DynamicParameters()
             .AddLongParam("@ID", id);
 
-        return await _db.GetOneAsync<Schedule>(
+        return ModelBuilders.GetSchedule(await _db.GetOneAsync<ScheduleEntity>(
                 "[app].[Schedules_Select]",
-                param,
-                cancellationToken
-        ).ConfigureAwait(false);
+                param
+        ).ConfigureAwait(false));
     }
 
-    async Task<ImmutableArray<Schedule>> IScheduleManager.GetSchedulesToInsertAsync(CancellationToken cancellationToken)
+    async Task<Schedule[]> IScheduleManager.GetSchedulesToInsertAsync()
     {
-        return await _db.GetManyAsync<Schedule>(
+        return (await _db.GetManyAsync<ScheduleEntity>(
                 "[app].[Schedules_SelectForJobInsertion]",
-                parameters: null,
-                cancellationToken
-        ).ConfigureAwait(false);
+                parameters: null
+        ).ConfigureAwait(false))
+        .Select(s => ModelBuilders.GetSchedule(s))
+        .ToArray();
     }
 
-    async Task IScheduleManager.ReactivateScheduleAsync(long id, CancellationToken cancellationToken)
+    async Task IScheduleManager.ReactivateScheduleAsync(long id)
     {
         DynamicParameters param = new DynamicParameters()
             .AddLongParam("@ID", id);
 
         await _db.NonQueryAsync(
             "[app].[Schedules_Reactivate]",
-            param,
-            cancellationToken
+            param
         ).ConfigureAwait(false);
     }
 
     async Task IScheduleManager.UpdateScheduleAsync(long id, bool sunday,
         bool monday, bool tuesday, bool wednesday, bool thursday, bool friday, bool saturday,
         TimeSpan? timeOfDayUTC, TimeSpan? recurTime, TimeSpan? recurBetweenStartUTC,
-        TimeSpan? recurBetweenEndUTC, CancellationToken cancellationToken)
+        TimeSpan? recurBetweenEndUTC)
     {
         DynamicParameters param = new DynamicParameters()
             .AddLongParam("@ID", id)
@@ -117,8 +114,7 @@ public sealed class ScheduleManager
 
         await _db.NonQueryAsync(
             "[app].[Schedules_Update]",
-            param,
-            cancellationToken
+            param
         ).ConfigureAwait(false);
     }
 }

@@ -12,14 +12,15 @@
 		<Compile Include="..\SolutionInfo.cs" Link="SolutionInfo.cs" />
 	</ItemGroup>
 	<ItemGroup>
+		<PackageReference Include="Humanizer" Version="2.14.1" />
 		<PackageReference Include="OneOf" Version="3.0.211" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\SimpleSchedulerConfiguration\SimpleSchedulerConfiguration.csproj" />
+		<ProjectReference Include="..\SimpleSchedulerDataEntities\SimpleSchedulerDataEntities.csproj" />
 		<ProjectReference Include="..\SimpleSchedulerData\SimpleSchedulerData.csproj" />
 		<ProjectReference Include="..\SimpleSchedulerEmail\SimpleSchedulerEmail.csproj" />
 		<ProjectReference Include="..\SimpleSchedulerModels\SimpleSchedulerModels.csproj" />
-		<ProjectReference Include="..\SqlDB\SimpleSchedulerDB.sqlproj" />
 	</ItemGroup>
 
 </Project>

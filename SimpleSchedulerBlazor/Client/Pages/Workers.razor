@@ -1,5 +1,5 @@
 ﻿@page "/workers"
-@using SimpleSchedulerModels
+@using SimpleSchedulerApiModels
 
 <h3>Workers</h3>
 
@@ -10,8 +10,8 @@
         <div class="col col-md-4 col-sm-12">Executable</div>
         <div class="col col-md-2 col-sm-12">Schedules</div>
     </div>
-@*    @foreach (WorkerDetail worker in WorkerList)
+    @foreach (Worker worker in WorkerList)
     {
         <WorkerRow Worker="worker" />
     }
-*@</div>
+</div>

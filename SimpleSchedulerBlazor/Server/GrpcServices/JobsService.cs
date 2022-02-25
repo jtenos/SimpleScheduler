@@ -1,86 +1,67 @@
-﻿using static SimpleSchedulerBlazor.ProtocolBuffers.Services.JobsService;
+﻿using Grpc.Core;
+using OneOf.Types;
+using SimpleScheduler.Blazor.Shared.ServiceContracts;
+using SimpleSchedulerApiModels;
+using SimpleSchedulerApiModels.Reply.Jobs;
+using SimpleSchedulerApiModels.Request.Jobs;
+using SimpleSchedulerAppServices.Interfaces;
+using SimpleSchedulerModels.ResultTypes;
 
 namespace SimpleSchedulerBlazor.Server.GrpcServices;
 
 public class JobsService
-    : JobsServiceBase
-{
-}
-/*
- using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using OneOf.Types;
-using SimpleSchedulerAppServices.Interfaces;
-using SimpleSchedulerModels.ApiModels.Jobs;
-using SimpleSchedulerModels.ResultTypes;
-
-namespace SimpleSchedulerBlazor.Server.Controllers;
-
-[Route("api/[controller]")]
-[ApiController]
-[Authorize]
-public class JobsController
-    : ControllerBase
+    : IJobsService
 {
     private readonly IJobManager _jobManager;
 
-    public JobsController(IJobManager jobManager)
+    public JobsService(IJobManager jobManager)
     {
         _jobManager = jobManager;
     }
 
-    [HttpPost("[action]")]
-    public async Task<ActionResult<GetJobsResponse>> GetJobs(
-        GetJobsRequest request, CancellationToken cancellationToken)
+    async Task<AcknowledgeErrorReply> IJobsService.AcknowledgeErrorAsync(AcknowledgeErrorRequest request)
     {
-        return new GetJobsResponse(await _jobManager.GetLatestJobsAsync(
-            pageNumber: request.PageNumber,
-            rowsPerPage: 100,
-            statusCode: request.StatusCode,
-            workerID: request.WorkerID,
-            overdueOnly: request.OverdueOnly,
-            cancellationToken: cancellationToken
-        ));
+        await _jobManager.AcknowledgeErrorAsync(request.ID);
+        return new();
     }
 
-    [HttpPost("[action]")]
-    public async Task<ActionResult<CancelJobResponse>> CancelJob(
-        CancelJobRequest request, CancellationToken cancellationToken)
+    async Task<CancelJobReply> IJobsService.CancelJobAsync(CancelJobRequest request)
     {
-        var result = await _jobManager.CancelJobAsync(request.ID, cancellationToken);
+        var result = await _jobManager.CancelJobAsync(request.ID);
 
-        return result.Match<ActionResult<CancelJobResponse>>(
+        return result.Match(
             (Success success) =>
             {
-                return new CancelJobResponse();
+                return new CancelJobReply();
             },
             (AlreadyCompleted alreadyCompleted) =>
             {
-                return BadRequest("Job is already completed, unable to cancel");
+                throw new RpcException(new Status(StatusCode.Aborted, "Job is already completed, unable to cancel"));
             },
             (AlreadyStarted alreadyStarted) =>
             {
-                return BadRequest("Job is already started, unable to cancel");
+                throw new RpcException(new Status(StatusCode.Aborted, "Job is already started, unable to cancel"));
             }
         );
     }
 
-    [HttpPost("[action]")]
-    public async Task<ActionResult<AcknowledgeErrorResponse>> AcknowledgeError(
-        AcknowledgeErrorRequest request, CancellationToken cancellationToken)
+    async Task<GetDetailedMessageReply> IJobsService.GetDetailedMessageAsync(GetDetailedMessageRequest request)
     {
-        await _jobManager.AcknowledgeErrorAsync(request.ID, cancellationToken);
-        return new AcknowledgeErrorResponse();
-    }
-
-    [HttpPost("[action]")]
-    public async Task<ActionResult<GetDetailedMessageResponse>> GetDetailedMessage(
-        GetDetailedMessageRequest request, CancellationToken cancellationToken)
-    {
-        return new GetDetailedMessageResponse(
-            await _jobManager.GetDetailedMessageAsync(request.ID, cancellationToken)
+        return new(
+            await _jobManager.GetDetailedMessageAsync(request.ID)
         );
     }
-}
 
- */
+    async Task<GetJobsReply> IJobsService.GetJobsAsync(GetJobsRequest request)
+    {
+        Job[] jobs = (await _jobManager.GetLatestJobsAsync(
+            pageNumber: request.PageNumber,
+            rowsPerPage: 100,
+            statusCode: request.StatusCode,
+            workerID: request.WorkerID,
+            overdueOnly: request.OverdueOnly
+        )).Select(j => ApiModelBuilders.GetJob(j)).ToArray();
+
+        return new(jobs: jobs);
+    }
+}

@@ -4,12 +4,9 @@ using Grpc.Net.Client.Web;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using ProtoBuf.Grpc.Client;
+using SimpleScheduler.Blazor.Shared.ServiceContracts;
 using SimpleSchedulerBlazor.Client;
-using static SimpleSchedulerBlazor.ProtocolBuffers.Services.HomeService;
-using static SimpleSchedulerBlazor.ProtocolBuffers.Services.JobsService;
-using static SimpleSchedulerBlazor.ProtocolBuffers.Services.LoginService;
-using static SimpleSchedulerBlazor.ProtocolBuffers.Services.SchedulesService;
-using static SimpleSchedulerBlazor.ProtocolBuffers.Services.WorkersService;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
@@ -20,20 +17,21 @@ builder.Services.AddBlazoredLocalStorage();
 
 //builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-static GrpcChannel GetChannel(IServiceProvider services)
+static TServiceProxy GetServiceProxy<TServiceProxy>(IServiceProvider services)
+    where TServiceProxy : class
 {
     HttpClient httpClient = new(new GrpcWebHandler(GrpcWebMode.GrpcWeb, new HttpClientHandler()));
-
-    // TODO: use DI to implement Jwt authorization header
-    httpClient.DefaultRequestHeaders.Add("Authorization", "abcdef");
     string baseUri = services.GetRequiredService<NavigationManager>().BaseUri;
-    return GrpcChannel.ForAddress(baseUri, new GrpcChannelOptions { HttpClient = httpClient });
+    GrpcChannel channel = GrpcChannel.ForAddress(baseUri, new GrpcChannelOptions { HttpClient = httpClient });
+    return channel.CreateGrpcService<TServiceProxy>();
 }
 
-builder.Services.AddSingleton(services => new HomeServiceClient(GetChannel(services)));
-builder.Services.AddSingleton(services => new JobsServiceClient(GetChannel(services)));
-builder.Services.AddSingleton(services => new LoginServiceClient(GetChannel(services)));
-builder.Services.AddSingleton(services => new SchedulesServiceClient(GetChannel(services)));
-builder.Services.AddSingleton(services => new WorkersServiceClient(GetChannel(services)));
+builder.Services.AddSingleton<IHomeService>(services => GetServiceProxy<IHomeService>(services));
+builder.Services.AddSingleton<IJobsService>(services => GetServiceProxy<IJobsService>(services));
+builder.Services.AddSingleton<ILoginService>(services => GetServiceProxy<ILoginService>(services));
+builder.Services.AddSingleton<ISchedulesService>(services => GetServiceProxy<ISchedulesService>(services));
+builder.Services.AddSingleton<IWorkersService>(services => GetServiceProxy<IWorkersService>(services));
+
+builder.Services.AddSingleton(new ClientAppInfo());
 
 await builder.Build().RunAsync();

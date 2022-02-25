@@ -1,4 +1,3 @@
-using System.Collections.Immutable;
 using Dapper;
 using OneOf;
 using OneOf.Types;
@@ -24,39 +23,36 @@ public sealed class UserManager
         _emailer = emailer;
     }
 
-    async Task<ImmutableArray<string>> IUserManager.GetAllUserEmailsAsync(CancellationToken cancellationToken)
+    async Task<string[]> IUserManager.GetAllUserEmailsAsync()
     {
         if (!_appSettings.AllowLoginDropDown)
         {
-            return ImmutableArray<string>.Empty;
+            return Array.Empty<string>();
         }
 
         return await _db.GetManyAsync<string>(
             "[app].[Users_SelectAll]",
-            parameters: null,
-            cancellationToken
+            parameters: null
         ).ConfigureAwait(false);
     }
 
     private record class LoginSubmitResult(bool Success, Guid ValidationCode);
-    async Task<bool> IUserManager.LoginSubmitAsync(string emailAddress, CancellationToken cancellationToken)
+    async Task<bool> IUserManager.LoginSubmitAsync(string emailAddress)
     {
         DynamicParameters param = new DynamicParameters()
             .AddNVarCharParam("@EmailAddress", emailAddress, 200);
 
         LoginSubmitResult result = await _db.GetOneAsync<LoginSubmitResult>(
             "[app].[Users_SubmitLogin]",
-            param,
-            cancellationToken
+            param
         ).ConfigureAwait(false);
 
         if (!result.Success) { return false; }
 
         string url = $"{_appSettings.WebUrl}/validate-user/{result.ValidationCode}";
-        await _emailer.SendEmailAsync(new[] { emailAddress }.ToImmutableArray(),
+        await _emailer.SendEmailAsync(new[] { emailAddress }.ToArray(),
             $"Scheduler ({_appSettings.EnvironmentName}) Log In",
-            $"<a href='{url}' target=_blank>Click here to log in</a>",
-            cancellationToken);
+            $"<a href='{url}' target=_blank>Click here to log in</a>");
 
         return true;
     }
@@ -64,16 +60,14 @@ public sealed class UserManager
     private record class LoginValidateResult(
         bool Success, string? EmailAddress, bool NotFound, bool Expired
     );
-    async Task<OneOf<string, NotFound, Expired>> IUserManager.LoginValidateAsync(Guid validationCode,
-        CancellationToken cancellationToken)
+    async Task<OneOf<string, NotFound, Expired>> IUserManager.LoginValidateAsync(Guid validationCode)
     {
         DynamicParameters param = new DynamicParameters()
             .AddUniqueIdentifierParam("@ValidationCode", validationCode);
 
         LoginValidateResult result = await _db.GetOneAsync<LoginValidateResult>(
             "[app].[Users_ValidateLogin]",
-            param,
-            cancellationToken
+            param
         ).ConfigureAwait(false);
 
         if (result.NotFound) { return new NotFound(); }

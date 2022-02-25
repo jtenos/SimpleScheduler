@@ -1,11 +1,7 @@
-﻿using System.Collections.Immutable;
+﻿namespace SimpleSchedulerEmail;
 
-namespace SimpleSchedulerEmail
+public interface IEmailer
 {
-    public interface IEmailer
-    {
-        Task SendEmailToAdminAsync(string subject, string bodyHTML, CancellationToken cancellationToken);
-        Task SendEmailAsync(ImmutableArray<string> toAddresses, string subject, string bodyHTML,
-            CancellationToken cancellationToken);
-    }
+    Task SendEmailToAdminAsync(string subject, string bodyHTML);
+    Task SendEmailAsync(string[] toAddresses, string subject, string bodyHTML);
 }

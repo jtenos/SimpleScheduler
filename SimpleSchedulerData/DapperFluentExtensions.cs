@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using System.Collections.Immutable;
 using System.Data;
 
 namespace SimpleSchedulerData;
@@ -99,7 +98,7 @@ public static class DapperFluentExtensions
         => AddParameter(dynamicParameters, paramName, xml ?? (object)DBNull.Value, DbType.Xml);
 
     // [app].[BigIntArray]
-    public static DynamicParameters AddBigIntArrayParam(this DynamicParameters dynamicParameters, string paramName, ImmutableArray<long> values)
+    public static DynamicParameters AddBigIntArrayParam(this DynamicParameters dynamicParameters, string paramName, long[] values)
     {
         DataTable dt = new();
         dt.Columns.Add("IdentityVal", typeof(long));

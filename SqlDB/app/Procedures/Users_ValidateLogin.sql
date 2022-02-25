@@ -17,18 +17,19 @@ BEGIN
             ,@SubmitDateUTC = [SubmitDateUTC]
             ,@EmailAddress = [EmailAddress]
         FROM [app].[LoginAttempts]
-        WHERE [ValidationCode] = @ValidationCode;
+        WHERE [ValidationCode] = @ValidationCode
+		AND [ValidateDateUTC] IS NULL;
 
         IF @ID IS NULL
         BEGIN
-            SELECT CAST(0 AS BIT) [Success], NULL [EmailAddress], CAST(1 AS BIT) [NotFound], CAST(0 AS BIT) [Expired];
+            SELECT CAST(0 AS BIT) [Success], @EmailAddress [EmailAddress], CAST(1 AS BIT) [NotFound], CAST(0 AS BIT) [Expired];
             RETURN;
         END;
 
         DECLARE @MinDate DATETIME2 = DATEADD(MINUTE, -5, SYSUTCDATETIME());
         IF @SubmitDateUTC < @MinDate
         BEGIN
-            SELECT CAST(0 AS BIT) [Success], NULL [EmailAddress], CAST(0 AS BIT) [NotFound], CAST(1 AS BIT) [Expired];
+            SELECT CAST(0 AS BIT) [Success], @EmailAddress [EmailAddress], CAST(0 AS BIT) [NotFound], CAST(1 AS BIT) [Expired];
             RETURN;
         END;
 

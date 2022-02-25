@@ -1,3 +1,5 @@
 ﻿namespace SimpleSchedulerModels;
 
-public record class User(string EmailAddress);
+public record class User(
+    string EmailAddress
+);

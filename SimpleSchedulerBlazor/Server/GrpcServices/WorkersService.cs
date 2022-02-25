@@ -1,14 +1,16 @@
 ﻿using Grpc.Core;
 using OneOf.Types;
+using SimpleScheduler.Blazor.Shared.ServiceContracts;
+using SimpleSchedulerApiModels;
+using SimpleSchedulerApiModels.Reply.Workers;
+using SimpleSchedulerApiModels.Request.Workers;
 using SimpleSchedulerAppServices.Interfaces;
-using SimpleSchedulerBlazor.ProtocolBuffers.Messages.Workers;
 using SimpleSchedulerModels.ResultTypes;
-using static SimpleSchedulerBlazor.ProtocolBuffers.Services.WorkersService;
 
 namespace SimpleSchedulerBlazor.Server.GrpcServices;
 
 public class WorkersService
-    : WorkersServiceBase
+    : IWorkersService
 {
     private readonly IWorkerManager _workerManager;
 
@@ -17,18 +19,17 @@ public class WorkersService
         _workerManager = workerManager;
     }
 
-    public override async Task<CreateWorkerReply> CreateWorker(CreateWorkerRequest request, ServerCallContext context)
+    async Task<CreateWorkerReply> IWorkersService.CreateWorkerAsync(CreateWorkerRequest request)
     {
         var result = await _workerManager.AddWorkerAsync(
             workerName: request.WorkerName,
             detailedDescription: request.DetailedDescription,
             emailOnSuccess: request.EmailOnSuccess,
-            parentWorkerID: request.ParentWorkerID.GetValueOrNull(),
+            parentWorkerID: request.ParentWorkerID,
             timeoutMinutes: request.TimeoutMinutes,
             directoryName: request.DirectoryName,
             executable: request.Executable,
-            argumentValues: request.ArgumentValues,
-            cancellationToken: context.CancellationToken);
+            argumentValues: request.ArgumentValues);
 
         return result.Match(
             (Success success) =>
@@ -50,51 +51,54 @@ public class WorkersService
         );
     }
 
-    public override async Task<DeleteWorkerReply> DeleteWorker(DeleteWorkerRequest request, ServerCallContext context)
+    async Task<DeleteWorkerReply> IWorkersService.DeleteWorkerAsync(DeleteWorkerRequest request)
     {
-        await _workerManager.DeactivateWorkerAsync(request.ID, context.CancellationToken);
+        await _workerManager.DeactivateWorkerAsync(request.ID);
         return new DeleteWorkerReply();
     }
 
-    public override async Task<GetAllWorkersReply> GetAllWorkers(GetAllWorkersRequest request, ServerCallContext context)
+    async Task<GetAllWorkersReply> IWorkersService.GetAllWorkersAsync(GetAllWorkersRequest request)
     {
+        Worker[] workers = (await _workerManager.GetAllWorkersAsync())
+            .Select(w => ApiModelBuilders.GetWorker(w))
+            .ToArray();
         return new GetAllWorkersReply(
-            workers: await _workerManager.GetAllWorkersAsync(context.CancellationToken)
+            workers: workers
         );
     }
 
-    public override async Task<GetWorkerReply> GetWorker(GetWorkerRequest request, ServerCallContext context)
+    async Task<GetWorkerReply> IWorkersService.GetWorkerAsync(GetWorkerRequest request)
     {
+        Worker worker = ApiModelBuilders.GetWorker(await _workerManager.GetWorkerAsync(request.ID));
         return new GetWorkerReply(
-            worker: await _workerManager.GetWorkerAsync(request.ID, context.CancellationToken)
+            worker: worker
         );
     }
 
-    public override async Task<ReactivateWorkerReply> ReactivateWorker(ReactivateWorkerRequest request, ServerCallContext context)
+    async Task<ReactivateWorkerReply> IWorkersService.ReactivateWorkerAsync(ReactivateWorkerRequest request)
     {
-        await _workerManager.ReactivateWorkerAsync(request.ID, context.CancellationToken);
+        await _workerManager.ReactivateWorkerAsync(request.ID);
         return new ReactivateWorkerReply();
     }
 
-    public override async Task<RunNowReply> RunNow(RunNowRequest request, ServerCallContext context)
+    async Task<RunNowReply> IWorkersService.RunNowAsync(RunNowRequest request)
     {
-        await _workerManager.RunNowAsync(request.ID, context.CancellationToken);
+        await _workerManager.RunNowAsync(request.ID);
         return new RunNowReply();
     }
 
-    public override async Task<UpdateWorkerReply> UpdateWorker(UpdateWorkerRequest request, ServerCallContext context)
+    async Task<UpdateWorkerReply> IWorkersService.UpdateWorkerAsync(UpdateWorkerRequest request)
     {
         var result = await _workerManager.UpdateWorkerAsync(
             id: request.ID,
             workerName: request.WorkerName,
             detailedDescription: request.DetailedDescription,
             emailOnSuccess: request.EmailOnSuccess,
-            parentWorkerID: request.ParentWorkerID.GetValueOrNull(),
+            parentWorkerID: request.ParentWorkerID,
             timeoutMinutes: request.TimeoutMinutes,
             directoryName: request.DirectoryName,
             executable: request.Executable,
-            argumentValues: request.ArgumentValues,
-            cancellationToken: context.CancellationToken);
+            argumentValues: request.ArgumentValues);
 
         return result.Match(
             (Success success) =>

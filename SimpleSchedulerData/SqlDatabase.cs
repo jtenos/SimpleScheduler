@@ -2,7 +2,6 @@
 using Microsoft.Data.SqlClient;
 using Polly.Retry;
 using SimpleSchedulerConfiguration.Models;
-using System.Collections.Immutable;
 using System.Data;
 
 namespace SimpleSchedulerData;
@@ -18,10 +17,9 @@ public sealed class SqlDatabase
         _retryPolicy = retryPolicy;
     }
 
-    public async Task<ImmutableArray<T>> GetManyAsync<T>(
+    public async Task<T[]> GetManyAsync<T>(
         string procedureName,
-        DynamicParameters? parameters,
-        CancellationToken cancellationToken
+        DynamicParameters? parameters
     )
     {
         parameters ??= new();
@@ -31,12 +29,11 @@ public sealed class SqlDatabase
             CommandDefinition comm = new(
                 commandText: procedureName,
                 parameters: parameters,
-                commandType: CommandType.StoredProcedure,
-                cancellationToken: cancellationToken
+                commandType: CommandType.StoredProcedure
             );
 
             using SqlConnection conn = await GetOpenConnectionAsync().ConfigureAwait(false);
-            return (await conn.QueryAsync<T>(comm).ConfigureAwait(false)).ToImmutableArray();
+            return (await conn.QueryAsync<T>(comm).ConfigureAwait(false)).ToArray();
         }).ConfigureAwait(false);
     }
 
@@ -126,18 +123,16 @@ public sealed class SqlDatabase
 
     public async Task<T> GetOneAsync<T>(
         string procedureName,
-        DynamicParameters? parameters,
-        CancellationToken cancellationToken
+        DynamicParameters? parameters
     )
         where T : class
     {
-        return (await GetZeroOrOneAsync<T>(procedureName, parameters, cancellationToken).ConfigureAwait(false))!;
+        return (await GetZeroOrOneAsync<T>(procedureName, parameters).ConfigureAwait(false))!;
     }
 
     public async Task<T?> GetZeroOrOneAsync<T>(
         string procedureName,
-        DynamicParameters? parameters,
-        CancellationToken cancellationToken
+        DynamicParameters? parameters
     )
         where T : class
     {
@@ -149,7 +144,6 @@ public sealed class SqlDatabase
                 commandText: procedureName,
                 parameters: parameters,
                 commandType: CommandType.StoredProcedure,
-                cancellationToken: cancellationToken,
                 flags: CommandFlags.None
             );
 
@@ -164,8 +158,7 @@ public sealed class SqlDatabase
 
     public async Task NonQueryAsync(
         string procedureName,
-        DynamicParameters? parameters,
-        CancellationToken cancellationToken
+        DynamicParameters? parameters
     )
     {
         parameters ??= new();
@@ -174,8 +167,7 @@ public sealed class SqlDatabase
         {
             CommandDefinition comm = new(
                 commandText: procedureName,
-                parameters: parameters,
-                cancellationToken: cancellationToken
+                parameters: parameters
             );
 
             using SqlConnection conn = await GetOpenConnectionAsync().ConfigureAwait(false);

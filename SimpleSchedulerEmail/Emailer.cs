@@ -1,5 +1,4 @@
-﻿using System.Collections.Immutable;
-using MailKit.Net.Smtp;
+﻿using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
 using SimpleSchedulerConfiguration.Models;
@@ -16,17 +15,16 @@ public class Emailer
         _appSettings = appSettings;
     }
 
-    async Task IEmailer.SendEmailToAdminAsync(string subject, string bodyHTML, CancellationToken cancellationToken)
+    async Task IEmailer.SendEmailToAdminAsync(string subject, string bodyHTML)
     {
-        ImmutableArray<string> toAddresses = new[]
+        string[] toAddresses =
         {
             _appSettings.MailSettings.AdminEmail
-        }.ToImmutableArray();
-        await ((IEmailer)this).SendEmailAsync(toAddresses, subject, bodyHTML, cancellationToken).ConfigureAwait(false);
+        };
+        await ((IEmailer)this).SendEmailAsync(toAddresses, subject, bodyHTML).ConfigureAwait(false);
     }
 
-    async Task IEmailer.SendEmailAsync(ImmutableArray<string> toAddresses, string subject, string bodyHTML,
-        CancellationToken cancellationToken)
+    async Task IEmailer.SendEmailAsync(string[] toAddresses, string subject, string bodyHTML)
     {
         int smtpPort = _appSettings.MailSettings.Port;
         string emailFrom = _appSettings.MailSettings.EmailFrom;
@@ -47,7 +45,7 @@ public class Emailer
         }
 
         msg.From.Add(new MailboxAddress("Scheduler", emailFrom));
-        msg.Subject = subject;
+        msg.Subject = $"Scheduler [{_appSettings.EnvironmentName}]: {subject}";
 
         BodyBuilder bodyBuilder = new() { HtmlBody = bodyHTML };
         msg.Body = bodyBuilder.ToMessageBody();
@@ -58,24 +56,22 @@ public class Emailer
         {
             case 587:
                 await emailClient.ConnectAsync(emailHost, smtpPort,
-                    SecureSocketOptions.StartTls, cancellationToken).ConfigureAwait(false);
+                    SecureSocketOptions.StartTls).ConfigureAwait(false);
                 break;
             case 465:
-                await emailClient.ConnectAsync(host: emailHost, port: smtpPort, useSsl: true,
-                    cancellationToken: cancellationToken).ConfigureAwait(false);
+                await emailClient.ConnectAsync(host: emailHost, port: smtpPort, useSsl: true).ConfigureAwait(false);
                 break;
             default:
                 await emailClient.ConnectAsync(host: emailHost,
-                    port: smtpPort, options: SecureSocketOptions.None,
-                    cancellationToken: cancellationToken).ConfigureAwait(false);
+                    port: smtpPort, options: SecureSocketOptions.None).ConfigureAwait(false);
                 break;
         }
 
         if (!string.IsNullOrWhiteSpace(smtpUserName))
         {
-            await emailClient.AuthenticateAsync(smtpUserName, smtpPassword, cancellationToken).ConfigureAwait(false);
+            await emailClient.AuthenticateAsync(smtpUserName, smtpPassword).ConfigureAwait(false);
         }
-        await emailClient.SendAsync(msg, cancellationToken: cancellationToken).ConfigureAwait(false);
-        await emailClient.DisconnectAsync(quit: true, cancellationToken).ConfigureAwait(false);
+        await emailClient.SendAsync(msg).ConfigureAwait(false);
+        await emailClient.DisconnectAsync(quit: true).ConfigureAwait(false);
     }
 }

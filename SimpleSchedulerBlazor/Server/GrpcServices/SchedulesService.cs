@@ -1,84 +1,67 @@
-﻿namespace SimpleSchedulerBlazor.Server.GrpcServices;
+﻿using SimpleScheduler.Blazor.Shared.ServiceContracts;
+using SimpleSchedulerApiModels;
+using SimpleSchedulerApiModels.Reply.Schedules;
+using SimpleSchedulerApiModels.Request.Schedules;
+using SimpleSchedulerAppServices.Interfaces;
+
+namespace SimpleSchedulerBlazor.Server.GrpcServices;
 
 public class SchedulesService
-{
-}
-/*
- using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using SimpleSchedulerAppServices.Interfaces;
-using SimpleSchedulerModels.ApiModels.Schedules;
-
-namespace SimpleSchedulerBlazor.Server.Controllers;
-
-[Route("api/[controller]")]
-[ApiController]
-[Authorize]
-public class SchedulesController 
-    : ControllerBase
+    : ISchedulesService
 {
     private readonly IScheduleManager _scheduleManager;
 
-    public SchedulesController(IScheduleManager scheduleManager)
+    public SchedulesService(IScheduleManager scheduleManager)
     {
         _scheduleManager = scheduleManager;
     }
 
-    [HttpPost("[action]")]
-    public async Task<ActionResult<GetAllSchedulesResponse>> GetAllSchedules(
-        GetAllSchedulesRequest request, CancellationToken cancellationToken)
-    {
-        return new GetAllSchedulesResponse(await _scheduleManager.GetAllSchedulesAsync(cancellationToken));
-    }
-
-    [HttpPost("[action]")]
-    public async Task<ActionResult<GetScheduleResponse>> GetSchedule(
-        GetScheduleRequest request, CancellationToken cancellationToken)
-    {
-        return new GetScheduleResponse(await _scheduleManager.GetScheduleAsync(request.ID, cancellationToken));
-    }
-
-    [HttpPost("[action]")]
-    public async Task<ActionResult<DeleteScheduleResponse>> DeleteSchedule(
-        DeleteScheduleRequest request, CancellationToken cancellationToken)
-    {
-        await _scheduleManager.DeactivateScheduleAsync(request.ID, cancellationToken);
-        return new DeleteScheduleResponse();
-    }
-
-    [HttpPost("[action]")]
-    public async Task<ActionResult<ReactivateScheduleResponse>> ReactivateSchedule(
-        ReactivateScheduleRequest request, CancellationToken cancellationToken)
-    {
-        await _scheduleManager.ReactivateScheduleAsync(request.ID, cancellationToken);
-        return new ReactivateScheduleResponse();
-    }
-
-    [HttpPost("[action]")]
-    public async Task<ActionResult<CreateScheduleResponse>> CreateSchedule(
-        CreateScheduleRequest request, CancellationToken cancellationToken)
+    async Task<CreateScheduleReply> ISchedulesService.CreateScheduleAsync(CreateScheduleRequest request)
     {
         await _scheduleManager.AddScheduleAsync(
-            workerID: request.WorkerID, 
+            workerID: request.WorkerID,
             sunday: request.Sunday,
-            monday: request.Monday, 
-            tuesday: request.Tuesday, 
-            wednesday: request.Wednesday, 
-            thursday: request.Thursday, 
-            friday: request.Friday, 
-            saturday: request.Saturday, 
-            timeOfDayUTC: request.TimeOfDayUTC, 
+            monday: request.Monday,
+            tuesday: request.Tuesday,
+            wednesday: request.Wednesday,
+            thursday: request.Thursday,
+            friday: request.Friday,
+            saturday: request.Saturday,
+            timeOfDayUTC: request.TimeOfDayUTC,
             recurTime: request.RecurTime,
-            recurBetweenStartUTC: request.RecurBetweenStartUTC, 
-            recurBetweenEndUTC: request.RecurBetweenEndUTC, 
-            cancellationToken: cancellationToken);
+            recurBetweenStartUTC: request.RecurBetweenStartUTC,
+            recurBetweenEndUTC: request.RecurBetweenEndUTC);
 
-        return new CreateScheduleResponse();
+        return new();
     }
 
-    [HttpPost("[action]")]
-    public async Task<ActionResult<UpdateScheduleResponse>> UpdateSchedule(
-        UpdateScheduleRequest request, CancellationToken cancellationToken)
+    async Task<DeleteScheduleReply> ISchedulesService.DeleteScheduleAsync(DeleteScheduleRequest request)
+    {
+        await _scheduleManager.DeactivateScheduleAsync(request.ID);
+        return new();
+    }
+
+    async Task<GetAllSchedulesReply> ISchedulesService.GetAllSchedulesAsync(GetAllSchedulesRequest request)
+    {
+        Schedule[] schedules = (await _scheduleManager.GetAllSchedulesAsync())
+            .Select(s => ApiModelBuilders.GetSchedule(s))
+            .ToArray();
+        return new(schedules);
+    }
+
+    async Task<GetScheduleReply> ISchedulesService.GetScheduleAsync(GetScheduleRequest request)
+    {
+        Schedule schedule = ApiModelBuilders.GetSchedule(await _scheduleManager.GetScheduleAsync(request.ID));
+        return new GetScheduleReply(schedule);
+    }
+
+    async Task<ReactivateScheduleReply> ISchedulesService.ReactivateScheduleAsync(ReactivateScheduleRequest request)
+    {
+        await _scheduleManager.ReactivateScheduleAsync(request.ID);
+        return new();
+    }
+
+    async Task<UpdateScheduleReply> ISchedulesService.UpdateScheduleAsync(UpdateScheduleRequest request)
     {
         await _scheduleManager.UpdateScheduleAsync(
             id: request.ID,
@@ -92,11 +75,8 @@ public class SchedulesController
             timeOfDayUTC: request.TimeOfDayUTC,
             recurTime: request.RecurTime,
             recurBetweenStartUTC: request.RecurBetweenStartUTC,
-            recurBetweenEndUTC: request.RecurBetweenEndUTC,
-            cancellationToken: cancellationToken);
+            recurBetweenEndUTC: request.RecurBetweenEndUTC);
 
-        return new UpdateScheduleResponse();
+        return new();
     }
 }
-
- */

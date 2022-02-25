@@ -1,18 +1,24 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using SimpleSchedulerBlazor.Server.Auth;
 using Microsoft.IdentityModel.Tokens;
-using SimpleSchedulerBlazor.Server;
 using SimpleSchedulerConfiguration.Models;
 using SimpleSchedulerAppServices.Interfaces;
 using SimpleSchedulerAppServices.Implementations;
 using Polly;
 using Polly.Retry;
 using SimpleSchedulerBlazor.Server.GrpcServices;
+using SimpleSchedulerEmail;
+using SimpleSchedulerData;
+using ProtoBuf.Grpc.Server;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.AddJsonFile("secrets.json", optional: true);
+
+builder.Services.AddHttpContextAccessor();
+
 //builder.Services.AddControllers();
-builder.Services.AddGrpc();
+builder.Services.AddCodeFirstGrpc();
 
 builder.Services.AddSingleton<ITokenService, TokenService>();
 

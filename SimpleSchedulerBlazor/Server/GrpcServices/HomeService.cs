@@ -1,12 +1,12 @@
-﻿using Grpc.Core;
-using SimpleSchedulerBlazor.ProtocolBuffers.Messages.Home;
+﻿using SimpleScheduler.Blazor.Shared.ServiceContracts;
+using SimpleSchedulerApiModels.Reply.Home;
+using SimpleSchedulerApiModels.Request.Home;
 using SimpleSchedulerConfiguration.Models;
-using static SimpleSchedulerBlazor.ProtocolBuffers.Services.HomeService;
 
 namespace SimpleSchedulerBlazor.Server.GrpcServices;
 
 public class HomeService
-    : HomeServiceBase
+    : IHomeService
 {
     private readonly AppSettings _appSettings;
 
@@ -15,21 +15,21 @@ public class HomeService
         _appSettings = appSettings;
     }
 
-    public override Task<GetEnvironmentNameReply> GetEnvironmentName(GetEnvironmentNameRequest request, ServerCallContext context)
+    Task<GetEnvironmentNameReply> IHomeService.GetEnvironmentNameAsync(GetEnvironmentNameRequest request)
     {
         return Task.FromResult(new GetEnvironmentNameReply(
             environmentName: _appSettings.EnvironmentName
         ));
     }
 
-    public override Task<GetUtcNowReply> GetUtcNow(GetUtcNowRequest request, ServerCallContext context)
+    Task<GetUtcNowReply> IHomeService.GetUtcNowAsync(GetUtcNowRequest request)
     {
         return Task.FromResult(new GetUtcNowReply(
             formattedDateTime: DateTime.UtcNow.ToString("MMM dd yyyy HH\\:mm\\:ss")
         ));
     }
 
-    public override Task<HelloThereReply> HelloThere(HelloThereRequest request, ServerCallContext context)
+    Task<HelloThereReply> IHomeService.HelloThereAsync(HelloThereRequest request)
     {
         return Task.FromResult(new HelloThereReply(
             message: "Howdy"

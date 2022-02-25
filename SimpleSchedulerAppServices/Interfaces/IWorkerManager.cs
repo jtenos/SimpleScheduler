@@ -1,5 +1,4 @@
-﻿using System.Collections.Immutable;
-using OneOf;
+﻿using OneOf;
 using OneOf.Types;
 using SimpleSchedulerModels;
 using SimpleSchedulerModels.ResultTypes;
@@ -8,15 +7,15 @@ namespace SimpleSchedulerAppServices.Interfaces;
 
 public interface IWorkerManager
 {
-    Task RunNowAsync(long id, CancellationToken cancellationToken);
-    Task<ImmutableArray<Worker>> GetAllWorkersAsync(CancellationToken cancellationToken);
-    Task<Worker> GetWorkerAsync(long id, CancellationToken cancellationToken);
+    Task RunNowAsync(long id);
+    Task<Worker[]> GetAllWorkersAsync();
+    Task<Worker> GetWorkerAsync(long id);
     Task<OneOf<Success, InvalidExecutable, NameAlreadyExists, CircularReference>> AddWorkerAsync(string workerName,
         string detailedDescription, string emailOnSuccess, long? parentWorkerID, int timeoutMinutes,
-        string directoryName, string executable, string argumentValues, CancellationToken cancellationToken);
+        string directoryName, string executable, string argumentValues);
     Task<OneOf<Success, InvalidExecutable, NameAlreadyExists, CircularReference>> UpdateWorkerAsync(long id, 
         string workerName, string detailedDescription, string emailOnSuccess, long? parentWorkerID, int timeoutMinutes,
-        string directoryName, string executable, string argumentValues, CancellationToken cancellationToken);
-    Task DeactivateWorkerAsync(long id, CancellationToken cancellationToken);
-    Task ReactivateWorkerAsync(long id, CancellationToken cancellationToken);
+        string directoryName, string executable, string argumentValues);
+    Task DeactivateWorkerAsync(long id);
+    Task ReactivateWorkerAsync(long id);
 }

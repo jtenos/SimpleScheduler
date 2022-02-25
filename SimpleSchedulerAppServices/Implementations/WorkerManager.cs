@@ -1,11 +1,10 @@
-using System.Collections.Immutable;
-using System.Data;
 using Dapper;
 using OneOf;
 using OneOf.Types;
 using SimpleSchedulerAppServices.Interfaces;
 using SimpleSchedulerConfiguration.Models;
 using SimpleSchedulerData;
+using SimpleSchedulerDataEntities;
 using SimpleSchedulerModels;
 using SimpleSchedulerModels.ResultTypes;
 
@@ -23,42 +22,41 @@ public sealed class WorkerManager
         _appSettings = appSettings;
     }
 
-    async Task IWorkerManager.RunNowAsync(long id, CancellationToken cancellationToken)
+    async Task IWorkerManager.RunNowAsync(long id)
     {
         DynamicParameters param = new DynamicParameters()
-            .AddBigIntArrayParam("@WorkerIDs", new[] { id }.ToImmutableArray());
+            .AddBigIntArrayParam("@WorkerIDs", new[] { id }.ToArray());
 
         await _db.NonQueryAsync("[app].[Jobs_RunNow]",
-            param,
-            cancellationToken
+            param
         ).ConfigureAwait(false);
     }
 
-    async Task<ImmutableArray<Worker>> IWorkerManager.GetAllWorkersAsync(CancellationToken cancellationToken)
+    async Task<Worker[]> IWorkerManager.GetAllWorkersAsync()
     {
-        return await _db.GetManyAsync<Worker>(
+        return (await _db.GetManyAsync<WorkerEntity>(
             "[app].[Workers_SelectAll]",
-            parameters: null,
-            cancellationToken
-        ).ConfigureAwait(false);
+            parameters: null
+        ).ConfigureAwait(false))
+        .Select(w => ModelBuilders.GetWorker(w))
+        .ToArray();
     }
 
-    async Task<Worker> IWorkerManager.GetWorkerAsync(long id, CancellationToken cancellationToken)
+    async Task<Worker> IWorkerManager.GetWorkerAsync(long id)
     {
         DynamicParameters param = new DynamicParameters()
             .AddLongParam("@ID", id);
 
-        return await _db.GetOneAsync<Worker>(
+        return ModelBuilders.GetWorker(await _db.GetOneAsync<WorkerEntity>(
             "[app].[Workers_Select]",
-            param,
-            cancellationToken
-        ).ConfigureAwait(false);
+            param
+        ).ConfigureAwait(false));
     }
 
     private record class AddWorkerResult(bool Success, bool NameAlreadyExists, bool CircularReference);
     async Task<OneOf<Success, InvalidExecutable, NameAlreadyExists, CircularReference>> IWorkerManager.AddWorkerAsync(
         string workerName, string detailedDescription, string emailOnSuccess, long? parentWorkerID,
-        int timeoutMinutes, string directoryName, string executable, string argumentValues, CancellationToken cancellationToken)
+        int timeoutMinutes, string directoryName, string executable, string argumentValues)
     {
         if (!IsValidExecutable(directoryName, executable))
         {
@@ -77,8 +75,7 @@ public sealed class WorkerManager
 
         AddWorkerResult result = await _db.GetOneAsync<AddWorkerResult>(
             "[app].[Workers_Insert]",
-            param,
-            cancellationToken
+            param
         ).ConfigureAwait(false);
 
         if (result.NameAlreadyExists) { return new NameAlreadyExists(); }
@@ -91,8 +88,7 @@ public sealed class WorkerManager
     private record class UpdateWorkerResult(bool Success, bool NameAlreadyExists, bool CircularReference);
     async Task<OneOf<Success, InvalidExecutable, NameAlreadyExists, CircularReference>> IWorkerManager.UpdateWorkerAsync(
         long workerID, string workerName, string detailedDescription, string emailOnSuccess,
-        long? parentWorkerID, int timeoutMinutes, string directoryName, string executable, string argumentValues,
-        CancellationToken cancellationToken)
+        long? parentWorkerID, int timeoutMinutes, string directoryName, string executable, string argumentValues)
     {
         if (!IsValidExecutable(directoryName, executable))
         {
@@ -112,8 +108,7 @@ public sealed class WorkerManager
 
         UpdateWorkerResult result = await _db.GetOneAsync<UpdateWorkerResult>(
             "[app].[Workers_Update]",
-            param,
-            cancellationToken
+            param
         ).ConfigureAwait(false);
 
         if (result.NameAlreadyExists) { return new NameAlreadyExists(); }
@@ -123,27 +118,25 @@ public sealed class WorkerManager
         return new Success();
     }
 
-    async Task IWorkerManager.DeactivateWorkerAsync(long id, CancellationToken cancellationToken)
+    async Task IWorkerManager.DeactivateWorkerAsync(long id)
     {
         DynamicParameters param = new DynamicParameters()
             .AddLongParam("@ID", id);
 
         await _db.NonQueryAsync(
             "[app].[Workers_Deactivate]",
-            param,
-            cancellationToken
+            param
         ).ConfigureAwait(false);
     }
 
-    async Task IWorkerManager.ReactivateWorkerAsync(long id, CancellationToken cancellationToken)
+    async Task IWorkerManager.ReactivateWorkerAsync(long id)
     {
         DynamicParameters param = new DynamicParameters()
             .AddLongParam("@ID", id);
 
         await _db.NonQueryAsync(
             "[app].[Workers_Reactivate]",
-            param,
-            cancellationToken
+            param
         ).ConfigureAwait(false);
     }
 

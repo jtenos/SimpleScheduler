@@ -1,23 +1,22 @@
 ﻿using Microsoft.AspNetCore.Components;
-using SimpleSchedulerModels;
-using System.Net.Http.Json;
+using SimpleScheduler.Blazor.Shared.ServiceContracts;
+using SimpleSchedulerApiModels;
+using SimpleSchedulerApiModels.Reply.Workers;
+using SimpleSchedulerApiModels.Request.Workers;
 
 namespace SimpleSchedulerBlazor.Client.Pages;
 
 partial class Workers
 {
     [Inject]
-    private HttpClient Http { get; set; } = default!;
+    private IWorkersService WorkersService { get; set; } = default!;
 
-    //public IEnumerable<WorkerDetail> WorkerList { get; set; } = Array.Empty<WorkerDetail>();
+    public IEnumerable<Worker> WorkerList { get; set; } = Array.Empty<Worker>();
 
     protected override async Task OnInitializedAsync()
     {
-        HttpResponseMessage response = await Http.PostAsJsonAsync("api/Workers/GetAllWorkers", new { });
-        if (response.IsSuccessStatusCode)
-        {
-            //response.Content.ReadAsStringAsync()
-          //  WorkerList = (await response.Content.ReadFromJsonAsync<IEnumerable<WorkerDetail>>())!;
-        }
+        GetAllWorkersRequest request = new();
+        GetAllWorkersReply reply = await WorkersService.GetAllWorkersAsync(request);
+        WorkerList = reply.Workers.ToArray();
     }
 }
