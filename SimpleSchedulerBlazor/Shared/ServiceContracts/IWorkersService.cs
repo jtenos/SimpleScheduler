@@ -10,6 +10,7 @@ public interface IWorkersService
     Task<CreateWorkerReply> CreateWorkerAsync(CreateWorkerRequest request);
     Task<DeleteWorkerReply> DeleteWorkerAsync(DeleteWorkerRequest request);
     Task<GetAllWorkersReply> GetAllWorkersAsync(GetAllWorkersRequest request);
+    Task<GetAllActiveWorkerIDNamesReply> GetAllActiveWorkerIDNamesAsync(GetAllActiveWorkerIDNamesRequest request);
     Task<GetWorkerReply> GetWorkerAsync(GetWorkerRequest request);
     Task<ReactivateWorkerReply> ReactivateWorkerAsync(ReactivateWorkerRequest request);
     Task<RunNowReply> RunNowAsync(RunNowRequest request);

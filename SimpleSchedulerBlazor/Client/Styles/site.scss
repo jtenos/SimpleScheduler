@@ -1,3 +1,8 @@
 @import "colors";
 @import "bootstrap-4.0.0/bootstrap.scss";
+@import "bootstrap-icons-1.8.1/bootstrap-icons.scss";
 @import "workers";
+
+a.btn-primary:not([href]) {
+    color: #fff;
+}

@@ -45,4 +45,69 @@ public class Schedule
     [DataMember(Order = 13)] public TimeSpan? RecurBetweenStartUTC { get; set; }
     [DataMember(Order = 14)] public TimeSpan? RecurBetweenEndUTC { get; set; }
     [DataMember(Order = 15)] public bool OneTime { get; set; }
+
+    public string GetFormatted()
+    {
+        string days;
+
+        if (Sunday && Monday && Tuesday && Wednesday && Thursday && Friday && Saturday)
+        {
+            days = "Every day";
+        }
+        else if (!Sunday && Monday && Tuesday && Wednesday && Thursday && Friday && !Saturday)
+        {
+            days = "Weekdays";
+        }
+        else if (Sunday && !Monday && !Tuesday && !Wednesday && !Thursday && !Friday && Saturday)
+        {
+            days = "Weekends";
+        }
+        else
+        {
+            days = string.Join(' ', new[] {
+                Sunday ? "Su" : "__",
+                Monday ? "Mo" : "__",
+                Tuesday ? "Tu" : "__",
+                Wednesday ? "We" : "__",
+                Thursday ? "Th" : "__",
+                Friday ? "Fr" : "__",
+                Saturday ? "Sa" : "__"
+            });
+        }
+
+        string times = "Unknown";
+        const string TS_FORMAT = "hh:mm";
+        if (TimeOfDayUTC.HasValue)
+        {
+            times = $"at { TimeOfDayUTC.Value.ToString(TS_FORMAT) }";
+        }
+        else if (RecurTime.HasValue)
+        {
+            times = GetFormattedTimeSpan(RecurTime.Value);
+        }
+
+        if (RecurBetweenStartUTC.HasValue && RecurBetweenEndUTC.HasValue)
+        {
+            times += $" between { RecurBetweenStartUTC.Value.ToString(TS_FORMAT) } and { RecurBetweenEndUTC.Value.ToString(TS_FORMAT) }";
+        }
+        else if (RecurBetweenStartUTC.HasValue)
+        {
+            times += $" starting at { RecurBetweenStartUTC.Value.ToString(TS_FORMAT) }";
+        }
+        else if (RecurBetweenEndUTC.HasValue)
+        {
+            times += $" until { RecurBetweenEndUTC.Value.ToString(TS_FORMAT) }";
+        }
+
+        return $"{ days } [{ times }]";
+    }
+
+    private static string GetFormattedTimeSpan(TimeSpan ts)
+    {
+        if (ts.Hours == 1) { return "every hour"; }
+        if (ts.Hours > 1) { return $"every { ts.Hours } hours"; }
+        if (ts.Minutes == 1) { return "every minute"; }
+        if (ts.Minutes > 1) { return $"every { ts.Minutes} minutes"; }
+        return "unknown";
+    }
 }

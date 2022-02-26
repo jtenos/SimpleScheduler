@@ -7,10 +7,10 @@ public class GetAllWorkersReply
 {
     public GetAllWorkersReply() { }
 
-    public GetAllWorkersReply(Worker[] workers)
+    public GetAllWorkersReply(WorkerWithSchedules[] workers)
     {
         Workers = workers;
     }
 
-    [DataMember(Order = 1)] public Worker[] Workers { get; set; } = default!;
+    [DataMember(Order = 1)] public WorkerWithSchedules[] Workers { get; set; } = default!;
 }

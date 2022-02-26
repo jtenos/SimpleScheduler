@@ -1,16 +1,13 @@
 ﻿@import "bootstrap-4.0.0/bootstrap.scss";
 
-#workers-table-header-row {
-    font-weight: bold;
+.worker-box {
+    flex: 33%;
+    padding: 10px;
+    margin: 15px;
 }
 
-#workers-table > .row:nth-of-type(odd) {
-    background-color: $table-accent-bg;
-}
-
-#workers-table > .row > .col {
-    padding: {
-        top: 10px;
-        bottom: 10px
+@media (max-width: 1400px) {
+    .worker-container {
+        flex-direction: column;
     }
 }

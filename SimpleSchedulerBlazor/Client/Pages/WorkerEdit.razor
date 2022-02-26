@@ -1,0 +1,58 @@
+﻿@page "/workers/{ID:long}"
+@using System.Text.Json
+
+<div class="d-flex flex-column align-items-center">
+    <form>
+        @if (Loading)
+        {
+            <LoadingAnimation />
+        }
+        else
+        {
+            <div class="form-group">
+                <label>Worker Name</label>
+                <input type="text" class="form-control" @bind-value="Worker.WorkerName" />
+            </div>
+            <div class="form.group">
+                <label>Detailed Description</label>
+                <textarea class="form-control" @bind="Worker.DetailedDescription"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Email On Success (semi-colon delimited)</label>
+                <input class="form-control" @bind-value="Worker.EmailOnSuccess" />
+            </div>
+            <div class="form-group">
+                <label>Parent Worker (this worker will run after the parent is successful)</label>
+                <select class="form-control" @bind="Worker.ParentWorkerID">
+                    <option></option>
+                    @foreach (WorkerIDName w in AllWorkers)
+                    {
+                        if (w.ID == Worker.ID)
+                        {
+                            continue;
+                        }
+                        <option value="@w.ID">@w.WorkerName</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Timeout (Minutes)</label>
+                <input class="form-control" @bind-value="Worker.TimeoutMinutes" />
+            </div>
+            <div class="form-group">
+                <label>Directory Name</label>
+                <input class="form-control" @bind-value="Worker.DirectoryName" />
+            </div>
+            <div class="form-group">
+                <label>Executable</label>
+                <input class="form-control" @bind-value="Worker.Executable" />
+            </div>
+            <div class="form-group">
+                <label>Arguments</label>
+                <input class="form-control" @bind-value="Worker.ArgumentValues" />
+            </div>
+
+            <a class="btn btn-primary btn-block" @onclick="SaveWorker">Save</a>
+        }
+    </form>
+</div>

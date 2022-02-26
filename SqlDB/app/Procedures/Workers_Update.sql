@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[Workers_Update]
+﻿CREATE PROCEDURE [app].[Workers_Update]
     @ID BIGINT
     ,@WorkerName NVARCHAR(100)
     ,@DetailedDescription NVARCHAR(MAX)

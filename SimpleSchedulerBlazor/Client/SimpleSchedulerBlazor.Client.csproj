@@ -17,8 +17,14 @@
 	<PropertyGroup Condition=" '$(RunConfiguration)' == 'SimpleSchedulerBlazor' ">
 		<ExternalConsole>true</ExternalConsole>
 	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Include="wwwroot\css\fonts\bootstrap-icons.woff" />
+	  <None Include="wwwroot\css\fonts\bootstrap-icons.woff2" />
+	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Blazored.LocalStorage" Version="4.2.0" />
+		<PackageReference Include="CurrieTechnologies.Razor.SweetAlert2" Version="5.1.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.2" PrivateAssets="all" />
 		<PackageReference Include="protobuf-net.Grpc" Version="1.0.152" />

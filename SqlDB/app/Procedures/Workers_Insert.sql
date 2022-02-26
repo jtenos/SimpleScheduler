@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[Workers_Insert]
+﻿CREATE PROCEDURE [app].[Workers_Insert]
     @WorkerName NVARCHAR(100)
     ,@DetailedDescription NVARCHAR(MAX)
     ,@EmailOnSuccess NVARCHAR(100)

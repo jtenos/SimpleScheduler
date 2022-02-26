@@ -1,8 +1,16 @@
-﻿@inherits LayoutComponentBase
+﻿@using SimpleScheduler.Blazor.Shared.ServiceContracts
+@inherits LayoutComponentBase
+
+<PageTitle>Scheduler (@EnvironmentName)</PageTitle>
+
+<HeadContent>
+    <link href="css/site.css?_=@ClientAppInfo.BuildGuid" rel="stylesheet" />
+    <link href="SimpleSchedulerBlazor.Client.styles.css?_=@ClientAppInfo.BuildGuid" rel="stylesheet" />
+</HeadContent>
 
 <div class="page">
     <div class="sidebar">
-        <NavMenu />
+        <NavMenu EnvironmentName="@EnvironmentName" />
     </div>
 
     <main>

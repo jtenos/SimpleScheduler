@@ -10,10 +10,10 @@ public interface IWorkerManager
     Task RunNowAsync(long id);
     Task<Worker[]> GetAllWorkersAsync();
     Task<Worker> GetWorkerAsync(long id);
-    Task<OneOf<Success, InvalidExecutable, NameAlreadyExists, CircularReference>> AddWorkerAsync(string workerName,
+    Task<OneOf<Success, InvalidExecutable, NameAlreadyExists, CircularReference, Exception>> AddWorkerAsync(string workerName,
         string detailedDescription, string emailOnSuccess, long? parentWorkerID, int timeoutMinutes,
         string directoryName, string executable, string argumentValues);
-    Task<OneOf<Success, InvalidExecutable, NameAlreadyExists, CircularReference>> UpdateWorkerAsync(long id, 
+    Task<OneOf<Success, InvalidExecutable, NameAlreadyExists, CircularReference, Exception>> UpdateWorkerAsync(long id, 
         string workerName, string detailedDescription, string emailOnSuccess, long? parentWorkerID, int timeoutMinutes,
         string directoryName, string executable, string argumentValues);
     Task DeactivateWorkerAsync(long id);

@@ -1,4 +1,5 @@
 using Blazored.LocalStorage;
+using CurrieTechnologies.Razor.SweetAlert2;
 using Grpc.Net.Client;
 using Grpc.Net.Client.Web;
 using Microsoft.AspNetCore.Components;
@@ -15,7 +16,10 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddBlazoredLocalStorage();
 
-//builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+builder.Services.AddSweetAlert2(options => {
+    options.Theme = SweetAlertTheme.Bootstrap4;
+});
+
 
 static TServiceProxy GetServiceProxy<TServiceProxy>(IServiceProvider services)
     where TServiceProxy : class
@@ -31,7 +35,6 @@ builder.Services.AddSingleton<IJobsService>(services => GetServiceProxy<IJobsSer
 builder.Services.AddSingleton<ILoginService>(services => GetServiceProxy<ILoginService>(services));
 builder.Services.AddSingleton<ISchedulesService>(services => GetServiceProxy<ISchedulesService>(services));
 builder.Services.AddSingleton<IWorkersService>(services => GetServiceProxy<IWorkersService>(services));
-
-builder.Services.AddSingleton(new ClientAppInfo());
+builder.Services.AddSingleton<ClientAppInfo>();
 
 await builder.Build().RunAsync();

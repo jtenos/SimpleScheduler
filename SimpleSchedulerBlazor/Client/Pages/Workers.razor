@@ -1,17 +1,15 @@
 ﻿@page "/workers"
 @using SimpleSchedulerApiModels
+@using SimpleSchedulerBlazor.Client.Components.Workers
 
-<h3>Workers</h3>
-
-<div class="container-fluid" id="workers-table">
-    <div class="row table-header-row" id="workers-table-header-row">
-        <div class="col col-md-2 col-sm-12"></div>
-        <div class="col col-md-4 col-sm-12">Name</div>
-        <div class="col col-md-4 col-sm-12">Executable</div>
-        <div class="col col-md-2 col-sm-12">Schedules</div>
-    </div>
-    @foreach (Worker worker in WorkerList)
+@if (Loading)
+{
+    <LoadingAnimation />
+}
+else
+{
+    foreach ((WorkerWithSchedules w1, WorkerWithSchedules? w2, WorkerWithSchedules? w3) in WorkerGroups)
     {
-        <WorkerRow Worker="worker" />
+        <WorkerGroupDisplay Workers="new[] { w1, w2, w3 }" AllWorkers="AllWorkers" />
     }
-</div>
+}

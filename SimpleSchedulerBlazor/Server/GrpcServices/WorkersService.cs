@@ -13,42 +13,55 @@ public class WorkersService
     : IWorkersService
 {
     private readonly IWorkerManager _workerManager;
+    private readonly IScheduleManager _scheduleManager;
 
-    public WorkersService(IWorkerManager workerManager)
+    public WorkersService(IWorkerManager workerManager, IScheduleManager scheduleManager)
     {
         _workerManager = workerManager;
+        _scheduleManager = scheduleManager;
     }
 
     async Task<CreateWorkerReply> IWorkersService.CreateWorkerAsync(CreateWorkerRequest request)
     {
-        var result = await _workerManager.AddWorkerAsync(
-            workerName: request.WorkerName,
-            detailedDescription: request.DetailedDescription,
-            emailOnSuccess: request.EmailOnSuccess,
-            parentWorkerID: request.ParentWorkerID,
-            timeoutMinutes: request.TimeoutMinutes,
-            directoryName: request.DirectoryName,
-            executable: request.Executable,
-            argumentValues: request.ArgumentValues);
+        try
+        {
+            var result = await _workerManager.AddWorkerAsync(
+                workerName: request.WorkerName,
+                detailedDescription: request.DetailedDescription,
+                emailOnSuccess: request.EmailOnSuccess,
+                parentWorkerID: request.ParentWorkerID,
+                timeoutMinutes: request.TimeoutMinutes,
+                directoryName: request.DirectoryName,
+                executable: request.Executable,
+                argumentValues: request.ArgumentValues);
 
-        return result.Match(
-            (Success success) =>
-            {
-                return new CreateWorkerReply();
-            },
-            (InvalidExecutable invalidExecutable) =>
-            {
-                throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid executable"));
-            },
-            (NameAlreadyExists nameAlreadyExists) =>
-            {
-                throw new RpcException(new Status(StatusCode.InvalidArgument, "Name already exists"));
-            },
-            (CircularReference circularReference) =>
-            {
-                throw new RpcException(new Status(StatusCode.InvalidArgument, "This would result in a circular reference of job parents"));
-            }
-        );
+            return result.Match(
+                (Success success) =>
+                {
+                    return new CreateWorkerReply();
+                },
+                (InvalidExecutable invalidExecutable) =>
+                {
+                    throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid executable"));
+                },
+                (NameAlreadyExists nameAlreadyExists) =>
+                {
+                    throw new RpcException(new Status(StatusCode.InvalidArgument, "Name already exists"));
+                },
+                (CircularReference circularReference) =>
+                {
+                    throw new RpcException(new Status(StatusCode.InvalidArgument, "This would result in a circular reference of job parents"));
+                },
+                (Exception ex) =>
+                {
+                    throw new RpcException(new Status(StatusCode.Internal, ex.Message));
+                }
+            );
+        }
+        catch (Exception ex)
+        {
+            throw new RpcException(new Status(StatusCode.Internal, ex.Message));
+        }
     }
 
     async Task<DeleteWorkerReply> IWorkersService.DeleteWorkerAsync(DeleteWorkerRequest request)
@@ -62,8 +75,30 @@ public class WorkersService
         Worker[] workers = (await _workerManager.GetAllWorkersAsync())
             .Select(w => ApiModelBuilders.GetWorker(w))
             .ToArray();
+        Schedule[] allSchedules = (await _scheduleManager.GetAllSchedulesAsync())
+            .Select(s => ApiModelBuilders.GetSchedule(s))
+            .ToArray();
         return new GetAllWorkersReply(
-            workers: workers
+            workers: workers.Select(w =>
+            {
+                Schedule[] schedules = allSchedules
+                    .Where(s => s.WorkerID == w.ID)
+                    .OrderBy(s => s.TimeOfDayUTC)
+                    .ThenBy(s => s.RecurBetweenStartUTC)
+                    .ToArray();
+                return new WorkerWithSchedules(w, schedules);
+            }).ToArray()
+        );
+    }
+
+    async Task<GetAllActiveWorkerIDNamesReply> IWorkersService.GetAllActiveWorkerIDNamesAsync(
+        GetAllActiveWorkerIDNamesRequest request)
+    {
+        Worker[] workers = (await _workerManager.GetAllWorkersAsync())
+            .Select(w => ApiModelBuilders.GetWorker(w))
+            .ToArray();
+        return new GetAllActiveWorkerIDNamesReply(
+            workers: workers.Select(w => new WorkerIDName(w.ID, w.WorkerName)).ToArray()
         );
     }
 
@@ -116,6 +151,10 @@ public class WorkersService
             (CircularReference circularReference) =>
             {
                 throw new RpcException(new Status(StatusCode.InvalidArgument, "This would result in a circular reference of job parents"));
+            },
+            (Exception ex) =>
+            {
+                throw new RpcException(new Status(StatusCode.Internal, ex.Message));
             }
         );
     }

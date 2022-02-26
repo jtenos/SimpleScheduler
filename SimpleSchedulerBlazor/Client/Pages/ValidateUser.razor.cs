@@ -31,7 +31,7 @@ partial class ValidateUser
         {
             ValidateEmailRequest request = new(Guid.Parse(ValidationCode));
             ValidateEmailReply reply = await LoginService.ValidateEmailAsync(request);
-            await LocalStorage.SetItemAsStringAsync($"Jwt:{ClientAppInfo.EnvironmentName}", reply.JwtToken);
+            await LocalStorage.SetItemAsStringAsync($"Jwt:{await ClientAppInfo.GetEnvironmentNameAsync()}", reply.JwtToken);
             NavigationManager.NavigateTo("/");
         }
         catch (Exception ex)

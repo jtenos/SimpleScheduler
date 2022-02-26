@@ -54,68 +54,82 @@ public sealed class WorkerManager
     }
 
     private record class AddWorkerResult(bool Success, bool NameAlreadyExists, bool CircularReference);
-    async Task<OneOf<Success, InvalidExecutable, NameAlreadyExists, CircularReference>> IWorkerManager.AddWorkerAsync(
+    async Task<OneOf<Success, InvalidExecutable, NameAlreadyExists, CircularReference, Exception>> IWorkerManager.AddWorkerAsync(
         string workerName, string detailedDescription, string emailOnSuccess, long? parentWorkerID,
         int timeoutMinutes, string directoryName, string executable, string argumentValues)
     {
-        if (!IsValidExecutable(directoryName, executable))
+        try
         {
-            return new InvalidExecutable();
+            if (!IsValidExecutable(directoryName, executable))
+            {
+                return new InvalidExecutable();
+            }
+
+            DynamicParameters param = new DynamicParameters()
+                .AddNVarCharParam("@WorkerName", workerName, 100)
+                .AddNVarCharParam("@DetailedDescription", detailedDescription, -1)
+                .AddNVarCharParam("@EmailOnSuccess", emailOnSuccess, 100)
+                .AddNullableLongParam("@ParentWorkerID", parentWorkerID)
+                .AddIntParam("@TimeoutMinutes", timeoutMinutes)
+                .AddNVarCharParam("@DirectoryName", directoryName, 1000)
+                .AddNVarCharParam("@Executable", executable, 1000)
+                .AddNVarCharParam("@ArgumentValues", argumentValues, 1000);
+
+            AddWorkerResult result = await _db.GetOneAsync<AddWorkerResult>(
+                "[app].[Workers_Insert]",
+                param
+            ).ConfigureAwait(false);
+
+            if (result.NameAlreadyExists) { return new NameAlreadyExists(); }
+            if (result.CircularReference) { return new CircularReference(); }
+            if (!result.Success) { throw new ApplicationException("Invalid call to AddWorker"); }
+
+            return new Success();
         }
-
-        DynamicParameters param = new DynamicParameters()
-            .AddNVarCharParam("@WorkerName", workerName, 100)
-            .AddNVarCharParam("@DetailedDescription", detailedDescription, -1)
-            .AddNVarCharParam("@EmailOnSuccess", emailOnSuccess, 100)
-            .AddNullableLongParam("@ParentWorkerID", parentWorkerID)
-            .AddIntParam("@TimeoutMinutes", timeoutMinutes)
-            .AddNVarCharParam("@DirectoryName", directoryName, 1000)
-            .AddNVarCharParam("@Executable", executable, 1000)
-            .AddNVarCharParam("@ArgumentValues", argumentValues, 1000);
-
-        AddWorkerResult result = await _db.GetOneAsync<AddWorkerResult>(
-            "[app].[Workers_Insert]",
-            param
-        ).ConfigureAwait(false);
-
-        if (result.NameAlreadyExists) { return new NameAlreadyExists(); }
-        if (result.CircularReference) { return new CircularReference(); }
-        if (!result.Success) { throw new ApplicationException("Invalid call to AddWorker"); }
-
-        return new Success();
+        catch (Exception ex)
+        {
+            return ex;
+        }
     }
 
     private record class UpdateWorkerResult(bool Success, bool NameAlreadyExists, bool CircularReference);
-    async Task<OneOf<Success, InvalidExecutable, NameAlreadyExists, CircularReference>> IWorkerManager.UpdateWorkerAsync(
+    async Task<OneOf<Success, InvalidExecutable, NameAlreadyExists, CircularReference, Exception>> IWorkerManager.UpdateWorkerAsync(
         long workerID, string workerName, string detailedDescription, string emailOnSuccess,
         long? parentWorkerID, int timeoutMinutes, string directoryName, string executable, string argumentValues)
     {
-        if (!IsValidExecutable(directoryName, executable))
+        try
         {
-            return new InvalidExecutable();
+            if (!IsValidExecutable(directoryName, executable))
+            {
+                return new InvalidExecutable();
+            }
+
+            DynamicParameters param = new DynamicParameters()
+                .AddLongParam("@ID", workerID)
+                .AddNVarCharParam("@WorkerName", workerName, 100)
+                .AddNVarCharParam("@DetailedDescription", detailedDescription, -1)
+                .AddNVarCharParam("@EmailOnSuccess", emailOnSuccess, 100)
+                .AddNullableLongParam("@ParentWorkerID", parentWorkerID)
+                .AddIntParam("@TimeoutMinutes", timeoutMinutes)
+                .AddNVarCharParam("@DirectoryName", directoryName, 1000)
+                .AddNVarCharParam("@Executable", executable, 1000)
+                .AddNVarCharParam("@ArgumentValues", argumentValues, 1000);
+
+            UpdateWorkerResult result = await _db.GetOneAsync<UpdateWorkerResult>(
+                "[app].[Workers_Update]",
+                param
+            ).ConfigureAwait(false);
+
+            if (result.NameAlreadyExists) { return new NameAlreadyExists(); }
+            if (result.CircularReference) { return new CircularReference(); }
+            if (!result.Success) { throw new ApplicationException("Invalid call to AddWorker"); }
+
+            return new Success();
         }
-
-        DynamicParameters param = new DynamicParameters()
-            .AddLongParam("@ID", workerID)
-            .AddNVarCharParam("@WorkerName", workerName, 100)
-            .AddNVarCharParam("@DetailedDescription", detailedDescription, -1)
-            .AddNVarCharParam("@EmailOnSuccess", emailOnSuccess, 100)
-            .AddNullableLongParam("@ParentWorkerID", parentWorkerID)
-            .AddIntParam("@TimeoutMinutes", timeoutMinutes)
-            .AddNVarCharParam("@DirectoryName", directoryName, 1000)
-            .AddNVarCharParam("@Executable", executable, 1000)
-            .AddNVarCharParam("@ArgumentValues", argumentValues, 1000);
-
-        UpdateWorkerResult result = await _db.GetOneAsync<UpdateWorkerResult>(
-            "[app].[Workers_Update]",
-            param
-        ).ConfigureAwait(false);
-
-        if (result.NameAlreadyExists) { return new NameAlreadyExists(); }
-        if (result.CircularReference) { return new CircularReference(); }
-        if (!result.Success) { throw new ApplicationException("Invalid call to AddWorker"); }
-
-        return new Success();
+        catch (Exception ex)
+        {
+            return ex;
+        }
     }
 
     async Task IWorkerManager.DeactivateWorkerAsync(long id)
