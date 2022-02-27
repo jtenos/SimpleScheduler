@@ -23,7 +23,7 @@ partial class WorkerEdit
     public long ID { get; set; }
 
     private bool Loading { get; set; } = true;
-    private Worker Worker { get; set; } = default!;
+    private Worker Worker { get; set; } = new();
     private WorkerIDName[] AllWorkers { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
@@ -37,7 +37,6 @@ partial class WorkerEdit
     {
         try
         {
-
             if (Worker.ID > 0)
             {
                 await WorkersService.UpdateWorkerAsync(new UpdateWorkerRequest(

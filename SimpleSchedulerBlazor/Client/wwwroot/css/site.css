@@ -23226,6 +23226,10 @@ h3 {
   margin: 15px;
 }
 
+ul.worker-schedule-list-group > li {
+  padding: 0;
+}
+
 @media (max-width: 1400px) {
   .worker-container {
     flex-direction: column;

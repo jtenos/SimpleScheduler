@@ -8,6 +8,15 @@
 }
 else
 {
+    <div class="container" style="margin-top: 25px;">
+        <EditForm EditContext="SearchEditContext">
+            <AsYouTypeInputText class="form-control"
+                            placeholder="Search for a worker..."
+                            @bind-Value="SearchCriteria.SearchText"
+                            @ref="SearchTextBox" />
+        </EditForm>
+    </div>
+
     foreach ((WorkerWithSchedules w1, WorkerWithSchedules? w2, WorkerWithSchedules? w3) in WorkerGroups)
     {
         <WorkerGroupDisplay Workers="new[] { w1, w2, w3 }" AllWorkers="AllWorkers" />

@@ -19,7 +19,7 @@
                 {
                     <div style="font-size: smaller;"><strong>Email on Success: @Worker.Worker.EmailOnSuccess</strong></div>
                 }
-                <ul class="list-group list-group-flush">
+                <ul class="list-group list-group-flush worker-schedule-list-group">
                     @foreach (Schedule schedule in Worker.Schedules)
                     {
                         <li class="list-group-item">@schedule.GetFormatted()</li>
