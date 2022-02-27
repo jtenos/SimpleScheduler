@@ -49,6 +49,10 @@ public class LoginService
                 throw new RpcException(new Status(StatusCode.NotFound, "Email address not found"));
             }
         }
+        catch (RpcException)
+        {
+            throw;
+        }
         catch (Exception ex)
         {
             throw new RpcException(new Status(StatusCode.Internal, ex.Message));

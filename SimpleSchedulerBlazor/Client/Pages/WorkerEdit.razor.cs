@@ -41,7 +41,7 @@ partial class WorkerEdit
             {
                 await WorkersService.UpdateWorkerAsync(new UpdateWorkerRequest(
                     id: Worker.ID,
-                    workerName: Worker.DirectoryName,
+                    workerName: Worker.WorkerName,
                     detailedDescription: Worker.DetailedDescription,
                     emailOnSuccess: Worker.EmailOnSuccess,
                     parentWorkerID: Worker.ParentWorkerID,

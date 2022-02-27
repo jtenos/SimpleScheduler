@@ -167,7 +167,8 @@ public sealed class SqlDatabase
         {
             CommandDefinition comm = new(
                 commandText: procedureName,
-                parameters: parameters
+                parameters: parameters,
+                commandType: CommandType.StoredProcedure
             );
 
             using SqlConnection conn = await GetOpenConnectionAsync().ConfigureAwait(false);

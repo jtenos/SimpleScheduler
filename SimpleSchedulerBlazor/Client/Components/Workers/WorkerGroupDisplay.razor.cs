@@ -12,4 +12,11 @@ partial class WorkerGroupDisplay
     [Parameter]
     [EditorRequired]
     public WorkerWithSchedules?[] Workers { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public Pages.Workers WorkersComponent { get; set; } = default!;
+
+    private List<WorkerDisplay> WorkerDisplays { get; } = new();
+    public WorkerDisplay CurrentWorkerDisplay { set => WorkerDisplays.Add(value); }
 }

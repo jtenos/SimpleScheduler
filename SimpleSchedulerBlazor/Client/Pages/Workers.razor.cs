@@ -5,6 +5,7 @@ using SimpleSchedulerApiModels;
 using SimpleSchedulerApiModels.Reply.Workers;
 using SimpleSchedulerApiModels.Request.Workers;
 using SimpleSchedulerBlazor.Client.Components;
+using SimpleSchedulerBlazor.Client.Components.Workers;
 using Wws = SimpleSchedulerApiModels.WorkerWithSchedules;
 
 namespace SimpleSchedulerBlazor.Client.Pages;
@@ -25,29 +26,37 @@ partial class Workers
 
     private bool Loading { get; set; } = true;
 
+    private List<WorkerGroupDisplay> WorkerGroupDisplays { get; } = new();
+    private WorkerGroupDisplay CurrentWorkerGroupDisplay { set => WorkerGroupDisplays.Add(value); }
+
     protected override async Task OnInitializedAsync()
     {
-        GetAllWorkersRequest request = new();
-        GetAllWorkersReply reply = await WorkersService.GetAllWorkersAsync(request);
-        AllWorkersWithSchedules = reply.Workers;
-
         SearchEditContext = new(SearchCriteria);
         SearchEditContext.OnFieldChanged += (sender, e) =>
         {
             SetFilteredWorkerGroups();
         };
 
+        await LoadGroupsAsync();
+    }
+
+    private async Task LoadGroupsAsync()
+    {
+        GetAllWorkersRequest request = new();
+        GetAllWorkersReply reply = await WorkersService.GetAllWorkersAsync(request);
+        AllWorkersWithSchedules = reply.Workers;
+        Array.Sort(AllWorkersWithSchedules, (w1, w2) => w1.Worker.WorkerName.CompareTo(w2.Worker.WorkerName));
+
         SetFilteredWorkerGroups();
         Loading = false;
+        StateHasChanged();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        Console.WriteLine("OnAfterRenderAsync({0}): SearchTextBox?.Element.HasValue={1}", 
-            firstRender, SearchTextBox?.Element.HasValue);
         try
         {
-            if (SearchTextBox?.Element.HasValue == true)
+            if (SearchTextBox?.Element.HasValue == true && !Loading)
             {
                 await SearchTextBox.Element.Value.FocusAsync();
             }
@@ -56,6 +65,24 @@ partial class Workers
         {
             Console.WriteLine("Exception firstRender={0}: {1}", firstRender, ex);
         }
+    }
+
+    public void SetLoadingOn()
+    {
+        Loading = true;
+        StateHasChanged();
+    }
+
+    public void SetLoadingOff()
+    {
+        Loading = false;
+        StateHasChanged();
+    }
+
+    public async Task RefreshAsync()
+    {
+        Loading = true;
+        await LoadGroupsAsync();
     }
 
     private void SetFilteredWorkerGroups()
@@ -84,6 +111,9 @@ partial class Workers
 
     private bool IsSearchMatch(Wws w)
     {
+        if (w.Worker.IsActive && SearchCriteria.ActiveType != SearchModel.ACTIVE) { return false; }
+        if (!w.Worker.IsActive && SearchCriteria.ActiveType != SearchModel.INACTIVE) { return false; }
+
         string searchText = SearchCriteria.SearchText;
         return w.Worker.WorkerName.Contains(searchText, StringComparison.InvariantCultureIgnoreCase)
             || w.Worker.DetailedDescription.Contains(searchText, StringComparison.InvariantCultureIgnoreCase)
@@ -94,6 +124,10 @@ partial class Workers
 
     public class SearchModel
     {
+        public const string ACTIVE = "ACTIVE";
+        public const string INACTIVE = "INACTIVE";
+
         public string SearchText { get; set; } = "";
+        public string ActiveType { get; set; } = ACTIVE;
     }
 }
