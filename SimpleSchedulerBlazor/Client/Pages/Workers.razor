@@ -13,11 +13,11 @@ else
             <div class="btn-group" role="group" style="margin-right: 10px;">
                 <InputRadioGroup Name="ActiveFilter" @bind-Value="SearchCriteria.ActiveType">
 
-                    <InputRadio Value='"ACTIVE"' class="btn-check" autocomplete="off" id="ActiveFilter-Active" />
-                    <label class="btn btn-outline-secondary" for="ActiveFilter-Active">Active</label>
+                    <InputRadio Value="SearchModel.ACTIVE" class="btn-check" autocomplete="off" id="ActiveFilter-Active" />
+                    <label class="btn btn-outline-primary" for="ActiveFilter-Active">Active</label>
 
-                    <InputRadio Value='"INACTIVE"' class="btn-check" autocomplete="off" id="ActiveFilter-Inactive" />
-                    <label class="btn btn-outline-secondary" for="ActiveFilter-Inactive">Inactive</label>
+                    <InputRadio Value="SearchModel.INACTIVE" class="btn-check" autocomplete="off" id="ActiveFilter-Inactive" />
+                    <label class="btn btn-outline-primary" for="ActiveFilter-Inactive">Inactive</label>
 
                 </InputRadioGroup>
             </div>

@@ -14,7 +14,7 @@
                     <label>Worker Name</label>
                     <InputText class="form-control" @bind-Value="Worker.WorkerName" />
                 </div>
-                <div class="form.group">
+                <div class="form-group">
                     <label>Detailed Description</label>
                     <InputTextArea class="form-control" @bind-Value="Worker.DetailedDescription" />
                 </div>
@@ -53,7 +53,9 @@
                     <InputText class="form-control" @bind-Value="Worker.ArgumentValues" />
                 </div>
 
-                <a class="btn btn-primary btn-block" @onclick="SaveWorker">Save</a>
+                <div class="form-group d-grid">
+                    <a class="btn btn-primary btn-block" @onclick="SaveWorker">Save</a>
+                </div>
             </EditForm>
         }
     </form>

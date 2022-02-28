@@ -1,0 +1,14 @@
+﻿@using SimpleSchedulerBlazor.Client.Components.Schedules
+
+@foreach (Schedule schedule in Worker.Schedules)
+{
+    <ScheduleDisplay Schedule="schedule" />
+}
+
+<li class="list-group-item">
+    <button class="btn btn-sm btn-primary">
+        <i class="bi bi-plus-lg"></i>
+        Add New Schedule
+    </button>
+</li>
+

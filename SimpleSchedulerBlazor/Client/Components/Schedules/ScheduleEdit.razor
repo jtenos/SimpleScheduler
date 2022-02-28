@@ -1,0 +1,45 @@
+﻿<EditForm Model="Schedule" class="d-flex">
+    <div>
+        <div class="form-check form-switch">
+            <input type="checkbox" @bind="Schedule.Sunday" class="form-check-input" id="schedule-edit-sunday-@UniqueId" />
+            <label class="form-check-label" for="schedule-edit-sunday-@UniqueId">Sun</label>
+        </div>
+        <div class="form-check form-switch">
+            <input type="checkbox" @bind="Schedule.Monday" class="form-check-input" id="schedule-edit-monday-@UniqueId" />
+            <label class="form-check-label" for="schedule-edit-monday-@UniqueId">Mon</label>
+        </div>
+        <div class="form-check form-switch">
+            <input type="checkbox" @bind="Schedule.Tuesday" class="form-check-input" id="schedule-edit-tuesday-@UniqueId" />
+            <label class="form-check-label" for="schedule-edit-tuesday-@UniqueId">Tue</label>
+        </div>
+        <div class="form-check form-switch">
+            <input type="checkbox" @bind="Schedule.Wednesday" class="form-check-input" id="schedule-edit-wednesday-@UniqueId" />
+            <label class="form-check-label" for="schedule-edit-wednesday-@UniqueId">Wed</label>
+        </div>
+        <div class="form-check form-switch">
+            <input type="checkbox" @bind="Schedule.Thursday" class="form-check-input" id="schedule-edit-thursday-@UniqueId" />
+            <label class="form-check-label" for="schedule-edit-thursday-@UniqueId">Thu</label>
+        </div>
+        <div class="form-check form-switch">
+            <input type="checkbox" @bind="Schedule.Friday" class="form-check-input" id="schedule-edit-friday-@UniqueId" />
+            <label class="form-check-label" for="schedule-edit-friday-@UniqueId">Fri</label>
+        </div>
+        <div class="form-check form-switch">
+            <input type="checkbox" @bind="Schedule.Saturday" class="form-check-input" id="schedule-edit-saturday-@UniqueId" />
+            <label class="form-check-label" for="schedule-edit-saturday-@UniqueId">Sat</label>
+        </div>
+    </div>
+    <div>
+        <div class="btn-group" role="group">
+            <InputRadioGroup Name="TimeType" @bind-Value="TimeType">
+
+                <input type="radio" name="TimeType" Value="TIME" class="btn-check" autocomplete="off" id="TimeType-Time-@UniqueId" />
+                <label class="btn btn-outline-primary" for="TimeType-Time-@UniqueId">Time</label>
+
+                <input type="radio" name="TimeType" Value="RECUR" class="btn-check" autocomplete="off" id="TimeType-Recur-@UniqueId" />
+                <label class="btn btn-outline-primary" for="TimeType-Recur-@UniqueId">Recur</label>
+
+            </InputRadioGroup>
+        </div>
+    </div>
+</EditForm>
