@@ -38,6 +38,10 @@ partial class ScheduleEdit
                     break;
                 case RECUR:
                     Schedule.TimeOfDayUTC = null;
+                    if (!Schedule.RecurTime.HasValue)
+                    {
+                        Schedule.RecurTime = TimeSpan.FromHours(1);
+                    }
                     break;
             }
         }

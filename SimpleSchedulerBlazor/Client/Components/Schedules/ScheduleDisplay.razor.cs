@@ -21,4 +21,14 @@ partial class ScheduleDisplay
     {
         await Task.CompletedTask;
     }
+
+    private async Task SaveSchedule()
+    {
+        await Task.CompletedTask;
+    }
+
+    private async Task CancelEditSchedule()
+    {
+        await Task.CompletedTask;
+    }
 }
