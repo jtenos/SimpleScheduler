@@ -1,45 +1,64 @@
-﻿<EditForm Model="Schedule" class="d-flex">
+﻿<EditForm EditContext="ScheduleEditContext" class="d-flex justify-content-around">
     <div>
-        <div class="form-check form-switch">
+        <div class="form-check form-switch form-switch-md">
             <input type="checkbox" @bind="Schedule.Sunday" class="form-check-input" id="schedule-edit-sunday-@UniqueId" />
             <label class="form-check-label" for="schedule-edit-sunday-@UniqueId">Sun</label>
         </div>
-        <div class="form-check form-switch">
+        <div class="form-check form-switch form-switch-md">
             <input type="checkbox" @bind="Schedule.Monday" class="form-check-input" id="schedule-edit-monday-@UniqueId" />
             <label class="form-check-label" for="schedule-edit-monday-@UniqueId">Mon</label>
         </div>
-        <div class="form-check form-switch">
+        <div class="form-check form-switch form-switch-md">
             <input type="checkbox" @bind="Schedule.Tuesday" class="form-check-input" id="schedule-edit-tuesday-@UniqueId" />
             <label class="form-check-label" for="schedule-edit-tuesday-@UniqueId">Tue</label>
         </div>
-        <div class="form-check form-switch">
+        <div class="form-check form-switch form-switch-md">
             <input type="checkbox" @bind="Schedule.Wednesday" class="form-check-input" id="schedule-edit-wednesday-@UniqueId" />
             <label class="form-check-label" for="schedule-edit-wednesday-@UniqueId">Wed</label>
         </div>
-        <div class="form-check form-switch">
+        <div class="form-check form-switch form-switch-md">
             <input type="checkbox" @bind="Schedule.Thursday" class="form-check-input" id="schedule-edit-thursday-@UniqueId" />
             <label class="form-check-label" for="schedule-edit-thursday-@UniqueId">Thu</label>
         </div>
-        <div class="form-check form-switch">
+        <div class="form-check form-switch form-switch-md">
             <input type="checkbox" @bind="Schedule.Friday" class="form-check-input" id="schedule-edit-friday-@UniqueId" />
             <label class="form-check-label" for="schedule-edit-friday-@UniqueId">Fri</label>
         </div>
-        <div class="form-check form-switch">
+        <div class="form-check form-switch form-switch-md">
             <input type="checkbox" @bind="Schedule.Saturday" class="form-check-input" id="schedule-edit-saturday-@UniqueId" />
             <label class="form-check-label" for="schedule-edit-saturday-@UniqueId">Sat</label>
         </div>
     </div>
     <div>
         <div class="btn-group" role="group">
-            <InputRadioGroup Name="TimeType" @bind-Value="TimeType">
+            <input type="radio" id="time-type-time-@UniqueId" name="time-type-@UniqueId" checked="@(TimeType == TIME)" @onchange="(() => TimeType = TIME)" class="btn-check" autocomplete="off" />
+            <label for="time-type-time-@UniqueId" class="btn btn-outline-primary">Time</label>
 
-                <input type="radio" name="TimeType" Value="TIME" class="btn-check" autocomplete="off" id="TimeType-Time-@UniqueId" />
-                <label class="btn btn-outline-primary" for="TimeType-Time-@UniqueId">Time</label>
-
-                <input type="radio" name="TimeType" Value="RECUR" class="btn-check" autocomplete="off" id="TimeType-Recur-@UniqueId" />
-                <label class="btn btn-outline-primary" for="TimeType-Recur-@UniqueId">Recur</label>
-
-            </InputRadioGroup>
+            <input type="radio" id="time-type-recur-@UniqueId" name="time-type-@UniqueId" checked="@(TimeType == RECUR)" @onchange="(() => TimeType = RECUR)" class="btn-check" autocomplete="off" />
+            <label for="time-type-recur-@UniqueId" class="btn btn-outline-primary">Recur</label>
         </div>
+
+        @if (TimeType == TIME)
+        {
+            <div class="form-group">
+                <label for="time-of-day-@UniqueId">Time of Day (UTC):</label>
+                <input class="form-control" type="text" @bind="TimeOfDayUTC" id="time-of-day-@UniqueId" />
+            </div>
+        }
+        else if (TimeType == RECUR)
+        {
+            <div class="form-group">
+                <label for="recur-time-@UniqueId">Recur every (hh:mm):</label>
+                <input class="form-control" type="text" @bind="RecurTime" id="recur-time-@UniqueId" />
+            </div>
+            <div class="form-group">
+                <label for="recur-between-start-@UniqueId">From UTC (HH:mm):</label>
+                <input class="form-control" type="text" @bind="RecurBetweenStartUTC" id="recur-between-start-@UniqueId" />
+            </div>
+            <div class="form-group">
+                <label for="recur-between-end-@UniqueId">To UTC (HH:mm):</label>
+                <input class="form-control" type="text" @bind="RecurBetweenEndUTC" id="recur-between-end-@UniqueId" />
+            </div>
+        }
     </div>
 </EditForm>
