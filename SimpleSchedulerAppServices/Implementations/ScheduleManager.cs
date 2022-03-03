@@ -46,7 +46,7 @@ public sealed class ScheduleManager
             .AddLongParam("@ID", id);
 
         await _db.NonQueryAsync(
-            "[Schedules_Deactivate]",
+            "[app].[Schedules_Deactivate]",
             param
         ).ConfigureAwait(false);
     }
@@ -56,6 +56,19 @@ public sealed class ScheduleManager
         return (await _db.GetManyAsync<ScheduleEntity>(
             "[app].[Schedules_SelectAll]",
             parameters: null
+        ).ConfigureAwait(false))
+        .Select(s => ModelBuilders.GetSchedule(s))
+        .ToArray();
+    }
+
+    async Task<Schedule[]> IScheduleManager.GetSchedulesForWorkerAsync(long workerID)
+    {
+        DynamicParameters param = new DynamicParameters()
+            .AddLongParam("@WorkerID", workerID);
+
+        return (await _db.GetManyAsync<ScheduleEntity>(
+            "[app].[Schedules_SelectForWorker]",
+            parameters: param
         ).ConfigureAwait(false))
         .Select(s => ModelBuilders.GetSchedule(s))
         .ToArray();

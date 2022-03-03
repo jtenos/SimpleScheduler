@@ -1,4 +1,5 @@
-﻿using SimpleScheduler.Blazor.Shared.ServiceContracts;
+﻿using Grpc.Core;
+using SimpleScheduler.Blazor.Shared.ServiceContracts;
 using SimpleSchedulerApiModels;
 using SimpleSchedulerApiModels.Reply.Schedules;
 using SimpleSchedulerApiModels.Request.Schedules;
@@ -37,8 +38,19 @@ public class SchedulesService
 
     async Task<DeleteScheduleReply> ISchedulesService.DeleteScheduleAsync(DeleteScheduleRequest request)
     {
-        await _scheduleManager.DeactivateScheduleAsync(request.ID);
-        return new();
+        try
+        {
+            await _scheduleManager.DeactivateScheduleAsync(request.ID);
+            return new();
+        }
+        catch (RpcException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            throw new RpcException(new Status(StatusCode.Internal, ex.Message));
+        }
     }
 
     async Task<GetAllSchedulesReply> ISchedulesService.GetAllSchedulesAsync(GetAllSchedulesRequest request)

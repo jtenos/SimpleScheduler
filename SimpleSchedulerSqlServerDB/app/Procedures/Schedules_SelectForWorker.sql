@@ -1,5 +1,5 @@
-﻿-- All of the regular schedules (not one-time)
-CREATE PROCEDURE [app].[Schedules_SelectAll]
+﻿CREATE PROCEDURE [app].[Schedules_SelectForWorker]
+	@WorkerID BIGINT
 AS
 BEGIN
 	SET TRANSACTION ISOLATION LEVEL SNAPSHOT;
@@ -8,7 +8,10 @@ BEGIN
 	BEGIN TRY
 		BEGIN TRANSACTION;
 
-        SELECT * FROM [app].[Schedules] WHERE [OneTime] = 0 AND [IsActive] = 1;
+        SELECT * FROM [app].[Schedules] 
+		WHERE [OneTime] = 0 
+		AND [WorkerID] = @WorkerID 
+		AND [IsActive] = 1;
 
 		COMMIT TRANSACTION;
 	END TRY

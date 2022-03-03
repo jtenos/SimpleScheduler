@@ -104,6 +104,7 @@
     <Build Include="app\Types\SchedulesType.sql" />
     <Build Include="app\Types\WorkersType.sql" />
     <Build Include="app\app.sql" />
+    <Build Include="app\Procedures\Schedules_SelectForWorker.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include="$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\130\SqlSchemas\master.dacpac">
@@ -111,5 +112,8 @@
       <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
       <DatabaseVariableLiteralValue>master</DatabaseVariableLiteralValue>
     </ArtifactReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SimpleSchedulerSqlServerDB.publish.xml" />
   </ItemGroup>
 </Project>

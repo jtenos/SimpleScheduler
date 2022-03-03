@@ -8,6 +8,7 @@ public interface IScheduleManager
     Task ReactivateScheduleAsync(long id);
     Task<Schedule[]> GetSchedulesToInsertAsync();
     Task<Schedule[]> GetAllSchedulesAsync();
+    Task<Schedule[]> GetSchedulesForWorkerAsync(long workerID);
     Task<Schedule> GetScheduleAsync(long id);
     Task AddScheduleAsync(long workerID, 
         bool sunday, bool monday, bool tuesday, bool wednesday, bool thursday, bool friday, bool saturday,

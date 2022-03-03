@@ -105,8 +105,12 @@ public class WorkersService
     async Task<GetWorkerReply> IWorkersService.GetWorkerAsync(GetWorkerRequest request)
     {
         Worker worker = ApiModelBuilders.GetWorker(await _workerManager.GetWorkerAsync(request.ID));
+        Schedule[] schedules = (await _scheduleManager.GetSchedulesForWorkerAsync(request.ID))
+            .Select(s => ApiModelBuilders.GetSchedule(s))
+            .ToArray();
+
         return new GetWorkerReply(
-            worker: worker
+            worker: new(worker, schedules)
         );
     }
 
