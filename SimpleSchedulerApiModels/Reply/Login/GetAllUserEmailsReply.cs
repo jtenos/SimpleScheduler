@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿namespace SimpleSchedulerApiModels.Reply.Login;
 
-namespace SimpleSchedulerApiModels.Reply.Login;
-
-[DataContract]
 public class GetAllUserEmailsReply
 {
     public GetAllUserEmailsReply() { }
@@ -12,5 +9,5 @@ public class GetAllUserEmailsReply
         EmailAddresses = emailAddresses;
     }
 
-    [DataMember(Order = 1)] public string[] EmailAddresses { get; set; } = default!;
+    public string[] EmailAddresses { get; set; } = default!;
 }

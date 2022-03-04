@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿namespace SimpleSchedulerApiModels.Request.Workers;
 
-namespace SimpleSchedulerApiModels.Request.Workers;
-
-[DataContract]
 public class CreateWorkerRequest
 {
     public CreateWorkerRequest() { }
@@ -27,12 +24,12 @@ public class CreateWorkerRequest
         ArgumentValues = argumentValues;
     }
 
-    [DataMember(Order = 1)] public string WorkerName { get; set; } = default!;
-    [DataMember(Order = 2)] public string DetailedDescription { get; set; } = default!;
-    [DataMember(Order = 3)] public string EmailOnSuccess { get; set; } = default!;
-    [DataMember(Order = 4)] public long? ParentWorkerID { get; set; }
-    [DataMember(Order = 5)] public int TimeoutMinutes { get; set; }
-    [DataMember(Order = 6)] public string DirectoryName { get; set; } = default!;
-    [DataMember(Order = 7)] public string Executable { get; set; } = default!;
-    [DataMember(Order = 8)] public string ArgumentValues { get; set; } = default!;
+    public string WorkerName { get; set; } = default!;
+    public string DetailedDescription { get; set; } = default!;
+    public string EmailOnSuccess { get; set; } = default!;
+    public long? ParentWorkerID { get; set; }
+    public int TimeoutMinutes { get; set; }
+    public string DirectoryName { get; set; } = default!;
+    public string Executable { get; set; } = default!;
+    public string ArgumentValues { get; set; } = default!;
 }

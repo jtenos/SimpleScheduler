@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿namespace SimpleSchedulerApiModels;
 
-namespace SimpleSchedulerApiModels;
-
-[DataContract]
 public class Schedule
 {
     public Schedule() { }
@@ -30,21 +27,21 @@ public class Schedule
         OneTime = oneTime;
     }
 
-    [DataMember(Order = 1)] public long ID { get; set; }
-    [DataMember(Order = 2)] public bool IsActive { get; set; }
-    [DataMember(Order = 3)] public long WorkerID { get; set; }
-    [DataMember(Order = 4)] public bool Sunday { get; set; }
-    [DataMember(Order = 5)] public bool Monday { get; set; }
-    [DataMember(Order = 6)] public bool Tuesday { get; set; }
-    [DataMember(Order = 7)] public bool Wednesday { get; set; }
-    [DataMember(Order = 8)] public bool Thursday { get; set; }
-    [DataMember(Order = 9)] public bool Friday { get; set; }
-    [DataMember(Order = 10)] public bool Saturday { get; set; }
-    [DataMember(Order = 11)] public TimeSpan? TimeOfDayUTC { get; set; }
-    [DataMember(Order = 12)] public TimeSpan? RecurTime { get; set; }
-    [DataMember(Order = 13)] public TimeSpan? RecurBetweenStartUTC { get; set; }
-    [DataMember(Order = 14)] public TimeSpan? RecurBetweenEndUTC { get; set; }
-    [DataMember(Order = 15)] public bool OneTime { get; set; }
+    public long ID { get; set; }
+    public bool IsActive { get; set; }
+    public long WorkerID { get; set; }
+    public bool Sunday { get; set; }
+    public bool Monday { get; set; }
+    public bool Tuesday { get; set; }
+    public bool Wednesday { get; set; }
+    public bool Thursday { get; set; }
+    public bool Friday { get; set; }
+    public bool Saturday { get; set; }
+    public TimeSpan? TimeOfDayUTC { get; set; }
+    public TimeSpan? RecurTime { get; set; }
+    public TimeSpan? RecurBetweenStartUTC { get; set; }
+    public TimeSpan? RecurBetweenEndUTC { get; set; }
+    public bool OneTime { get; set; }
 
     public string GetFormatted()
     {

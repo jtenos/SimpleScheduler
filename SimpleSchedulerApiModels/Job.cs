@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿namespace SimpleSchedulerApiModels;
 
-namespace SimpleSchedulerApiModels;
-
-[DataContract]
 public class Job
 {
     public Job() { }
@@ -23,14 +20,14 @@ public class Job
         FriendlyDuration = friendlyDuration;
     }
 
-    [DataMember(Order = 1)] public long ID { get; set; }
-    [DataMember(Order = 2)] public long ScheduleID { get; set; }
-    [DataMember(Order = 3)] public DateTime InsertDateUTC { get; set; }
-    [DataMember(Order = 4)] public DateTime QueueDateUTC { get; set; }
-    [DataMember(Order = 5)] public DateTime? CompleteDateUTC { get; set; }
-    [DataMember(Order = 6)] public string StatusCode { get; set; } = default!;
-    [DataMember(Order = 7)] public Guid AcknowledgementCode { get; set; } = default!;
-    [DataMember(Order = 8)] public DateTime? AcknowledgementDate { get; set; }
-    [DataMember(Order = 9)] public bool HasDetailedMessage { get; set; }
-    [DataMember(Order = 10)] public string? FriendlyDuration { get; set; }
+    public long ID { get; set; }
+    public long ScheduleID { get; set; }
+    public DateTime InsertDateUTC { get; set; }
+    public DateTime QueueDateUTC { get; set; }
+    public DateTime? CompleteDateUTC { get; set; }
+    public string StatusCode { get; set; } = default!;
+    public Guid AcknowledgementCode { get; set; } = default!;
+    public DateTime? AcknowledgementDate { get; set; }
+    public bool HasDetailedMessage { get; set; }
+    public string? FriendlyDuration { get; set; }
 }

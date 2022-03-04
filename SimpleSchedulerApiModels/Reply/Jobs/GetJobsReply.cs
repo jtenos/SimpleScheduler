@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿namespace SimpleSchedulerApiModels.Reply.Jobs;
 
-namespace SimpleSchedulerApiModels.Reply.Jobs;
-
-[DataContract]
 public class GetJobsReply
 {
     public GetJobsReply() { }
@@ -12,5 +9,5 @@ public class GetJobsReply
         Jobs = jobs;
     }
 
-    [DataMember(Order = 1)] public Job[] Jobs { get; set; } = default!;
+    public Job[] Jobs { get; set; } = default!;
 }

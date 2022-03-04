@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿namespace SimpleSchedulerApiModels;
 
-namespace SimpleSchedulerApiModels;
-
-[DataContract]
 public class WorkerWithSchedules
 {
     public WorkerWithSchedules() { }
@@ -13,6 +10,6 @@ public class WorkerWithSchedules
         Schedules = schedules;
     }
 
-    [DataMember(Order = 1)] public Worker Worker { get; set; } = default!;
-    [DataMember(Order = 2)] public Schedule[] Schedules { get; set; } = Array.Empty<Schedule>();
+    public Worker Worker { get; set; } = default!;
+    public Schedule[] Schedules { get; set; } = Array.Empty<Schedule>();
 }

@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿namespace SimpleSchedulerApiModels.Request.Login;
 
-namespace SimpleSchedulerApiModels.Request.Login;
-
-[DataContract]
 public class SubmitEmailRequest
 {
     public SubmitEmailRequest() { }
@@ -12,5 +9,5 @@ public class SubmitEmailRequest
         EmailAddress = emailAddress;
     }
 
-    [DataMember(Order = 1)] public string EmailAddress { get; set; } = default!;
+    public string EmailAddress { get; set; } = default!;
 }

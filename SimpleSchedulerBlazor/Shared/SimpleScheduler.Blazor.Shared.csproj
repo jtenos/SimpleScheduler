@@ -12,10 +12,6 @@
 		<Compile Include="..\..\SolutionInfo.cs" Link="SolutionInfo.cs" />
 	</ItemGroup>
 	<ItemGroup>
-	  <PackageReference Include="Grpc.Core.Api" Version="2.44.0" />
-	  <PackageReference Include="System.ServiceModel.Primitives" Version="4.9.0" />
-	</ItemGroup>
-	<ItemGroup>
 	  <ProjectReference Include="..\..\SimpleSchedulerApiModels\SimpleSchedulerApiModels.csproj" />
 	</ItemGroup>
 

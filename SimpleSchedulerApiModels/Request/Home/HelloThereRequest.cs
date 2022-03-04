@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿namespace SimpleSchedulerApiModels.Request.Home;
 
-namespace SimpleSchedulerApiModels.Request.Home;
-
-[DataContract]
 public class HelloThereRequest
 {
 }

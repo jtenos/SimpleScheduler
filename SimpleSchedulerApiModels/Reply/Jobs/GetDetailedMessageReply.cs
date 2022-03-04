@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿namespace SimpleSchedulerApiModels.Reply.Jobs;
 
-namespace SimpleSchedulerApiModels.Reply.Jobs;
-
-[DataContract]
 public class GetDetailedMessageReply
 {
     public GetDetailedMessageReply() { }
@@ -12,5 +9,5 @@ public class GetDetailedMessageReply
         DetailedMessage = detailedMessage;
     }
 
-    [DataMember(Order = 1)] public string? DetailedMessage { get; set; }
+    public string? DetailedMessage { get; set; }
 }

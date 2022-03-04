@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿namespace SimpleSchedulerApiModels.Reply.Schedules;
 
-namespace SimpleSchedulerApiModels.Reply.Schedules;
-
-[DataContract]
 public class GetScheduleReply
 {
     public GetScheduleReply() { }
@@ -12,5 +9,5 @@ public class GetScheduleReply
         Schedule = schedule;
     }
 
-    [DataMember(Order = 1)] public Schedule Schedule { get; set; } = default!;
+    public Schedule Schedule { get; set; } = default!;
 }

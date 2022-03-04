@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿namespace SimpleSchedulerApiModels.Request.Schedules;
 
-namespace SimpleSchedulerApiModels.Request.Schedules;
-
-[DataContract]
 public class GetScheduleRequest
 {
     public GetScheduleRequest() { }
@@ -12,5 +9,5 @@ public class GetScheduleRequest
         ID = id;
     }
 
-    [DataMember(Order = 1)] public long ID { get; set; }
+    public long ID { get; set; }
 }

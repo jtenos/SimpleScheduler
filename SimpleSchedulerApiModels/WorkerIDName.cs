@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿namespace SimpleSchedulerApiModels;
 
-namespace SimpleSchedulerApiModels;
-
-[DataContract]
 public class WorkerIDName
 {
     public WorkerIDName() { }
@@ -13,6 +10,6 @@ public class WorkerIDName
         WorkerName = workerName;
     }
 
-    [DataMember(Order = 1)] public long ID { get; set; }
-    [DataMember(Order = 2)] public string WorkerName { get; set; } = default!;
+    public long ID { get; set; }
+    public string WorkerName { get; set; } = default!;
 }

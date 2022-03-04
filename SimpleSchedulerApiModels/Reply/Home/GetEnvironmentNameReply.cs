@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿namespace SimpleSchedulerApiModels.Reply.Home;
 
-namespace SimpleSchedulerApiModels.Reply.Home;
-
-[DataContract]
 public class GetEnvironmentNameReply
 {
     public GetEnvironmentNameReply() { }
@@ -12,5 +9,5 @@ public class GetEnvironmentNameReply
         EnvironmentName = environmentName;
     }
 
-    [DataMember(Order = 1)] public string EnvironmentName { get; set; } = default!;
+    public string EnvironmentName { get; set; } = default!;
 }

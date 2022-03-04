@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿namespace SimpleSchedulerApiModels.Reply.Login;
 
-namespace SimpleSchedulerApiModels.Reply.Login;
-
-[DataContract]
 public class ValidateEmailReply
 {
     public ValidateEmailReply() { }
@@ -12,5 +9,5 @@ public class ValidateEmailReply
         JwtToken = jwtToken;
     }
 
-    [DataMember(Order = 1)] public string JwtToken { get; set; } = default!;
+    public string JwtToken { get; set; } = default!;
 }

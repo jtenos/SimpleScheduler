@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿namespace SimpleSchedulerApiModels.Reply.Login;
 
-namespace SimpleSchedulerApiModels.Reply.Login;
-
-[DataContract]
 public class IsLoggedInReply
 {
     public IsLoggedInReply() { }
@@ -12,5 +9,5 @@ public class IsLoggedInReply
         IsLoggedIn = isLoggedIn;
     }
 
-    [DataMember] public bool IsLoggedIn { get; set; }
+    public bool IsLoggedIn { get; set; }
 }

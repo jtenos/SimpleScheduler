@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿namespace SimpleSchedulerApiModels.Reply.Workers;
 
-namespace SimpleSchedulerApiModels.Reply.Workers;
-
-[DataContract]
 public class ReactivateWorkerReply
 {
 }

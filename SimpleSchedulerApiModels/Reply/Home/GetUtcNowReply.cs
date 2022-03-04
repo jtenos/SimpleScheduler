@@ -1,8 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿namespace SimpleSchedulerApiModels.Reply.Home;
 
-namespace SimpleSchedulerApiModels.Reply.Home;
-
-[DataContract]
 public class GetUtcNowReply
 {
     public GetUtcNowReply() { }
@@ -12,5 +9,5 @@ public class GetUtcNowReply
         FormattedDateTime = formattedDateTime;
     }
 
-    [DataMember(Order = 1)] public string FormattedDateTime { get; set; } = default!;
+    public string FormattedDateTime { get; set; } = default!;
 }
