@@ -9,8 +9,9 @@ partial class MainLayout
 
     private string EnvironmentName { get; set; } = default!;
 
-    protected override async Task OnInitializedAsync()
+    protected override Task OnInitializedAsync()
     {
-        EnvironmentName = await ClientAppInfo.GetEnvironmentNameAsync();
+        EnvironmentName = ClientAppInfo.EnvironmentName;
+        return Task.CompletedTask;
     }
 }

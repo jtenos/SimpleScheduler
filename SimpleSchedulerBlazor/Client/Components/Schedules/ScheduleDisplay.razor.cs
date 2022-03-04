@@ -1,9 +1,10 @@
 ﻿using CurrieTechnologies.Razor.SweetAlert2;
-using Grpc.Core;
 using Microsoft.AspNetCore.Components;
-using SimpleScheduler.Blazor.Shared.ServiceContracts;
 using SimpleSchedulerApiModels;
+using SimpleSchedulerApiModels.Reply.Schedules;
+using SimpleSchedulerApiModels.Request.Schedules;
 using SimpleSchedulerBlazor.Client.Components.Workers;
+using SimpleSchedulerBlazor.Client.Errors;
 
 namespace SimpleSchedulerBlazor.Client.Components.Schedules;
 
@@ -18,7 +19,7 @@ partial class ScheduleDisplay
     public WorkerDisplay WorkerDisplayComponent { get; set; } = default!;
 
     [Inject]
-    private ISchedulesService ScheduleService { get; set; } = default!;
+    private ServiceClient ServiceClient { get; set; } = default!;
 
     [Inject]
     private SweetAlertService Swal { get; set; } = default!;
@@ -44,30 +45,23 @@ partial class ScheduleDisplay
             CancelButtonText = "Cancel"
         });
 
-        string message;
         if (!string.IsNullOrEmpty(result.Value))
         {
             IsLoading = true;
-            try
-            {
-                await ScheduleService.DeleteScheduleAsync(new(Schedule.ID));
-                await WorkerDisplayComponent.RefreshAsync();
-                return;
-            }
-            catch (RpcException ex)
-            {
-                message = ex.Status.Detail;
-                if (string.IsNullOrWhiteSpace(message))
-                {
-                    message = ex.Message;
-                }
-            }
-            catch (Exception ex)
-            {
-                message = ex.Message;
-            }
 
-            await Swal.FireAsync("Error", message, SweetAlertIcon.Error);
+            (await ServiceClient.TryPostAsync<DeleteScheduleRequest, DeleteScheduleReply>(
+                "Schedules/DeleteSchedule",
+                new DeleteScheduleRequest(id: Schedule.ID)
+            )).Switch(
+                async (DeleteScheduleReply reply) =>
+                {
+                    await WorkerDisplayComponent.RefreshAsync();
+                },
+                async (Error error) =>
+                {
+                    await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
+                }
+            );
         }
     }
 

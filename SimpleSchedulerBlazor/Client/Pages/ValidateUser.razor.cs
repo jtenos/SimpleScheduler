@@ -1,15 +1,15 @@
 ﻿using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
-using SimpleScheduler.Blazor.Shared.ServiceContracts;
 using SimpleSchedulerApiModels.Reply.Login;
 using SimpleSchedulerApiModels.Request.Login;
+using SimpleSchedulerBlazor.Client.Errors;
 
 namespace SimpleSchedulerBlazor.Client.Pages;
 
 partial class ValidateUser
 {
     [Inject]
-    private ILoginService LoginService { get; set; } = default!;
+    private ServiceClient ServiceClient { get; set; } = default!;
 
     [Inject]
     private NavigationManager NavigationManager { get; set; } = default!;
@@ -27,16 +27,19 @@ partial class ValidateUser
 
     protected override async Task OnInitializedAsync()
     {
-        try
-        {
-            ValidateEmailRequest request = new(Guid.Parse(ValidationCode));
-            ValidateEmailReply reply = await LoginService.ValidateEmailAsync(request);
-            await LocalStorage.SetItemAsStringAsync($"Jwt:{await ClientAppInfo.GetEnvironmentNameAsync()}", reply.JwtToken);
-            NavigationManager.NavigateTo("/");
-        }
-        catch (Exception ex)
-        {
-            ErrorMessage = ex.Message;
-        }
+        (await ServiceClient.TryPostAsync<ValidateEmailRequest, ValidateEmailReply>(
+            "Login/ValidateEmail",
+            new(Guid.Parse(ValidationCode))
+        )).Switch(
+            async (ValidateEmailReply reply) =>
+            {
+                await LocalStorage.SetItemAsStringAsync($"Jwt:{ClientAppInfo.EnvironmentName}", reply.JwtToken);
+                NavigationManager.NavigateTo("/");
+            },
+            (Error error) =>
+            {
+                ErrorMessage = error.Message;
+            }
+        );
     }
 }

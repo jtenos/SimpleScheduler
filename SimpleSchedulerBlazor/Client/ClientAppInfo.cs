@@ -1,20 +1,12 @@
-﻿using SimpleScheduler.Blazor.Shared.ServiceContracts;
-
-namespace SimpleSchedulerBlazor.Client;
+﻿namespace SimpleSchedulerBlazor.Client;
 
 public class ClientAppInfo
 {
-    private readonly IHomeService _homeService;
-    public string EnvironmentName { get; private set; } = default!;
+    public string EnvironmentName { get; }
     public readonly Guid BuildGuid = Guid.NewGuid();
 
-    public ClientAppInfo(IHomeService homeService)
+    public ClientAppInfo(IConfiguration config)
     {
-        _homeService = homeService;
-    }
-
-    public async Task<string> GetEnvironmentNameAsync()
-    {
-        return EnvironmentName ??= (await _homeService.GetEnvironmentNameAsync(new())).EnvironmentName;
+        EnvironmentName = config["EnvironmentName"];
     }
 }

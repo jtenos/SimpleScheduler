@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using CurrieTechnologies.Razor.SweetAlert2;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using SimpleScheduler.Blazor.Shared.ServiceContracts;
 using SimpleSchedulerApiModels;
 using SimpleSchedulerApiModels.Reply.Workers;
 using SimpleSchedulerApiModels.Request.Workers;
 using SimpleSchedulerBlazor.Client.Components;
 using SimpleSchedulerBlazor.Client.Components.Workers;
+using SimpleSchedulerBlazor.Client.Errors;
 using Wws = SimpleSchedulerApiModels.WorkerWithSchedules;
 
 namespace SimpleSchedulerBlazor.Client.Pages;
@@ -13,7 +14,10 @@ namespace SimpleSchedulerBlazor.Client.Pages;
 partial class Workers
 {
     [Inject]
-    private IWorkersService WorkersService { get; set; } = default!;
+    private ServiceClient ServiceClient { get; set; } = default!;
+
+    [Inject]
+    private SweetAlertService Swal { get; set; } = default!;
 
     private AsYouTypeInputText? SearchTextBox { get; set; } = default!;
 
@@ -42,14 +46,23 @@ partial class Workers
 
     private async Task LoadGroupsAsync()
     {
-        GetAllWorkersRequest request = new();
-        GetAllWorkersReply reply = await WorkersService.GetAllWorkersAsync(request);
-        AllWorkersWithSchedules = reply.Workers;
-        Array.Sort(AllWorkersWithSchedules, (w1, w2) => w1.Worker.WorkerName.CompareTo(w2.Worker.WorkerName));
-
-        SetFilteredWorkerGroups();
-        Loading = false;
-        StateHasChanged();
+        (await ServiceClient.TryPostAsync<GetAllWorkersRequest, GetAllWorkersReply>(
+            "Workers/GetAllWorkers",
+            new GetAllWorkersRequest()
+        )).Switch(
+            (GetAllWorkersReply reply) =>
+            {
+                AllWorkersWithSchedules = reply.Workers;
+                Array.Sort(AllWorkersWithSchedules, (w1, w2) => w1.Worker.WorkerName.CompareTo(w2.Worker.WorkerName));
+                SetFilteredWorkerGroups();
+                Loading = false;
+                StateHasChanged();
+            },
+            async (Error error) =>
+            {
+                await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
+            }
+        );
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

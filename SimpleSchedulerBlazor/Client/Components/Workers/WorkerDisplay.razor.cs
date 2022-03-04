@@ -1,8 +1,9 @@
 ﻿using CurrieTechnologies.Razor.SweetAlert2;
-using Grpc.Core;
 using Microsoft.AspNetCore.Components;
-using SimpleScheduler.Blazor.Shared.ServiceContracts;
 using SimpleSchedulerApiModels;
+using SimpleSchedulerApiModels.Reply.Workers;
+using SimpleSchedulerApiModels.Request.Workers;
+using SimpleSchedulerBlazor.Client.Errors;
 
 namespace SimpleSchedulerBlazor.Client.Components.Workers;
 
@@ -15,7 +16,7 @@ partial class WorkerDisplay
     private SweetAlertService Swal { get; set; } = default!;
 
     [Inject]
-    private IWorkersService WorkerService { get; set; } = default!;
+    private ServiceClient ServiceClient { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
@@ -39,8 +40,20 @@ partial class WorkerDisplay
 
     public async Task RefreshAsync()
     {
-        Worker = (await WorkerService.GetWorkerAsync(new(Worker!.Worker.ID))).Worker;
-        StateHasChanged();
+        (await ServiceClient.TryPostAsync<GetWorkerRequest, GetWorkerReply>(
+            "Workers/GetWorker",
+            new(Worker!.Worker.ID)
+        )).Switch(
+            (GetWorkerReply reply) =>
+            {
+                Worker = reply.Worker;
+                StateHasChanged();
+            },
+            async (Error error) =>
+            {
+                await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
+            }
+        );
     }
 
     private Task EditWorker()
@@ -61,59 +74,45 @@ partial class WorkerDisplay
             CancelButtonText = "Cancel"
         });
 
-        string message;
         if (!string.IsNullOrEmpty(result.Value))
         {
             WorkersComponent.SetLoadingOn();
-            try
-            {
-                await WorkerService.DeleteWorkerAsync(new(Worker!.Worker.ID));
-                await WorkersComponent.RefreshAsync();
-                return;
-            }
-            catch (RpcException ex)
-            {
-                message = ex.Status.Detail;
-                if (string.IsNullOrWhiteSpace(message))
-                {
-                    message = ex.Message;
-                }
-            }
-            catch (Exception ex)
-            {
-                message = ex.Message;
-            }
 
-            await Swal.FireAsync("Error", message, SweetAlertIcon.Error);
-            WorkersComponent.SetLoadingOff();
+            (await ServiceClient.TryPostAsync<DeleteWorkerRequest, DeleteWorkerReply>(
+                "Workers/DeleteWorker",
+                new(Worker!.Worker.ID)
+            )).Switch(
+                async (DeleteWorkerReply reply) =>
+                {
+                    await WorkersComponent.RefreshAsync();
+                },
+                async (Error error) =>
+                {
+                    await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
+                    WorkersComponent.SetLoadingOff();
+                }
+            );
         }
     }
 
     private async Task ReactivateWorker()
     {
-        string message;
         WorkersComponent.SetLoadingOn();
-        try
-        {
-            await WorkerService.ReactivateWorkerAsync(new(Worker!.Worker.ID));
-            await WorkersComponent.RefreshAsync();
-            return;
-        }
-        catch (RpcException ex)
-        {
-            message = ex.Status.Detail;
-            if (string.IsNullOrWhiteSpace(message))
-            {
-                message = ex.Message;
-            }
-        }
-        catch (Exception ex)
-        {
-            message = ex.Message;
-        }
 
-        await Swal.FireAsync("Error", message, SweetAlertIcon.Error);
-        WorkersComponent.SetLoadingOff();
+        (await ServiceClient.TryPostAsync<ReactivateWorkerRequest, ReactivateWorkerReply>(
+            "Workers/ReactivateWorker",
+            new(Worker!.Worker.ID)
+        )).Switch(
+            async (ReactivateWorkerReply reply) =>
+            {
+                await WorkersComponent.RefreshAsync();
+            },
+            async (Error error) =>
+            {
+                await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
+                WorkersComponent.SetLoadingOff();
+            }
+        );
     }
 
     private Task RunWorker()

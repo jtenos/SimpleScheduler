@@ -1,16 +1,16 @@
 ﻿using CurrieTechnologies.Razor.SweetAlert2;
-using Grpc.Core;
 using Microsoft.AspNetCore.Components;
-using SimpleScheduler.Blazor.Shared.ServiceContracts;
 using SimpleSchedulerApiModels;
+using SimpleSchedulerApiModels.Reply.Workers;
 using SimpleSchedulerApiModels.Request.Workers;
+using SimpleSchedulerBlazor.Client.Errors;
 
 namespace SimpleSchedulerBlazor.Client.Pages;
 
 partial class WorkerEdit
 {
     [Inject]
-    private IWorkersService WorkersService { get; set; } = default!;
+    private ServiceClient ServiceClient { get; set; } = default!;
 
     [Inject]
     private NavigationManager Nav { get; set; } = default!;
@@ -28,18 +28,44 @@ partial class WorkerEdit
 
     protected override async Task OnInitializedAsync()
     {
-        Worker = (await WorkersService.GetWorkerAsync(new(ID))).Worker.Worker;
-        AllWorkers = (await WorkersService.GetAllActiveWorkerIDNamesAsync(new())).Workers.ToArray();
+        (await ServiceClient.TryPostAsync<GetWorkerRequest, GetWorkerReply>(
+            "Workers/GetWorker",
+            new GetWorkerRequest(ID)
+        )).Switch(
+            (GetWorkerReply reply) =>
+            {
+                Worker = reply.Worker.Worker;
+            },
+            async (Error error) =>
+            {
+                await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
+            }
+        );
+
+        (await ServiceClient.TryPostAsync<GetAllActiveWorkerIDNamesRequest, GetAllActiveWorkerIDNamesReply>(
+            "Workers/GetAllActiveWorkerIDNames",
+            new GetAllActiveWorkerIDNamesRequest()
+        )).Switch(
+            (GetAllActiveWorkerIDNamesReply reply) =>
+            {
+                AllWorkers = reply.Workers;
+            },
+            async (Error error) =>
+            {
+                await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
+            }
+        );
+
         Loading = false;
     }
 
     private async Task SaveWorker()
     {
-        try
+        if (Worker.ID > 0)
         {
-            if (Worker.ID > 0)
-            {
-                await WorkersService.UpdateWorkerAsync(new UpdateWorkerRequest(
+            (await ServiceClient.TryPostAsync<UpdateWorkerRequest, UpdateWorkerReply>(
+                "Workers/UpdateWorker",
+                new UpdateWorkerRequest(
                     id: Worker.ID,
                     workerName: Worker.WorkerName,
                     detailedDescription: Worker.DetailedDescription,
@@ -49,29 +75,16 @@ partial class WorkerEdit
                     directoryName: Worker.DirectoryName,
                     executable: Worker.Executable,
                     argumentValues: Worker.ArgumentValues
-                ));
-                Nav.NavigateTo("workers");
-            }
-        }
-        catch (RpcException ex)
-        {
-            string message = ex.Status.Detail;
-            if (string.IsNullOrWhiteSpace(message))
-            {
-                message = ex.Message;
-            }
-            await Swal.FireAsync(
-                title: "Error saving worker",
-                message: message,
-                icon: SweetAlertIcon.Error
-            );
-        }
-        catch (Exception ex)
-        {
-            await Swal.FireAsync(
-                title: "Error saving worker",
-                message: ex.Message,
-                icon: SweetAlertIcon.Error
+                )
+            )).Switch(
+                (UpdateWorkerReply reply) =>
+                {
+                    Nav.NavigateTo("workers");
+                },
+                async (Error error) =>
+                {
+                    await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
+                }
             );
         }
     }
