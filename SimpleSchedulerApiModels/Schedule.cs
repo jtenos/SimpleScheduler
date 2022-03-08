@@ -73,9 +73,10 @@ public class Schedule
         }
 
         string times = "Unknown";
-        const string TS_FORMAT = "hh:mm";
+        const string TS_FORMAT = @"hh\:mm";
         if (TimeOfDayUTC.HasValue)
         {
+            Console.WriteLine(TimeOfDayUTC.Value);
             times = $"at { TimeOfDayUTC.Value.ToString(TS_FORMAT) }";
         }
         else if (RecurTime.HasValue)
@@ -101,8 +102,9 @@ public class Schedule
 
     private static string GetFormattedTimeSpan(TimeSpan ts)
     {
-        if (ts.Hours == 1) { return "every hour"; }
-        if (ts.Hours > 1) { return $"every { ts.Hours } hours"; }
+        if (ts.Hours == 1 && ts.Minutes == 0) { return "every hour"; }
+        if (ts.Hours > 1 && ts.Minutes == 0) { return $"every { ts.Hours } hours"; }
+        if (ts.Hours > 0 && ts.Minutes > 0) { return $"every {ts:hh\\:mm}"; }
         if (ts.Minutes == 1) { return "every minute"; }
         if (ts.Minutes > 1) { return $"every { ts.Minutes} minutes"; }
         return "unknown";

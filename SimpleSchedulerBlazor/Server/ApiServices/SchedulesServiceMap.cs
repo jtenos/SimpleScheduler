@@ -1,4 +1,5 @@
-﻿using SimpleSchedulerApiModels;
+﻿using OneOf.Types;
+using SimpleSchedulerApiModels;
 using SimpleSchedulerApiModels.Reply.Schedules;
 using SimpleSchedulerApiModels.Request.Schedules;
 using SimpleSchedulerAppServices.Interfaces;
@@ -15,7 +16,7 @@ public static class SchedulesServiceMap
                 CreateScheduleRequest request
             ) =>
             {
-                await scheduleManager.AddScheduleAsync(
+                return (await scheduleManager.AddScheduleAsync(
                     workerID: request.WorkerID,
                     sunday: request.Sunday,
                     monday: request.Monday,
@@ -27,9 +28,17 @@ public static class SchedulesServiceMap
                     timeOfDayUTC: request.TimeOfDayUTC,
                     recurTime: request.RecurTime,
                     recurBetweenStartUTC: request.RecurBetweenStartUTC,
-                    recurBetweenEndUTC: request.RecurBetweenEndUTC);
-
-                return new CreateScheduleReply();
+                    recurBetweenEndUTC: request.RecurBetweenEndUTC
+                )).Match(
+                    (Success success) =>
+                    {
+                        return Results.Ok(new CreateScheduleReply());
+                    },
+                    (Error<string> error) =>
+                    {
+                        return Results.BadRequest(error.Value);
+                    }
+                );
             });
 
         app.MapPost("/Schedules/DeleteSchedule",
@@ -80,7 +89,7 @@ public static class SchedulesServiceMap
                 UpdateScheduleRequest request
             ) =>
             {
-                await scheduleManager.UpdateScheduleAsync(
+                return (await scheduleManager.UpdateScheduleAsync(
                     id: request.ID,
                     sunday: request.Sunday,
                     monday: request.Monday,
@@ -92,9 +101,17 @@ public static class SchedulesServiceMap
                     timeOfDayUTC: request.TimeOfDayUTC,
                     recurTime: request.RecurTime,
                     recurBetweenStartUTC: request.RecurBetweenStartUTC,
-                    recurBetweenEndUTC: request.RecurBetweenEndUTC);
-
-                return new UpdateScheduleReply();
+                    recurBetweenEndUTC: request.RecurBetweenEndUTC
+                )).Match(
+                    (Success success) =>
+                    {
+                        return Results.Ok(new UpdateScheduleReply());
+                    },
+                    (Error<string> error) =>
+                    {
+                        return Results.BadRequest(error.Value);
+                    }
+                );
             });
     }
 }

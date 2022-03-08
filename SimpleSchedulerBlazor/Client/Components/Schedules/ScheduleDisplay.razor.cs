@@ -25,6 +25,8 @@ partial class ScheduleDisplay
     private SweetAlertService Swal { get; set; } = default!;
 
     public bool IsLoading { get; set; }
+
+    [Parameter]
     public bool IsEditing { get; set; }
 
     private Task EditSchedule()
@@ -56,10 +58,12 @@ partial class ScheduleDisplay
                 async (DeleteScheduleReply reply) =>
                 {
                     await WorkerDisplayComponent.RefreshAsync();
+                    IsLoading = false;
                 },
                 async (Error error) =>
                 {
                     await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
+                    await WorkerDisplayComponent.RefreshAsync();
                 }
             );
         }
@@ -67,11 +71,75 @@ partial class ScheduleDisplay
 
     private async Task SaveSchedule()
     {
-        await Task.CompletedTask;
+        IsLoading = true;
+
+        if (Schedule.ID == 0)
+        {
+            (await ServiceClient.TryPostAsync<CreateScheduleRequest, CreateScheduleReply>(
+                "Schedules/CreateSchedule",
+                new CreateScheduleRequest(
+                    Schedule.WorkerID,
+                    Schedule.Sunday,
+                    Schedule.Monday,
+                    Schedule.Tuesday,
+                    Schedule.Wednesday,
+                    Schedule.Thursday,
+                    Schedule.Friday,
+                    Schedule.Saturday,
+                    Schedule.TimeOfDayUTC,
+                    Schedule.RecurTime,
+                    Schedule.RecurBetweenStartUTC,
+                    Schedule.RecurBetweenEndUTC
+                )
+            )).Switch(
+                async (CreateScheduleReply reply) =>
+                {
+                    IsEditing = false;
+                    await WorkerDisplayComponent.RefreshAsync();
+                },
+                async (Error error) =>
+                {
+                    await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
+                }
+            );
+        }
+        else
+        {
+            (await ServiceClient.TryPostAsync<UpdateScheduleRequest, UpdateScheduleReply>(
+                "Schedules/UpdateSchedule",
+                new UpdateScheduleRequest(
+                    Schedule.ID,
+                    Schedule.Sunday,
+                    Schedule.Monday,
+                    Schedule.Tuesday,
+                    Schedule.Wednesday,
+                    Schedule.Thursday,
+                    Schedule.Friday,
+                    Schedule.Saturday,
+                    Schedule.TimeOfDayUTC,
+                    Schedule.RecurTime,
+                    Schedule.RecurBetweenStartUTC,
+                    Schedule.RecurBetweenEndUTC
+                )
+            )).Switch(
+                async (UpdateScheduleReply reply) =>
+                {
+                    IsEditing = false;
+                    await WorkerDisplayComponent.RefreshAsync();
+                },
+                async (Error error) =>
+                {
+                    await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
+                }
+            );
+        }
+
+        IsLoading = false;
     }
 
     private async Task CancelEditSchedule()
     {
-        await Task.CompletedTask;
+        IsEditing = false;
+        await WorkerDisplayComponent.RefreshAsync();
     }
 }

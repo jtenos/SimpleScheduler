@@ -107,12 +107,12 @@ partial class Workers
         {
             Wws worker1 = filteredWorkers[i];
             Wws? worker2 = null;
-            if (i < filteredWorkers.Length - 2)
+            if (i < filteredWorkers.Length - 1)
             {
                 worker2 = filteredWorkers[i + 1];
             }
             Wws? worker3 = null;
-            if (i < filteredWorkers.Length - 3)
+            if (i < filteredWorkers.Length - 2)
             {
                 worker3 = filteredWorkers[i + 2];
             }

@@ -12,4 +12,11 @@ partial class WorkerSchedules
     [Parameter]
     [EditorRequired]
     public WorkerDisplay WorkerDisplayComponent { get; set; } = default!;
+
+    public Task AddSchedule()
+    {
+        Worker.Schedules = Worker.Schedules.Union(new[] { new Schedule { WorkerID = Worker.Worker.ID } }).ToArray();
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
 }

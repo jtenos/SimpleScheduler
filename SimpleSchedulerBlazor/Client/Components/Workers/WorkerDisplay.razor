@@ -24,14 +24,20 @@
                             <div style="font-size: smaller;"><strong>Email on Success: @Worker.Worker.EmailOnSuccess</strong></div>
                         }
                     </li>
-                    <WorkerSchedules Worker="Worker" WorkerDisplayComponent="this" />
+                    @if (Worker.Worker.IsActive)
+                    {
+                        <WorkerSchedules Worker="Worker" WorkerDisplayComponent="this" />
+                    }
                 </ul>
             </div>
             <div class="card-footer d-flex justify-content-around">
-                <button class="btn btn-warning" @onclick="EditWorker">
-                    <i class="bi bi-pencil"></i>
-                    Edit
-                </button>
+                @if (Worker.Worker.IsActive)
+                {
+                    <button class="btn btn-warning" @onclick="EditWorker">
+                        <i class="bi bi-pencil"></i>
+                        Edit
+                    </button>
+                }
                 @if (Worker.Worker.IsActive)
                 {
                     <button class="btn btn-danger" @onclick="DeleteWorker">
@@ -46,10 +52,13 @@
                         Reactivate
                     </button>
                 }
-                <button class="btn btn-success" @onclick="RunWorker">
-                    <i class="bi bi-play"></i>
-                    Run
-                </button>
+                @if (Worker.Worker.IsActive)
+                {
+                    <button class="btn btn-success" @onclick="RunWorker">
+                        <i class="bi bi-play"></i>
+                        Run
+                    </button>
+                }
             </div>
         </div>
     }
