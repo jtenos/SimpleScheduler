@@ -1,7 +1,68 @@
 ﻿@page "/"
-@page "/jobs"
-<h3>Jobs</h3>
+@page "/jobs/{WorkerID:long?}"
 
-@code {
+@if (Loading)
+{
+    <LoadingAnimation />
+}
+else
+{
+    Console.WriteLine($"in razor view {JobDetails.Length} jobs in collection");
 
+    <div>
+        <EditForm Model="SearchCriteria">
+            <label for="AllWorkersDropdown">Worker</label>
+            <select @bind="SearchCriteria.StatusCode" class="form-control">
+                <option></option>
+                @foreach (Worker worker in AllWorkers)
+                {
+                    <option value="@worker.ID">@worker.WorkerName</option>
+                }
+            </select>
+        </EditForm>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Worker</th>
+                <th>Queue Date</th>
+                <th>Status</th>
+                <th>Results</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ((Job Job, Schedule Schedule, Worker Worker) job in JobDetails)
+            {
+                <tr>
+                    <td>
+                        <div>
+                            @job.Worker.WorkerName
+                        </div>
+                        @if (job.Worker.ParentWorkerID.HasValue)
+                        {
+                            string parentWorkerName = AllWorkers.Single(w => w.ID == job.Worker.ParentWorkerID).WorkerName;
+
+                            <div>
+                                (Child of @parentWorkerName)
+                            </div>
+                        }
+                    </td>
+                    <td>
+                        <div>@job.Job.QueueDateUTC.FormatDate()</div>
+                        <div>@job.Job.QueueDateUTC.FormatTime()</div>
+                    </td>
+                    <td>
+                        @job.Job.StatusCode
+                    </td>
+                    <td>
+                        @if (job.Job.HasDetailedMessage)
+                        {
+                            <a href="#" onclick="return false;">Details TODO</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }

@@ -76,7 +76,6 @@ public class Schedule
         const string TS_FORMAT = @"hh\:mm";
         if (TimeOfDayUTC.HasValue)
         {
-            Console.WriteLine(TimeOfDayUTC.Value);
             times = $"at { TimeOfDayUTC.Value.ToString(TS_FORMAT) }";
         }
         else if (RecurTime.HasValue)

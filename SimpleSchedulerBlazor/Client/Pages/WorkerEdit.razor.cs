@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Components;
 using SimpleSchedulerApiModels;
 using SimpleSchedulerApiModels.Reply.Workers;
 using SimpleSchedulerApiModels.Request.Workers;
-using SimpleSchedulerBlazor.Client.Errors;
 
 namespace SimpleSchedulerBlazor.Client.Pages;
 
@@ -28,42 +27,50 @@ partial class WorkerEdit
 
     protected override async Task OnInitializedAsync()
     {
-        (await ServiceClient.TryPostAsync<GetWorkerRequest, GetWorkerReply>(
-            "Workers/GetWorker",
-            new GetWorkerRequest(ID)
-        )).Switch(
-            (GetWorkerReply reply) =>
-            {
-                Worker = reply.Worker.Worker;
-            },
-            async (Error error) =>
-            {
-                await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
-            }
-        );
+        await LoadWorkerAsync();
 
-        (await ServiceClient.TryPostAsync<GetAllActiveWorkerIDNamesRequest, GetAllActiveWorkerIDNamesReply>(
-            "Workers/GetAllActiveWorkerIDNames",
-            new GetAllActiveWorkerIDNamesRequest()
-        )).Switch(
-            (GetAllActiveWorkerIDNamesReply reply) =>
-            {
-                AllWorkers = reply.Workers;
-            },
-            async (Error error) =>
-            {
-                await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
-            }
-        );
+        await LoadActiveWorkersAsync();
 
         Loading = false;
+    }
+
+    private async Task LoadActiveWorkersAsync()
+    {
+        (Error? error, GetAllActiveWorkerIDNamesReply? reply) = await ServiceClient.PostAsync<GetAllActiveWorkerIDNamesRequest, GetAllActiveWorkerIDNamesReply>(
+            "Workers/GetAllActiveWorkerIDNames",
+            new GetAllActiveWorkerIDNamesRequest()
+        );
+
+        if (error is not null)
+        {
+            await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
+            return;
+        }
+
+        AllWorkers = reply!.Workers;
+    }
+
+    private async Task LoadWorkerAsync()
+    {
+        (Error? error, GetWorkerReply? reply) = await ServiceClient.PostAsync<GetWorkerRequest, GetWorkerReply>(
+            "Workers/GetWorker",
+            new GetWorkerRequest(ID)
+        );
+
+        if (error is not null)
+        {
+            await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
+            return;
+        }
+
+        Worker = reply!.Worker.Worker;
     }
 
     private async Task SaveWorker()
     {
         if (Worker.ID > 0)
         {
-            (await ServiceClient.TryPostAsync<UpdateWorkerRequest, UpdateWorkerReply>(
+            (Error? error, _) = await ServiceClient.PostAsync<UpdateWorkerRequest, UpdateWorkerReply>(
                 "Workers/UpdateWorker",
                 new UpdateWorkerRequest(
                     id: Worker.ID,
@@ -76,16 +83,15 @@ partial class WorkerEdit
                     executable: Worker.Executable,
                     argumentValues: Worker.ArgumentValues
                 )
-            )).Switch(
-                (UpdateWorkerReply reply) =>
-                {
-                    Nav.NavigateTo("workers");
-                },
-                async (Error error) =>
-                {
-                    await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
-                }
             );
+
+            if (error is not null)
+            {
+                await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
+                return;
+            }
+
+            Nav.NavigateTo("workers");
         }
     }
 }

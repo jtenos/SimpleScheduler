@@ -1,7 +1,4 @@
-﻿using OneOf;
-using OneOf.Types;
-using SimpleSchedulerModels;
-using SimpleSchedulerModels.ResultTypes;
+﻿using SimpleSchedulerModels;
 
 namespace SimpleSchedulerAppServices.Interfaces;
 
@@ -11,7 +8,7 @@ public interface IJobManager
     Task AcknowledgeErrorAsync(long id);
     Task AddJobAsync(long scheduleID, DateTime queueDateUTC);
     Task<Job> GetJobAsync(long id);
-    Task<OneOf<Success, AlreadyCompleted, AlreadyStarted>> CancelJobAsync(long jobID);
+    Task CancelJobAsync(long jobID);
     Task CompleteJobAsync(long id, bool success, string? detailedMessage);
     Task<Job[]> GetLatestJobsAsync(int pageNumber, int rowsPerPage,
         string? statusCode, long? workerID, bool overdueOnly);

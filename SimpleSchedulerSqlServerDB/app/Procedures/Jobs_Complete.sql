@@ -25,8 +25,8 @@ BEGIN
 			WHERE j.[ID] = @ID;
 
 			DECLARE @ChildWorkerIDs [app].[BigIntArray];
-			INSERT INTO @ChildWorkerIDs ([Value])
-				SELECT [ID]
+			INSERT INTO @ChildWorkerIDs ([Value], [SortOrder])
+				SELECT [ID], [ID]
 				FROM [app].[Workers]
 				WHERE [ParentWorkerID] = @WorkerID
 				AND [IsActive] = 1;

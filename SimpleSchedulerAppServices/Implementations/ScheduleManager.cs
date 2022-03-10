@@ -1,10 +1,9 @@
 using Dapper;
-using OneOf;
-using OneOf.Types;
 using SimpleSchedulerAppServices.Interfaces;
 using SimpleSchedulerData;
 using SimpleSchedulerDataEntities;
 using SimpleSchedulerModels;
+using System.ComponentModel.DataAnnotations;
 
 namespace SimpleSchedulerAppServices.Implementations;
 
@@ -18,25 +17,25 @@ public sealed class ScheduleManager
         _db = db;
     }
 
-    async Task<OneOf<Success, Error<string>>> IScheduleManager.AddScheduleAsync(long workerID,
+    async Task IScheduleManager.AddScheduleAsync(long workerID,
         bool sunday, bool monday, bool tuesday, bool wednesday, bool thursday, bool friday, bool saturday,
         TimeSpan? timeOfDayUTC, TimeSpan? recurTime, TimeSpan? recurBetweenStartUTC, TimeSpan? recurBetweenEndUTC)
     {
         if (!sunday && !monday && !tuesday && !wednesday && !thursday && !friday && !saturday)
         {
-            return new Error<string>("You must select at least one day.");
+            throw new ValidationException("You must select at least one day.");
         }
         if (timeOfDayUTC.HasValue && recurTime.HasValue)
         {
-            return new Error<string>("You must select only one of TimeOfDay/RecurTime");
+            throw new ValidationException("You must select only one of TimeOfDay/RecurTime");
         }
         if (!timeOfDayUTC.HasValue && !recurTime.HasValue)
         {
-            return new Error<string>("You must select one of TimeOfDay/RecurTime");
+            throw new ValidationException("You must select one of TimeOfDay/RecurTime");
         }
         if (recurBetweenStartUTC.HasValue && recurBetweenEndUTC.HasValue && recurBetweenStartUTC > recurBetweenEndUTC)
         {
-            return new Error<string>("Recur between times invalid");
+            throw new ValidationException("Recur between times invalid");
         }
 
         DynamicParameters param = new DynamicParameters()
@@ -57,8 +56,6 @@ public sealed class ScheduleManager
             "[app].[Schedules_Insert]",
             param
         ).ConfigureAwait(false);
-
-        return new Success();
     }
 
     async Task IScheduleManager.DeactivateScheduleAsync(long id)
@@ -89,6 +86,19 @@ public sealed class ScheduleManager
 
         return (await _db.GetManyAsync<ScheduleEntity>(
             "[app].[Schedules_SelectForWorker]",
+            parameters: param
+        ).ConfigureAwait(false))
+        .Select(s => ModelBuilders.GetSchedule(s))
+        .ToArray();
+    }
+
+    async Task<Schedule[]> IScheduleManager.GetSchedulesAsync(long[] ids)
+    {
+        DynamicParameters param = new DynamicParameters()
+            .AddBigIntArrayParam("@IDs", ids);
+
+        return (await _db.GetManyAsync<ScheduleEntity>(
+            "[app].[Schedules_SelectMany]",
             parameters: param
         ).ConfigureAwait(false))
         .Select(s => ModelBuilders.GetSchedule(s))
@@ -127,26 +137,26 @@ public sealed class ScheduleManager
         ).ConfigureAwait(false);
     }
 
-    async Task<OneOf<Success, Error<string>>> IScheduleManager.UpdateScheduleAsync(long id, bool sunday,
+    async Task IScheduleManager.UpdateScheduleAsync(long id, bool sunday,
         bool monday, bool tuesday, bool wednesday, bool thursday, bool friday, bool saturday,
         TimeSpan? timeOfDayUTC, TimeSpan? recurTime, TimeSpan? recurBetweenStartUTC,
         TimeSpan? recurBetweenEndUTC)
     {
         if (!sunday && !monday && !tuesday && !wednesday && !thursday && !friday && !saturday)
         {
-            return new Error<string>("You must select at least one day.");
+            throw new ValidationException("You must select at least one day.");
         }
         if (timeOfDayUTC.HasValue && recurTime.HasValue)
         {
-            return new Error<string>("You must select only one of TimeOfDay/RecurTime");
+            throw new ValidationException("You must select only one of TimeOfDay/RecurTime");
         }
         if (!timeOfDayUTC.HasValue && !recurTime.HasValue)
         {
-            return new Error<string>("You must select one of TimeOfDay/RecurTime");
+            throw new ValidationException("You must select one of TimeOfDay/RecurTime");
         }
         if (recurBetweenStartUTC.HasValue && recurBetweenEndUTC.HasValue && recurBetweenStartUTC > recurBetweenEndUTC)
         {
-            return new Error<string>("Recur between times invalid");
+            throw new ValidationException("Recur between times invalid");
         }
 
         DynamicParameters param = new DynamicParameters()
@@ -167,7 +177,5 @@ public sealed class ScheduleManager
             "[app].[Schedules_Update]",
             param
         ).ConfigureAwait(false);
-
-        return new Success();
     }
 }

@@ -1,6 +1,4 @@
-﻿using OneOf;
-using OneOf.Types;
-using SimpleSchedulerModels;
+﻿using SimpleSchedulerModels;
 
 namespace SimpleSchedulerAppServices.Interfaces;
 
@@ -11,12 +9,13 @@ public interface IScheduleManager
     Task<Schedule[]> GetSchedulesToInsertAsync();
     Task<Schedule[]> GetAllSchedulesAsync();
     Task<Schedule[]> GetSchedulesForWorkerAsync(long workerID);
+    Task<Schedule[]> GetSchedulesAsync(long[] ids);
     Task<Schedule> GetScheduleAsync(long id);
-    Task<OneOf<Success, Error<string>>> AddScheduleAsync(long workerID, 
+    Task AddScheduleAsync(long workerID, 
         bool sunday, bool monday, bool tuesday, bool wednesday, bool thursday, bool friday, bool saturday,
         TimeSpan? timeOfDayUTC, TimeSpan? recurTime, TimeSpan? recurBetweenStartUTC,
         TimeSpan? recurBetweenEndUTC);
-    Task<OneOf<Success, Error<string>>> UpdateScheduleAsync(long id, bool sunday,
+    Task UpdateScheduleAsync(long id, bool sunday,
         bool monday, bool tuesday, bool wednesday, bool thursday, bool friday, bool saturday,
         TimeSpan? timeOfDayUTC, TimeSpan? recurTime, TimeSpan? recurBetweenStartUTC,
         TimeSpan? recurBetweenEndUTC);

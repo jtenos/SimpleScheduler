@@ -3,7 +3,6 @@ using CurrieTechnologies.Razor.SweetAlert2;
 using Microsoft.AspNetCore.Components;
 using SimpleSchedulerApiModels.Reply.Login;
 using SimpleSchedulerApiModels.Request.Login;
-using SimpleSchedulerBlazor.Client.Errors;
 
 namespace SimpleSchedulerBlazor.Client.Pages;
 
@@ -31,31 +30,19 @@ partial class Login
     {
         Loading = true;
         StateHasChanged();
-
-        string message = "";
-        (await ServiceClient.TryPostAsync<SubmitEmailRequest, SubmitEmailReply>(
+        (Error? error, _) = await ServiceClient.PostAsync<SubmitEmailRequest, SubmitEmailReply>(
             "Login/SubmitEmail",
             new(emailAddress: Model.Email!)
-        )).Switch(
-            (SubmitEmailReply reply) =>
-            {
-                message = "Please check your email for a login link";
-                SubmittedSuccessfully = true;
-            },
-            (Error error) =>
-            {
-                message = error.Message;
-            }
         );
 
         Loading = false;
-        if (SubmittedSuccessfully)
+        if (error is not null)
         {
-            await Swal.FireAsync("Success", message, SweetAlertIcon.Success);
+            await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
         }
         else
         {
-            await Swal.FireAsync("Error", message, SweetAlertIcon.Error);
+            await Swal.FireAsync("Success", "Please check your email for a login link", SweetAlertIcon.Success);
         }
     }
 }

@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Components;
 using SimpleSchedulerApiModels.Reply.Login;
 using SimpleSchedulerApiModels.Request.Login;
-using SimpleSchedulerBlazor.Client.Errors;
 
 namespace SimpleSchedulerBlazor.Client.Pages;
 
@@ -27,19 +26,18 @@ partial class ValidateUser
 
     protected override async Task OnInitializedAsync()
     {
-        (await ServiceClient.TryPostAsync<ValidateEmailRequest, ValidateEmailReply>(
+        (Error? error, ValidateEmailReply? reply) = await ServiceClient.PostAsync<ValidateEmailRequest, ValidateEmailReply>(
             "Login/ValidateEmail",
             new(Guid.Parse(ValidationCode))
-        )).Switch(
-            async (ValidateEmailReply reply) =>
-            {
-                await LocalStorage.SetItemAsStringAsync($"Jwt:{ClientAppInfo.EnvironmentName}", reply.JwtToken);
-                NavigationManager.NavigateTo("/");
-            },
-            (Error error) =>
-            {
-                ErrorMessage = error.Message;
-            }
         );
+
+        if (error is not null)
+        {
+            ErrorMessage = error.Message;
+            return;
+        }
+
+        await LocalStorage.SetItemAsStringAsync($"Jwt:{ClientAppInfo.EnvironmentName}", reply!.JwtToken);
+        NavigationManager.NavigateTo("/");
     }
 }

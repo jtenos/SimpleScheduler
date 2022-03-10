@@ -5,8 +5,6 @@ using SimpleSchedulerApiModels;
 using SimpleSchedulerApiModels.Reply.Workers;
 using SimpleSchedulerApiModels.Request.Workers;
 using SimpleSchedulerBlazor.Client.Components;
-using SimpleSchedulerBlazor.Client.Components.Workers;
-using SimpleSchedulerBlazor.Client.Errors;
 using Wws = SimpleSchedulerApiModels.WorkerWithSchedules;
 
 namespace SimpleSchedulerBlazor.Client.Pages;
@@ -30,9 +28,6 @@ partial class Workers
 
     private bool Loading { get; set; } = true;
 
-    private List<WorkerGroupDisplay> WorkerGroupDisplays { get; } = new();
-    private WorkerGroupDisplay CurrentWorkerGroupDisplay { set => WorkerGroupDisplays.Add(value); }
-
     protected override async Task OnInitializedAsync()
     {
         SearchEditContext = new(SearchCriteria);
@@ -46,23 +41,22 @@ partial class Workers
 
     private async Task LoadGroupsAsync()
     {
-        (await ServiceClient.TryPostAsync<GetAllWorkersRequest, GetAllWorkersReply>(
+        (Error? error, GetAllWorkersReply? reply) = await ServiceClient.PostAsync<GetAllWorkersRequest, GetAllWorkersReply>(
             "Workers/GetAllWorkers",
             new GetAllWorkersRequest()
-        )).Switch(
-            (GetAllWorkersReply reply) =>
-            {
-                AllWorkersWithSchedules = reply.Workers;
-                Array.Sort(AllWorkersWithSchedules, (w1, w2) => w1.Worker.WorkerName.CompareTo(w2.Worker.WorkerName));
-                SetFilteredWorkerGroups();
-                Loading = false;
-                StateHasChanged();
-            },
-            async (Error error) =>
-            {
-                await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
-            }
         );
+
+        if (error is not null)
+        {
+            await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
+            return;
+        }
+
+        AllWorkersWithSchedules = reply!.Workers;
+        Array.Sort(AllWorkersWithSchedules, (w1, w2) => w1.Worker.WorkerName.CompareTo(w2.Worker.WorkerName));
+        SetFilteredWorkerGroups();
+        Loading = false;
+        StateHasChanged(); // TODO: Is this necessary?
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

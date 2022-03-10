@@ -1,12 +1,9 @@
 ﻿using System.Data;
 using Dapper;
-using OneOf;
-using OneOf.Types;
 using SimpleSchedulerAppServices.Interfaces;
 using SimpleSchedulerData;
 using SimpleSchedulerDataEntities;
 using SimpleSchedulerModels;
-using SimpleSchedulerModels.ResultTypes;
 
 namespace SimpleSchedulerAppServices.Implementations;
 
@@ -44,7 +41,7 @@ public sealed class JobManager
     }
 
     private record class CancelJobResult(bool Success, bool AlreadyCompleted, bool AlreadyStarted);
-    async Task<OneOf<Success, AlreadyCompleted, AlreadyStarted>> IJobManager.CancelJobAsync(long jobID)
+    async Task IJobManager.CancelJobAsync(long jobID)
     {
         DynamicParameters param = new DynamicParameters()
             .AddLongParam("@ID", jobID);
@@ -54,9 +51,9 @@ public sealed class JobManager
             param
         ).ConfigureAwait(false);
 
-        if (cancelResult.Success) { return new Success(); }
-        if (cancelResult.AlreadyCompleted) { return new AlreadyCompleted(); }
-        if (cancelResult.AlreadyStarted) { return new AlreadyStarted(); }
+        if (cancelResult.Success) { return; }
+        if (cancelResult.AlreadyCompleted) { throw new ApplicationException("Already completed"); }
+        if (cancelResult.AlreadyStarted) { throw new ApplicationException("Already started"); }
 
         throw new ApplicationException("Invalid cancel result");
     }
@@ -126,7 +123,7 @@ public sealed class JobManager
         int rowsPerPage, string? statusCode, long? workerID, bool overdueOnly)
     {
         DynamicParameters param = new DynamicParameters()
-            .AddNullableNVarCharParam("@StatusCode", statusCode, 3)
+            .AddNullableNCharParam("@StatusCode", statusCode, 3)
             .AddNullableLongParam("@WorkerID", workerID)
             .AddBitParam("@OverdueOnly", overdueOnly)
             .AddIntParam("@Offset", (pageNumber - 1) * rowsPerPage)

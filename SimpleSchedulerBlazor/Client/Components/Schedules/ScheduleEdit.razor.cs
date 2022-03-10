@@ -1,11 +1,15 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.JSInterop;
 using SimpleSchedulerApiModels;
 
 namespace SimpleSchedulerBlazor.Client.Components.Schedules;
 
 partial class ScheduleEdit
 {
+    [Inject]
+    private IJSRuntime JSRuntime { get; set; } = default!;
+
     private Guid UniqueId { get; } = Guid.NewGuid();
 
     private EditContext ScheduleEditContext { get; set; } = default!;
@@ -105,5 +109,13 @@ partial class ScheduleEdit
         };
 
         await Task.CompletedTask;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("setTimeMasks");
+        }
     }
 }

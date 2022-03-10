@@ -6,7 +6,7 @@ public class GetJobsRequest
 
     public GetJobsRequest(
         long? workerID,
-        string statusCode,
+        string? statusCode,
         int pageNumber,
         bool overdueOnly)
     {
@@ -17,7 +17,7 @@ public class GetJobsRequest
     }
 
     public long? WorkerID { get; set; }
-    public string StatusCode { get; set; } = default!;
+    public string? StatusCode { get; set; }
     public int PageNumber { get; set; }
     public bool OverdueOnly { get; set; }
 }

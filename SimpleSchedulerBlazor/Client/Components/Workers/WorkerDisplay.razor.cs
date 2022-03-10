@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Components;
 using SimpleSchedulerApiModels;
 using SimpleSchedulerApiModels.Reply.Workers;
 using SimpleSchedulerApiModels.Request.Workers;
-using SimpleSchedulerBlazor.Client.Errors;
 
 namespace SimpleSchedulerBlazor.Client.Components.Workers;
 
@@ -40,20 +39,19 @@ partial class WorkerDisplay
 
     public async Task RefreshAsync()
     {
-        (await ServiceClient.TryPostAsync<GetWorkerRequest, GetWorkerReply>(
+        (Error? error, GetWorkerReply? reply) = await ServiceClient.PostAsync<GetWorkerRequest, GetWorkerReply>(
             "Workers/GetWorker",
             new(Worker!.Worker.ID)
-        )).Switch(
-            (GetWorkerReply reply) =>
-            {
-                Worker = reply.Worker;
-                StateHasChanged();
-            },
-            async (Error error) =>
-            {
-                await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
-            }
         );
+
+        if (error is not null)
+        {
+            await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
+            return;
+        }
+
+        Worker = reply!.Worker;
+        StateHasChanged(); // TODO: Is this necessary?
     }
 
     private Task EditWorker()
@@ -77,46 +75,55 @@ partial class WorkerDisplay
         if (!string.IsNullOrEmpty(result.Value))
         {
             WorkersComponent.SetLoadingOn();
-
-            (await ServiceClient.TryPostAsync<DeleteWorkerRequest, DeleteWorkerReply>(
+            (Error? error, _) = await ServiceClient.PostAsync<DeleteWorkerRequest, DeleteWorkerReply>(
                 "Workers/DeleteWorker",
                 new(Worker!.Worker.ID)
-            )).Switch(
-                async (DeleteWorkerReply reply) =>
-                {
-                    await WorkersComponent.RefreshAsync();
-                },
-                async (Error error) =>
-                {
-                    await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
-                    WorkersComponent.SetLoadingOff();
-                }
             );
+
+            if (error is not null)
+            {
+                await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
+                WorkersComponent.SetLoadingOff();
+                return;
+            }
+
+            await WorkersComponent.RefreshAsync();
         }
     }
 
     private async Task ReactivateWorker()
     {
         WorkersComponent.SetLoadingOn();
-
-        (await ServiceClient.TryPostAsync<ReactivateWorkerRequest, ReactivateWorkerReply>(
+        (Error? error, _) = await ServiceClient.PostAsync<ReactivateWorkerRequest, ReactivateWorkerReply>(
             "Workers/ReactivateWorker",
             new(Worker!.Worker.ID)
-        )).Switch(
-            async (ReactivateWorkerReply reply) =>
-            {
-                await WorkersComponent.RefreshAsync();
-            },
-            async (Error error) =>
-            {
-                await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
-                WorkersComponent.SetLoadingOff();
-            }
         );
+
+        if (error is not null)
+        {
+            await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
+            WorkersComponent.SetLoadingOff();
+            return;
+        }
+
+        await WorkersComponent.RefreshAsync();
     }
 
-    private Task RunWorker()
+    private async Task RunWorker()
     {
-        return Task.CompletedTask;
+        WorkersComponent.SetLoadingOff();
+        (Error? error, _) = await ServiceClient.PostAsync<RunNowRequest, RunNowReply>(
+            "Workers/RunNow",
+            new(Worker!.Worker.ID)
+        );
+
+        if (error is not null)
+        {
+            await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
+            WorkersComponent.SetLoadingOff();
+            return;
+        }
+
+        Nav.NavigateTo($"jobs/{Worker!.Worker.ID}");
     }
 }

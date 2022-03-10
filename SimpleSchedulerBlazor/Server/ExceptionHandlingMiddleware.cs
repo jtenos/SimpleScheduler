@@ -21,7 +21,7 @@ public class ExceptionHandlingMiddleware
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Not found: {path}", context.Request.Path);
+            _logger.LogError(ex, "Exception: {path}", context.Request.Path);
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             await context.Response.WriteAsJsonAsync(new { ex.Message });

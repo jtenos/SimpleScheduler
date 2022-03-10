@@ -1,11 +1,8 @@
 using Dapper;
-using OneOf;
-using OneOf.Types;
 using SimpleSchedulerAppServices.Interfaces;
 using SimpleSchedulerConfiguration.Models;
 using SimpleSchedulerData;
 using SimpleSchedulerEmail;
-using SimpleSchedulerModels.ResultTypes;
 
 namespace SimpleSchedulerAppServices.Implementations;
 
@@ -60,7 +57,7 @@ public sealed class UserManager
     private record class LoginValidateResult(
         bool Success, string? EmailAddress, bool NotFound, bool Expired
     );
-    async Task<OneOf<string, NotFound, Expired>> IUserManager.LoginValidateAsync(Guid validationCode)
+    async Task<string> IUserManager.LoginValidateAsync(Guid validationCode)
     {
         DynamicParameters param = new DynamicParameters()
             .AddUniqueIdentifierParam("@ValidationCode", validationCode);
@@ -70,8 +67,8 @@ public sealed class UserManager
             param
         ).ConfigureAwait(false);
 
-        if (result.NotFound) { return new NotFound(); }
-        if (result.Expired) { return new Expired(); }
+        if (result.NotFound) { throw new ApplicationException("Not found"); }
+        if (result.Expired) { throw new ApplicationException("Expired"); }
         if (!result.Success || result.EmailAddress is null) { throw new ApplicationException("Invalid call to LoginValidate"); }
         return result.EmailAddress;
     }

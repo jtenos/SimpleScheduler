@@ -1,8 +1,4 @@
-﻿using OneOf;
-using SimpleSchedulerBlazor.Client.Errors;
-using System.Net;
-
-namespace SimpleSchedulerBlazor.Client;
+﻿namespace SimpleSchedulerBlazor.Client;
 
 public class ServiceClient
 {
@@ -20,27 +16,25 @@ public class ServiceClient
     /// <typeparam name="TReply"></typeparam>
     /// <param name="request"></param>
     /// <returns></returns>
-    public async Task<OneOf<TReply, Error>> TryPostAsync<TRequest, TReply>(
+    public async Task<(Error?, TReply?)> PostAsync<TRequest, TReply>(
         string requestUri,
         TRequest request
     )
+        where TRequest : class
+        where TReply : class
     {
         try
         {
             HttpResponseMessage response = await _httpClient.PostAsJsonAsync(requestUri, request);
             if (response.IsSuccessStatusCode)
             {
-                return (await response.Content.ReadFromJsonAsync<TReply>())!;
+                return (null, await response.Content.ReadFromJsonAsync<TReply>());
             }
-            if (response.StatusCode == HttpStatusCode.NotFound)
-            {
-                return new NotFoundError(await response.Content.ReadAsStringAsync());
-            }
-            return new GenericError(await response.Content.ReadAsStringAsync());
+            return (new Error(await response.Content.ReadAsStringAsync()), null);
         }
         catch (Exception ex)
         {
-            return new GenericError(ex.Message);
+            return (new Error(ex.Message), null);
         }
     }
 }

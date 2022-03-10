@@ -1,10 +1,8 @@
 ﻿using Microsoft.IdentityModel.Tokens;
-using OneOf.Types;
 using SimpleSchedulerApiModels.Reply.Login;
 using SimpleSchedulerApiModels.Request.Login;
 using SimpleSchedulerAppServices.Interfaces;
 using SimpleSchedulerConfiguration.Models;
-using SimpleSchedulerModels.ResultTypes;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
@@ -56,18 +54,9 @@ public static class LoginServiceMap
                 ValidateEmailRequest request
             ) =>
             {
-                return (await userManager.LoginValidateAsync(request.ValidationCode))
-                    .Match((string emailAddress) =>
-                    {
-                        string jwt = GenerateJwtToken(appSettings, emailAddress);
-                        return Results.Ok(new ValidateEmailReply(jwtToken: jwt));
-                    }, (NotFound notFound) =>
-                    {
-                        return Results.NotFound("Validation code not found");
-                    }, (Expired expired) =>
-                    {
-                        return Results.BadRequest("Validation code expired");
-                    });
+                string emailAddress = await userManager.LoginValidateAsync(request.ValidationCode);
+                string jwt = GenerateJwtToken(appSettings, emailAddress);
+                return new ValidateEmailReply(jwtToken: jwt);
             });
     }
 

@@ -4,7 +4,6 @@ using SimpleSchedulerApiModels;
 using SimpleSchedulerApiModels.Reply.Schedules;
 using SimpleSchedulerApiModels.Request.Schedules;
 using SimpleSchedulerBlazor.Client.Components.Workers;
-using SimpleSchedulerBlazor.Client.Errors;
 
 namespace SimpleSchedulerBlazor.Client.Components.Schedules;
 
@@ -50,22 +49,20 @@ partial class ScheduleDisplay
         if (!string.IsNullOrEmpty(result.Value))
         {
             IsLoading = true;
-
-            (await ServiceClient.TryPostAsync<DeleteScheduleRequest, DeleteScheduleReply>(
+            (Error? error, _) = await ServiceClient.PostAsync<DeleteScheduleRequest, DeleteScheduleReply>(
                 "Schedules/DeleteSchedule",
                 new DeleteScheduleRequest(id: Schedule.ID)
-            )).Switch(
-                async (DeleteScheduleReply reply) =>
-                {
-                    await WorkerDisplayComponent.RefreshAsync();
-                    IsLoading = false;
-                },
-                async (Error error) =>
-                {
-                    await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
-                    await WorkerDisplayComponent.RefreshAsync();
-                }
             );
+
+            if (error is not null)
+            {
+                await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
+                await WorkerDisplayComponent.RefreshAsync();
+                return;
+            }
+
+            await WorkerDisplayComponent.RefreshAsync();
+            IsLoading = false;
         }
     }
 
@@ -75,7 +72,7 @@ partial class ScheduleDisplay
 
         if (Schedule.ID == 0)
         {
-            (await ServiceClient.TryPostAsync<CreateScheduleRequest, CreateScheduleReply>(
+            (Error? error, _) = await ServiceClient.PostAsync<CreateScheduleRequest, CreateScheduleReply>(
                 "Schedules/CreateSchedule",
                 new CreateScheduleRequest(
                     Schedule.WorkerID,
@@ -91,21 +88,20 @@ partial class ScheduleDisplay
                     Schedule.RecurBetweenStartUTC,
                     Schedule.RecurBetweenEndUTC
                 )
-            )).Switch(
-                async (CreateScheduleReply reply) =>
-                {
-                    IsEditing = false;
-                    await WorkerDisplayComponent.RefreshAsync();
-                },
-                async (Error error) =>
-                {
-                    await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
-                }
             );
+
+            if (error is not null)
+            {
+                await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
+                return;
+            }
+
+            IsEditing = false;
+            await WorkerDisplayComponent.RefreshAsync();
         }
         else
         {
-            (await ServiceClient.TryPostAsync<UpdateScheduleRequest, UpdateScheduleReply>(
+            (Error? error, _) = await ServiceClient.PostAsync<UpdateScheduleRequest, UpdateScheduleReply>(
                 "Schedules/UpdateSchedule",
                 new UpdateScheduleRequest(
                     Schedule.ID,
@@ -121,17 +117,17 @@ partial class ScheduleDisplay
                     Schedule.RecurBetweenStartUTC,
                     Schedule.RecurBetweenEndUTC
                 )
-            )).Switch(
-                async (UpdateScheduleReply reply) =>
-                {
-                    IsEditing = false;
-                    await WorkerDisplayComponent.RefreshAsync();
-                },
-                async (Error error) =>
-                {
-                    await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
-                }
             );
+
+            if (error is not null)
+            {
+                await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
+                IsLoading = false;
+                return;
+            }
+
+            IsEditing = false;
+            await WorkerDisplayComponent.RefreshAsync();
         }
 
         IsLoading = false;

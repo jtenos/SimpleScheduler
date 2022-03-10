@@ -101,13 +101,13 @@ public static class DapperFluentExtensions
     public static DynamicParameters AddBigIntArrayParam(this DynamicParameters dynamicParameters, string paramName, long[] values)
     {
         DataTable dt = new();
-        dt.Columns.Add("IdentityVal", typeof(long));
         dt.Columns.Add("Value", typeof(long));
+        dt.Columns.Add("SortOrder", typeof(int));
         for (int i = 0; i < values.Length; ++i)
         {
             DataRow row = dt.NewRow();
-            row["IdentityVal"] = i + 1;
             row["Value"] = values[i];
+            row["SortOrder"] = i;
             dt.Rows.Add(row);
         }
 

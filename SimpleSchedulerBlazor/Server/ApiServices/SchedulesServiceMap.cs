@@ -1,5 +1,4 @@
-﻿using OneOf.Types;
-using SimpleSchedulerApiModels;
+﻿using SimpleSchedulerApiModels;
 using SimpleSchedulerApiModels.Reply.Schedules;
 using SimpleSchedulerApiModels.Request.Schedules;
 using SimpleSchedulerAppServices.Interfaces;
@@ -16,7 +15,7 @@ public static class SchedulesServiceMap
                 CreateScheduleRequest request
             ) =>
             {
-                return (await scheduleManager.AddScheduleAsync(
+                await scheduleManager.AddScheduleAsync(
                     workerID: request.WorkerID,
                     sunday: request.Sunday,
                     monday: request.Monday,
@@ -29,16 +28,8 @@ public static class SchedulesServiceMap
                     recurTime: request.RecurTime,
                     recurBetweenStartUTC: request.RecurBetweenStartUTC,
                     recurBetweenEndUTC: request.RecurBetweenEndUTC
-                )).Match(
-                    (Success success) =>
-                    {
-                        return Results.Ok(new CreateScheduleReply());
-                    },
-                    (Error<string> error) =>
-                    {
-                        return Results.BadRequest(error.Value);
-                    }
                 );
+                return new CreateScheduleReply();
             });
 
         app.MapPost("/Schedules/DeleteSchedule",
@@ -61,6 +52,18 @@ public static class SchedulesServiceMap
                     .Select(s => ApiModelBuilders.GetSchedule(s))
                     .ToArray();
                 return new GetAllSchedulesReply(schedules);
+            });
+
+        app.MapPost("/Schedules/GetSchedules",
+            async (
+                IScheduleManager scheduleManager,
+                GetSchedulesRequest request
+            ) =>
+            {
+                Schedule[] schedules = (await scheduleManager.GetSchedulesAsync(request.IDs))
+                    .Select(s => ApiModelBuilders.GetSchedule(s))
+                    .ToArray();
+                return new GetSchedulesReply(schedules);
             });
 
         app.MapPost("/Schedules/GetSchedule",
@@ -89,7 +92,7 @@ public static class SchedulesServiceMap
                 UpdateScheduleRequest request
             ) =>
             {
-                return (await scheduleManager.UpdateScheduleAsync(
+                await scheduleManager.UpdateScheduleAsync(
                     id: request.ID,
                     sunday: request.Sunday,
                     monday: request.Monday,
@@ -102,16 +105,8 @@ public static class SchedulesServiceMap
                     recurTime: request.RecurTime,
                     recurBetweenStartUTC: request.RecurBetweenStartUTC,
                     recurBetweenEndUTC: request.RecurBetweenEndUTC
-                )).Match(
-                    (Success success) =>
-                    {
-                        return Results.Ok(new UpdateScheduleReply());
-                    },
-                    (Error<string> error) =>
-                    {
-                        return Results.BadRequest(error.Value);
-                    }
                 );
+                return new UpdateScheduleReply();
             });
     }
 }

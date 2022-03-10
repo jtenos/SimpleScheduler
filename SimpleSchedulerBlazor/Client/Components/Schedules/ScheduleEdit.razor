@@ -41,23 +41,23 @@
         @if (TimeType == TIME)
         {
             <div class="form-group">
-                <label for="time-of-day-@UniqueId">Time of Day (UTC):</label>
-                <input class="form-control" type="text" @bind="TimeOfDayUTC" id="time-of-day-@UniqueId" />
+                <label for="time-of-day-@UniqueId">Time of Day (HH:mm UTC):</label>
+                <input class="form-control time-mask" type="text" @bind="TimeOfDayUTC" id="time-of-day-@UniqueId" />
             </div>
         }
         else if (TimeType == RECUR)
         {
             <div class="form-group">
                 <label for="recur-time-@UniqueId">Recur every (hh:mm):</label>
-                <input class="form-control" type="text" @bind="RecurTime" id="recur-time-@UniqueId" />
+                <input class="form-control time-mask" type="text" @bind="RecurTime" id="recur-time-@UniqueId" />
             </div>
             <div class="form-group">
                 <label for="recur-between-start-@UniqueId">From UTC (HH:mm):</label>
-                <input class="form-control" type="text" @bind="RecurBetweenStartUTC" id="recur-between-start-@UniqueId" />
+                <input class="form-control time-mask" type="text" @bind="RecurBetweenStartUTC" id="recur-between-start-@UniqueId" />
             </div>
             <div class="form-group">
                 <label for="recur-between-end-@UniqueId">To UTC (HH:mm):</label>
-                <input class="form-control" type="text" @bind="RecurBetweenEndUTC" id="recur-between-end-@UniqueId" />
+                <input class="form-control time-mask" type="text" @bind="RecurBetweenEndUTC" id="recur-between-end-@UniqueId" />
             </div>
         }
     </div>

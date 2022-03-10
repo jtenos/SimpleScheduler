@@ -1,4 +1,4 @@
 ﻿CREATE TYPE [app].[BigIntArray] AS TABLE (
-	[IdentityVal] BIGINT NOT NULL IDENTITY
-	,[Value] BIGINT NOT NULL
+	[Value] BIGINT NOT NULL
+	,[SortOrder] INT NOT NULL
 );
