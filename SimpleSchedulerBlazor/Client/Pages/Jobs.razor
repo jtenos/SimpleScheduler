@@ -1,5 +1,6 @@
 ﻿@page "/"
 @page "/jobs/{WorkerID:long?}"
+@using SimpleSchedulerBlazor.Client.Components.Jobs
 
 @if (Loading)
 {
@@ -11,7 +12,7 @@ else
         <EditForm EditContext="SearchEditContext" class="d-flex">
             <div class="form-group">
                 <label for="AllWorkersDropdown">Worker</label>
-                <InputSelect @bind-Value="SearchCriteria.WorkerID" class="form-control" id="AllWorkersDropdown">
+                <InputSelect @bind-Value="SearchCriteria.WorkerID" class="form-select" id="AllWorkersDropdown">
                     <option></option>
                     @foreach (Worker worker in AllWorkers)
                     {
@@ -21,7 +22,7 @@ else
             </div>
             <div class="form-group">
                 <label for="StatusDropdown">Status</label>
-                <InputSelect @bind-Value="SearchCriteria.StatusCode" class="form-control" id="StatusDropdown">
+                <InputSelect @bind-Value="SearchCriteria.StatusCode" class="form-select" id="StatusDropdown">
                     <option></option>
                     <option value="NEW">NEW</option>
                     <option value="RUN">RUN</option>
@@ -53,32 +54,7 @@ else
                     parentWorker = _allWorkersByID[worker.ParentWorkerID.Value];
                 }
 
-                <tr>
-                    <td>
-                        <div>
-                            @worker.WorkerName
-                        </div>
-                        @if (parentWorker is not null)
-                        {
-                            <div>
-                                (Child of @parentWorker.WorkerName)
-                            </div>
-                        }
-                    </td>
-                    <td>
-                        <div>@job.QueueDateUTC.FormatDate()</div>
-                        <div>@job.QueueDateUTC.FormatTime()</div>
-                    </td>
-                    <td>
-                        @job.StatusCode
-                    </td>
-                    <td>
-                        @if (job.HasDetailedMessage)
-                        {
-                            <a href="#" onclick="return false;">Details TODO</a>
-                        }
-                    </td>
-                </tr>
+                <JobRow Job="job" Worker="worker" ParentWorker="parentWorker" />
             }
         </tbody>
     </table>

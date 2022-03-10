@@ -29,6 +29,14 @@ public static class JobsServiceMap
         );
     }
 
+    private static async Task<GetJobReply> GetJobAsync(
+        IJobManager jobManager, GetJobRequest request)
+    {
+        return new(
+            Job: ApiModelBuilders.GetJob(await jobManager.GetJobAsync(request.ID))
+        );
+    }
+
     private static async Task<GetJobsReply> GetJobsAsync(
         IJobManager jobManager, GetJobsRequest request)
     {
@@ -48,6 +56,7 @@ public static class JobsServiceMap
         app.MapPost("/Jobs/AcknowledgeError", AcknowledgeErrorAsync);
         app.MapPost("/Jobs/CancelJob", CancelJobAsync);
         app.MapPost("/Jobs/GetDetailedMessage", GetDetailedMessageAsync);
+        app.MapPost("/Jobs/GetJob", GetJobAsync);
         app.MapPost("/Jobs/GetJobs", GetJobsAsync);
     }
 }

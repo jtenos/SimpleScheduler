@@ -8,12 +8,10 @@ public class JobWithWorkerID
     public JobWithWorkerID() { }
 
     public JobWithWorkerID(long id, long scheduleID, DateTime insertDateUTC, DateTime queueDateUTC,
-        DateTime? completeDateUTC, string statusCode, Guid acknowledgementCode,
-        DateTime? acknowledgementDate, bool hasDetailedMessage, string? friendlyDuration,
-        long workerID)
+        DateTime? completeDateUTC, string statusCode, DateTime? acknowledgementDate, bool hasDetailedMessage, 
+        string? friendlyDuration, long workerID)
         : base(id, scheduleID, insertDateUTC, queueDateUTC,
-            completeDateUTC, statusCode, acknowledgementCode,
-            acknowledgementDate, hasDetailedMessage, friendlyDuration)
+            completeDateUTC, statusCode, acknowledgementDate, hasDetailedMessage, friendlyDuration)
     {
         WorkerID = workerID;
     }

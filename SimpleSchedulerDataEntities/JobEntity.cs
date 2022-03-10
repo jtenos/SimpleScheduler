@@ -8,6 +8,6 @@ public record class JobEntity(
     DateTime? CompleteDateUTC,
     string StatusCode,
     Guid AcknowledgementCode,
-    DateTime AcknowledgementDate,
+    DateTime? AcknowledgementDate,
     bool HasDetailedMessage
 );

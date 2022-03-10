@@ -1,0 +1,52 @@
+﻿<tr data-job-id="@Job.ID">
+    <td>
+        <div>
+            @Worker.WorkerName
+        </div>
+        @if (ParentWorker is not null)
+        {
+            <div>
+                (Child of @ParentWorker.WorkerName)
+            </div>
+        }
+    </td>
+    <td>
+        <div>@Job.QueueDateUTC.FormatDate()</div>
+        <div>@Job.QueueDateUTC.FormatTime()</div>
+    </td>
+    <td>
+        @if (Loading)
+        {
+            <LoadingAnimation />
+        }
+        else
+        {
+            <div>@Job.StatusCode</div>
+            @if (Job.StatusCode == "NEW")
+            {
+                <div>
+                    <button class="btn btn-xs btn-outline-primary" @onclick="CancelJob">Cancel</button>
+                </div>
+            }
+            else if (Job.StatusCode == "SUC")
+            {
+                <div>
+                    Completed: @Job.CompleteDateUTC.FormatTime()
+                </div>
+                <div>
+                    Duration: @Job.FriendlyDuration
+                </div>
+            }
+        }
+    </td>
+    <td>
+        @if (Loading)
+        {
+            <LoadingAnimation />
+        }
+        else if (Job.HasDetailedMessage)
+        {
+            <a href="#" onclick="return false;">Details TODO</a>
+        }
+    </td>
+</tr>

@@ -46,10 +46,6 @@
 		<ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Components\Jobs\" />
-	</ItemGroup>
-
 	<Target Name="ScssToCss" BeforeTargets="Build">
 		<Exec Command="mkdir $(ProjectDir)wwwroot\css" Condition="!Exists('$(ProjectDir)wwwroot\css')" />
 		<Exec Command="sass $(ProjectDir)Styles\site.scss $(ProjectDir)wwwroot\css\site.css" />
