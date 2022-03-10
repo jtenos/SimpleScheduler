@@ -10,7 +10,7 @@ public interface IJobManager
     Task<Job> GetJobAsync(long id);
     Task CancelJobAsync(long jobID);
     Task CompleteJobAsync(long id, bool success, string? detailedMessage);
-    Task<Job[]> GetLatestJobsAsync(int pageNumber, int rowsPerPage,
+    Task<JobWithWorkerID[]> GetLatestJobsAsync(int pageNumber, int rowsPerPage,
         string? statusCode, long? workerID, bool overdueOnly);
     Task<Job[]> GetOverdueJobsAsync();
     Task<Job?> GetLastQueuedJobAsync(long scheduleID);

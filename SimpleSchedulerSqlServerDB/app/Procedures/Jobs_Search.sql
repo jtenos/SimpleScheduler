@@ -13,7 +13,7 @@ BEGIN
 		BEGIN TRANSACTION;
 
         DECLARE @SQL NVARCHAR(MAX) = N'
-		    SELECT * FROM [app].[Jobs]
+		    SELECT * FROM [dbo].[JobWithWorkerID]
             WHERE 1 = 1
         ';
 
@@ -24,7 +24,7 @@ BEGIN
 
         IF @WorkerID IS NOT NULL
             SET @SQL += N'
-                AND [ScheduleID] IN (SELECT [ScheduleID] FROM [app].[Schedules] WHERE [WorkerID] = @WorkerID)
+                AND [WorkerID] = @WorkerID
             ';
 
         IF @OverdueOnly = 1

@@ -22,6 +22,23 @@ internal static class ModelBuilders
         );
     }
 
+    public static JobWithWorkerID GetJobWithWorkerID(JobWithWorkerIDEntity j)
+    {
+        return new(
+            ID: j.ID,
+            ScheduleID: j.ScheduleID,
+            InsertDateUTC: j.InsertDateUTC,
+            QueueDateUTC: j.QueueDateUTC,
+            CompleteDateUTC: j.CompleteDateUTC,
+            StatusCode: j.StatusCode,
+            AcknowledgementCode: j.AcknowledgementCode,
+            AcknowledgementDate: j.AcknowledgementDate,
+            HasDetailedMessage: j.HasDetailedMessage,
+            FriendlyDuration: GetFriendlyDuration(j),
+            WorkerID: j.WorkerID
+        );
+    }
+
     public static Schedule GetSchedule(ScheduleEntity s)
     {
         return new(

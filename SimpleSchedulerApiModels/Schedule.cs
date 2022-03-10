@@ -1,4 +1,6 @@
-﻿namespace SimpleSchedulerApiModels;
+﻿using System.Text.Json.Serialization;
+
+namespace SimpleSchedulerApiModels;
 
 public class Schedule
 {
@@ -27,21 +29,21 @@ public class Schedule
         OneTime = oneTime;
     }
 
-    public long ID { get; set; }
-    public bool IsActive { get; set; }
-    public long WorkerID { get; set; }
-    public bool Sunday { get; set; }
-    public bool Monday { get; set; }
-    public bool Tuesday { get; set; }
-    public bool Wednesday { get; set; }
-    public bool Thursday { get; set; }
-    public bool Friday { get; set; }
-    public bool Saturday { get; set; }
-    public TimeSpan? TimeOfDayUTC { get; set; }
-    public TimeSpan? RecurTime { get; set; }
-    public TimeSpan? RecurBetweenStartUTC { get; set; }
-    public TimeSpan? RecurBetweenEndUTC { get; set; }
-    public bool OneTime { get; set; }
+    [JsonPropertyName("id")] public long ID { get; set; }
+    [JsonPropertyName("active")] public bool IsActive { get; set; }
+    [JsonPropertyName("wid")] public long WorkerID { get; set; }
+    [JsonPropertyName("sun")] public bool Sunday { get; set; }
+    [JsonPropertyName("mon")] public bool Monday { get; set; }
+    [JsonPropertyName("tue")] public bool Tuesday { get; set; }
+    [JsonPropertyName("wed")] public bool Wednesday { get; set; }
+    [JsonPropertyName("thu")] public bool Thursday { get; set; }
+    [JsonPropertyName("fri")] public bool Friday { get; set; }
+    [JsonPropertyName("sat")] public bool Saturday { get; set; }
+    [JsonPropertyName("tmOfDay")] public TimeSpan? TimeOfDayUTC { get; set; }
+    [JsonPropertyName("recurTm")] public TimeSpan? RecurTime { get; set; }
+    [JsonPropertyName("recStart")] public TimeSpan? RecurBetweenStartUTC { get; set; }
+    [JsonPropertyName("recEnd")] public TimeSpan? RecurBetweenEndUTC { get; set; }
+    [JsonPropertyName("oneTime")] public bool OneTime { get; set; }
 
     public string GetFormatted()
     {

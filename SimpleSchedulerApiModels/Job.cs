@@ -1,4 +1,6 @@
-﻿namespace SimpleSchedulerApiModels;
+﻿using System.Text.Json.Serialization;
+
+namespace SimpleSchedulerApiModels;
 
 public class Job
 {
@@ -20,14 +22,14 @@ public class Job
         FriendlyDuration = friendlyDuration;
     }
 
-    public long ID { get; set; }
-    public long ScheduleID { get; set; }
-    public DateTime InsertDateUTC { get; set; }
-    public DateTime QueueDateUTC { get; set; }
-    public DateTime? CompleteDateUTC { get; set; }
-    public string StatusCode { get; set; } = default!;
-    public Guid AcknowledgementCode { get; set; } = default!;
-    public DateTime? AcknowledgementDate { get; set; }
-    public bool HasDetailedMessage { get; set; }
-    public string? FriendlyDuration { get; set; }
+    [JsonPropertyName("id")] public long ID { get; set; }
+    [JsonPropertyName("sid")] public long ScheduleID { get; set; }
+    [JsonPropertyName("insDt")] public DateTime InsertDateUTC { get; set; }
+    [JsonPropertyName("queDt")] public DateTime QueueDateUTC { get; set; }
+    [JsonPropertyName("compDt")] public DateTime? CompleteDateUTC { get; set; }
+    [JsonPropertyName("stat")] public string StatusCode { get; set; } = default!;
+    [JsonPropertyName("ackCd")] public Guid AcknowledgementCode { get; set; } = default!;
+    [JsonPropertyName("ackDt")] public DateTime? AcknowledgementDate { get; set; }
+    [JsonPropertyName("hasMsg")] public bool HasDetailedMessage { get; set; }
+    [JsonPropertyName("dur")] public string? FriendlyDuration { get; set; }
 }

@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace SimpleSchedulerApiModels;
 
 public class Worker
@@ -20,14 +22,14 @@ public class Worker
         ArgumentValues = argumentValues;
     }
 
-    public long ID { get; set; }
-    public bool IsActive { get; set; }
-    public string WorkerName { get; set; } = default!;
-    public string DetailedDescription { get; set; } = default!;
-    public string EmailOnSuccess { get; set; } = default!;
-    public long? ParentWorkerID { get; set; }
-    public int TimeoutMinutes { get; set; }
-    public string DirectoryName { get; set; } = default!;
-    public string Executable { get; set; } = default!;
-    public string ArgumentValues { get; set; } = default!;
+    [JsonPropertyName("id")] public long ID { get; set; }
+    [JsonPropertyName("active")] public bool IsActive { get; set; }
+    [JsonPropertyName("wkrNm")] public string WorkerName { get; set; } = default!;
+    [JsonPropertyName("desc")] public string DetailedDescription { get; set; } = default!;
+    [JsonPropertyName("emailSuc")] public string EmailOnSuccess { get; set; } = default!;
+    [JsonPropertyName("parentWid")] public long? ParentWorkerID { get; set; }
+    [JsonPropertyName("tmout")] public int TimeoutMinutes { get; set; }
+    [JsonPropertyName("dirNm")] public string DirectoryName { get; set; } = default!;
+    [JsonPropertyName("exe")] public string Executable { get; set; } = default!;
+    [JsonPropertyName("argVals")] public string ArgumentValues { get; set; } = default!;
 }

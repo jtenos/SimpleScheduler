@@ -7,18 +7,30 @@
 }
 else
 {
-    Console.WriteLine($"in razor view {JobDetails.Length} jobs in collection");
-
-    <div>
-        <EditForm Model="SearchCriteria">
-            <label for="AllWorkersDropdown">Worker</label>
-            <select @bind="SearchCriteria.StatusCode" class="form-control">
-                <option></option>
-                @foreach (Worker worker in AllWorkers)
-                {
-                    <option value="@worker.ID">@worker.WorkerName</option>
-                }
-            </select>
+    <div class="container" style="margin-top: 25px;">
+        <EditForm EditContext="SearchEditContext" class="d-flex">
+            <div class="form-group">
+                <label for="AllWorkersDropdown">Worker</label>
+                <InputSelect @bind-Value="SearchCriteria.WorkerID" class="form-control" id="AllWorkersDropdown">
+                    <option></option>
+                    @foreach (Worker worker in AllWorkers)
+                    {
+                        <option value="@worker.ID">@worker.WorkerName</option>
+                    }
+                </InputSelect>
+            </div>
+            <div class="form-group">
+                <label for="StatusDropdown">Status</label>
+                <InputSelect @bind-Value="SearchCriteria.StatusCode" class="form-control" id="StatusDropdown">
+                    <option></option>
+                    <option value="NEW">NEW</option>
+                    <option value="RUN">RUN</option>
+                    <option value="SUC">SUC</option>
+                    <option value="ERR">ERR</option>
+                    <option value="ACK">ACK</option>
+                    <option value="CAN">CAN</option>
+                </InputSelect>
+            </div>
         </EditForm>
     </div>
 
@@ -32,31 +44,36 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach ((Job Job, Schedule Schedule, Worker Worker) job in JobDetails)
+            @foreach (JobWithWorkerID job in JobDetails)
             {
+                Worker worker = _allWorkersByID[job.WorkerID];
+                Worker? parentWorker = null;
+                if (worker.ParentWorkerID.HasValue)
+                {
+                    parentWorker = _allWorkersByID[worker.ParentWorkerID.Value];
+                }
+
                 <tr>
                     <td>
                         <div>
-                            @job.Worker.WorkerName
+                            @worker.WorkerName
                         </div>
-                        @if (job.Worker.ParentWorkerID.HasValue)
+                        @if (parentWorker is not null)
                         {
-                            string parentWorkerName = AllWorkers.Single(w => w.ID == job.Worker.ParentWorkerID).WorkerName;
-
                             <div>
-                                (Child of @parentWorkerName)
+                                (Child of @parentWorker.WorkerName)
                             </div>
                         }
                     </td>
                     <td>
-                        <div>@job.Job.QueueDateUTC.FormatDate()</div>
-                        <div>@job.Job.QueueDateUTC.FormatTime()</div>
+                        <div>@job.QueueDateUTC.FormatDate()</div>
+                        <div>@job.QueueDateUTC.FormatTime()</div>
                     </td>
                     <td>
-                        @job.Job.StatusCode
+                        @job.StatusCode
                     </td>
                     <td>
-                        @if (job.Job.HasDetailedMessage)
+                        @if (job.HasDetailedMessage)
                         {
                             <a href="#" onclick="return false;">Details TODO</a>
                         }

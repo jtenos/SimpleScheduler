@@ -119,7 +119,7 @@ public sealed class JobManager
         return ModelBuilders.GetJob(jobEntity);
     }
 
-    async Task<Job[]> IJobManager.GetLatestJobsAsync(int pageNumber,
+    async Task<JobWithWorkerID[]> IJobManager.GetLatestJobsAsync(int pageNumber,
         int rowsPerPage, string? statusCode, long? workerID, bool overdueOnly)
     {
         DynamicParameters param = new DynamicParameters()
@@ -129,18 +129,18 @@ public sealed class JobManager
             .AddIntParam("@Offset", (pageNumber - 1) * rowsPerPage)
             .AddIntParam("@NumRows", rowsPerPage);
 
-        JobEntity[] jobs = await _db.GetManyAsync<JobEntity>(
+        JobWithWorkerIDEntity[] jobs = await _db.GetManyAsync<JobWithWorkerIDEntity>(
             "[app].[Jobs_Search]",
             param
         ).ConfigureAwait(false);
 
         if (!overdueOnly)
         {
-            return jobs.Select(j => ModelBuilders.GetJob(j)).ToArray();
+            return jobs.Select(j => ModelBuilders.GetJobWithWorkerID(j)).ToArray();
         }
 
         // For overdue only, filter RUN/ERR/NEW status, and different levels based on the status
-        List<JobEntity> filteredJobs;
+        List<JobWithWorkerIDEntity> filteredJobs;
         filteredJobs = new();
 
         param = new DynamicParameters()
@@ -161,7 +161,7 @@ public sealed class JobManager
         ).ConfigureAwait(false))
         .ToDictionary(w => w.ID, w => w);
 
-        foreach (JobEntity job in jobs)
+        foreach (JobWithWorkerIDEntity job in jobs)
         {
             ScheduleEntity schedule = schedules[job.ScheduleID];
             WorkerEntity worker = workers[schedule.WorkerID];
@@ -189,7 +189,7 @@ public sealed class JobManager
             }
         }
 
-        return filteredJobs.Select(j => ModelBuilders.GetJob(j)).ToArray();
+        return filteredJobs.Select(j => ModelBuilders.GetJobWithWorkerID(j)).ToArray();
     }
 
     async Task<Job[]> IJobManager.GetOverdueJobsAsync()

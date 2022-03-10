@@ -1,4 +1,6 @@
-﻿namespace SimpleSchedulerApiModels;
+﻿using System.Text.Json.Serialization;
+
+namespace SimpleSchedulerApiModels;
 
 public class WorkerWithSchedules
 {
@@ -10,6 +12,6 @@ public class WorkerWithSchedules
         Schedules = schedules;
     }
 
-    public Worker Worker { get; set; } = default!;
-    public Schedule[] Schedules { get; set; } = Array.Empty<Schedule>();
+    [JsonPropertyName("wkr")] public Worker Worker { get; set; } = default!;
+    [JsonPropertyName("scheds")] public Schedule[] Schedules { get; set; } = Array.Empty<Schedule>();
 }

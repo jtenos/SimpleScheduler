@@ -4,7 +4,7 @@ namespace SimpleSchedulerBlazor.Server;
 
 internal static class ApiModelBuilders
 {
-    public static Job GetJob(SimpleSchedulerModels.Job j)
+    public static Job GetJob(SimpleSchedulerModels.Job j, long workerID)
     {
         return new(
             id: j.ID,
@@ -17,6 +17,23 @@ internal static class ApiModelBuilders
             acknowledgementDate: j.AcknowledgementDate,
             hasDetailedMessage: j.HasDetailedMessage,
             friendlyDuration: j.FriendlyDuration
+        );
+    }
+
+    public static JobWithWorkerID GetJobWithWorkerID(SimpleSchedulerModels.JobWithWorkerID j)
+    {
+        return new(
+            id: j.ID,
+            scheduleID: j.ScheduleID,
+            insertDateUTC: j.InsertDateUTC,
+            queueDateUTC: j.QueueDateUTC,
+            completeDateUTC: j.CompleteDateUTC,
+            statusCode: j.StatusCode,
+            acknowledgementCode: j.AcknowledgementCode,
+            acknowledgementDate: j.AcknowledgementDate,
+            hasDetailedMessage: j.HasDetailedMessage,
+            friendlyDuration: j.FriendlyDuration,
+            workerID: j.WorkerID
         );
     }
 

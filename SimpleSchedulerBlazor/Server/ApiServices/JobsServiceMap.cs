@@ -32,13 +32,13 @@ public static class JobsServiceMap
     private static async Task<GetJobsReply> GetJobsAsync(
         IJobManager jobManager, GetJobsRequest request)
     {
-        Job[] jobs = (await jobManager.GetLatestJobsAsync(
+        JobWithWorkerID[] jobs = (await jobManager.GetLatestJobsAsync(
             pageNumber: request.PageNumber,
             rowsPerPage: 100,
             statusCode: request.StatusCode,
             workerID: request.WorkerID,
             overdueOnly: request.OverdueOnly
-        )).Select(j => ApiModelBuilders.GetJob(j)).ToArray();
+        )).Select(j => ApiModelBuilders.GetJobWithWorkerID(j)).ToArray();
 
         return new GetJobsReply(jobs: jobs);
     }

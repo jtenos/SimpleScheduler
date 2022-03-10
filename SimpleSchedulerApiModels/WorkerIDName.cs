@@ -1,4 +1,6 @@
-﻿namespace SimpleSchedulerApiModels;
+﻿using System.Text.Json.Serialization;
+
+namespace SimpleSchedulerApiModels;
 
 public class WorkerIDName
 {
@@ -10,6 +12,6 @@ public class WorkerIDName
         WorkerName = workerName;
     }
 
-    public long ID { get; set; }
-    public string WorkerName { get; set; } = default!;
+    [JsonPropertyName("id")] public long ID { get; set; }
+    [JsonPropertyName("wkrNm")] public string WorkerName { get; set; } = default!;
 }

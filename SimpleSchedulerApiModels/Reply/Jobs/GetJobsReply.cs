@@ -4,10 +4,10 @@ public class GetJobsReply
 {
     public GetJobsReply() { }
 
-    public GetJobsReply(Job[] jobs)
+    public GetJobsReply(JobWithWorkerID[] jobs)
     {
         Jobs = jobs;
     }
 
-    public Job[] Jobs { get; set; } = default!;
+    public JobWithWorkerID[] Jobs { get; set; } = default!;
 }

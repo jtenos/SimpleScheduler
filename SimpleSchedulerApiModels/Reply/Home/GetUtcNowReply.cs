@@ -1,4 +1,6 @@
-﻿namespace SimpleSchedulerApiModels.Reply.Home;
+﻿using System.Text.Json.Serialization;
+
+namespace SimpleSchedulerApiModels.Reply.Home;
 
 public class GetUtcNowReply
 {
@@ -9,5 +11,5 @@ public class GetUtcNowReply
         FormattedDateTime = formattedDateTime;
     }
 
-    public string FormattedDateTime { get; set; } = default!;
+    [JsonPropertyName("fmtDt")] public string FormattedDateTime { get; set; } = default!;
 }
