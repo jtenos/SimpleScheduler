@@ -16,32 +16,32 @@ else
                     <option></option>
                     @foreach (Worker worker in AllWorkers)
                     {
-                        <option value="@worker.ID">@worker.WorkerName</option>
+                    <option value="@worker.ID">@worker.WorkerName</option>
                     }
-                </InputSelect>
-            </div>
-            <div class="form-group">
-                <label for="StatusDropdown">Status</label>
-                <InputSelect @bind-Value="SearchCriteria.StatusCode" class="form-select" id="StatusDropdown">
-                    <option></option>
-                    <option value="NEW">NEW</option>
-                    <option value="RUN">RUN</option>
-                    <option value="SUC">SUC</option>
-                    <option value="ERR">ERR</option>
-                    <option value="ACK">ACK</option>
-                    <option value="CAN">CAN</option>
-                </InputSelect>
-            </div>
-        </EditForm>
-    </div>
+            </InputSelect>
+        </div>
+        <div class="form-group">
+            <label for="StatusDropdown">Status</label>
+            <InputSelect @bind-Value="SearchCriteria.StatusCode" class="form-select" id="StatusDropdown">
+                <option></option>
+                <option value="NEW">NEW</option>
+                <option value="RUN">RUN</option>
+                <option value="SUC">SUC</option>
+                <option value="ERR">ERR</option>
+                <option value="ACK">ACK</option>
+                <option value="CAN">CAN</option>
+            </InputSelect>
+        </div>
+    </EditForm>
+</div>
 
+    @* TODO: Make this better for mobile - maybe flexbox or something like that *@
     <table class="table table-striped">
         <thead>
             <tr>
                 <th>Worker</th>
                 <th>Queue Date</th>
                 <th>Status</th>
-                <th>Results</th>
             </tr>
         </thead>
         <tbody>
@@ -54,8 +54,24 @@ else
                     parentWorker = _allWorkersByID[worker.ParentWorkerID.Value];
                 }
 
-                <JobRow Job="job" Worker="worker" ParentWorker="parentWorker" />
+                <JobRow Job="job" Worker="worker" ParentWorker="parentWorker" JobsComponent="this" />
             }
         </tbody>
     </table>
 }
+
+<div class="modal fade" id="job-details-modal" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+            </div>
+            <div class="modal-body">
+                Hello there!
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

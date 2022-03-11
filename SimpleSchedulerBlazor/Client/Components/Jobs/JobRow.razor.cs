@@ -1,5 +1,6 @@
 ﻿using CurrieTechnologies.Razor.SweetAlert2;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using SimpleSchedulerApiModels;
 using SimpleSchedulerApiModels.Reply.Jobs;
 using SimpleSchedulerApiModels.Request.Jobs;
@@ -21,6 +22,10 @@ partial class JobRow
     [EditorRequired]
     public Worker? ParentWorker { get; set; }
 
+    [Parameter]
+    [EditorRequired]
+    public Pages.Jobs JobsComponent { get; set; } = default!;
+
     private bool Loading { get; set; } = true;
 
     [Inject]
@@ -28,6 +33,9 @@ partial class JobRow
 
     [Inject]
     private SweetAlertService Swal { get; set; } = default!;
+
+    [Inject]
+    private IJSRuntime JSRuntime { get; set; } = default!;
 
     protected override Task OnInitializedAsync()
     {
@@ -86,7 +94,7 @@ partial class JobRow
         StateHasChanged();
         (Error? error, GetJobReply? reply) = await ServiceClient.PostAsync<GetJobRequest, GetJobReply>(
             "Jobs/GetJob",
-            new GetJobRequest(Job.ID)
+            new(Job.ID)
         );
 
         if (error is not null)
@@ -100,6 +108,43 @@ partial class JobRow
         Job = reply!.Job;
         Loading = false;
         StateHasChanged();
+    }
+
+    private async Task ViewDetailedMessage()
+    {
+        JobsComponent.SetLoadingOn();
+        (Error? error, GetDetailedMessageReply? reply) = await ServiceClient.PostAsync<GetDetailedMessageRequest, GetDetailedMessageReply>(
+            "Jobs/GetDetailedMessage",
+            new(Job.ID)
+        );
+
+        if (error is not null)
+        {
+            await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
+            return;
+        }
+
+        await JSRuntime.InvokeVoidAsync("Jobs.viewDetailedMessage",
+            Worker.WorkerName, reply!.DetailedMessage);
+        JobsComponent.SetLoadingOff();
+    }
+
+    private async Task AcknowledgeError()
+    {
+        Loading = true;
+        (Error? error, _) = await ServiceClient.PostAsync<AcknowledgeErrorRequest, AcknowledgeErrorReply>(
+            "Jobs/AcknowledgeError",
+            new(Job.AcknowledgementCode)
+        );
+
+        if (error is not null)
+        {
+            await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
+            Loading = false;
+            return;
+        }
+
+        await ReloadJobAsync();
     }
 
     private async Task CancelJob()
@@ -119,7 +164,7 @@ partial class JobRow
             Loading = true;
             (Error? error, _) = await ServiceClient.PostAsync<CancelJobRequest, CancelJobReply>(
                 "Jobs/CancelJob",
-                new CancelJobRequest(Job.ID)
+                new(Job.ID)
             );
 
             if (error is not null)

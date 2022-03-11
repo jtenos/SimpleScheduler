@@ -15,7 +15,7 @@ partial class Jobs
     private readonly SearchModel SearchCriteria = new();
     private Worker[] AllWorkers { get; set; } = Array.Empty<Worker>();
 
-    private bool Loading { get; set; } = true;
+    public bool Loading { get; set; } = true;
 
     [Parameter]
     public long? WorkerID { get; set; }
@@ -46,6 +46,18 @@ partial class Jobs
     protected override Task OnAfterRenderAsync(bool firstRender)
     {
         return base.OnAfterRenderAsync(firstRender);
+    }
+
+    public void SetLoadingOn()
+    {
+        Loading = true;
+        StateHasChanged();
+    }
+
+    public void SetLoadingOff()
+    {
+        Loading = false;
+        StateHasChanged();
     }
 
     private async Task LoadWorkersAsync()
@@ -91,6 +103,41 @@ partial class Jobs
         }
 
         JobDetails = reply!.Jobs;
+
+        // Make a second search, only for ERR records. These may already be in the main results,
+        // so only add them to the list if they are not included.
+        (error, reply) = await ServiceClient.PostAsync<GetJobsRequest, GetJobsReply>(
+            "Jobs/GetJobs",
+            new GetJobsRequest(
+                workerID: null,
+                statusCode: "ERR",
+                pageNumber: 1,
+                overdueOnly: false
+            )
+        );
+
+        if (error is not null)
+        {
+            await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
+            return;
+        }
+
+        if (!reply!.Jobs.Any()) { return; }
+
+        HashSet<long> resultsIDs = new(JobDetails.Select(jd => jd.ID));
+        JobWithWorkerID[] errorJobs = reply!.Jobs
+            .Where(j => !resultsIDs.Contains(j.ID))
+            .ToArray();
+
+        if (errorJobs.Any())
+        {
+            JobDetails = JobDetails.Concat(errorJobs).ToArray();
+        }
+
+        JobDetails = JobDetails
+            .OrderBy(x => x.StatusCode == "ERR" ? 0 : 1)
+            .ThenByDescending(x => x.QueueDateUTC)
+            .ToArray();
     }
 
     public class SearchModel
@@ -100,7 +147,7 @@ partial class Jobs
         private string? _statusCode;
         public string? StatusCode
         {
-            get => _statusCode; 
+            get => _statusCode;
             set
             {
                 if (string.IsNullOrWhiteSpace(value))

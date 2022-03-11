@@ -13,6 +13,7 @@ internal static class ApiModelBuilders
             queueDateUTC: j.QueueDateUTC,
             completeDateUTC: j.CompleteDateUTC,
             statusCode: j.StatusCode,
+            acknowledgementCode: j.AcknowledgementCode,
             acknowledgementDate: j.AcknowledgementDate,
             hasDetailedMessage: j.HasDetailedMessage,
             friendlyDuration: j.FriendlyDuration
@@ -28,6 +29,7 @@ internal static class ApiModelBuilders
             queueDateUTC: j.QueueDateUTC,
             completeDateUTC: j.CompleteDateUTC,
             statusCode: j.StatusCode,
+            acknowledgementCode: j.AcknowledgementCode,
             acknowledgementDate: j.AcknowledgementDate,
             hasDetailedMessage: j.HasDetailedMessage,
             friendlyDuration: j.FriendlyDuration,

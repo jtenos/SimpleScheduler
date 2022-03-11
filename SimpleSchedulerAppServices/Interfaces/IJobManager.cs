@@ -5,7 +5,7 @@ namespace SimpleSchedulerAppServices.Interfaces;
 public interface IJobManager
 {
     Task RestartStuckJobsAsync();
-    Task AcknowledgeErrorAsync(long id);
+    Task AcknowledgeErrorAsync(Guid acknowledgementCode);
     Task AddJobAsync(long scheduleID, DateTime queueDateUTC);
     Task<Job> GetJobAsync(long id);
     Task CancelJobAsync(long jobID);
@@ -14,6 +14,6 @@ public interface IJobManager
         string? statusCode, long? workerID, bool overdueOnly);
     Task<Job[]> GetOverdueJobsAsync();
     Task<Job?> GetLastQueuedJobAsync(long scheduleID);
-    Task<string?> GetDetailedMessageAsync(long id);
+    Task<string> GetDetailedMessageAsync(long id);
     Task<Job[]> DequeueScheduledJobsAsync();
 }

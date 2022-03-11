@@ -10,7 +10,7 @@ public static class JobsServiceMap
     private static async Task<AcknowledgeErrorReply> AcknowledgeErrorAsync(
         IJobManager jobManager, AcknowledgeErrorRequest request)
     {
-        await jobManager.AcknowledgeErrorAsync(request.ID);
+        await jobManager.AcknowledgeErrorAsync(request.AcknowledgementCode);
         return new AcknowledgeErrorReply();
     }
 

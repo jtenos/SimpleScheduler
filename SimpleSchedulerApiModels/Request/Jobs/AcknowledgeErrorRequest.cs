@@ -4,10 +4,10 @@ public class AcknowledgeErrorRequest
 {
     public AcknowledgeErrorRequest() { }
 
-    public AcknowledgeErrorRequest(long id)
+    public AcknowledgeErrorRequest(Guid acknowledgementCode)
     {
-        ID = id;
+        AcknowledgementCode = acknowledgementCode;
     }
 
-    public long ID { get; set; }
+    public Guid AcknowledgementCode { get; set; }
 }

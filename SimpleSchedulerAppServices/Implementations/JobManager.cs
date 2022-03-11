@@ -1,6 +1,9 @@
 ﻿using System.Data;
+using System.Text;
 using Dapper;
 using SimpleSchedulerAppServices.Interfaces;
+using SimpleSchedulerAppServices.Utilities;
+using SimpleSchedulerConfiguration.Models;
 using SimpleSchedulerData;
 using SimpleSchedulerDataEntities;
 using SimpleSchedulerModels;
@@ -11,16 +14,18 @@ public sealed class JobManager
     : IJobManager
 {
     private readonly SqlDatabase _db;
+    private readonly AppSettings _appSettings;
 
-    public JobManager(SqlDatabase db)
+    public JobManager(SqlDatabase db, AppSettings appSettings)
     {
         _db = db;
+        _appSettings = appSettings;
     }
 
-    async Task IJobManager.AcknowledgeErrorAsync(long id)
+    async Task IJobManager.AcknowledgeErrorAsync(Guid acknowledgementCode)
     {
         DynamicParameters param = new DynamicParameters()
-            .AddLongParam("@ID", id);
+            .AddUniqueIdentifierParam("@AcknowledgementCode", acknowledgementCode);
 
         await _db.NonQueryAsync(
             "[app].[Jobs_AcknowledgeError]",
@@ -97,10 +102,33 @@ public sealed class JobManager
         ).ConfigureAwait(false));
     }
 
-    async Task<string?> IJobManager.GetDetailedMessageAsync(long id)
+    Task<string> IJobManager.GetDetailedMessageAsync(long id)
     {
-        await Task.CompletedTask;
-        throw new NotImplementedException("GetDetailedMessageAsync");
+        DirectoryInfo messageDir = new(Path.Combine(_appSettings.WorkerPath, "__messages__"));
+        if (!messageDir.Exists)
+        {
+            return Task.FromResult("** NO MESSAGE FILE FOUND **");
+        }
+        FileInfo messageGZipFile = new(Path.Combine(messageDir.FullName, $"{id}.txt.gz"));
+        if (!messageGZipFile.Exists)
+        {
+            return Task.FromResult("** NO MESSAGE FILE FOUND **");
+        }
+
+        string fileContents = UnGZipTextFile(messageGZipFile);
+        if (string.IsNullOrWhiteSpace(fileContents))
+        {
+            return Task.FromResult("** MESSAGE EMPTY **");
+        }
+        return Task.FromResult(fileContents);
+    }
+
+    private static string UnGZipTextFile(FileInfo messageGZipFile)
+    {
+        using MemoryStream outputStream = new();
+        using FileStream fileStream = messageGZipFile.OpenRead();
+        GZip.Decompress(fileStream, outputStream);
+        return Encoding.UTF8.GetString(outputStream.ToArray());
     }
 
     async Task<Job?> IJobManager.GetLastQueuedJobAsync(long scheduleID)

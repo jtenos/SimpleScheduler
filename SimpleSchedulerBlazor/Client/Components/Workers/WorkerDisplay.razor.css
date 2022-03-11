@@ -7,9 +7,3 @@
 .worker-card-body {
     padding: 0;
 }
-
-@media (max-width: 1400px) {
-    .worker-container {
-        flex-direction: column;
-    }
-}

@@ -18030,21 +18030,6 @@ textarea.form-control-lg {
   content: "\f793";
 }
 
-.worker-box {
-  flex: 33%;
-  padding: 10px;
-  margin: 15px;
-}
-
-.worker-card-body {
-  padding: 0;
-}
-
-@media (max-width: 1400px) {
-  .worker-container {
-    flex-direction: column;
-  }
-}
 /* https://codepen.io/nisharg/pen/gOPLOYY */
 .form-check-input {
   clear: left;

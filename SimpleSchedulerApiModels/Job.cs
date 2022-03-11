@@ -7,8 +7,8 @@ public class Job
     public Job() { }
 
     public Job(long id, long scheduleID, DateTime insertDateUTC, DateTime queueDateUTC,
-        DateTime? completeDateUTC, string statusCode, DateTime? acknowledgementDate, 
-        bool hasDetailedMessage, string? friendlyDuration)
+        DateTime? completeDateUTC, string statusCode, Guid acknowledgementCode,
+        DateTime? acknowledgementDate, bool hasDetailedMessage, string? friendlyDuration)
     {
         ID = id;
         ScheduleID = scheduleID;
@@ -16,6 +16,7 @@ public class Job
         QueueDateUTC = queueDateUTC;
         CompleteDateUTC = completeDateUTC;
         StatusCode = statusCode;
+        AcknowledgementCode = acknowledgementCode;
         AcknowledgementDate = acknowledgementDate;
         HasDetailedMessage = hasDetailedMessage;
         FriendlyDuration = friendlyDuration;
@@ -27,6 +28,7 @@ public class Job
     [JsonPropertyName("queDt")] public DateTime QueueDateUTC { get; set; }
     [JsonPropertyName("compDt")] public DateTime? CompleteDateUTC { get; set; }
     [JsonPropertyName("stat")] public string StatusCode { get; set; } = default!;
+    [JsonPropertyName("ackCd")] public Guid AcknowledgementCode { get; set; }
     [JsonPropertyName("ackDt")] public DateTime? AcknowledgementDate { get; set; }
     [JsonPropertyName("hasMsg")] public bool HasDetailedMessage { get; set; }
     [JsonPropertyName("dur")] public string? FriendlyDuration { get; set; }

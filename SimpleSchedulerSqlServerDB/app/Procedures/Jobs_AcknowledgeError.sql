@@ -1,5 +1,5 @@
 ﻿CREATE PROCEDURE [app].[Jobs_AcknowledgeError]
-	@ID BIGINT
+	@AcknowledgementCode UNIQUEIDENTIFIER
 AS
 BEGIN
 	SET TRANSACTION ISOLATION LEVEL SNAPSHOT;
@@ -10,7 +10,7 @@ BEGIN
 
 		UPDATE app.[Jobs]
 		SET [StatusCode] = 'ACK'
-		WHERE [ID] = @ID
+		WHERE [AcknowledgementCode] = @AcknowledgementCode
 		AND [StatusCode] = 'ERR';
 
 		COMMIT TRANSACTION;

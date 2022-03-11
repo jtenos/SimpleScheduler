@@ -1,0 +1,9 @@
+﻿#job-details-modal .modal-body {
+    white-space: pre-wrap;
+}
+
+@media (min-width: 576px) {
+    #job-details-modal .modal-dialog {
+        max-width: 1000px;
+    }
+}

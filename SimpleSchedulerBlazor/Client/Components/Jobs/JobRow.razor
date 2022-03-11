@@ -1,4 +1,4 @@
-﻿<tr data-job-id="@Job.ID">
+﻿<tr data-job-id="@Job.ID" class="job-row-@Job.StatusCode">
     <td>
         <div>
             @Worker.WorkerName
@@ -10,7 +10,7 @@
             </div>
         }
     </td>
-    <td>
+    <td title="Inserted @Job.InsertDateUTC.FormatDate() @Job.InsertDateUTC.FormatTime()">
         <div>@Job.QueueDateUTC.FormatDate()</div>
         <div>@Job.QueueDateUTC.FormatTime()</div>
     </td>
@@ -21,32 +21,39 @@
         }
         else
         {
-            <div>@Job.StatusCode</div>
+            <div>
+                @Job.StatusCode
+                @if (Job.StatusCode == "SUC")
+                {
+                    @: (@Job.FriendlyDuration)
+                }
+            </div>
             @if (Job.StatusCode == "NEW")
             {
                 <div>
                     <button class="btn btn-xs btn-outline-primary" @onclick="CancelJob">Cancel</button>
                 </div>
             }
+            else if (Job.StatusCode == "ERR")
+            {
+                <div>
+                    <button class="btn btn-xs btn-outline-primary" @onclick="AcknowledgeError">Acknowledge</button>
+                </div>
+            }
             else if (Job.StatusCode == "SUC")
             {
                 <div>
-                    Completed: @Job.CompleteDateUTC.FormatTime()
-                </div>
-                <div>
-                    Duration: @Job.FriendlyDuration
+                    @Job.CompleteDateUTC.FormatTime()
                 </div>
             }
-        }
-    </td>
-    <td>
-        @if (Loading)
-        {
-            <LoadingAnimation />
-        }
-        else if (Job.HasDetailedMessage)
-        {
-            <a href="#" onclick="return false;">Details TODO</a>
+
+            @if (Job.HasDetailedMessage)
+            {
+                <div>
+                    <button class="btn btn-xs btn-outline-primary" @onclick="ViewDetailedMessage">View Results</button>
+                </div>
+
+            }
         }
     </td>
 </tr>
