@@ -46,9 +46,17 @@ public static class JobsServiceMap
             statusCode: request.StatusCode,
             workerID: request.WorkerID,
             overdueOnly: request.OverdueOnly
-        )).Select(j => ApiModelBuilders.GetJobWithWorkerID(j)).ToArray();
+        )).Select(ApiModelBuilders.GetJobWithWorkerID).ToArray();
 
         return new GetJobsReply(jobs: jobs);
+    }
+
+    private static async Task<GetOverdueJobsReply> GetOverdueJobsAsync(
+        IJobManager jobManager, GetOverdueJobsRequest request)
+    {
+        return new(
+            Jobs: (await jobManager.GetOverdueJobsAsync()).Select(ApiModelBuilders.GetJob).ToArray()
+        );
     }
 
     public static void MapJobsService(this WebApplication app)
@@ -58,5 +66,6 @@ public static class JobsServiceMap
         app.MapPost("/Jobs/GetDetailedMessage", GetDetailedMessageAsync);
         app.MapPost("/Jobs/GetJob", GetJobAsync);
         app.MapPost("/Jobs/GetJobs", GetJobsAsync);
+        app.MapPost("/Jobs/GetOverdueJobs", GetOverdueJobsAsync);
     }
 }

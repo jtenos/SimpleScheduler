@@ -11,6 +11,7 @@ using SimpleSchedulerData;
 using Microsoft.OpenApi.Models;
 using SimpleSchedulerBlazor.Server;
 using SimpleSchedulerBlazor.Server.ApiServices;
+using SimpleSchedulerSerilogEmail;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -44,7 +45,12 @@ builder.Services.AddSingleton<AsyncRetryPolicy>(Policy
         onRetry: async (ex, ts) => { await Task.CompletedTask; })
 );
 
-builder.Services.AddScoped<IEmailer, Emailer>();
+builder.Services.AddSingleton<IEmailer>((sp) =>
+{
+    Emailer emailer = new(sp.GetRequiredService<AppSettings>());
+    EmailSink.SetEmailer(emailer);
+    return emailer;
+});
 
 AppSettings appSettings = builder.Configuration.GetSection("AppSettings").Get<AppSettings>();
 builder.Services.AddSingleton(appSettings);

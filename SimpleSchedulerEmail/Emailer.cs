@@ -15,6 +15,15 @@ public class Emailer
         _appSettings = appSettings;
     }
 
+    void IEmailer.SendEmailToAdmin(string subject, string bodyHTML)
+    {
+        string[] toAddresses =
+        {
+            _appSettings.MailSettings.AdminEmail
+        };
+        ((IEmailer)this).SendEmail(toAddresses, subject, bodyHTML);
+    }
+
     async Task IEmailer.SendEmailToAdminAsync(string subject, string bodyHTML)
     {
         string[] toAddresses =
@@ -73,5 +82,56 @@ public class Emailer
         }
         await emailClient.SendAsync(msg).ConfigureAwait(false);
         await emailClient.DisconnectAsync(quit: true).ConfigureAwait(false);
+    }
+
+    void IEmailer.SendEmail(string[] toAddresses, string subject, string bodyHTML)
+    {
+        int smtpPort = _appSettings.MailSettings.Port;
+        string emailFrom = _appSettings.MailSettings.EmailFrom;
+        string adminEmail = _appSettings.MailSettings.AdminEmail;
+        string emailHost = _appSettings.MailSettings.Host;
+        string? smtpUserName = _appSettings.MailSettings.UserName;
+        string? smtpPassword = _appSettings.MailSettings.Password;
+
+        MimeMessage msg = new();
+        foreach (string addr in toAddresses)
+        {
+            msg.To.Add(new MailboxAddress(addr, addr));
+        }
+
+        if (!msg.To.Any())
+        {
+            msg.To.Add(new MailboxAddress(adminEmail, adminEmail));
+        }
+
+        msg.From.Add(new MailboxAddress("Scheduler", emailFrom));
+        msg.Subject = $"Scheduler [{_appSettings.EnvironmentName}]: {subject}";
+
+        BodyBuilder bodyBuilder = new() { HtmlBody = bodyHTML };
+        msg.Body = bodyBuilder.ToMessageBody();
+
+        using SmtpClient emailClient = new();
+
+        switch (smtpPort)
+        {
+            case 587:
+                emailClient.Connect(emailHost, smtpPort,
+                    SecureSocketOptions.StartTls);
+                break;
+            case 465:
+                emailClient.Connect(host: emailHost, port: smtpPort, useSsl: true);
+                break;
+            default:
+                emailClient.Connect(host: emailHost,
+                    port: smtpPort, options: SecureSocketOptions.None);
+                break;
+        }
+
+        if (!string.IsNullOrWhiteSpace(smtpUserName))
+        {
+            emailClient.Authenticate(smtpUserName, smtpPassword);
+        }
+        emailClient.Send(msg);
+        emailClient.Disconnect(quit: true);
     }
 }
