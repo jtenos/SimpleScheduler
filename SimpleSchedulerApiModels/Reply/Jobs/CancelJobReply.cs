@@ -1,5 +1,3 @@
 ﻿namespace SimpleSchedulerApiModels.Reply.Jobs;
 
-public class CancelJobReply
-{
-}
+public record class CancelJobReply();

@@ -32,7 +32,7 @@ partial class Login
         StateHasChanged();
         (Error? error, _) = await ServiceClient.PostAsync<SubmitEmailRequest, SubmitEmailReply>(
             "Login/SubmitEmail",
-            new(emailAddress: Model.Email!)
+            new(EmailAddress: Model.Email!)
         );
 
         Loading = false;

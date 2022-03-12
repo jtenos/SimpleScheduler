@@ -1,13 +1,5 @@
 ﻿namespace SimpleSchedulerApiModels.Reply.Home;
 
-public class HelloThereReply
-{
-    public HelloThereReply() { }
-
-    public HelloThereReply(string message)
-    {
-        Message = message;
-    }
-
-    public string Message { get; set; } = default!;
-}
+public record class HelloThereReply(
+    string Message
+);

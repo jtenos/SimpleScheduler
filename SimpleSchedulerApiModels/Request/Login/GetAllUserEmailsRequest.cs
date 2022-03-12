@@ -1,5 +1,3 @@
 ﻿namespace SimpleSchedulerApiModels.Request.Login;
 
-public class GetAllUserEmailsRequest
-{
-}
+public record class GetAllUserEmailsRequest();

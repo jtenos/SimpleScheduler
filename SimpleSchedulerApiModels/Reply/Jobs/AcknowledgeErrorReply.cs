@@ -1,5 +1,3 @@
 ﻿namespace SimpleSchedulerApiModels.Reply.Jobs;
 
-public class AcknowledgeErrorReply
-{
-}
+public record class AcknowledgeErrorReply();

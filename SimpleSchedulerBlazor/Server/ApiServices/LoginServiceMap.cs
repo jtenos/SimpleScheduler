@@ -19,7 +19,7 @@ public static class LoginServiceMap
             ) =>
             {
                 return new GetAllUserEmailsReply(
-                    emailAddresses: await userManager.GetAllUserEmailsAsync()
+                    EmailAddresses: await userManager.GetAllUserEmailsAsync()
                 );
             });
 
@@ -30,7 +30,7 @@ public static class LoginServiceMap
             ) =>
             {
                 return new IsLoggedInReply(
-                    isLoggedIn: httpContextAccessor.HttpContext?.User is not null
+                    IsLoggedIn: httpContextAccessor.HttpContext?.User is not null
                 );
             });
 
@@ -56,7 +56,7 @@ public static class LoginServiceMap
             {
                 string emailAddress = await userManager.LoginValidateAsync(request.ValidationCode);
                 string jwt = GenerateJwtToken(appSettings, emailAddress);
-                return new ValidateEmailReply(jwtToken: jwt);
+                return new ValidateEmailReply(JwtToken: jwt);
             });
     }
 

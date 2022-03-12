@@ -7,33 +7,33 @@ internal static class ApiModelBuilders
     public static Job GetJob(SimpleSchedulerModels.Job j)
     {
         return new(
-            id: j.ID,
-            scheduleID: j.ScheduleID,
-            insertDateUTC: j.InsertDateUTC,
-            queueDateUTC: j.QueueDateUTC,
-            completeDateUTC: j.CompleteDateUTC,
-            statusCode: j.StatusCode,
-            acknowledgementCode: j.AcknowledgementCode,
-            acknowledgementDate: j.AcknowledgementDate,
-            hasDetailedMessage: j.HasDetailedMessage,
-            friendlyDuration: j.FriendlyDuration
+            ID: j.ID,
+            ScheduleID: j.ScheduleID,
+            InsertDateUTC: j.InsertDateUTC,
+            QueueDateUTC: j.QueueDateUTC,
+            CompleteDateUTC: j.CompleteDateUTC,
+            StatusCode: j.StatusCode,
+            AcknowledgementCode: j.AcknowledgementCode,
+            AcknowledgementDate: j.AcknowledgementDate,
+            HasDetailedMessage: j.HasDetailedMessage,
+            FriendlyDuration: j.FriendlyDuration
         );
     }
 
     public static JobWithWorkerID GetJobWithWorkerID(SimpleSchedulerModels.JobWithWorkerID j)
     {
         return new(
-            id: j.ID,
-            scheduleID: j.ScheduleID,
-            insertDateUTC: j.InsertDateUTC,
-            queueDateUTC: j.QueueDateUTC,
-            completeDateUTC: j.CompleteDateUTC,
-            statusCode: j.StatusCode,
-            acknowledgementCode: j.AcknowledgementCode,
-            acknowledgementDate: j.AcknowledgementDate,
-            hasDetailedMessage: j.HasDetailedMessage,
-            friendlyDuration: j.FriendlyDuration,
-            workerID: j.WorkerID
+            ID: j.ID,
+            ScheduleID: j.ScheduleID,
+            InsertDateUTC: j.InsertDateUTC,
+            QueueDateUTC: j.QueueDateUTC,
+            CompleteDateUTC: j.CompleteDateUTC,
+            StatusCode: j.StatusCode,
+            AcknowledgementCode: j.AcknowledgementCode,
+            AcknowledgementDate: j.AcknowledgementDate,
+            HasDetailedMessage: j.HasDetailedMessage,
+            FriendlyDuration: j.FriendlyDuration,
+            WorkerID: j.WorkerID
         );
     }
 

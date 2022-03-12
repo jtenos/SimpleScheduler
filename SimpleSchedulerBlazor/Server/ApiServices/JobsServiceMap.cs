@@ -48,7 +48,7 @@ public static class JobsServiceMap
             overdueOnly: request.OverdueOnly
         )).Select(ApiModelBuilders.GetJobWithWorkerID).ToArray();
 
-        return new GetJobsReply(jobs: jobs);
+        return new GetJobsReply(Jobs: jobs);
     }
 
     private static async Task<GetOverdueJobsReply> GetOverdueJobsAsync(

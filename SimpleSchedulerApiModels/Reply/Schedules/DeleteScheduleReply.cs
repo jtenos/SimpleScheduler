@@ -1,5 +1,3 @@
 ﻿namespace SimpleSchedulerApiModels.Reply.Schedules;
 
-public class DeleteScheduleReply
-{
-}
+public record class DeleteScheduleReply();

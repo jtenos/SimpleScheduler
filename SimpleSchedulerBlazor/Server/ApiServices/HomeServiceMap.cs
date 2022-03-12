@@ -13,7 +13,7 @@ public static class HomeServiceMap
             ) =>
             {
                 return new GetUtcNowReply(
-                    formattedDateTime: DateTime.UtcNow.ToString("MMM dd yyyy HH\\:mm\\:ss")
+                    FormattedDateTime: DateTime.UtcNow.ToString("MMM dd yyyy HH\\:mm\\:ss")
                 );
             });
 
@@ -23,7 +23,7 @@ public static class HomeServiceMap
             ) =>
             {
                 return new HelloThereReply (
-                    message: "Howdy"
+                    Message: "Howdy"
                 );
             });
     }

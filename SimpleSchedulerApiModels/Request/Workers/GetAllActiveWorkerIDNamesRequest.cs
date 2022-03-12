@@ -1,5 +1,3 @@
 ﻿namespace SimpleSchedulerApiModels.Request.Workers;
 
-public class GetAllActiveWorkerIDNamesRequest
-{
-}
+public record class GetAllActiveWorkerIDNamesRequest();

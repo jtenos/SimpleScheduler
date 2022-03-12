@@ -15,24 +15,8 @@ partial class WorkerSchedules
 
     public Task AddSchedule()
     {
-        Worker.Schedules = Worker.Schedules.Union(new[] { GetDummySchedule(Worker.Worker.ID) }).ToArray();
+        Worker = Worker with { Schedules = Worker.Schedules.Union(new[] { Schedule.GetDummySchedule(Worker.Worker.ID) }).ToArray() };
         StateHasChanged();
         return Task.CompletedTask;
-    }
-
-    private static Schedule GetDummySchedule(long workerID)
-    {
-        return new Schedule
-        {
-            WorkerID = workerID,
-            Sunday = true,
-            Monday = true,
-            Tuesday = true,
-            Wednesday = true,
-            Thursday = true,
-            Friday = true,
-            Saturday = true,
-            RecurTime = TimeSpan.FromHours(1)
-        };
     }
 }

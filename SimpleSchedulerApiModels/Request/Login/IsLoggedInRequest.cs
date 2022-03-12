@@ -1,5 +1,3 @@
 ﻿namespace SimpleSchedulerApiModels.Request.Login;
 
-public class IsLoggedInRequest
-{
-}
+public record class IsLoggedInRequest();

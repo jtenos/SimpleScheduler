@@ -1,5 +1,3 @@
 ﻿namespace SimpleSchedulerApiModels.Reply.Workers;
 
-public class UpdateWorkerReply
-{
-}
+public record class UpdateWorkerReply();

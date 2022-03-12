@@ -51,7 +51,7 @@ partial class ScheduleDisplay
             IsLoading = true;
             (Error? error, _) = await ServiceClient.PostAsync<DeleteScheduleRequest, DeleteScheduleReply>(
                 "Schedules/DeleteSchedule",
-                new DeleteScheduleRequest(id: Schedule.ID)
+                new DeleteScheduleRequest(ID: Schedule.ID)
             );
 
             if (error is not null)

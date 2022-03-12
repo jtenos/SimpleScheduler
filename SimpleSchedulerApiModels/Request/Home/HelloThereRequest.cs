@@ -1,5 +1,3 @@
 ﻿namespace SimpleSchedulerApiModels.Request.Home;
 
-public class HelloThereRequest
-{
-}
+public record class HelloThereRequest();

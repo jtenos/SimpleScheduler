@@ -44,7 +44,7 @@ public static class WorkersServiceMap
             .Select(s => ApiModelBuilders.GetSchedule(s))
             .ToArray();
         return new(
-            workers: workers.Select(w =>
+            Workers: workers.Select(w =>
             {
                 Schedule[] schedules = allSchedules
                     .Where(s => s.WorkerID == w.ID)
@@ -64,7 +64,7 @@ public static class WorkersServiceMap
                     .Select(w => ApiModelBuilders.GetWorker(w))
                     .ToArray();
         return new(
-            workers: workers.Select(w => new WorkerIDName(w.ID, w.WorkerName)).ToArray()
+            Workers: workers.Select(w => new WorkerIDName(w.ID, w.WorkerName)).ToArray()
         );
     }
 
@@ -89,7 +89,7 @@ public static class WorkersServiceMap
             .ToArray();
 
         return new(
-            worker: new(worker, schedules)
+            Worker: new(worker, schedules)
         );
     }
 

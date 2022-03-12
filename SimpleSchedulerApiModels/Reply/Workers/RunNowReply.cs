@@ -1,5 +1,3 @@
 ﻿namespace SimpleSchedulerApiModels.Reply.Workers;
 
-public class RunNowReply
-{
-}
+public record class RunNowReply();

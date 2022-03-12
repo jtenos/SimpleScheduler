@@ -1,5 +1,3 @@
 ﻿namespace SimpleSchedulerApiModels.Reply.Login;
 
-public class SubmitEmailReply
-{
-}
+public record class SubmitEmailReply();

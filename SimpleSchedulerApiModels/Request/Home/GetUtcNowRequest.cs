@@ -1,5 +1,3 @@
 ﻿namespace SimpleSchedulerApiModels.Request.Home;
 
-public class GetUtcNowRequest
-{
-}
+public record class GetUtcNowRequest();

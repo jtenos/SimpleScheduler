@@ -89,10 +89,10 @@ partial class Jobs
         (Error? error, GetJobsReply? reply) = await ServiceClient.PostAsync<GetJobsRequest, GetJobsReply>(
             "Jobs/GetJobs",
             new GetJobsRequest(
-                workerID: SearchCriteria.WorkerID,
-                statusCode: SearchCriteria.StatusCode,
-                pageNumber: SearchCriteria.PageNumber,
-                overdueOnly: false
+                WorkerID: SearchCriteria.WorkerID,
+                StatusCode: SearchCriteria.StatusCode,
+                PageNumber: SearchCriteria.PageNumber,
+                OverdueOnly: false
             )
         );
 
@@ -109,10 +109,10 @@ partial class Jobs
         (error, reply) = await ServiceClient.PostAsync<GetJobsRequest, GetJobsReply>(
             "Jobs/GetJobs",
             new GetJobsRequest(
-                workerID: null,
-                statusCode: "ERR",
-                pageNumber: 1,
-                overdueOnly: false
+                WorkerID: null,
+                StatusCode: "ERR",
+                PageNumber: 1,
+                OverdueOnly: false
             )
         );
 

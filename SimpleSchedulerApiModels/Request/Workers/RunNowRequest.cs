@@ -1,13 +1,5 @@
 ﻿namespace SimpleSchedulerApiModels.Request.Workers;
 
-public class RunNowRequest
-{
-    public RunNowRequest() { }
-
-    public RunNowRequest(long id)
-    {
-        ID = id;
-    }
-
-    public long ID { get; set; }
-}
+public record class RunNowRequest(
+    long ID
+);

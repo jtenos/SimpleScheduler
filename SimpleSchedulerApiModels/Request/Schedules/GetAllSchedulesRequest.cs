@@ -1,5 +1,3 @@
 ﻿namespace SimpleSchedulerApiModels.Request.Schedules;
 
-public class GetAllSchedulesRequest
-{
-}
+public record class GetAllSchedulesRequest();

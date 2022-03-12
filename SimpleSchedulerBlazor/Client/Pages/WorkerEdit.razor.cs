@@ -73,15 +73,15 @@ partial class WorkerEdit
             (Error? error, _) = await ServiceClient.PostAsync<UpdateWorkerRequest, UpdateWorkerReply>(
                 "Workers/UpdateWorker",
                 new UpdateWorkerRequest(
-                    id: Worker.ID,
-                    workerName: Worker.WorkerName,
-                    detailedDescription: Worker.DetailedDescription,
-                    emailOnSuccess: Worker.EmailOnSuccess,
-                    parentWorkerID: Worker.ParentWorkerID,
-                    timeoutMinutes: Worker.TimeoutMinutes,
-                    directoryName: Worker.DirectoryName,
-                    executable: Worker.Executable,
-                    argumentValues: Worker.ArgumentValues
+                    ID: Worker.ID,
+                    WorkerName: Worker.WorkerName,
+                    DetailedDescription: Worker.DetailedDescription,
+                    EmailOnSuccess: Worker.EmailOnSuccess,
+                    ParentWorkerID: Worker.ParentWorkerID,
+                    TimeoutMinutes: Worker.TimeoutMinutes,
+                    DirectoryName: Worker.DirectoryName,
+                    Executable: Worker.Executable,
+                    ArgumentValues: Worker.ArgumentValues
                 )
             );
 
