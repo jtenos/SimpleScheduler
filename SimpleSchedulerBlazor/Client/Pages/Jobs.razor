@@ -35,29 +35,24 @@ else
     </EditForm>
 </div>
 
-    @* TODO: Make this better for mobile - maybe flexbox or something like that *@
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Worker</th>
-                <th>Queue Date</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (JobWithWorkerID job in JobDetails)
+    <div id="jobs-container">
+        <div class="full-size-header job-container d-flex">
+            <div class="worker-name-container">Worker Name</div>
+            <div class="queue-date-container">Queue Date</div>
+            <div class="status-container">Status</div>
+        </div>
+        @foreach (JobWithWorkerID job in JobDetails)
+        {
+            Worker worker = _allWorkersByID[job.WorkerID];
+            Worker? parentWorker = null;
+            if (worker.ParentWorkerID.HasValue)
             {
-                Worker worker = _allWorkersByID[job.WorkerID];
-                Worker? parentWorker = null;
-                if (worker.ParentWorkerID.HasValue)
-                {
-                    parentWorker = _allWorkersByID[worker.ParentWorkerID.Value];
-                }
-
-                <JobRow Job="job" Worker="worker" ParentWorker="parentWorker" JobsComponent="this" />
+                parentWorker = _allWorkersByID[worker.ParentWorkerID.Value];
             }
-        </tbody>
-    </table>
+
+            <JobRow Job="job" Worker="worker" ParentWorker="parentWorker" JobsComponent="this" />
+        }
+    </div>
 }
 
 <div class="modal fade" id="job-details-modal" data-bs-backdrop="static" data-bs-keyboard="false">

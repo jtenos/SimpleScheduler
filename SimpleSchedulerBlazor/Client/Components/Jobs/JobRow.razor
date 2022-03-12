@@ -1,6 +1,6 @@
-﻿<tr data-job-id="@Job.ID" class="job-row-@Job.StatusCode">
-    <td>
-        <div>
+﻿<div class="job-container d-flex job-row-@Job.StatusCode" data-job-id="@Job.ID">
+    <div class="worker-name-container">
+        <div class="worker-name">
             @Worker.WorkerName
         </div>
         @if (ParentWorker is not null)
@@ -9,12 +9,14 @@
                 (Child of @ParentWorker.WorkerName)
             </div>
         }
-    </td>
-    <td title="Inserted @Job.InsertDateUTC.FormatDate() @Job.InsertDateUTC.FormatTime()">
-        <div>@Job.QueueDateUTC.FormatDate()</div>
-        <div>@Job.QueueDateUTC.FormatTime()</div>
-    </td>
-    <td>
+    </div>
+    <div class="queue-date-container" title="Inserted @Job.InsertDateUTC.FormatDate() @Job.InsertDateUTC.FormatTime()">
+        <div class="queue-date-full">
+            <div>@Job.QueueDateUTC.FormatDate()</div>
+            <div>@Job.QueueDateUTC.FormatTime()</div>
+        </div>
+    </div>
+    <div class="status-container">
         @if (Loading)
         {
             <LoadingAnimation />
@@ -55,5 +57,5 @@
 
             }
         }
-    </td>
-</tr>
+    </div>
+</div>
