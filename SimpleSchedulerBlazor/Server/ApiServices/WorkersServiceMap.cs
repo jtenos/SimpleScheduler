@@ -2,6 +2,7 @@
 using SimpleSchedulerApiModels.Reply.Workers;
 using SimpleSchedulerApiModels.Request.Workers;
 using SimpleSchedulerAppServices.Interfaces;
+using SimpleSchedulerBlazor.Server.Config;
 
 namespace SimpleSchedulerBlazor.Server.ApiServices;
 
@@ -9,6 +10,7 @@ public static class WorkersServiceMap
 {
     private static async Task<CreateWorkerReply> CreateWorkerAsync(
         IWorkerManager workerManager,
+        AppSettings appSettings,
         CreateWorkerRequest request)
     {
         await workerManager.AddWorkerAsync(
@@ -19,7 +21,8 @@ public static class WorkersServiceMap
             timeoutMinutes: request.TimeoutMinutes,
             directoryName: request.DirectoryName,
             executable: request.Executable,
-            argumentValues: request.ArgumentValues);
+            argumentValues: request.ArgumentValues,
+            workerPath: appSettings.WorkerPath);
 
         return new();
     }
@@ -111,18 +114,20 @@ public static class WorkersServiceMap
 
     private static async Task<UpdateWorkerReply> UpdateWorkerAsync(
         IWorkerManager workerManager,
+        AppSettings appSettings,
         UpdateWorkerRequest request)
     {
         await workerManager.UpdateWorkerAsync(
-                    id: request.ID,
-                    workerName: request.WorkerName,
-                    detailedDescription: request.DetailedDescription,
-                    emailOnSuccess: request.EmailOnSuccess,
-                    parentWorkerID: request.ParentWorkerID,
-                    timeoutMinutes: request.TimeoutMinutes,
-                    directoryName: request.DirectoryName,
-                    executable: request.Executable,
-                    argumentValues: request.ArgumentValues);
+            id: request.ID,
+            workerName: request.WorkerName,
+            detailedDescription: request.DetailedDescription,
+            emailOnSuccess: request.EmailOnSuccess,
+            parentWorkerID: request.ParentWorkerID,
+            timeoutMinutes: request.TimeoutMinutes,
+            directoryName: request.DirectoryName,
+            executable: request.Executable,
+            argumentValues: request.ArgumentValues,
+            workerPath: appSettings.WorkerPath);
 
         return new();
     }

@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
 using Polly.Retry;
-using SimpleSchedulerConfiguration.Models;
 using System.Data;
 
 namespace SimpleSchedulerData;
@@ -11,9 +10,9 @@ public sealed class SqlDatabase
     private readonly string _connectionString;
     private readonly AsyncRetryPolicy _retryPolicy;
 
-    public SqlDatabase(AppSettings appSettings, AsyncRetryPolicy retryPolicy)
+    public SqlDatabase(string connectionString, AsyncRetryPolicy retryPolicy)
     {
-        _connectionString = appSettings.ConnectionString;
+        _connectionString = connectionString;
         _retryPolicy = retryPolicy;
     }
 

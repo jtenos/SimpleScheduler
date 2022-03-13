@@ -31,7 +31,6 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\SimpleSchedulerApiModels\SimpleSchedulerApiModels.csproj" />
 		<ProjectReference Include="..\..\SimpleSchedulerAppServices\SimpleSchedulerAppServices.csproj" />
-		<ProjectReference Include="..\..\SimpleSchedulerConfiguration\SimpleSchedulerConfiguration.csproj" />
 		<ProjectReference Include="..\..\SimpleSchedulerSerilogEmail\SimpleSchedulerSerilogEmail.csproj" />
 		<ProjectReference Include="..\Client\SimpleSchedulerBlazor.Client.csproj" />
 		<ProjectReference Include="..\Shared\SimpleScheduler.Blazor.Shared.csproj" />

@@ -2,7 +2,6 @@
 using Serilog.Configuration;
 using Serilog.Events;
 using Serilog.Formatting.Display;
-using SimpleSchedulerEmail;
 
 namespace SimpleSchedulerSerilogEmail;
 

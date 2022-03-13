@@ -1,4 +1,4 @@
-﻿namespace SimpleSchedulerConfiguration.Models;
+﻿namespace SimpleSchedulerBlazor.Server.Config;
 
 public record class Jwt
 {

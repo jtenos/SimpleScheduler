@@ -1,6 +1,5 @@
 using Dapper;
 using SimpleSchedulerAppServices.Interfaces;
-using SimpleSchedulerConfiguration.Models;
 using SimpleSchedulerData;
 using SimpleSchedulerEmail;
 
@@ -10,19 +9,17 @@ public sealed class UserManager
     : IUserManager
 {
     private readonly SqlDatabase _db;
-    private readonly AppSettings _appSettings;
     private readonly IEmailer _emailer;
 
-    public UserManager(SqlDatabase db, AppSettings appSettings, IEmailer emailer)
+    public UserManager(SqlDatabase db, IEmailer emailer)
     {
         _db = db;
-        _appSettings = appSettings;
         _emailer = emailer;
     }
 
-    async Task<string[]> IUserManager.GetAllUserEmailsAsync()
+    async Task<string[]> IUserManager.GetAllUserEmailsAsync(bool allowLoginDropdown)
     {
-        if (!_appSettings.AllowLoginDropDown)
+        if (!allowLoginDropdown)
         {
             return Array.Empty<string>();
         }
@@ -34,7 +31,7 @@ public sealed class UserManager
     }
 
     private record class LoginSubmitResult(bool Success, Guid ValidationCode);
-    async Task<bool> IUserManager.LoginSubmitAsync(string emailAddress)
+    async Task<bool> IUserManager.LoginSubmitAsync(string emailAddress, string webUrl, string environmentName)
     {
         DynamicParameters param = new DynamicParameters()
             .AddNVarCharParam("@EmailAddress", emailAddress, 200);
@@ -46,9 +43,9 @@ public sealed class UserManager
 
         if (!result.Success) { return false; }
 
-        string url = $"{_appSettings.WebUrl}/validate-user/{result.ValidationCode}";
+        string url = $"{webUrl}/validate-user/{result.ValidationCode}";
         await _emailer.SendEmailAsync(new[] { emailAddress }.ToArray(),
-            $"Scheduler ({_appSettings.EnvironmentName}) Log In",
+            $"Scheduler ({environmentName}) Log In",
             $"<a href='{url}' target=_blank>Click here to log in</a>");
 
         return true;

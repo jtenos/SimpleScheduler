@@ -1,5 +1,4 @@
 using Serilog;
-using SimpleSchedulerConfiguration.Models;
 using SimpleSchedulerEmail;
 using SimpleSchedulerSerilogEmail;
 using SimpleSchedulerServiceChecker;
@@ -19,12 +18,11 @@ await Host.CreateDefaultBuilder()
             builder.AddSerilog();
         });
 
-        AppSettings appSettings = hostContext.Configuration.GetSection("AppSettings").Get<AppSettings>();
-        services.AddSingleton(appSettings);
-
         services.AddSingleton<IEmailer>((sp) =>
         {
-            Emailer emailer = new(sp.GetRequiredService<AppSettings>());
+            IConfiguration config = sp.GetRequiredService<IConfiguration>();
+            MailConfigSection mailConfig = config.GetSection("MailSettings").Get<MailConfigSection>();
+            Emailer emailer = new(mailConfig, config["EnvironmentName"]);
             EmailSink.SetEmailer(emailer);
             return emailer;
         });

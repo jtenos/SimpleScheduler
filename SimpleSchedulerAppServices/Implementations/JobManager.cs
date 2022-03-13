@@ -3,7 +3,6 @@ using System.Text;
 using Dapper;
 using SimpleSchedulerAppServices.Interfaces;
 using SimpleSchedulerAppServices.Utilities;
-using SimpleSchedulerConfiguration.Models;
 using SimpleSchedulerData;
 using SimpleSchedulerDataEntities;
 using SimpleSchedulerModels;
@@ -14,12 +13,10 @@ public sealed class JobManager
     : IJobManager
 {
     private readonly SqlDatabase _db;
-    private readonly AppSettings _appSettings;
 
-    public JobManager(SqlDatabase db, AppSettings appSettings)
+    public JobManager(SqlDatabase db)
     {
         _db = db;
-        _appSettings = appSettings;
     }
 
     async Task IJobManager.AcknowledgeErrorAsync(Guid acknowledgementCode)
@@ -102,9 +99,9 @@ public sealed class JobManager
         ).ConfigureAwait(false));
     }
 
-    Task<string> IJobManager.GetDetailedMessageAsync(long id)
+    Task<string> IJobManager.GetDetailedMessageAsync(long id, string workerPath)
     {
-        DirectoryInfo messageDir = new(Path.Combine(_appSettings.WorkerPath, "__messages__"));
+        DirectoryInfo messageDir = new(Path.Combine(workerPath, "__messages__"));
         if (!messageDir.Exists)
         {
             return Task.FromResult("** NO MESSAGE FILE FOUND **");

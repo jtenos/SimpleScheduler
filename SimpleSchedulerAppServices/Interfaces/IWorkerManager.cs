@@ -10,10 +10,10 @@ public interface IWorkerManager
     Task<Worker> GetWorkerAsync(long id);
     Task AddWorkerAsync(string workerName,
         string detailedDescription, string emailOnSuccess, long? parentWorkerID, int timeoutMinutes,
-        string directoryName, string executable, string argumentValues);
+        string directoryName, string executable, string argumentValues, string workerPath);
     Task UpdateWorkerAsync(long id, 
         string workerName, string detailedDescription, string emailOnSuccess, long? parentWorkerID, int timeoutMinutes,
-        string directoryName, string executable, string argumentValues);
+        string directoryName, string executable, string argumentValues, string workerPath);
     Task DeactivateWorkerAsync(long id);
     Task ReactivateWorkerAsync(long id);
 }

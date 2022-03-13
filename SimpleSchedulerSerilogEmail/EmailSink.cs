@@ -9,7 +9,7 @@ namespace SimpleSchedulerSerilogEmail;
 public class EmailSink
     : ILogEventSink
 {
-    private ITextFormatter _textFormatter;
+    private readonly ITextFormatter _textFormatter;
 
     private static IEmailer _emailer = default!;
 
@@ -26,7 +26,6 @@ public class EmailSink
             return;
         }
         const string SUBJECT = "Unhandled error";
-        string body = logEvent.RenderMessage();
 
         StringWriter payload = new();
         _textFormatter.Format(logEvent, payload);

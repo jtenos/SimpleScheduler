@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using SimpleSchedulerBlazor.Server.Auth;
 using Microsoft.IdentityModel.Tokens;
-using SimpleSchedulerConfiguration.Models;
 using SimpleSchedulerAppServices.Interfaces;
 using SimpleSchedulerAppServices.Implementations;
 using Polly;
@@ -12,6 +11,7 @@ using Microsoft.OpenApi.Models;
 using SimpleSchedulerBlazor.Server;
 using SimpleSchedulerBlazor.Server.ApiServices;
 using SimpleSchedulerSerilogEmail;
+using SimpleSchedulerBlazor.Server.Config;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -47,7 +47,11 @@ builder.Services.AddSingleton<AsyncRetryPolicy>(Policy
 
 builder.Services.AddSingleton<IEmailer>((sp) =>
 {
-    Emailer emailer = new(sp.GetRequiredService<AppSettings>());
+    AppSettings appSettings = sp.GetRequiredService<AppSettings>();
+    Emailer emailer = new(
+        appSettings.MailSettings,
+        appSettings.EnvironmentName
+    );
     EmailSink.SetEmailer(emailer);
     return emailer;
 });

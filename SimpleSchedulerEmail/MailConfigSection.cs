@@ -1,6 +1,6 @@
-﻿namespace SimpleSchedulerConfiguration.Models;
+﻿namespace SimpleSchedulerEmail;
 
-public record class MailSettings
+public class MailConfigSection
 {
     public int Port { get; init; } = 25;
     public string EmailFrom { get; init; } = default!;

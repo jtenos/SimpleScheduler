@@ -1,6 +1,5 @@
 using Dapper;
 using SimpleSchedulerAppServices.Interfaces;
-using SimpleSchedulerConfiguration.Models;
 using SimpleSchedulerData;
 using SimpleSchedulerDataEntities;
 using SimpleSchedulerModels;
@@ -11,12 +10,10 @@ public sealed class WorkerManager
     : IWorkerManager
 {
     private readonly SqlDatabase _db;
-    private readonly AppSettings _appSettings;
 
-    public WorkerManager(SqlDatabase db, AppSettings appSettings)
+    public WorkerManager(SqlDatabase db)
     {
         _db = db;
-        _appSettings = appSettings;
     }
 
     async Task IWorkerManager.RunNowAsync(long id)
@@ -66,9 +63,10 @@ public sealed class WorkerManager
     private record class AddWorkerResult(bool Success, bool NameAlreadyExists, bool CircularReference);
     async Task IWorkerManager.AddWorkerAsync(
         string workerName, string detailedDescription, string emailOnSuccess, long? parentWorkerID,
-        int timeoutMinutes, string directoryName, string executable, string argumentValues)
+        int timeoutMinutes, string directoryName, string executable, string argumentValues,
+        string workerPath)
     {
-        if (!IsValidExecutable(directoryName, executable))
+        if (!IsValidExecutable(directoryName, executable, workerPath))
         {
             throw new ApplicationException("Invalid executable");
         }
@@ -96,9 +94,10 @@ public sealed class WorkerManager
     private record class UpdateWorkerResult(bool Success, bool NameAlreadyExists, bool CircularReference);
     async Task IWorkerManager.UpdateWorkerAsync(
         long workerID, string workerName, string detailedDescription, string emailOnSuccess,
-        long? parentWorkerID, int timeoutMinutes, string directoryName, string executable, string argumentValues)
+        long? parentWorkerID, int timeoutMinutes, string directoryName, string executable, string argumentValues,
+        string workerPath)
     {
-        if (!IsValidExecutable(directoryName, executable))
+        if (!IsValidExecutable(directoryName, executable, workerPath))
         {
             throw new ApplicationException("Invalid executable");
         }
@@ -146,7 +145,7 @@ public sealed class WorkerManager
         ).ConfigureAwait(false);
     }
 
-    private bool IsValidExecutable(string directoryName, string executable)
+    private static bool IsValidExecutable(string directoryName, string executable, string workerPath)
     {
         if (directoryName.Contains('/')
             || executable.Contains('/')
@@ -156,7 +155,7 @@ public sealed class WorkerManager
             return false;
         }
 
-        string fullPath = Path.Combine(_appSettings.WorkerPath, directoryName, executable);
+        string fullPath = Path.Combine(workerPath, directoryName, executable);
         if (!File.Exists(fullPath))
         {
             return false;
