@@ -2,7 +2,7 @@ using Dapper;
 using SimpleSchedulerAppServices.Interfaces;
 using SimpleSchedulerData;
 using SimpleSchedulerDataEntities;
-using SimpleSchedulerModels;
+using SimpleSchedulerDomainModels;
 using System.ComponentModel.DataAnnotations;
 
 namespace SimpleSchedulerAppServices.Implementations;
@@ -114,16 +114,6 @@ public sealed class ScheduleManager
                 "[app].[Schedules_Select]",
                 param
         ).ConfigureAwait(false));
-    }
-
-    async Task<Schedule[]> IScheduleManager.GetSchedulesToInsertAsync()
-    {
-        return (await _db.GetManyAsync<ScheduleEntity>(
-                "[app].[Schedules_SelectForJobInsertion]",
-                parameters: null
-        ).ConfigureAwait(false))
-        .Select(s => ModelBuilders.GetSchedule(s))
-        .ToArray();
     }
 
     async Task IScheduleManager.ReactivateScheduleAsync(long id)

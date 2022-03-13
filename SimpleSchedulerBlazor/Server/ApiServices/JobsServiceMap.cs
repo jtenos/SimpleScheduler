@@ -21,6 +21,12 @@ public static class JobsServiceMap
         return new();
     }
 
+    private async Task<DequeueScheduledJobsReply> DequeueScheduledJobsAsync(
+        IJobManager jobManager, DequeueScheduledJobsRequest request)
+    {
+        return new(await jobManager.DequeueScheduledJobsAsync());
+    }
+
     private static async Task<GetDetailedMessageReply> GetDetailedMessageAsync(
         IJobManager jobManager, IConfiguration config, GetDetailedMessageRequest request)
     {
@@ -70,6 +76,7 @@ public static class JobsServiceMap
     {
         app.MapPost("/Jobs/AcknowledgeError", AcknowledgeErrorAsync);
         app.MapPost("/Jobs/CancelJob", CancelJobAsync);
+        app.MapPost("/Jobs/DequeueScheduledJobs", DequeueScheduledJobsAsync);
         app.MapPost("/Jobs/GetDetailedMessage", GetDetailedMessageAsync);
         app.MapPost("/Jobs/GetJob", GetJobAsync);
         app.MapPost("/Jobs/GetJobs", GetJobsAsync);

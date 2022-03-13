@@ -13,7 +13,7 @@ BEGIN
 		BEGIN TRANSACTION;
 
         DECLARE @SQL NVARCHAR(MAX) = N'
-		    SELECT * FROM [dbo].[JobWithWorkerID]
+		    SELECT * FROM [app].[JobsWithWorkerID]
             WHERE 1 = 1
         ';
 

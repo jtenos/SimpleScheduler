@@ -1,4 +1,4 @@
-﻿using SimpleSchedulerModels;
+﻿using SimpleSchedulerDomainModels;
 
 namespace SimpleSchedulerAppServices.Interfaces;
 
@@ -6,7 +6,6 @@ public interface IScheduleManager
 {
     Task DeactivateScheduleAsync(long id);
     Task ReactivateScheduleAsync(long id);
-    Task<Schedule[]> GetSchedulesToInsertAsync();
     Task<Schedule[]> GetAllSchedulesAsync();
     Task<Schedule[]> GetSchedulesForWorkerAsync(long workerID);
     Task<Schedule[]> GetSchedulesAsync(long[] ids);

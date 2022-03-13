@@ -2,7 +2,7 @@ using Dapper;
 using SimpleSchedulerAppServices.Interfaces;
 using SimpleSchedulerData;
 using SimpleSchedulerDataEntities;
-using SimpleSchedulerModels;
+using SimpleSchedulerDomainModels;
 
 namespace SimpleSchedulerAppServices.Implementations;
 

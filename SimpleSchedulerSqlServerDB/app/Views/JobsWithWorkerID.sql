@@ -1,4 +1,4 @@
-﻿CREATE VIEW [dbo].[JobWithWorkerID]
+﻿CREATE VIEW [app].[JobsWithWorkerID]
 AS
 SELECT j.*, w.[ID] [WorkerID]
 FROM [app].[Jobs] j

@@ -25,7 +25,13 @@ BEGIN
         OUTPUT INSERTED.* INTO @Jobs
         FROM five_records WITH (ROWLOCK, READPAST, UPDLOCK);
 
-        SELECT * FROM @Jobs;
+        SELECT * FROM [app].[JobsWithWorkerID]
+        WHERE [ID] IN (SELECT [ID] FROM @Jobs);
+
+        SELECT w.* FROM [app].[Workers] w
+        JOIN [app].[Schedules] s ON w.[ID] = s.[WorkerID]
+        JOIN [app].[Jobs] j ON s.[ID] = j.[ScheduleID]
+        JOIN @Jobs j1 ON j.[ID] = j1.[ID];
 
 		COMMIT TRANSACTION;
 	END TRY

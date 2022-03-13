@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleSchedulerModels", "SimpleSchedulerModels\SimpleSchedulerModels.csproj", "{5275E483-74B2-46A5-94AE-76D6F2823491}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleSchedulerDomainModels", "SimpleSchedulerDomainModels\SimpleSchedulerDomainModels.csproj", "{5275E483-74B2-46A5-94AE-76D6F2823491}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleSchedulerData", "SimpleSchedulerData\SimpleSchedulerData.csproj", "{16C14813-9931-4B53-9811-48F87BE134C2}"
 EndProject

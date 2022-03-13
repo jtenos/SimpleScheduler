@@ -1,21 +1,24 @@
 ﻿using System.Data;
 using System.Text;
 using Dapper;
+using Microsoft.Extensions.Logging;
 using SimpleSchedulerAppServices.Interfaces;
 using SimpleSchedulerAppServices.Utilities;
 using SimpleSchedulerData;
 using SimpleSchedulerDataEntities;
-using SimpleSchedulerModels;
+using SimpleSchedulerDomainModels;
 
 namespace SimpleSchedulerAppServices.Implementations;
 
 public sealed class JobManager
     : IJobManager
 {
+    private readonly ILogger<JobManager> _logger;
     private readonly SqlDatabase _db;
 
-    public JobManager(SqlDatabase db)
+    public JobManager(ILogger<JobManager> logger, SqlDatabase db)
     {
+        _logger = logger;
         _db = db;
     }
 
@@ -26,18 +29,6 @@ public sealed class JobManager
 
         await _db.NonQueryAsync(
             "[app].[Jobs_AcknowledgeError]",
-            param
-        ).ConfigureAwait(false);
-    }
-
-    async Task IJobManager.AddJobAsync(long scheduleID, DateTime queueDateUTC)
-    {
-        DynamicParameters param = new DynamicParameters()
-            .AddLongParam("@ScheduleID", scheduleID)
-            .AddDateTimeParam("@QueueDateUTC", queueDateUTC);
-
-        await _db.NonQueryAsync(
-            "[app].[Jobs_Insert]",
             param
         ).ConfigureAwait(false);
     }
@@ -78,14 +69,20 @@ public sealed class JobManager
         ).ConfigureAwait(false);
     }
 
-    async Task<Job[]> IJobManager.DequeueScheduledJobsAsync()
+    async Task<JobWithWorker[]> IJobManager.DequeueScheduledJobsAsync()
     {
-        return (await _db.GetManyAsync<JobEntity>(
+        (JobWithWorkerIDEntity[] jobEntities, WorkerEntity[] workerEntities) = await _db.GetManyAsync<JobWithWorkerIDEntity, WorkerEntity>(
             "[app].[Jobs_Dequeue]",
             parameters: null
-        ).ConfigureAwait(false))
-        .Select(j => ModelBuilders.GetJob(j))
-        .ToArray();
+        ).ConfigureAwait(false);
+
+        List<JobWithWorker> result = new();
+        foreach (JobWithWorkerIDEntity jobEntity in jobEntities)
+        {
+            WorkerEntity workerEntity = workerEntities.Single(w => w.ID == jobEntity.WorkerID);
+            result.Add(ModelBuilders.GetJobWithWorker(jobEntity, workerEntity));
+        }
+        return result.ToArray();
     }
 
     async Task<Job> IJobManager.GetJobAsync(long id)
@@ -126,22 +123,6 @@ public sealed class JobManager
         using FileStream fileStream = messageGZipFile.OpenRead();
         GZip.Decompress(fileStream, outputStream);
         return Encoding.UTF8.GetString(outputStream.ToArray());
-    }
-
-    async Task<Job?> IJobManager.GetLastQueuedJobAsync(long scheduleID)
-    {
-        DynamicParameters param = new DynamicParameters()
-            .AddLongParam("@ScheduleID", scheduleID);
-
-        JobEntity? jobEntity = await _db.GetZeroOrOneAsync<JobEntity>(
-            "[app].[Jobs_SelectMostRecentBySchedule]",
-            param
-        ).ConfigureAwait(false);
-        if (jobEntity is null)
-        {
-            return null;
-        }
-        return ModelBuilders.GetJob(jobEntity);
     }
 
     async Task<JobWithWorkerID[]> IJobManager.GetLatestJobsAsync(int pageNumber,
@@ -237,4 +218,76 @@ public sealed class JobManager
             parameters: null
         ).ConfigureAwait(false);
     }
+
+    async Task<int> IJobManager.StartDueJobsAsync()
+    {
+        Schedule[] schedulesToInsert = (await _db.GetManyAsync<ScheduleEntity>(
+            "[app].[Schedules_SelectForJobInsertion]",
+            parameters: null
+        ).ConfigureAwait(false))
+        .Select(s => ModelBuilders.GetSchedule(s))
+        .ToArray();
+
+        foreach (Schedule schedule in schedulesToInsert)
+        {
+            _logger.LogInformation("Inserting job for schedule {scheduleID} (Worker {workerID})",
+                schedule.ID, schedule.WorkerID);
+            var lastQueuedJob = await GetLastQueuedJobAsync(schedule.ID).ConfigureAwait(false);
+            DateTime? lastQueueDate = lastQueuedJob?.QueueDateUTC;
+
+            var daysOfTheWeek = new List<DayOfWeek>();
+            if (schedule.Sunday) daysOfTheWeek.Add(DayOfWeek.Sunday);
+            if (schedule.Monday) daysOfTheWeek.Add(DayOfWeek.Monday);
+            if (schedule.Tuesday) daysOfTheWeek.Add(DayOfWeek.Tuesday);
+            if (schedule.Wednesday) daysOfTheWeek.Add(DayOfWeek.Wednesday);
+            if (schedule.Thursday) daysOfTheWeek.Add(DayOfWeek.Thursday);
+            if (schedule.Friday) daysOfTheWeek.Add(DayOfWeek.Friday);
+            if (schedule.Saturday) daysOfTheWeek.Add(DayOfWeek.Saturday);
+
+            var newQueueDate = ScheduleFinder.GetNextDate(lastQueueDate, daysOfTheWeek.ToArray(),
+                schedule.TimeOfDayUTC,
+                schedule.RecurTime,
+                schedule.RecurBetweenStartUTC,
+                schedule.RecurBetweenEndUTC);
+            await AddJobAsync(schedule.ID, newQueueDate).ConfigureAwait(false);
+        }
+
+        Job[] jobs = await ((IJobManager)this).GetLatestJobsAsync(
+            pageNumber: 1,
+            rowsPerPage: 999,
+            statusCode: "RUN",
+            workerID: null,
+            overdueOnly: false);
+
+        return jobs.Length;
+    }
+
+    private async Task AddJobAsync(long scheduleID, DateTime queueDateUTC)
+    {
+        DynamicParameters param = new DynamicParameters()
+            .AddLongParam("@ScheduleID", scheduleID)
+            .AddDateTimeParam("@QueueDateUTC", queueDateUTC);
+
+        await _db.NonQueryAsync(
+            "[app].[Jobs_Insert]",
+            param
+        ).ConfigureAwait(false);
+    }
+
+    private async Task<Job?> GetLastQueuedJobAsync(long scheduleID)
+    {
+        DynamicParameters param = new DynamicParameters()
+            .AddLongParam("@ScheduleID", scheduleID);
+
+        JobEntity? jobEntity = await _db.GetZeroOrOneAsync<JobEntity>(
+            "[app].[Jobs_SelectMostRecentBySchedule]",
+            param
+        ).ConfigureAwait(false);
+        if (jobEntity is null)
+        {
+            return null;
+        }
+        return ModelBuilders.GetJob(jobEntity);
+    }
+
 }

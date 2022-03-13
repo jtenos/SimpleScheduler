@@ -1,4 +1,4 @@
-﻿namespace SimpleSchedulerModels;
+﻿namespace SimpleSchedulerDomainModels;
 
 public record class LoginAttempt(
     long ID, 

@@ -1,6 +1,6 @@
 ﻿using Humanizer;
 using SimpleSchedulerDataEntities;
-using SimpleSchedulerModels;
+using SimpleSchedulerDomainModels;
 
 namespace SimpleSchedulerAppServices;
 
@@ -36,6 +36,23 @@ internal static class ModelBuilders
             HasDetailedMessage: j.HasDetailedMessage,
             FriendlyDuration: GetFriendlyDuration(j),
             WorkerID: j.WorkerID
+        );
+    }
+
+    public static JobWithWorker GetJobWithWorker(JobEntity j, WorkerEntity worker)
+    {
+        return new(
+            ID: j.ID,
+            ScheduleID: j.ScheduleID,
+            InsertDateUTC: j.InsertDateUTC,
+            QueueDateUTC: j.QueueDateUTC,
+            CompleteDateUTC: j.CompleteDateUTC,
+            StatusCode: j.StatusCode,
+            AcknowledgementCode: j.AcknowledgementCode,
+            AcknowledgementDate: j.AcknowledgementDate,
+            HasDetailedMessage: j.HasDetailedMessage,
+            FriendlyDuration: GetFriendlyDuration(j),
+            Worker: GetWorker(worker)
         );
     }
 

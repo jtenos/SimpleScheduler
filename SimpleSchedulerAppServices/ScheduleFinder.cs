@@ -1,10 +1,9 @@
-﻿using System.Collections.Immutable;
-
-namespace SimpleSchedulerService;
+﻿namespace SimpleSchedulerAppServices;
 
 public static class ScheduleFinder
 {
-    public static DateTime GetNextDate(DateTime? lastQueueDate, ImmutableArray<DayOfWeek> daysOfTheWeek, TimeSpan? timeOfDay,
+    public static DateTime GetNextDate(
+        DateTime? lastQueueDate, DayOfWeek[] daysOfTheWeek, TimeSpan? timeOfDay,
         TimeSpan? recurrence, TimeSpan? recurBetweenStart, TimeSpan? recurBetweenEnd)
     {
         if (daysOfTheWeek == null || !daysOfTheWeek.Any())
@@ -18,7 +17,7 @@ public static class ScheduleFinder
             recurrence!.Value, recurBetweenStart, recurBetweenEnd);
     }
 
-    private static DateTime ProcessFixedTime(DateTime? lastQueueDate, ImmutableArray<DayOfWeek> daysOfTheWeek, TimeSpan timeOfDay)
+    private static DateTime ProcessFixedTime(DateTime? lastQueueDate, DayOfWeek[] daysOfTheWeek, TimeSpan timeOfDay)
     {
         lastQueueDate ??= DateTime.UtcNow;
 
@@ -48,7 +47,7 @@ public static class ScheduleFinder
     }
 
     private static DateTime ProcessRecurringTime(DateTime? lastQueueDate,
-        ImmutableArray<DayOfWeek> daysOfTheWeek, TimeSpan recurrence, TimeSpan? recurBetweenStart, TimeSpan? recurBetweenEnd)
+        DayOfWeek[] daysOfTheWeek, TimeSpan recurrence, TimeSpan? recurBetweenStart, TimeSpan? recurBetweenEnd)
     {
         if (recurBetweenStart == null)
         {
@@ -100,7 +99,7 @@ public static class ScheduleFinder
         return queueDate;
     }
 
-    private static bool CheckDay(DateTime? lastQueueDate, ImmutableArray<DayOfWeek> daysOfTheWeek)
+    private static bool CheckDay(DateTime? lastQueueDate, DayOfWeek[] daysOfTheWeek)
     {
         if (!lastQueueDate.HasValue) return false;
 

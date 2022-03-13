@@ -1,4 +1,5 @@
-﻿using SimpleSchedulerApiModels.Reply.Jobs;
+﻿using SimpleSchedulerApiModels;
+using SimpleSchedulerApiModels.Reply.Jobs;
 using SimpleSchedulerApiModels.Request.Jobs;
 using SimpleSchedulerServiceClient;
 using System.Collections.Immutable;
@@ -11,8 +12,6 @@ public sealed class JobExecutor
     private readonly ILogger<JobExecutor> _logger;
     private readonly IConfiguration _config;
     private readonly ServiceClient _serviceClient;
-
-    private static int _runningTasks;
 
     public JobExecutor(ILogger<JobExecutor> logger, IConfiguration config, ServiceClient serviceClient)
     {
@@ -38,116 +37,87 @@ public sealed class JobExecutor
 
     public async Task GoAsync(CancellationToken cancellationToken)
     {
-        // https://github.com/dotnet/runtime/issues/43970
-        IServiceScope scope = default!;
         try
         {
-            scope = _scopeFactory.CreateScope();
-            var scheduleManager = scope.ServiceProvider.GetRequiredService<IScheduleManager>();
-            var jobManager = scope.ServiceProvider.GetRequiredService<IJobManager>();
-            var schedulesToInsert = await scheduleManager.GetSchedulesToInsertAsync(cancellationToken).ConfigureAwait(false);
+            (Error? error, StartDueJobsReply? startReply) = await _serviceClient.PostAsync<StartDueJobsRequest, StartDueJobsReply>(
+                "Jobs/StartDueJobs",
+                new()
+            );
 
-            foreach (var schedule in schedulesToInsert)
+            if (error is not null)
             {
-                Trace.TraceInformation($"Inserting job for schedule {schedule.Schedule.ScheduleID} (Worker {schedule.Schedule.WorkerID})");
-                var lastQueuedJob = await jobManager.GetLastQueuedJobAsync(schedule.Schedule.ScheduleID,
-                    cancellationToken).ConfigureAwait(false);
-                DateTime? lastQueueDate = lastQueuedJob?.QueueDateUTC;
-
-                var daysOfTheWeek = new List<DayOfWeek>();
-                if (schedule.Schedule.Sunday) daysOfTheWeek.Add(DayOfWeek.Sunday);
-                if (schedule.Schedule.Monday) daysOfTheWeek.Add(DayOfWeek.Monday);
-                if (schedule.Schedule.Tuesday) daysOfTheWeek.Add(DayOfWeek.Tuesday);
-                if (schedule.Schedule.Wednesday) daysOfTheWeek.Add(DayOfWeek.Wednesday);
-                if (schedule.Schedule.Thursday) daysOfTheWeek.Add(DayOfWeek.Thursday);
-                if (schedule.Schedule.Friday) daysOfTheWeek.Add(DayOfWeek.Friday);
-                if (schedule.Schedule.Saturday) daysOfTheWeek.Add(DayOfWeek.Saturday);
-
-                var newQueueDate = ScheduleFinder.GetNextDate(lastQueueDate, daysOfTheWeek.ToImmutableArray(),
-                    schedule.Schedule.TimeOfDayUTC?.AsTimeSpan(),
-                    schedule.Schedule.RecurTime?.AsTimeSpan(),
-                    schedule.Schedule.RecurBetweenStartUTC?.AsTimeSpan(),
-                    schedule.Schedule.RecurBetweenEndUTC?.AsTimeSpan());
-                await jobManager.AddJobAsync(schedule.Schedule.ScheduleID, newQueueDate, cancellationToken).ConfigureAwait(false);
+                throw new ApplicationException(error.Message);
             }
 
-            if (_runningTasks >= 10)
+            if (startReply!.NumRunningJobs >= 10)
             {
                 return;
             }
 
-            var items = await jobManager.DequeueScheduledJobsAsync(cancellationToken).ConfigureAwait(false);
+            (error, DequeueScheduledJobsReply? dequeueReply) = await _serviceClient.PostAsync<DequeueScheduledJobsRequest, DequeueScheduledJobsReply>(
+                "Jobs/DequeueScheduledJobs",
+                new()
+            );
 
-            foreach (var jobDetail in items)
+            if (error is not null)
+            {
+                throw new ApplicationException(error.Message);
+            }
+
+            foreach (var job in dequeueReply!.Jobs)
             {
                 try
                 {
-                    Trace.TraceInformation($"Processing job {jobDetail.Job.JobID}");
-                    Interlocked.Increment(ref _runningTasks);
+                    _logger.LogInformation("Processing job {jobID}", job.ID);
 
-                    var worker = new RunnerWorker(_config, jobDetail.Worker);
+                    var worker = new RunnerWorker(_config, job.Worker);
 
-                    // TODO: Auto-map this
-                    foreach (var prop in typeof(RunnerWorker).GetProperties(BindingFlags.Public | BindingFlags.Instance))
-                    {
-                        var jobDetailProp = jobDetail.GetType().GetProperty(prop.Name)!;
-                        try
-                        {
-                            prop.SetValue(worker, jobDetailProp.GetValue(jobDetail, null), null);
-                        }
-                        catch
-                        {
-                            Debug.WriteLine($"Exception setting {prop.Name}");
-                            throw;
-                        }
-                    }
+                    _logger.LogInformation("Executing job {JobID}", job.ID);
+                    _logger.LogInformation("Worker={worker}", job.Worker.WorkerName);
 
-                    Trace.TraceInformation($"Executing job {jobDetail.Job.JobID}");
-                    Trace.TraceInformation($"Worker={worker}");
                     worker.RunAsync(cancellationToken).ContinueWith(async t =>
                     {
                         if (t.IsFaulted)
                         {
-                            Trace.TraceInformation("IsFaulted");
-                            await CompleteWorker(jobDetail, new WorkerResult(Success: false,
+                            _logger.LogInformation("IsFaulted");
+                            await CompleteWorker(job, new(Success: false,
                                 t.Exception!.ToString()), cancellationToken).ConfigureAwait(false);
                         }
                         else if (t.IsCanceled)
                         {
-                            Trace.TraceInformation("IsCanceled");
-                            await CompleteWorker(jobDetail, new WorkerResult(Success: false,
+                            _logger.LogInformation("IsCanceled");
+                            await CompleteWorker(job, new(Success: false,
                                 "Cancelled for an unknown reason"), cancellationToken).ConfigureAwait(false);
                         }
                         else if (t.IsCompleted)
                         {
-                            Trace.TraceInformation("IsCompleted");
-                            await CompleteWorker(jobDetail, t.Result, cancellationToken).ConfigureAwait(false);
+                            _logger.LogInformation("IsCompleted");
+                            await CompleteWorker(job, t.Result, cancellationToken).ConfigureAwait(false);
                         }
                         else
                         {
-                            Trace.TraceInformation("ELSE");
+                            _logger.LogInformation("ELSE");
                         }
                     }, TaskScheduler.Default).DoNotAwait();
                 }
                 catch (Exception ex)
                 {
-                    Trace.TraceError(ex.ToString());
-                    await CompleteWorker(jobDetail, new WorkerResult(Success: false, ex.ToString()), cancellationToken).ConfigureAwait(false);
+                    _logger.LogError(ex, "Error executing job {jobID}", job.ID);
+                    await CompleteWorker(
+                        job,
+                        new(Success: false, ex.ToString()),
+                        cancellationToken
+                    ).ConfigureAwait(false);
                 }
             }
         }
         catch (Exception ex)
         {
-            Trace.TraceError(ex.ToString());
-            scope.ServiceProvider.GetRequiredService<DatabaseFactory>().MarkForRollback();
-        }
-        finally
-        {
-            await ((IAsyncDisposable)scope).DisposeAsync().ConfigureAwait(false);
+            _logger.LogCritical(ex, "Error in GoAsync");
         }
     }
 
-    private async Task CompleteWorker(JobDetail jobDetail, WorkerResult workerResult, CancellationToken cancellationToken)
+    private async Task CompleteWorker(JobWithWorker jobDetail, WorkerResult workerResult, CancellationToken cancellationToken)
     {
         // https://github.com/dotnet/runtime/issues/43970
         IServiceScope scope = default!;

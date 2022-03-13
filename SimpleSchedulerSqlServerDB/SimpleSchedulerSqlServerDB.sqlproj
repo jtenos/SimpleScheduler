@@ -105,7 +105,7 @@
     <Build Include="app\Types\WorkersType.sql" />
     <Build Include="app\app.sql" />
     <Build Include="app\Procedures\Schedules_SelectForWorker.sql" />
-    <Build Include="app\Views\JobWithWorkerID.sql" />
+    <Build Include="app\Views\JobsWithWorkerID.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include="$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\130\SqlSchemas\master.dacpac">

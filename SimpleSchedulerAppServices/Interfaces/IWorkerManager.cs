@@ -1,4 +1,4 @@
-﻿using SimpleSchedulerModels;
+﻿using SimpleSchedulerDomainModels;
 
 namespace SimpleSchedulerAppServices.Interfaces;
 

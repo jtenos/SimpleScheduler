@@ -36,32 +36,30 @@ public sealed class SqlDatabase
         }).ConfigureAwait(false);
     }
 
-    //public async Task<(ImmutableArray<T1>, ImmutableArray<T2>)> GetManyAsync<T1, T2>(
-    //    string procedureName,
-    //    DynamicParameters? parameters,
-    //    CancellationToken cancellationToken
-    //)
-    //{
-    //    parameters ??= new();
+    public async Task<(T1[], T2[])> GetManyAsync<T1, T2>(
+        string procedureName,
+        DynamicParameters? parameters
+    )
+    {
+        parameters ??= new();
 
-    //    return await _retryPolicy.ExecuteAsync(async () =>
-    //    {
-    //        CommandDefinition comm = new(
-    //            commandText: procedureName,
-    //            parameters: parameters,
-    //            commandType: CommandType.StoredProcedure,
-    //            cancellationToken: cancellationToken
-    //        );
+        return await _retryPolicy.ExecuteAsync(async () =>
+        {
+            CommandDefinition comm = new(
+                commandText: procedureName,
+                parameters: parameters,
+                commandType: CommandType.StoredProcedure
+            );
 
-    //        using SqlConnection conn = await GetOpenConnectionAsync().ConfigureAwait(false);
+            using SqlConnection conn = await GetOpenConnectionAsync().ConfigureAwait(false);
 
-    //        using SqlMapper.GridReader multi = await conn.QueryMultipleAsync(comm).ConfigureAwait(false);
+            using SqlMapper.GridReader multi = await conn.QueryMultipleAsync(comm).ConfigureAwait(false);
 
-    //        ImmutableArray<T1> result1 = (await multi.ReadAsync<T1>().ConfigureAwait(false)).ToImmutableArray();
-    //        ImmutableArray<T2> result2 = (await multi.ReadAsync<T2>().ConfigureAwait(false)).ToImmutableArray();
-    //        return (result1, result2);
-    //    }).ConfigureAwait(false);
-    //}
+            T1[] result1 = (await multi.ReadAsync<T1>().ConfigureAwait(false)).ToArray();
+            T2[] result2 = (await multi.ReadAsync<T2>().ConfigureAwait(false)).ToArray();
+            return (result1, result2);
+        }).ConfigureAwait(false);
+    }
 
     //public async Task<(ImmutableArray<T1>, ImmutableArray<T2>, ImmutableArray<T3>)> GetManyAsync<T1, T2, T3>(
     //    string procedureName,

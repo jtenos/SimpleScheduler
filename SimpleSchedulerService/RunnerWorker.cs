@@ -1,19 +1,14 @@
-﻿using System;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
-using RunProcessAsTask;
+﻿using RunProcessAsTask;
 
 namespace SimpleSchedulerService
 {
     public sealed class RunnerWorker
     {
-        private readonly SimpleSchedulerModels.Worker _worker;
+        private readonly SimpleSchedulerApiModels.Worker _worker;
         private readonly string _workingDirectory;
         private readonly string _executable;
 
-        public RunnerWorker(IConfiguration config, SimpleSchedulerModels.Worker worker)
+        public RunnerWorker(IConfiguration config, SimpleSchedulerApiModels.Worker worker)
         {
             _worker = worker;
             _workingDirectory = new DirectoryInfo(Path.Combine(config["WorkerPath"], worker.DirectoryName)).FullName;

@@ -1,6 +1,6 @@
-﻿namespace SimpleSchedulerModels;
+﻿namespace SimpleSchedulerDomainModels;
 
-public record class JobWithWorkerID(
+public record class JobWithWorker(
     long ID,
     long ScheduleID,
     DateTime InsertDateUTC,
@@ -11,7 +11,7 @@ public record class JobWithWorkerID(
     DateTime? AcknowledgementDate,
     bool HasDetailedMessage,
     string? FriendlyDuration,
-    long WorkerID
+    Worker Worker
 ) : Job(
     ID,
     ScheduleID,
