@@ -7,6 +7,7 @@ using System.Text;
 using SimpleSchedulerApiModels.Request.Workers;
 using SimpleSchedulerApiModels.Reply.Workers;
 using SimpleSchedulerServiceClient;
+using SimpleSchedulerEmail;
 
 namespace SimpleSchedulerServiceChecker;
 
@@ -20,10 +21,13 @@ public class Worker
     private readonly string _apiUrl;
 
     public Worker(
+        IEmailer emailer, // forces DI loading
         IConfiguration config,
         ILogger<Worker> logger,
         ServiceClient serviceClient)
     {
+        System.Diagnostics.Debug.WriteLine(emailer);
+
         _serviceNames = config.GetSection("ServiceNames")
             .GetChildren()
             .Select(x => x.Value)
@@ -37,6 +41,7 @@ public class Worker
 
     public override async Task StartAsync(CancellationToken cancellationToken)
     {
+        _logger.LogCritical("SimpleSchedulerServiceChecker started on {machineName}", Environment.MachineName);
         async Task GoAsync()
         {
             _logger.LogInformation("In GoAsync()");
@@ -110,7 +115,7 @@ public class Worker
                         }
                         message.AppendLine("-----------------------------------");
                     }
-                    _logger.LogCritical("Error: {message}", message);
+                    _logger.LogCritical("Error: {message}", message.Replace("\r\n", "<br>").Replace("\n", "<br>"));
                 }
             }
             catch (Exception ex)
@@ -118,9 +123,9 @@ public class Worker
                 _logger.LogCritical(ex, "Error checking scheduler services");
             }
         }
-        _timer.Elapsed += async (sender, e) => await GoAsync().ConfigureAwait(false);
+        _timer.Elapsed += async (sender, e) => await GoAsync();
         _timer.Enabled = true;
-        await GoAsync().ConfigureAwait(false);
+        await GoAsync();
     }
 
     private bool IsRunning(string serviceName)

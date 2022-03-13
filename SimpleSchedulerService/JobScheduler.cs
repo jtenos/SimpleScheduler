@@ -20,7 +20,7 @@ public sealed class JobScheduler
         _jobExecutor = jobExecutor;
     }
 
-    public async Task StartSchedulerAsync(CancellationToken cancellationToken)
+    public async Task StartSchedulerAsync()
     {
         Directory.CreateDirectory(_config["WorkerPath"]);
         _logger.LogInformation("WorkerPath={workerPath}", _config["WorkerPath"]);

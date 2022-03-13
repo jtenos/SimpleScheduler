@@ -34,7 +34,7 @@ await Host.CreateDefaultBuilder()
             return emailer;
         });
 
-        services.AddScoped(sp => new ServiceClient(
+        services.AddSingleton(sp => new ServiceClient(
             new HttpClient { BaseAddress = new Uri(sp.GetRequiredService<IConfiguration>()["ApiUrl"]) }
         ));
 

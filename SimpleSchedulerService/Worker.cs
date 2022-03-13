@@ -11,7 +11,7 @@ public class Worker
     protected override Task ExecuteAsync(CancellationToken stoppingToken) => Task.CompletedTask;
 
     public override async Task StartAsync(CancellationToken cancellationToken)
-        => await _scheduler.StartSchedulerAsync(cancellationToken).ConfigureAwait(false);
+        => await _scheduler.StartSchedulerAsync().ConfigureAwait(false);
 
     public override Task StopAsync(CancellationToken cancellationToken)
     {

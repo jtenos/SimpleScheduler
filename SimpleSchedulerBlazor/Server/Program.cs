@@ -30,12 +30,17 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddSingleton<ITokenService, TokenService>();
 
-builder.Services.AddScoped<IJobManager, JobManager>();
-builder.Services.AddScoped<IScheduleManager, ScheduleManager>();
-builder.Services.AddScoped<IUserManager, UserManager>();
-builder.Services.AddScoped<IWorkerManager, WorkerManager>();
+builder.Services.AddSingleton<IJobManager, JobManager>();
+builder.Services.AddSingleton<IScheduleManager, ScheduleManager>();
+builder.Services.AddSingleton<IUserManager, UserManager>();
+builder.Services.AddSingleton<IWorkerManager, WorkerManager>();
 
-builder.Services.AddScoped<SqlDatabase>();
+builder.Services.AddSingleton<SqlDatabase>(sp =>
+{
+    string connectionString = sp.GetRequiredService<IConfiguration>().GetConnectionString("SimpleScheduler");
+    AsyncRetryPolicy retryPolicy = sp.GetRequiredService<AsyncRetryPolicy>();
+    return new SqlDatabase(connectionString, retryPolicy);
+});
 
 builder.Services.AddSingleton<AsyncRetryPolicy>(Policy
     .Handle<Exception>()
