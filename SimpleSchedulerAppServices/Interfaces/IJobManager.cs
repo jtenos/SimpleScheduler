@@ -8,7 +8,8 @@ public interface IJobManager
     Task AcknowledgeErrorAsync(Guid acknowledgementCode);
     Task<Job> GetJobAsync(long id);
     Task CancelJobAsync(long jobID);
-    Task CompleteJobAsync(long id, bool success, string? detailedMessage);
+    Task CompleteJobAsync(long id, bool success, string? detailedMessage,
+        string adminEmail, string appUrl, string environmentName);
     Task<JobWithWorkerID[]> GetLatestJobsAsync(int pageNumber, int rowsPerPage,
         string? statusCode, long? workerID, bool overdueOnly);
     Task<Job[]> GetOverdueJobsAsync();

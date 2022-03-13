@@ -21,10 +21,28 @@ public static class JobsServiceMap
         return new();
     }
 
-    private async Task<DequeueScheduledJobsReply> DequeueScheduledJobsAsync(
+    private static async Task<CompleteJobReply> CompleteJobAsync(
+        IJobManager jobManager, IConfiguration config, CompleteJobRequest request)
+    {
+        await jobManager.CompleteJobAsync(
+            id: request.ID, 
+            success: request.Success, 
+            detailedMessage: request.DetailedMessage,
+            adminEmail: config.MailSettings().AdminEmail,
+            appUrl: config.WebUrl(),
+            environmentName: config.EnvironmentName()
+        );
+        return new();
+    }
+
+    private static async Task<DequeueScheduledJobsReply> DequeueScheduledJobsAsync(
         IJobManager jobManager, DequeueScheduledJobsRequest request)
     {
-        return new(await jobManager.DequeueScheduledJobsAsync());
+        JobWithWorker[] jobs = (await jobManager.DequeueScheduledJobsAsync())
+            .Select(ApiModelBuilders.GetJobWithWorker)
+            .ToArray();
+
+        return new(jobs);
     }
 
     private static async Task<GetDetailedMessageReply> GetDetailedMessageAsync(
@@ -76,6 +94,7 @@ public static class JobsServiceMap
     {
         app.MapPost("/Jobs/AcknowledgeError", AcknowledgeErrorAsync);
         app.MapPost("/Jobs/CancelJob", CancelJobAsync);
+        app.MapPost("/Jobs/CompleteJob", CompleteJobAsync);
         app.MapPost("/Jobs/DequeueScheduledJobs", DequeueScheduledJobsAsync);
         app.MapPost("/Jobs/GetDetailedMessage", GetDetailedMessageAsync);
         app.MapPost("/Jobs/GetJob", GetJobAsync);

@@ -7,6 +7,7 @@ using SimpleSchedulerAppServices.Utilities;
 using SimpleSchedulerData;
 using SimpleSchedulerDataEntities;
 using SimpleSchedulerDomainModels;
+using SimpleSchedulerEmail;
 
 namespace SimpleSchedulerAppServices.Implementations;
 
@@ -15,11 +16,13 @@ public sealed class JobManager
 {
     private readonly ILogger<JobManager> _logger;
     private readonly SqlDatabase _db;
+    private readonly IEmailer _emailer;
 
-    public JobManager(ILogger<JobManager> logger, SqlDatabase db)
+    public JobManager(ILogger<JobManager> logger, SqlDatabase db, IEmailer emailer)
     {
         _logger = logger;
         _db = db;
+        _emailer = emailer;
     }
 
     async Task IJobManager.AcknowledgeErrorAsync(Guid acknowledgementCode)
@@ -51,7 +54,8 @@ public sealed class JobManager
         throw new ApplicationException("Invalid cancel result");
     }
 
-    async Task IJobManager.CompleteJobAsync(long id, bool success, string? detailedMessage)
+    async Task IJobManager.CompleteJobAsync(long id, bool success, string? detailedMessage,
+        string adminEmail, string appUrl, string environmentName)
     {
         if (!string.IsNullOrWhiteSpace(detailedMessage))
         {
@@ -66,6 +70,17 @@ public sealed class JobManager
         await _db.NonQueryAsync(
             "[app].[Jobs_Complete]",
             param
+        ).ConfigureAwait(false);
+
+        JobWithWorker jobWithWorker = await GetJobWithWorkerAsync(id);
+
+        await SendEmailAsync(
+            jobWithWorker: jobWithWorker, 
+            adminEmail: adminEmail, 
+            appUrl: appUrl, 
+            environmentName: environmentName, 
+            success: success, 
+            detailedMessage: detailedMessage
         ).ConfigureAwait(false);
     }
 
@@ -290,4 +305,68 @@ public sealed class JobManager
         return ModelBuilders.GetJob(jobEntity);
     }
 
+    private async Task<JobWithWorker> GetJobWithWorkerAsync(long id)
+    {
+        DynamicParameters param = new DynamicParameters()
+            .AddLongParam("@ID", id);
+        (JobWithWorkerIDEntity[] jobEntities, WorkerEntity[] workerEntities) = await _db.GetManyAsync<JobWithWorkerIDEntity, WorkerEntity>(
+            "[app].[JobsWithWorker_Select]",
+            parameters: param
+        ).ConfigureAwait(false);
+
+        return ModelBuilders.GetJobWithWorker(
+            jobEntities[0], workerEntities[0]
+        );
+    }
+
+    private async Task SendEmailAsync(JobWithWorker jobWithWorker, string adminEmail, string appUrl,
+        string environmentName, bool success, string? detailedMessage)
+    {
+        try
+        {
+            HashSet<string> toAddresses = new();
+            if (!string.IsNullOrWhiteSpace(jobWithWorker.Worker.EmailOnSuccess))
+            {
+                // Always send to the EmailOnSuccess group, for successes and failures
+                foreach (string addr in (jobWithWorker.Worker.EmailOnSuccess ?? "").Split(';').Where(x => !string.IsNullOrWhiteSpace(x)))
+                {
+                    toAddresses.Add(addr);
+                }
+            }
+
+            if (!success)
+            {
+                // For failures, send to the admin
+                foreach (string addr in adminEmail.Split(';').Where(x => !string.IsNullOrWhiteSpace(x)))
+                {
+                    toAddresses.Add(addr);
+                }
+            }
+
+            if (!toAddresses.Any())
+            {
+                return;
+            }
+
+            string subject = $"[{environmentName}] {(success ? "SUCCESS" : "ERROR")} - Worker: [{jobWithWorker.Worker.WorkerName}]";
+            detailedMessage = (detailedMessage ?? "").Replace("\r\n", "<br>").Replace("\r", "<br>").Replace("\n", "<br>");
+            string body = $"Job ID: {jobWithWorker.ID}<br><br>{detailedMessage}";
+
+            while (!appUrl.EndsWith("/"))
+            {
+                appUrl = $"{appUrl}/";
+            }
+            appUrl += $"acknowledge-error/{jobWithWorker.AcknowledgementCode:N}";
+            if (!success)
+            {
+                body = $"<a href='{appUrl}' target=_blank>Acknowledge error</a><br><br>{body}";
+            }
+
+            await _emailer.SendEmailAsync(toAddresses.ToArray(), subject, body);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error sending email");
+        }
+    }
 }

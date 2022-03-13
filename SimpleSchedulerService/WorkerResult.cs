@@ -1,4 +1,3 @@
-﻿namespace SimpleSchedulerService
-{
-    public record WorkerResult(bool Success, string? DetailedMessage);
-}
+﻿namespace SimpleSchedulerService;
+
+public record WorkerResult(bool Success, string? DetailedMessage);
