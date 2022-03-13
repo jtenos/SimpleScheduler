@@ -4,6 +4,7 @@ using Microsoft.JSInterop;
 using SimpleSchedulerApiModels;
 using SimpleSchedulerApiModels.Reply.Jobs;
 using SimpleSchedulerApiModels.Request.Jobs;
+using SimpleSchedulerServiceClient;
 using Timer = System.Timers.Timer;
 
 namespace SimpleSchedulerBlazor.Client.Components.Jobs;

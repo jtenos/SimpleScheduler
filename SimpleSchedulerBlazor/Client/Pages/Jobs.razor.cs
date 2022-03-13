@@ -6,6 +6,7 @@ using SimpleSchedulerApiModels.Reply.Jobs;
 using SimpleSchedulerApiModels.Reply.Workers;
 using SimpleSchedulerApiModels.Request.Jobs;
 using SimpleSchedulerApiModels.Request.Workers;
+using SimpleSchedulerServiceClient;
 
 namespace SimpleSchedulerBlazor.Client.Pages;
 

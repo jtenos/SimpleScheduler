@@ -3,6 +3,7 @@ using CurrieTechnologies.Razor.SweetAlert2;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using SimpleSchedulerBlazor.Client;
+using SimpleSchedulerServiceClient;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 

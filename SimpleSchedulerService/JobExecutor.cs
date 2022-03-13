@@ -1,47 +1,38 @@
-﻿using System.Collections.Immutable;
+﻿using SimpleSchedulerApiModels.Reply.Jobs;
+using SimpleSchedulerApiModels.Request.Jobs;
+using SimpleSchedulerServiceClient;
+using System.Collections.Immutable;
 using System.Reflection;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using SimpleSchedulerEmail;
-using SimpleSchedulerModels;
 
 namespace SimpleSchedulerService;
 
 public sealed class JobExecutor
 {
+    private readonly ILogger<JobExecutor> _logger;
     private readonly IConfiguration _config;
-    private readonly IServiceScopeFactory _scopeFactory;
-    private readonly IEmailer _emailer;
+    private readonly ServiceClient _serviceClient;
 
     private static int _runningTasks;
 
-    public JobExecutor(IConfiguration config, IServiceScopeFactory scopeFactory, IEmailer emailer)
-        => (_config, _scopeFactory, _emailer) = (config, scopeFactory, emailer);
+    public JobExecutor(ILogger<JobExecutor> logger, IConfiguration config, ServiceClient serviceClient)
+    {
+        _logger = logger;
+        _config = config;
+        _serviceClient = serviceClient;
+    }
 
     public async Task RestartStuckAppsAsync(CancellationToken cancellationToken)
     {
-        // https://github.com/dotnet/runtime/issues/43970
-        IServiceScope scope = default!;
-        try
+        (Error? error, RestartStuckJobsReply? reply) = await _serviceClient.PostAsync<RestartStuckJobsRequest, RestartStuckJobsReply>(
+            "Jobs/RestartStuckJobs",
+            new()
+        );
+
+        if (error is not null)
         {
-            scope = _scopeFactory.CreateScope();
-            var jobManager = scope.ServiceProvider.GetRequiredService<IJobManager>();
-            Trace.TraceInformation("Restarting stuck apps");
-            await jobManager.RestartStuckJobsAsync(cancellationToken).ConfigureAwait(false);
-        }
-        catch (Exception ex)
-        {
-            scope.ServiceProvider.GetRequiredService<DatabaseFactory>().MarkForRollback();
-            if (!string.IsNullOrWhiteSpace(_config["AdminEmail"]))
-            {
-                await SendEmailAsync("ERROR: Error calling applicationStarted",
-                    ex.ToString(), _config["AdminEmail"].Split(';'), cancellationToken);
-            }
-            throw;
-        }
-        finally
-        {
-            await ((IAsyncDisposable)scope).DisposeAsync().ConfigureAwait(false);
+            await SendEmailToAdminAsync("ERROR: Error calling RestartStuckJobs",
+                error.Message, cancellationToken);
+            return;
         }
     }
 
@@ -246,6 +237,11 @@ public sealed class JobExecutor
         {
             Trace.TraceError($"Error sending email: {ex}");
         }
+    }
+
+    private async Task SendEmailToAdminAsync(string subject, string htmlBody, CancellationToken cancellationToken)
+    {
+        await SendEmailAsync(subject, htmlBody, _config["AdminEmail"].Split(';'), cancellationToken);
     }
 
     private async Task SendEmailAsync(string subject, string htmlBody, IEnumerable<string> toAddresses, CancellationToken cancellationToken)

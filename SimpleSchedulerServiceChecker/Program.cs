@@ -2,6 +2,7 @@ using Serilog;
 using SimpleSchedulerEmail;
 using SimpleSchedulerSerilogEmail;
 using SimpleSchedulerServiceChecker;
+using SimpleSchedulerServiceClient;
 
 Serilog.Debugging.SelfLog.Enable(msg => System.Diagnostics.Debug.WriteLine(msg));
 
@@ -32,6 +33,10 @@ await Host.CreateDefaultBuilder()
             EmailSink.SetEmailer(emailer);
             return emailer;
         });
+
+        services.AddScoped(sp => new ServiceClient(
+            new HttpClient { BaseAddress = new Uri(sp.GetRequiredService<IConfiguration>()["ApiUrl"]) }
+        ));
 
         services.AddHostedService<Worker>();
     })

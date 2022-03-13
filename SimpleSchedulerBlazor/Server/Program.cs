@@ -66,16 +66,16 @@ builder.Services.AddCors();
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
-    var jwt = builder.Configuration.Jwt();
+    (string issuer, string audience, string key) = builder.Configuration.Jwt();
     options.TokenValidationParameters = new()
     {
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = jwt.Issuer,
-        ValidAudience = jwt.Audience,
-        IssuerSigningKey = new SymmetricSecurityKey(Convert.FromHexString(jwt.Key))
+        ValidIssuer = issuer,
+        ValidAudience = audience,
+        IssuerSigningKey = new SymmetricSecurityKey(Convert.FromHexString(key))
     };
 });
 

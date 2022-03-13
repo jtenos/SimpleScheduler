@@ -1,4 +1,6 @@
-﻿namespace SimpleSchedulerBlazor.Client;
+﻿using System.Net.Http.Json;
+
+namespace SimpleSchedulerServiceClient;
 
 public class ServiceClient
 {

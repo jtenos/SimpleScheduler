@@ -29,6 +29,7 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\SimpleSchedulerApiModels\SimpleSchedulerApiModels.csproj" />
 	  <ProjectReference Include="..\SimpleSchedulerSerilogEmail\SimpleSchedulerSerilogEmail.csproj" />
+	  <ProjectReference Include="..\SimpleSchedulerServiceClient\SimpleSchedulerServiceClient.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

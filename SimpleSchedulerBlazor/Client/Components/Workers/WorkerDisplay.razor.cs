@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using SimpleSchedulerApiModels;
 using SimpleSchedulerApiModels.Reply.Workers;
 using SimpleSchedulerApiModels.Request.Workers;
+using SimpleSchedulerServiceClient;
 
 namespace SimpleSchedulerBlazor.Client.Components.Workers;
 

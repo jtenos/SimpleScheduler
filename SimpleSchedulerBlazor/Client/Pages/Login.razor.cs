@@ -3,6 +3,7 @@ using CurrieTechnologies.Razor.SweetAlert2;
 using Microsoft.AspNetCore.Components;
 using SimpleSchedulerApiModels.Reply.Login;
 using SimpleSchedulerApiModels.Request.Login;
+using SimpleSchedulerServiceClient;
 
 namespace SimpleSchedulerBlazor.Client.Pages;
 

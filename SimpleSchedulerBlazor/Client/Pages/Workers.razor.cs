@@ -5,6 +5,7 @@ using SimpleSchedulerApiModels;
 using SimpleSchedulerApiModels.Reply.Workers;
 using SimpleSchedulerApiModels.Request.Workers;
 using SimpleSchedulerBlazor.Client.Components;
+using SimpleSchedulerServiceClient;
 using Wws = SimpleSchedulerApiModels.WorkerWithSchedules;
 
 namespace SimpleSchedulerBlazor.Client.Pages;

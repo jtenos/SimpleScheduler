@@ -59,6 +59,13 @@ public static class JobsServiceMap
         );
     }
 
+    private static async Task<RestartStuckJobsReply> RestartStuckJobsAsync(
+        IJobManager jobManager, RestartStuckJobsRequest request)
+    {
+        await jobManager.RestartStuckJobsAsync();
+        return new();
+    }
+
     public static void MapJobsService(this WebApplication app)
     {
         app.MapPost("/Jobs/AcknowledgeError", AcknowledgeErrorAsync);
@@ -67,5 +74,6 @@ public static class JobsServiceMap
         app.MapPost("/Jobs/GetJob", GetJobAsync);
         app.MapPost("/Jobs/GetJobs", GetJobsAsync);
         app.MapPost("/Jobs/GetOverdueJobs", GetOverdueJobsAsync);
+        app.MapPost("/Jobs/RestartStuckJobs", RestartStuckJobsAsync);
     }
 }

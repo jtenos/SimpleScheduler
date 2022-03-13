@@ -4,6 +4,7 @@ using SimpleSchedulerApiModels;
 using SimpleSchedulerApiModels.Reply.Schedules;
 using SimpleSchedulerApiModels.Request.Schedules;
 using SimpleSchedulerBlazor.Client.Components.Workers;
+using SimpleSchedulerServiceClient;
 
 namespace SimpleSchedulerBlazor.Client.Components.Schedules;
 
