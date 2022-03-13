@@ -11,7 +11,6 @@ using Microsoft.OpenApi.Models;
 using SimpleSchedulerBlazor.Server;
 using SimpleSchedulerBlazor.Server.ApiServices;
 using SimpleSchedulerSerilogEmail;
-using SimpleSchedulerBlazor.Server.Config;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -47,32 +46,36 @@ builder.Services.AddSingleton<AsyncRetryPolicy>(Policy
 
 builder.Services.AddSingleton<IEmailer>((sp) =>
 {
-    AppSettings appSettings = sp.GetRequiredService<AppSettings>();
+    IConfiguration config = sp.GetRequiredService<IConfiguration>();
+    var mailSettings = config.MailSettings();
     Emailer emailer = new(
-        appSettings.MailSettings,
-        appSettings.EnvironmentName
+        Port: mailSettings.Port,
+        EmailFrom: mailSettings.EmailFrom,
+        AdminEmail: mailSettings.AdminEmail,
+        Host: mailSettings.Host,
+        UserName: mailSettings.UserName,
+        Password: mailSettings.Password,
+        EnvironmentName: config.EnvironmentName()
     );
     EmailSink.SetEmailer(emailer);
     return emailer;
 });
-
-AppSettings appSettings = builder.Configuration.GetSection("AppSettings").Get<AppSettings>();
-builder.Services.AddSingleton(appSettings);
 
 builder.Services.AddCors();
 
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
+    var jwt = builder.Configuration.Jwt();
     options.TokenValidationParameters = new()
     {
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = appSettings.Jwt.Issuer,
-        ValidAudience = appSettings.Jwt.Issuer,
-        IssuerSigningKey = new SymmetricSecurityKey(Convert.FromHexString(appSettings.Jwt.Key))
+        ValidIssuer = jwt.Issuer,
+        ValidAudience = jwt.Audience,
+        IssuerSigningKey = new SymmetricSecurityKey(Convert.FromHexString(jwt.Key))
     };
 });
 

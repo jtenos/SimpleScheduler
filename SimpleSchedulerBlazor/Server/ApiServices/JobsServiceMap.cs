@@ -2,7 +2,6 @@
 using SimpleSchedulerApiModels.Reply.Jobs;
 using SimpleSchedulerApiModels.Request.Jobs;
 using SimpleSchedulerAppServices.Interfaces;
-using SimpleSchedulerBlazor.Server.Config;
 
 namespace SimpleSchedulerBlazor.Server.ApiServices;
 
@@ -23,10 +22,10 @@ public static class JobsServiceMap
     }
 
     private static async Task<GetDetailedMessageReply> GetDetailedMessageAsync(
-        IJobManager jobManager, AppSettings appSettings, GetDetailedMessageRequest request)
+        IJobManager jobManager, IConfiguration config, GetDetailedMessageRequest request)
     {
         return new GetDetailedMessageReply(
-            await jobManager.GetDetailedMessageAsync(request.ID, appSettings.WorkerPath)
+            await jobManager.GetDetailedMessageAsync(request.ID, config.WorkerPath())
         );
     }
 

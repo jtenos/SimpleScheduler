@@ -2,7 +2,6 @@
 using SimpleSchedulerApiModels.Reply.Workers;
 using SimpleSchedulerApiModels.Request.Workers;
 using SimpleSchedulerAppServices.Interfaces;
-using SimpleSchedulerBlazor.Server.Config;
 
 namespace SimpleSchedulerBlazor.Server.ApiServices;
 
@@ -10,7 +9,7 @@ public static class WorkersServiceMap
 {
     private static async Task<CreateWorkerReply> CreateWorkerAsync(
         IWorkerManager workerManager,
-        AppSettings appSettings,
+        IConfiguration config,
         CreateWorkerRequest request)
     {
         await workerManager.AddWorkerAsync(
@@ -22,7 +21,7 @@ public static class WorkersServiceMap
             directoryName: request.DirectoryName,
             executable: request.Executable,
             argumentValues: request.ArgumentValues,
-            workerPath: appSettings.WorkerPath);
+            workerPath: config.WorkerPath());
 
         return new();
     }
@@ -114,7 +113,7 @@ public static class WorkersServiceMap
 
     private static async Task<UpdateWorkerReply> UpdateWorkerAsync(
         IWorkerManager workerManager,
-        AppSettings appSettings,
+        IConfiguration config,
         UpdateWorkerRequest request)
     {
         await workerManager.UpdateWorkerAsync(
@@ -127,7 +126,7 @@ public static class WorkersServiceMap
             directoryName: request.DirectoryName,
             executable: request.Executable,
             argumentValues: request.ArgumentValues,
-            workerPath: appSettings.WorkerPath);
+            workerPath: config.WorkerPath());
 
         return new();
     }

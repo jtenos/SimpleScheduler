@@ -2,7 +2,6 @@
 using SimpleSchedulerApiModels.Reply.Login;
 using SimpleSchedulerApiModels.Request.Login;
 using SimpleSchedulerAppServices.Interfaces;
-using SimpleSchedulerBlazor.Server.Config;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
@@ -12,11 +11,11 @@ public static class LoginServiceMap
 {
     private static async Task<GetAllUserEmailsReply> GetAllUserEmailsAsync(
         IUserManager userManager,
-        AppSettings appSettings,
+        IConfiguration config,
         GetAllUserEmailsRequest request)
     {
         return new GetAllUserEmailsReply(
-            EmailAddresses: await userManager.GetAllUserEmailsAsync(allowLoginDropdown: appSettings.AllowLoginDropDown)
+            EmailAddresses: await userManager.GetAllUserEmailsAsync(allowLoginDropdown: config.AllowLoginDropdown())
         );
     }
 
@@ -31,10 +30,10 @@ public static class LoginServiceMap
 
     private static async Task<SubmitEmailReply> SubmitEmailAsync(
         IUserManager userManager,
-        AppSettings appSettings,
+        IConfiguration config,
         SubmitEmailRequest request)
     {
-        if (!await userManager.LoginSubmitAsync(request.EmailAddress, appSettings.WebUrl, appSettings.EnvironmentName))
+        if (!await userManager.LoginSubmitAsync(request.EmailAddress, config.WebUrl(), config.EnvironmentName()))
         {
             throw new KeyNotFoundException();
         }
@@ -43,11 +42,11 @@ public static class LoginServiceMap
 
     private static async Task<ValidateEmailReply> ValidateEmailAsync(
         IUserManager userManager,
-        AppSettings appSettings,
+        IConfiguration config,
         ValidateEmailRequest request)
     {
         string emailAddress = await userManager.LoginValidateAsync(request.ValidationCode);
-        string jwt = GenerateJwtToken(appSettings, emailAddress);
+        string jwt = GenerateJwtToken(config, emailAddress);
         return new ValidateEmailReply(JwtToken: jwt);
     }
 
@@ -59,7 +58,7 @@ public static class LoginServiceMap
         app.MapPost("/Login/ValidateEmail", ValidateEmailAsync);
     }
 
-    private static string GenerateJwtToken(AppSettings appSettings, string emailAddress)
+    private static string GenerateJwtToken(IConfiguration config, string emailAddress)
     {
         JwtSecurityTokenHandler tokenHandler = new();
         SecurityTokenDescriptor? tokenDescriptor = new()
@@ -70,7 +69,7 @@ public static class LoginServiceMap
             Expires = DateTime.UtcNow.AddDays(1),
             SigningCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(
-                    Convert.FromHexString(appSettings.Jwt.Key)
+                    Convert.FromHexString(config.Jwt().Key)
                 ),
                 SecurityAlgorithms.HmacSha256Signature
             )

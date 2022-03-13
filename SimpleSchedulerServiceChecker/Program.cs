@@ -21,8 +21,14 @@ await Host.CreateDefaultBuilder()
         services.AddSingleton<IEmailer>((sp) =>
         {
             IConfiguration config = sp.GetRequiredService<IConfiguration>();
-            MailConfigSection mailConfig = config.GetSection("MailSettings").Get<MailConfigSection>();
-            Emailer emailer = new(mailConfig, config["EnvironmentName"]);
+            Emailer emailer = new(
+                Port: config.GetValue<int>("MailSettings:Port"),
+                EmailFrom: config["MailSettings:EmailFrom"],
+                AdminEmail: config["MailSettings:AdminEmail"],
+                Host: config["MailSettings:Host"],
+                UserName: config["MailSettings:UserName"],
+                Password: config["MailSettings:Password"],
+                EnvironmentName: config["EnvironmentName"]);
             EmailSink.SetEmailer(emailer);
             return emailer;
         });
