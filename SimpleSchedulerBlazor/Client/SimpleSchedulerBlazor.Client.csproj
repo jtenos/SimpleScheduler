@@ -39,8 +39,8 @@
 		</PackageReference>
 	</ItemGroup>
 	<ItemGroup>
+		<ProjectReference Include="..\..\SimpleSchedulerApiModels\SimpleSchedulerApiModels.csproj" />
 		<ProjectReference Include="..\..\SimpleSchedulerServiceClient\SimpleSchedulerServiceClient.csproj" />
-		<ProjectReference Include="..\Shared\SimpleScheduler.Blazor.Shared.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -28,8 +28,6 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-builder.Services.AddSingleton<ITokenService, TokenService>();
-
 builder.Services.AddSingleton<IJobManager, JobManager>();
 builder.Services.AddSingleton<IScheduleManager, ScheduleManager>();
 builder.Services.AddSingleton<IUserManager, UserManager>();
@@ -66,13 +64,15 @@ builder.Services.AddSingleton<IEmailer>((sp) =>
     return emailer;
 });
 
+builder.Services.AddSingleton<ITokenService>(new TokenService());
+
 builder.Services.AddCors();
 
 builder.Services.AddAuthorization();
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
 {
     (string issuer, string audience, string key) = builder.Configuration.Jwt();
-    options.TokenValidationParameters = new()
+    opt.TokenValidationParameters = new()
     {
         ValidateIssuer = true,
         ValidateAudience = true,
@@ -87,6 +87,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 WebApplication app = builder.Build();
 
 app.UseMiddleware(typeof(ExceptionHandlingMiddleware));
+app.UseMiddleware<JwtMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -2,5 +2,5 @@
 
 public interface ITokenService
 {
-    string BuildToken(string key, string issuer, string emailAddress);
+    string BuildToken(IConfiguration config, string emailAddress);
 }

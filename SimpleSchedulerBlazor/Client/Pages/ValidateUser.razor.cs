@@ -20,6 +20,9 @@ partial class ValidateUser
     [Inject]
     private ClientAppInfo ClientAppInfo { get; set; } = default!;
 
+    [Inject]
+    private JwtContainer JwtContainer { get; set; } = default!;
+
     [Parameter]
     public string ValidationCode { get; set; } = default!;
 
@@ -39,6 +42,8 @@ partial class ValidateUser
         }
 
         await LocalStorage.SetItemAsStringAsync($"Jwt:{ClientAppInfo.EnvironmentName}", reply!.JwtToken);
+        JwtContainer.Token = reply.JwtToken;
+
         NavigationManager.NavigateTo("/");
     }
 }

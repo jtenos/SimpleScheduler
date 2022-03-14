@@ -1,14 +1,17 @@
-﻿using System.Net.Http.Json;
+﻿using System.Net.Http.Headers;
+using System.Net.Http.Json;
 
 namespace SimpleSchedulerServiceClient;
 
 public class ServiceClient
 {
     private readonly HttpClient _httpClient;
+    private readonly JwtContainer _jwt;
 
-    public ServiceClient(HttpClient httpClient)
+    public ServiceClient(HttpClient httpClient, JwtContainer jwt)
     {
         _httpClient = httpClient;
+        _jwt = jwt;
     }
 
     /// <summary>
@@ -25,6 +28,13 @@ public class ServiceClient
         where TRequest : class
         where TReply : class
     {
+        if (_jwt?.Token is not null)
+        {
+            //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",
+            //    Convert.ToBase64String(Encoding.UTF8.GetBytes(_jwt.Token)));
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",
+                _jwt.Token);
+        }
         try
         {
             HttpResponseMessage response = await _httpClient.PostAsJsonAsync(requestUri, request);

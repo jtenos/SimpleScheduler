@@ -1,32 +1,27 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 
 namespace SimpleSchedulerBlazor.Server.Auth;
 
-public class TokenService
-    : ITokenService
+public class TokenService : ITokenService
 {
-    private static readonly TimeSpan _duration = TimeSpan.FromHours(8);
-
-    public string BuildToken(string key, string issuer, string emailAddress)
+    private TimeSpan ExpiryDuration = new TimeSpan(0, 30, 0);
+    string ITokenService.BuildToken(IConfiguration config, string emailAddress)
     {
-        Claim[] claims =
+        var jwt = config.Jwt();
+        byte[] key = Convert.FromHexString(jwt.Key);
+        string issuer = jwt.Issuer;
+        string audience = jwt.Audience;
+        var claims = new[]
         {
-            new (ClaimTypes.Email, emailAddress)
+            new Claim(ClaimTypes.Email, emailAddress),
         };
 
-        SymmetricSecurityKey securityKey = new(Encoding.UTF8.GetBytes(key));
-        SigningCredentials credentials = new(securityKey, SecurityAlgorithms.HmacSha256Signature);
-        JwtSecurityToken tokenDescriptor = new(
-            issuer: issuer,
-            audience: issuer,
-            claims: claims,
-            expires: DateTime.Now.Add(_duration),
-            signingCredentials: credentials
-        );
-
+        var securityKey = new SymmetricSecurityKey(key);
+        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
+        var tokenDescriptor = new JwtSecurityToken(issuer, audience, claims,
+            expires: DateTime.Now.Add(ExpiryDuration), signingCredentials: credentials);
         return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
     }
 }

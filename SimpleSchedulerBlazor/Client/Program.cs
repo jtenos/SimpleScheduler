@@ -17,9 +17,11 @@ builder.Services.AddSweetAlert2(options => {
 });
 
 builder.Services.AddScoped(sp => new ServiceClient(
-    new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) }
+    new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) },
+    sp.GetRequiredService<JwtContainer>()
 ));
 
+builder.Services.AddSingleton<JwtContainer>();
 builder.Services.AddSingleton<ClientAppInfo>();
 
 await builder.Build().RunAsync();

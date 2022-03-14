@@ -1,4 +1,5 @@
-﻿using SimpleSchedulerApiModels;
+﻿using Microsoft.AspNetCore.Authorization;
+using SimpleSchedulerApiModels;
 using SimpleSchedulerApiModels.Reply.Jobs;
 using SimpleSchedulerApiModels.Request.Jobs;
 using SimpleSchedulerAppServices.Interfaces;
@@ -62,6 +63,7 @@ public static class JobsServiceMap
         );
     }
 
+    [Authorize]
     private static async Task<GetJobsReply> GetJobsAsync(
         IJobManager jobManager, GetJobsRequest request)
     {

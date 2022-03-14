@@ -1,7 +1,9 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
 using SimpleSchedulerApiModels.Reply.Login;
 using SimpleSchedulerApiModels.Request.Login;
 using SimpleSchedulerAppServices.Interfaces;
+using SimpleSchedulerBlazor.Server.Auth;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
@@ -40,14 +42,19 @@ public static class LoginServiceMap
         return new SubmitEmailReply();
     }
 
+    [AllowAnonymous]
     private static async Task<ValidateEmailReply> ValidateEmailAsync(
         IUserManager userManager,
         IConfiguration config,
+        ITokenService tokenService,
         ValidateEmailRequest request)
     {
         string emailAddress = await userManager.LoginValidateAsync(request.ValidationCode);
-        string jwt = GenerateJwtToken(config, emailAddress);
-        return new ValidateEmailReply(JwtToken: jwt);
+
+        byte[] key = Convert.FromHexString(config.Jwt().Key);
+        string token = tokenService.BuildToken(config, emailAddress);
+
+        return new ValidateEmailReply(JwtToken: token);
     }
 
     public static void MapLoginService(this WebApplication app)
@@ -56,25 +63,5 @@ public static class LoginServiceMap
         app.MapPost("/Login/IsLoggedIn", IsLoggedInAsync);
         app.MapPost("/Login/SubmitEmail", SubmitEmailAsync);
         app.MapPost("/Login/ValidateEmail", ValidateEmailAsync);
-    }
-
-    private static string GenerateJwtToken(IConfiguration config, string emailAddress)
-    {
-        JwtSecurityTokenHandler tokenHandler = new();
-        SecurityTokenDescriptor? tokenDescriptor = new()
-        {
-            Subject = new ClaimsIdentity(new[] {
-                new Claim(ClaimTypes.Email, emailAddress)
-            }),
-            Expires = DateTime.UtcNow.AddDays(1),
-            SigningCredentials = new SigningCredentials(
-                new SymmetricSecurityKey(
-                    Convert.FromHexString(config.Jwt().Key)
-                ),
-                SecurityAlgorithms.HmacSha256Signature
-            )
-        };
-        SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
-        return tokenHandler.WriteToken(token);
     }
 }
