@@ -9,7 +9,7 @@ public interface IJobManager
     Task<Job> GetJobAsync(long id);
     Task CancelJobAsync(long jobID);
     Task CompleteJobAsync(long id, bool success, string? detailedMessage,
-        string adminEmail, string appUrl, string environmentName);
+        string adminEmail, string appUrl, string environmentName, string workerPath);
     Task<JobWithWorkerID[]> GetLatestJobsAsync(int pageNumber, int rowsPerPage,
         string? statusCode, long? workerID, bool overdueOnly);
     Task<Job[]> GetOverdueJobsAsync();

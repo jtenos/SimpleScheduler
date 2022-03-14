@@ -14,6 +14,7 @@ BEGIN
         SET
             [StatusCode] = CASE @Success WHEN 1 THEN 'SUC' WHEN 0 THEN 'ERR' END
             ,[HasDetailedMessage] = @HasDetailedMessage
+			,[CompleteDateUTC] = CASE @Success WHEN 1 THEN SYSUTCDATETIME() END
         WHERE [ID] = @ID;
 
 		IF @Success = 1

@@ -30,7 +30,8 @@ public static class JobsServiceMap
             detailedMessage: request.DetailedMessage,
             adminEmail: config.MailSettings().AdminEmail,
             appUrl: config.WebUrl(),
-            environmentName: config.EnvironmentName()
+            environmentName: config.EnvironmentName(),
+            workerPath: config.WorkerPath()
         );
         return new();
     }
@@ -90,6 +91,13 @@ public static class JobsServiceMap
         return new();
     }
 
+    private static async Task<StartDueJobsReply> StartDueJobsAsync(
+        IJobManager jobManager, StartDueJobsRequest request)
+    {
+        int numRunning = await jobManager.StartDueJobsAsync();
+        return new(numRunning);
+    }
+
     public static void MapJobsService(this WebApplication app)
     {
         app.MapPost("/Jobs/AcknowledgeError", AcknowledgeErrorAsync);
@@ -101,5 +109,6 @@ public static class JobsServiceMap
         app.MapPost("/Jobs/GetJobs", GetJobsAsync);
         app.MapPost("/Jobs/GetOverdueJobs", GetOverdueJobsAsync);
         app.MapPost("/Jobs/RestartStuckJobs", RestartStuckJobsAsync);
+        app.MapPost("/Jobs/StartDueJobs", StartDueJobsAsync);
     }
 }

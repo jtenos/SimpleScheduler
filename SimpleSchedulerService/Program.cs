@@ -6,10 +6,12 @@ Serilog.Debugging.SelfLog.Enable(msg => System.Diagnostics.Debug.WriteLine(msg))
 await Host.CreateDefaultBuilder(args)
     .ConfigureServices((hostContext, services) =>
     {
-        services.AddScoped(sp => new ServiceClient(
+        services.AddSingleton(sp => new ServiceClient(
             new HttpClient { BaseAddress = new Uri(sp.GetRequiredService<IConfiguration>()["ApiUrl"]) }
         ));
 
+        services.AddSingleton<JobExecutor>();
+        services.AddSingleton<JobScheduler>();
         services.AddHostedService<Worker>();
     })
     .UseWindowsService()

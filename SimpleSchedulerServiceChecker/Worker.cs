@@ -57,6 +57,7 @@ public class Worker
                     }
                 }
 
+                _logger.LogInformation("Looking for overdue jobs", string.Join(",", _serviceNames));
                 (Error? error, GetOverdueJobsReply? jobsReply) = await _serviceClient.PostAsync<GetOverdueJobsRequest, GetOverdueJobsReply>(
                     "Jobs/GetOverdueJobs",
                     new()
@@ -76,47 +77,50 @@ public class Worker
                     );
                 }
 
-                if (jobsReply.Jobs.Any())
+                if (!jobsReply.Jobs.Any())
                 {
-                    (error, GetAllWorkersReply? workersReply) = await _serviceClient.PostAsync<GetAllWorkersRequest, GetAllWorkersReply>(
-                        "Workers/GetAllWorkers",
-                        new()
-                    );
-
-                    if (error is not null)
-                    {
-                        throw new ApplicationException(error.Message);
-                    }
-
-                    if (workersReply?.Workers is null)
-                    {
-                        throw new ApplicationException(string.Format(
-                            "Error calling GetAllWorkers - workersReply is {0} and workersReply.Workers is {1}",
-                            workersReply is null ? "null" : "not null",
-                            workersReply?.Workers is null ? "null" : "not null")
-                        );
-                    }
-
-                    WorkerWithSchedules[] workers = workersReply.Workers.Where(w => w.Schedules is not null).ToArray();
-
-                    var message = new StringBuilder("OVERDUE JOBS\n\n");
-                    foreach (var job in jobsReply.Jobs)
-                    {
-                        WorkerWithSchedules? worker = workers.FirstOrDefault(w => w.Schedules.Any(s => s.ID == job.ScheduleID));
-                        string workerName = worker?.Worker.WorkerName ?? "[unknown worker]";
-                        message.AppendLine($"{workerName}");
-                        message.AppendLine($"Queued on {job.QueueDateUTC:yyyy\\-MM\\-dd HH\\:mm\\:ss} (UTC)");
-                        message.AppendLine($"Status: {job.StatusCode}");
-                        if (job.StatusCode == "ERR")
-                        {
-                            Guid acknowledgementCode = job.AcknowledgementCode;
-                            string url = $"{_apiUrl}/acknowledge-error/{acknowledgementCode:N}";
-                            message.AppendLine($"Acknowledge: {url}");
-                        }
-                        message.AppendLine("-----------------------------------");
-                    }
-                    _logger.LogCritical("Error: {message}", message.Replace("\r\n", "<br>").Replace("\n", "<br>"));
+                    _logger.LogInformation("No overdue jobs found");
+                    return;
                 }
+
+                (error, GetAllWorkersReply? workersReply) = await _serviceClient.PostAsync<GetAllWorkersRequest, GetAllWorkersReply>(
+                    "Workers/GetAllWorkers",
+                    new()
+                );
+
+                if (error is not null)
+                {
+                    throw new ApplicationException(error.Message);
+                }
+
+                if (workersReply?.Workers is null)
+                {
+                    throw new ApplicationException(string.Format(
+                        "Error calling GetAllWorkers - workersReply is {0} and workersReply.Workers is {1}",
+                        workersReply is null ? "null" : "not null",
+                        workersReply?.Workers is null ? "null" : "not null")
+                    );
+                }
+
+                WorkerWithSchedules[] workers = workersReply.Workers.Where(w => w.Schedules is not null).ToArray();
+
+                var message = new StringBuilder("OVERDUE JOBS\n\n");
+                foreach (var job in jobsReply.Jobs)
+                {
+                    WorkerWithSchedules? worker = workers.FirstOrDefault(w => w.Schedules.Any(s => s.ID == job.ScheduleID));
+                    string workerName = worker?.Worker.WorkerName ?? "[unknown worker]";
+                    message.AppendLine($"{workerName}");
+                    message.AppendLine($"Queued on {job.QueueDateUTC:yyyy\\-MM\\-dd HH\\:mm\\:ss} (UTC)");
+                    message.AppendLine($"Status: {job.StatusCode}");
+                    if (job.StatusCode == "ERR")
+                    {
+                        Guid acknowledgementCode = job.AcknowledgementCode;
+                        string url = $"{_apiUrl}/acknowledge-error/{acknowledgementCode:N}";
+                        message.AppendLine($"Acknowledge: {url}");
+                    }
+                    message.AppendLine("-----------------------------------");
+                }
+                _logger.LogCritical("Error: {message}", message.Replace("\r\n", "<br>").Replace("\n", "<br>"));
             }
             catch (Exception ex)
             {

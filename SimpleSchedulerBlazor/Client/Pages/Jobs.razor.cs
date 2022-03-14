@@ -85,6 +85,12 @@ partial class Jobs
         }
     }
 
+    private async Task RefreshJobs()
+    {
+        await LoadJobsAsync();
+        StateHasChanged();
+    }
+
     private async Task LoadJobsAsync()
     {
         (Error? error, GetJobsReply? reply) = await ServiceClient.PostAsync<GetJobsRequest, GetJobsReply>(

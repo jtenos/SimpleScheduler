@@ -13,7 +13,7 @@ BEGIN
 
         ;WITH five_records AS (
             SELECT *
-            FROM [app].[Jobs] WITH (ROWLOCK, READPAST, UPDLOCK)
+            FROM [app].[Jobs]
             WHERE [StatusCode] = 'NEW'
             AND [QueueDateUTC] < @Now
             ORDER BY [QueueDateUTC]
@@ -23,15 +23,18 @@ BEGIN
         UPDATE five_records
         SET [StatusCode] = 'RUN'
         OUTPUT INSERTED.* INTO @Jobs
-        FROM five_records WITH (ROWLOCK, READPAST, UPDLOCK);
+        FROM five_records;
 
         SELECT * FROM [app].[JobsWithWorkerID]
         WHERE [ID] IN (SELECT [ID] FROM @Jobs);
 
-        SELECT w.* FROM [app].[Workers] w
-        JOIN [app].[Schedules] s ON w.[ID] = s.[WorkerID]
-        JOIN [app].[Jobs] j ON s.[ID] = j.[ScheduleID]
-        JOIN @Jobs j1 ON j.[ID] = j1.[ID];
+        SELECT * FROM [app].[Workers]
+        WHERE [ID] IN (
+            SELECT s.[WorkerID]
+            FROM [app].[Schedules] s
+            JOIN [app].[Jobs] j ON s.[ID] = j.[ScheduleID]
+            JOIN @Jobs j1 ON j.[ID] = j1.[ID]
+        );
 
 		COMMIT TRANSACTION;
 	END TRY

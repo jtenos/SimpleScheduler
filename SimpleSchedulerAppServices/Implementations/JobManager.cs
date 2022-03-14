@@ -55,11 +55,14 @@ public sealed class JobManager
     }
 
     async Task IJobManager.CompleteJobAsync(long id, bool success, string? detailedMessage,
-        string adminEmail, string appUrl, string environmentName)
+        string adminEmail, string appUrl, string environmentName, string workerPath)
     {
         if (!string.IsNullOrWhiteSpace(detailedMessage))
         {
-            throw new NotImplementedException("Write the detailed message to disk");
+            DirectoryInfo messageDir = new(Path.Combine(workerPath, "__messages__"));
+            FileInfo messageGZipFile = new(Path.Combine(messageDir.FullName, $"{id}.txt.gz"));
+
+            GZipTextFile(messageGZipFile, detailedMessage.Trim());
         }
 
         DynamicParameters param = new DynamicParameters()
@@ -75,11 +78,11 @@ public sealed class JobManager
         JobWithWorker jobWithWorker = await GetJobWithWorkerAsync(id);
 
         await SendEmailAsync(
-            jobWithWorker: jobWithWorker, 
-            adminEmail: adminEmail, 
-            appUrl: appUrl, 
-            environmentName: environmentName, 
-            success: success, 
+            jobWithWorker: jobWithWorker,
+            adminEmail: adminEmail,
+            appUrl: appUrl,
+            environmentName: environmentName,
+            success: success,
             detailedMessage: detailedMessage
         ).ConfigureAwait(false);
     }
@@ -138,6 +141,13 @@ public sealed class JobManager
         using FileStream fileStream = messageGZipFile.OpenRead();
         GZip.Decompress(fileStream, outputStream);
         return Encoding.UTF8.GetString(outputStream.ToArray());
+    }
+
+    private static void GZipTextFile(FileInfo messageGZipFile, string contents)
+    {
+        using MemoryStream inputStream = new(Encoding.UTF8.GetBytes(contents));
+        using FileStream fileStream = messageGZipFile.OpenWrite();
+        GZip.Compress(inputStream, fileStream);
     }
 
     async Task<JobWithWorkerID[]> IJobManager.GetLatestJobsAsync(int pageNumber,
@@ -309,7 +319,7 @@ public sealed class JobManager
     {
         DynamicParameters param = new DynamicParameters()
             .AddLongParam("@ID", id);
-        (JobWithWorkerIDEntity[] jobEntities, WorkerEntity[] workerEntities) = await _db.GetManyAsync<JobWithWorkerIDEntity, WorkerEntity>(
+        (JobEntity[] jobEntities, WorkerEntity[] workerEntities) = await _db.GetManyAsync<JobEntity, WorkerEntity>(
             "[app].[JobsWithWorker_Select]",
             parameters: param
         ).ConfigureAwait(false);

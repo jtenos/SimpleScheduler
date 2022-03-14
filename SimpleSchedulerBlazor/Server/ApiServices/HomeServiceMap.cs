@@ -5,26 +5,23 @@ namespace SimpleSchedulerBlazor.Server.ApiServices;
 
 public static class HomeServiceMap
 {
+    private static Task<GetUtcNowReply> GetUtcNowAsync(GetUtcNowRequest request)
+    {
+        return Task.FromResult(new GetUtcNowReply(
+            FormattedDateTime: $"{DateTime.UtcNow:MMM dd HH\\:mm} (UTC)"
+        ));
+    }
+
+    private static Task<HelloThereReply> HelloThereAsync(HelloThereRequest request)
+    {
+        return Task.FromResult(new HelloThereReply(
+            Message: "Howdy"
+        ));
+    }
+
     public static void MapHomeService(this WebApplication app)
     {
-        app.MapPost("/Home/GetUtcNow",
-            (
-                GetUtcNowRequest request
-            ) =>
-            {
-                return new GetUtcNowReply(
-                    FormattedDateTime: DateTime.UtcNow.ToString("MMM dd yyyy HH\\:mm\\:ss")
-                );
-            });
-
-        app.MapPost("/Home/HelloThere",
-            (
-                HelloThereRequest request
-            ) =>
-            {
-                return new HelloThereReply (
-                    Message: "Howdy"
-                );
-            });
+        app.MapPost("/Home/GetUtcNow", GetUtcNowAsync);
+        app.MapPost("/Home/HelloThere", HelloThereAsync);
     }
 }
