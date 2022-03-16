@@ -1,16 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.IdentityModel.Tokens;
 using SimpleSchedulerApiModels.Reply.Login;
 using SimpleSchedulerApiModels.Request.Login;
 using SimpleSchedulerAppServices.Interfaces;
 using SimpleSchedulerBlazor.Server.Auth;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 
 namespace SimpleSchedulerBlazor.Server.ApiServices;
 
 public static class LoginServiceMap
 {
+    [AllowAnonymous]
     private static async Task<GetAllUserEmailsReply> GetAllUserEmailsAsync(
         IUserManager userManager,
         IConfiguration config,
@@ -21,6 +19,7 @@ public static class LoginServiceMap
         );
     }
 
+    [AllowAnonymous]
     private static Task<IsLoggedInReply> IsLoggedInAsync(
         IHttpContextAccessor httpContextAccessor,
         IsLoggedInRequest request)
@@ -30,6 +29,7 @@ public static class LoginServiceMap
         ));
     }
 
+    [AllowAnonymous]
     private static async Task<SubmitEmailReply> SubmitEmailAsync(
         IUserManager userManager,
         IConfiguration config,
@@ -51,7 +51,6 @@ public static class LoginServiceMap
     {
         string emailAddress = await userManager.LoginValidateAsync(request.ValidationCode);
 
-        byte[] key = Convert.FromHexString(config.Jwt().Key);
         string token = tokenService.BuildToken(config, emailAddress);
 
         return new ValidateEmailReply(JwtToken: token);

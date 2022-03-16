@@ -87,7 +87,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 WebApplication app = builder.Build();
 
 app.UseMiddleware(typeof(ExceptionHandlingMiddleware));
-app.UseMiddleware<JwtMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

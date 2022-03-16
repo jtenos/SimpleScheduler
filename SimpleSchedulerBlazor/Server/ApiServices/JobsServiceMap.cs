@@ -8,6 +8,7 @@ namespace SimpleSchedulerBlazor.Server.ApiServices;
 
 public static class JobsServiceMap
 {
+    [Authorize]
     private static async Task<AcknowledgeErrorReply> AcknowledgeErrorAsync(
         IJobManager jobManager, AcknowledgeErrorRequest request)
     {
@@ -15,6 +16,7 @@ public static class JobsServiceMap
         return new AcknowledgeErrorReply();
     }
 
+    [Authorize]
     private static async Task<CancelJobReply> CancelJobAsync(
         IJobManager jobManager, CancelJobRequest request)
     {
@@ -22,6 +24,7 @@ public static class JobsServiceMap
         return new();
     }
 
+    [Authorize]
     private static async Task<CompleteJobReply> CompleteJobAsync(
         IJobManager jobManager, IConfiguration config, CompleteJobRequest request)
     {
@@ -37,6 +40,7 @@ public static class JobsServiceMap
         return new();
     }
 
+    [Authorize]
     private static async Task<DequeueScheduledJobsReply> DequeueScheduledJobsAsync(
         IJobManager jobManager, DequeueScheduledJobsRequest request)
     {
@@ -47,6 +51,7 @@ public static class JobsServiceMap
         return new(jobs);
     }
 
+    [Authorize]
     private static async Task<GetDetailedMessageReply> GetDetailedMessageAsync(
         IJobManager jobManager, IConfiguration config, GetDetailedMessageRequest request)
     {
@@ -55,6 +60,7 @@ public static class JobsServiceMap
         );
     }
 
+    [Authorize]
     private static async Task<GetJobReply> GetJobAsync(
         IJobManager jobManager, GetJobRequest request)
     {
@@ -78,6 +84,7 @@ public static class JobsServiceMap
         return new GetJobsReply(Jobs: jobs);
     }
 
+    [Authorize]
     private static async Task<GetOverdueJobsReply> GetOverdueJobsAsync(
         IJobManager jobManager, GetOverdueJobsRequest request)
     {
@@ -86,6 +93,7 @@ public static class JobsServiceMap
         );
     }
 
+    [Authorize]
     private static async Task<RestartStuckJobsReply> RestartStuckJobsAsync(
         IJobManager jobManager, RestartStuckJobsRequest request)
     {
@@ -93,6 +101,7 @@ public static class JobsServiceMap
         return new();
     }
 
+    [Authorize]
     private static async Task<StartDueJobsReply> StartDueJobsAsync(
         IJobManager jobManager, StartDueJobsRequest request)
     {

@@ -1,4 +1,5 @@
-﻿using SimpleSchedulerApiModels;
+﻿using Microsoft.AspNetCore.Authorization;
+using SimpleSchedulerApiModels;
 using SimpleSchedulerApiModels.Reply.Workers;
 using SimpleSchedulerApiModels.Request.Workers;
 using SimpleSchedulerAppServices.Interfaces;
@@ -7,6 +8,7 @@ namespace SimpleSchedulerBlazor.Server.ApiServices;
 
 public static class WorkersServiceMap
 {
+    [Authorize]
     private static async Task<CreateWorkerReply> CreateWorkerAsync(
         IWorkerManager workerManager,
         IConfiguration config,
@@ -26,6 +28,7 @@ public static class WorkersServiceMap
         return new();
     }
 
+    [Authorize]
     private static async Task<DeleteWorkerReply> DeleteWorkerAsync(
         IWorkerManager workerManager,
         DeleteWorkerRequest request)
@@ -34,6 +37,7 @@ public static class WorkersServiceMap
         return new DeleteWorkerReply();
     }
 
+    [Authorize]
     private static async Task<GetAllWorkersReply> GetAllWorkersAsync(
         IWorkerManager workerManager,
         IScheduleManager scheduleManager,
@@ -58,6 +62,7 @@ public static class WorkersServiceMap
         );
     }
 
+    [Authorize]
     private static async Task<GetAllActiveWorkerIDNamesReply> GetAllActiveWorkerIDNamesAsync(
         IWorkerManager workerManager,
         GetAllActiveWorkerIDNamesRequest request)
@@ -70,6 +75,7 @@ public static class WorkersServiceMap
         );
     }
 
+    [Authorize]
     private static async Task<GetWorkersReply> GetWorkersAsync(
         IWorkerManager workerManager,
         GetWorkersRequest request)
@@ -80,6 +86,7 @@ public static class WorkersServiceMap
         return new(workers);
     }
 
+    [Authorize]
     private static async Task<GetWorkerReply> GetWorkerAsync(
         IWorkerManager workerManager,
         IScheduleManager scheduleManager,
@@ -95,6 +102,7 @@ public static class WorkersServiceMap
         );
     }
 
+    [Authorize]
     private static async Task<ReactivateWorkerReply> ReactivateWorkerAsync(
         IWorkerManager workerManager,
         ReactivateWorkerRequest request)
@@ -103,6 +111,7 @@ public static class WorkersServiceMap
         return new();
     }
 
+    [Authorize]
     private static async Task<RunNowReply> RunNowAsync(
         IWorkerManager workerManager,
         RunNowRequest request)
@@ -111,6 +120,7 @@ public static class WorkersServiceMap
         return new();
     }
 
+    [Authorize]
     private static async Task<UpdateWorkerReply> UpdateWorkerAsync(
         IWorkerManager workerManager,
         IConfiguration config,

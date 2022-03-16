@@ -6,22 +6,21 @@ namespace SimpleSchedulerBlazor.Server.Auth;
 
 public class TokenService : ITokenService
 {
-    private TimeSpan ExpiryDuration = new TimeSpan(0, 30, 0);
+    private static readonly TimeSpan _expirationDuration = TimeSpan.FromSeconds(30);
+
     string ITokenService.BuildToken(IConfiguration config, string emailAddress)
     {
-        var jwt = config.Jwt();
-        byte[] key = Convert.FromHexString(jwt.Key);
-        string issuer = jwt.Issuer;
-        string audience = jwt.Audience;
+        var (issuer, audience, keyHex) = config.Jwt();
+        byte[] key = Convert.FromHexString(keyHex);
         var claims = new[]
         {
             new Claim(ClaimTypes.Email, emailAddress),
         };
 
-        var securityKey = new SymmetricSecurityKey(key);
-        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
-        var tokenDescriptor = new JwtSecurityToken(issuer, audience, claims,
-            expires: DateTime.Now.Add(ExpiryDuration), signingCredentials: credentials);
+        SymmetricSecurityKey securityKey = new(key);
+        SigningCredentials credentials = new(securityKey, SecurityAlgorithms.HmacSha256Signature);
+        JwtSecurityToken tokenDescriptor = new(issuer, audience, claims,
+            expires: DateTime.Now.Add(_expirationDuration), signingCredentials: credentials);
         return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
     }
 }
