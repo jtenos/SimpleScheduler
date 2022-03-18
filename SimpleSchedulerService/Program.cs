@@ -6,14 +6,19 @@ Serilog.Debugging.SelfLog.Enable(msg => System.Diagnostics.Debug.WriteLine(msg))
 await Host.CreateDefaultBuilder(args)
     .ConfigureServices((hostContext, services) =>
     {
-        services.AddSingleton(sp => new ServiceClient(
+        services.AddScoped(sp => new ServiceClient(
             new HttpClient { BaseAddress = new Uri(sp.GetRequiredService<IConfiguration>()["ApiUrl"]) },
-            new JwtContainer()
+            sp.GetRequiredService<JwtContainer>()
         ));
 
+        services.AddSingleton<JwtContainer>();
         services.AddSingleton<JobExecutor>();
         services.AddSingleton<JobScheduler>();
         services.AddHostedService<Worker>();
+    })
+    .ConfigureHostConfiguration(configure =>
+    {
+        configure.AddJsonFile("secrets.json", optional: true);
     })
     .UseWindowsService()
     .Build()

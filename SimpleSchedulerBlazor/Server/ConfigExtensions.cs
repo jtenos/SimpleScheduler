@@ -33,4 +33,5 @@ public static class ConfigExtensions
     public static string EnvironmentName(this IConfiguration config) => config["EnvironmentName"];
     public static bool AllowLoginDropdown(this IConfiguration config) => config.GetValue<bool>("AllowLoginDropdown");
     public static string WebUrl(this IConfiguration config) => config["WebUrl"];
+    public static Guid InternalSecretAuthKey(this IConfiguration config) => config.GetValue<Guid>("InternalSecretAuthKey");
 }

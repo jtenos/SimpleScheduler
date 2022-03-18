@@ -54,8 +54,13 @@ public sealed class UserManager
     private record class LoginValidateResult(
         bool Success, string? EmailAddress, bool NotFound, bool Expired
     );
-    async Task<string> IUserManager.LoginValidateAsync(Guid validationCode)
+    async Task<string> IUserManager.LoginValidateAsync(Guid validationCode, Guid internalSecretAuthKey)
     {
+        if (validationCode == internalSecretAuthKey)
+        {
+            return "@@internal@@";
+        }
+
         DynamicParameters param = new DynamicParameters()
             .AddUniqueIdentifierParam("@ValidationCode", validationCode);
 

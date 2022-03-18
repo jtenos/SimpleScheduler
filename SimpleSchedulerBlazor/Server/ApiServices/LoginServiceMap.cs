@@ -49,7 +49,10 @@ public static class LoginServiceMap
         ITokenService tokenService,
         ValidateEmailRequest request)
     {
-        string emailAddress = await userManager.LoginValidateAsync(request.ValidationCode);
+        string emailAddress = await userManager.LoginValidateAsync(
+            validationCode: request.ValidationCode,
+            internalSecretAuthKey: config.InternalSecretAuthKey()
+        );
 
         string token = tokenService.BuildToken(config, emailAddress);
 
