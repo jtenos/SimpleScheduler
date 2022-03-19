@@ -19,6 +19,7 @@ public class Worker
     private readonly string[] _serviceNames;
     private readonly ILogger<Worker> _logger;
     private readonly string _apiUrl;
+    private readonly Guid _internalSecretAuthKey;
 
     public Worker(
         IEmailer emailer, // forces DI loading
@@ -27,6 +28,23 @@ public class Worker
         ServiceClient serviceClient)
     {
         System.Diagnostics.Debug.WriteLine(emailer);
+
+        _internalSecretAuthKey = config.GetValue<Guid>("InternalSecretAuthKey");
+        using (IServiceScope scope = _serviceScopeFactory.CreateAsyncScope())
+        {
+            ServiceClient client = scope.ServiceProvider.GetRequiredService<ServiceClient>();
+            (Error? error, ValidateEmailReply? reply) = await client.PostAsync<ValidateEmailRequest, ValidateEmailReply>(
+                "Login/ValidateEmail",
+                new(_internalSecretAuthKey)
+            );
+
+            if (error is not null)
+            {
+                throw new ApplicationException($"Error authenticating for service. Make sure InternalSecretAuthKey in the config matches the value in the API config: {error.Message}");
+            }
+
+            scope.ServiceProvider.GetRequiredService<JwtContainer>().Token = reply!.JwtToken;
+        }
 
         _serviceNames = config.GetSection("ServiceNames")
             .GetChildren()

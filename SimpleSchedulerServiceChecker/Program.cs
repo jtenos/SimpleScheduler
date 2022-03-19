@@ -35,9 +35,11 @@ await Host.CreateDefaultBuilder()
         });
 
         services.AddSingleton(sp => new ServiceClient(
-            new HttpClient { BaseAddress = new Uri(sp.GetRequiredService<IConfiguration>()["ApiUrl"]) }
+            new HttpClient { BaseAddress = new Uri(sp.GetRequiredService<IConfiguration>()["ApiUrl"]) },
+            sp.GetRequiredService<JwtContainer>()
         ));
 
+        services.AddSingleton<JwtContainer>();
         services.AddHostedService<Worker>();
     })
     .ConfigureHostConfiguration(configure =>
