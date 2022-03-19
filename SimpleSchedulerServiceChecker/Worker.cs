@@ -15,6 +15,7 @@ public class Worker
     : BackgroundService
 {
     private static readonly Timer _timer = new(TimeSpan.FromMinutes(20).TotalMilliseconds);
+    private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly ServiceClient _serviceClient;
     private readonly string[] _serviceNames;
     private readonly ILogger<Worker> _logger;
@@ -25,11 +26,29 @@ public class Worker
         IEmailer emailer, // forces DI loading
         IConfiguration config,
         ILogger<Worker> logger,
+        IServiceScopeFactory serviceScopeFactory,
         ServiceClient serviceClient)
     {
         System.Diagnostics.Debug.WriteLine(emailer);
 
         _internalSecretAuthKey = config.GetValue<Guid>("InternalSecretAuthKey");
+
+        _serviceNames = config.GetSection("ServiceNames")
+            .GetChildren()
+            .Select(x => x.Value)
+            .ToArray();
+        _logger = logger;
+        _serviceScopeFactory = serviceScopeFactory;
+        _serviceClient = serviceClient;
+        _apiUrl = config["ApiUrl"];
+    }
+
+    protected override Task ExecuteAsync(CancellationToken stoppingToken) => Task.CompletedTask;
+
+    public override async Task StartAsync(CancellationToken cancellationToken)
+    {
+        _logger.LogCritical("SimpleSchedulerServiceChecker started on {machineName}", Environment.MachineName);
+
         using (IServiceScope scope = _serviceScopeFactory.CreateAsyncScope())
         {
             ServiceClient client = scope.ServiceProvider.GetRequiredService<ServiceClient>();
@@ -46,20 +65,6 @@ public class Worker
             scope.ServiceProvider.GetRequiredService<JwtContainer>().Token = reply!.JwtToken;
         }
 
-        _serviceNames = config.GetSection("ServiceNames")
-            .GetChildren()
-            .Select(x => x.Value)
-            .ToArray();
-        _logger = logger;
-        _serviceClient = serviceClient;
-        _apiUrl = config["ApiUrl"];
-    }
-
-    protected override Task ExecuteAsync(CancellationToken stoppingToken) => Task.CompletedTask;
-
-    public override async Task StartAsync(CancellationToken cancellationToken)
-    {
-        _logger.LogCritical("SimpleSchedulerServiceChecker started on {machineName}", Environment.MachineName);
         async Task GoAsync()
         {
             _logger.LogInformation("In GoAsync()");
