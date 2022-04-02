@@ -1,5 +1,6 @@
 using Blazored.LocalStorage;
 using CurrieTechnologies.Razor.SweetAlert2;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using SimpleSchedulerBlazor.Client;
@@ -12,14 +13,21 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddBlazoredLocalStorage();
 
-builder.Services.AddSweetAlert2(options => {
+builder.Services.AddSweetAlert2(options =>
+{
     options.Theme = SweetAlertTheme.Bootstrap4;
 });
 
-builder.Services.AddScoped(sp => new ServiceClient(
-    new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) },
-    sp.GetRequiredService<JwtContainer>()
-));
+builder.Services.AddScoped(sp =>
+{
+    NavigationManager navManager = sp.GetRequiredService<NavigationManager>();
+    Action redirectToLogin = () => navManager.NavigateTo("/login");
+    return new ServiceClient(
+        new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) },
+        sp.GetRequiredService<JwtContainer>(),
+        redirectToLogin
+    );
+});
 
 builder.Services.AddSingleton<JwtContainer>();
 builder.Services.AddSingleton<ClientAppInfo>();

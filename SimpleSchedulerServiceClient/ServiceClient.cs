@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Headers;
+﻿using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
 namespace SimpleSchedulerServiceClient;
@@ -7,11 +8,13 @@ public class ServiceClient
 {
     private readonly HttpClient _httpClient;
     private readonly JwtContainer _jwt;
+    private readonly Action _redirectToLogin;
 
-    public ServiceClient(HttpClient httpClient, JwtContainer jwt)
+    public ServiceClient(HttpClient httpClient, JwtContainer jwt, Action redirectToLogin)
     {
         _httpClient = httpClient;
         _jwt = jwt;
+        _redirectToLogin = redirectToLogin;
     }
 
     /// <summary>
@@ -41,6 +44,11 @@ public class ServiceClient
             if (response.IsSuccessStatusCode)
             {
                 return (null, await response.Content.ReadFromJsonAsync<TReply>());
+            }
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                _redirectToLogin();
+                return (null, null);
             }
             return (new Error(await response.Content.ReadAsStringAsync()), null);
         }

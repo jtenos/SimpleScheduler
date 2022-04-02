@@ -8,7 +8,8 @@ await Host.CreateDefaultBuilder(args)
     {
         services.AddScoped(sp => new ServiceClient(
             new HttpClient { BaseAddress = new Uri(sp.GetRequiredService<IConfiguration>()["ApiUrl"]) },
-            sp.GetRequiredService<JwtContainer>()
+            sp.GetRequiredService<JwtContainer>(),
+            () => throw new ApplicationException("Unauthorized")
         ));
 
         services.AddSingleton<JwtContainer>();
