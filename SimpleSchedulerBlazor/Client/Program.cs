@@ -21,11 +21,12 @@ builder.Services.AddSweetAlert2(options =>
 builder.Services.AddScoped(sp =>
 {
     NavigationManager navManager = sp.GetRequiredService<NavigationManager>();
-    Action redirectToLogin = () => navManager.NavigateTo("/login");
+    void redirectToLogin() => navManager.NavigateTo("login");
     return new ServiceClient(
         new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) },
         sp.GetRequiredService<JwtContainer>(),
-        redirectToLogin
+        redirectToLogin,
+        sp.GetRequiredService<ILogger<ServiceClient>>()
     );
 });
 

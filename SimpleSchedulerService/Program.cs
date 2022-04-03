@@ -1,4 +1,5 @@
-﻿using SimpleSchedulerService;
+﻿using Serilog;
+using SimpleSchedulerService;
 using SimpleSchedulerServiceClient;
 
 Serilog.Debugging.SelfLog.Enable(msg => System.Diagnostics.Debug.WriteLine(msg));
@@ -6,10 +7,21 @@ Serilog.Debugging.SelfLog.Enable(msg => System.Diagnostics.Debug.WriteLine(msg))
 await Host.CreateDefaultBuilder(args)
     .ConfigureServices((hostContext, services) =>
     {
+        Log.Logger = new LoggerConfiguration()
+            .ReadFrom.Configuration(hostContext.Configuration)
+            .CreateLogger();
+
+        services.AddLogging(builder =>
+        {
+            builder.ClearProviders();
+            builder.AddSerilog();
+        });
+
         services.AddScoped(sp => new ServiceClient(
             new HttpClient { BaseAddress = new Uri(sp.GetRequiredService<IConfiguration>()["ApiUrl"]) },
             sp.GetRequiredService<JwtContainer>(),
-            () => throw new ApplicationException("Unauthorized")
+            () => throw new ApplicationException("Unauthorized"),
+            sp.GetRequiredService<ILogger<ServiceClient>>()
         ));
 
         services.AddSingleton<JwtContainer>();

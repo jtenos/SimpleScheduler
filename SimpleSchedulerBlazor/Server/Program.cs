@@ -11,6 +11,9 @@ using Microsoft.OpenApi.Models;
 using SimpleSchedulerBlazor.Server;
 using SimpleSchedulerBlazor.Server.ApiServices;
 using SimpleSchedulerSerilogEmail;
+using Serilog;
+
+Serilog.Debugging.SelfLog.Enable(msg => System.Diagnostics.Debug.WriteLine(msg));
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -46,6 +49,16 @@ builder.Services.AddSingleton<AsyncRetryPolicy>(Policy
         sleepDurationProvider: times => TimeSpan.FromSeconds(3),
         onRetry: async (ex, ts) => { await Task.CompletedTask; })
 );
+
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .CreateLogger();
+
+builder.Services.AddLogging(builder =>
+{
+    builder.ClearProviders();
+    builder.AddSerilog();
+});
 
 builder.Services.AddSingleton<IEmailer>((sp) =>
 {
@@ -85,6 +98,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 });
 
 WebApplication app = builder.Build();
+
+app.UsePathBase(app.Configuration["PathBase"]);
 
 app.UseMiddleware(typeof(ExceptionHandlingMiddleware));
 

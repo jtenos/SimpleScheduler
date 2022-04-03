@@ -44,6 +44,6 @@ partial class ValidateUser
         await LocalStorage.SetItemAsStringAsync($"Jwt:{ClientAppInfo.EnvironmentName}", reply!.JwtToken);
         JwtContainer.Token = reply.JwtToken;
 
-        NavigationManager.NavigateTo("/");
+        NavigationManager.NavigateTo("jobs");
     }
 }

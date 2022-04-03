@@ -1,4 +1,5 @@
 using Dapper;
+using Microsoft.Extensions.Logging;
 using SimpleSchedulerAppServices.Interfaces;
 using SimpleSchedulerData;
 using SimpleSchedulerEmail;
@@ -10,11 +11,13 @@ public sealed class UserManager
 {
     private readonly SqlDatabase _db;
     private readonly IEmailer _emailer;
+    private readonly ILogger<UserManager> _logger;
 
-    public UserManager(SqlDatabase db, IEmailer emailer)
+    public UserManager(SqlDatabase db, IEmailer emailer, ILogger<UserManager> logger)
     {
         _db = db;
         _emailer = emailer;
+        _logger = logger;
     }
 
     async Task<string[]> IUserManager.GetAllUserEmailsAsync(bool allowLoginDropdown)
@@ -33,6 +36,9 @@ public sealed class UserManager
     private record class LoginSubmitResult(bool Success, Guid ValidationCode);
     async Task<bool> IUserManager.LoginSubmitAsync(string emailAddress, string webUrl, string environmentName)
     {
+        _logger.LogInformation("LoginSubmitAsync({emailAddress}, {webUrl}, {environmentName}",
+            emailAddress, webUrl, environmentName);
+
         DynamicParameters param = new DynamicParameters()
             .AddNVarCharParam("@EmailAddress", emailAddress, 200);
 
@@ -40,6 +46,8 @@ public sealed class UserManager
             "[app].[Users_SubmitLogin]",
             param
         ).ConfigureAwait(false);
+
+        _logger.LogInformation("Result: {result}", result);
 
         if (!result.Success) { return false; }
 
@@ -56,6 +64,9 @@ public sealed class UserManager
     );
     async Task<string> IUserManager.LoginValidateAsync(Guid validationCode, Guid internalSecretAuthKey)
     {
+        _logger.LogDebug("internalSecretAuthKey: {authKey}", internalSecretAuthKey);
+        _logger.LogDebug("validationCode: {validationCode}", validationCode);
+
         if (validationCode == internalSecretAuthKey)
         {
             return "@@internal@@";
