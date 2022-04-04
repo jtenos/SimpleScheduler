@@ -6,7 +6,7 @@ namespace SimpleSchedulerBlazor.Server.Auth;
 
 public class TokenService : ITokenService
 {
-    private static readonly TimeSpan _expirationDuration = TimeSpan.FromSeconds(30);
+    private static readonly TimeSpan _expirationDuration = TimeSpan.FromHours(12);
 
     string ITokenService.BuildToken(IConfiguration config, string emailAddress)
     {

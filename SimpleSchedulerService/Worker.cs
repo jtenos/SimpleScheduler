@@ -1,6 +1,7 @@
 ﻿using SimpleSchedulerApiModels.Reply.Login;
 using SimpleSchedulerApiModels.Request.Login;
 using SimpleSchedulerServiceClient;
+using Timer = System.Timers.Timer;
 
 namespace SimpleSchedulerService;
 
@@ -10,10 +11,14 @@ public class Worker
     private readonly JobScheduler _scheduler;
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly Guid _internalSecretAuthKey;
+    private readonly JwtContainer _jwtContainer;
+    private static readonly Timer _authTimer = new(TimeSpan.FromMinutes(30).TotalMilliseconds);
 
-    public Worker(JobScheduler scheduler, IServiceScopeFactory serviceScopeFactory, IConfiguration config)
+    public Worker(JobScheduler scheduler, JwtContainer jwtContainer,
+        IServiceScopeFactory serviceScopeFactory, IConfiguration config)
     {
         _scheduler = scheduler;
+        _jwtContainer = jwtContainer;
         _serviceScopeFactory = serviceScopeFactory;
         _internalSecretAuthKey = config.GetValue<Guid>("InternalSecretAuthKey");
     }
@@ -22,23 +27,28 @@ public class Worker
 
     public override async Task StartAsync(CancellationToken cancellationToken)
     {
-        using (IServiceScope scope = _serviceScopeFactory.CreateAsyncScope())
-        {
-            ServiceClient client = scope.ServiceProvider.GetRequiredService<ServiceClient>();
-            (Error? error, ValidateEmailReply? reply) = await client.PostAsync<ValidateEmailRequest, ValidateEmailReply>(
-                "Login/ValidateEmail",
-                new(_internalSecretAuthKey)
-            );
-
-            if (error is not null)
-            {
-                throw new ApplicationException($"Error authenticating for service. Make sure InternalSecretAuthKey in the config matches the value in the API config: {error.Message}");
-            }
-
-            scope.ServiceProvider.GetRequiredService<JwtContainer>().Token = reply!.JwtToken;
-        }
+        await RefreshAuthTokenAsync();
+        _authTimer.Elapsed += async (sender, e) => await RefreshAuthTokenAsync();
+        _authTimer.Start();
 
         await _scheduler.StartSchedulerAsync();
+    }
+
+    private async Task RefreshAuthTokenAsync()
+    {
+        using IServiceScope scope = _serviceScopeFactory.CreateAsyncScope();
+        ServiceClient client = scope.ServiceProvider.GetRequiredService<ServiceClient>();
+        (Error? error, ValidateEmailReply? reply) = await client.PostAsync<ValidateEmailRequest, ValidateEmailReply>(
+            "Login/ValidateEmail",
+            new(_internalSecretAuthKey)
+        );
+
+        if (error is not null)
+        {
+            throw new ApplicationException($"Error authenticating for service. Make sure InternalSecretAuthKey in the config matches the value in the API config: {error.Message}");
+        }
+
+        _jwtContainer.Token = reply!.JwtToken;
     }
 
     public override Task StopAsync(CancellationToken cancellationToken)

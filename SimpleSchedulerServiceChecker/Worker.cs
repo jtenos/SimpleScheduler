@@ -51,33 +51,34 @@ public class Worker
     {
         _logger.LogCritical("SimpleSchedulerServiceChecker started on {machineName}", Environment.MachineName);
 
-        try
-        {
-            _logger.LogDebug("Internal secret auth key: {authKey}", _internalSecretAuthKey);
-            using IServiceScope scope = _serviceScopeFactory.CreateAsyncScope();
-            ServiceClient client = scope.ServiceProvider.GetRequiredService<ServiceClient>();
-            (Error? error, ValidateEmailReply? reply) = await client.PostAsync<ValidateEmailRequest, ValidateEmailReply>(
-                "Login/ValidateEmail",
-                new(_internalSecretAuthKey)
-            );
-
-            if (error is not null)
-            {
-                throw new ApplicationException($"Error authenticating for service. Make sure InternalSecretAuthKey in the config matches the value in the API config: {error.Message}");
-            }
-
-            _logger.LogInformation("reply: {reply}", reply);
-
-            scope.ServiceProvider.GetRequiredService<JwtContainer>().Token = reply!.JwtToken;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogCritical(ex, "Error setting token");
-        }
-
         async Task GoAsync()
         {
             _logger.LogInformation("In GoAsync()");
+
+            try
+            {
+                _logger.LogDebug("Internal secret auth key: {authKey}", _internalSecretAuthKey);
+                using IServiceScope scope = _serviceScopeFactory.CreateAsyncScope();
+                ServiceClient client = scope.ServiceProvider.GetRequiredService<ServiceClient>();
+                (Error? error, ValidateEmailReply? reply) = await client.PostAsync<ValidateEmailRequest, ValidateEmailReply>(
+                    "Login/ValidateEmail",
+                    new(_internalSecretAuthKey)
+                );
+
+                if (error is not null)
+                {
+                    throw new ApplicationException($"Error authenticating for service. Make sure InternalSecretAuthKey in the config matches the value in the API config: {error.Message}");
+                }
+
+                _logger.LogInformation("reply: {reply}", reply);
+
+                scope.ServiceProvider.GetRequiredService<JwtContainer>().Token = reply!.JwtToken;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical(ex, "Error setting token");
+            }
+
             try
             {
                 _logger.LogInformation("Checking services: {serviceNames}", string.Join(",", _serviceNames));

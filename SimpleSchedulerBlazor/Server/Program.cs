@@ -94,6 +94,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidIssuer = issuer,
         ValidAudience = audience,
         IssuerSigningKey = new SymmetricSecurityKey(Convert.FromHexString(key))
+        //ClockSkew is 5 minutes by default, so this still passes for up to 5 minutes
     };
 });
 
