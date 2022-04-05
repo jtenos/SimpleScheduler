@@ -34,10 +34,10 @@ public sealed class UserManager
     }
 
     private record class LoginSubmitResult(bool Success, Guid ValidationCode);
-    async Task<bool> IUserManager.LoginSubmitAsync(string emailAddress, string webUrl, string environmentName)
+    async Task<bool> IUserManager.LoginSubmitAsync(string emailAddress, string webUrl)
     {
-        _logger.LogInformation("LoginSubmitAsync({emailAddress}, {webUrl}, {environmentName}",
-            emailAddress, webUrl, environmentName);
+        _logger.LogInformation("LoginSubmitAsync({emailAddress}, {webUrl}",
+            emailAddress, webUrl);
 
         DynamicParameters param = new DynamicParameters()
             .AddNVarCharParam("@EmailAddress", emailAddress, 200);
@@ -53,7 +53,7 @@ public sealed class UserManager
 
         string url = $"{webUrl}/validate-user/{result.ValidationCode}";
         await _emailer.SendEmailAsync(new[] { emailAddress }.ToArray(),
-            $"Scheduler ({environmentName}) Log In",
+            $"Log In",
             $"<a href='{url}' target=_blank>Click here to log in</a>");
 
         return true;

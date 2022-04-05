@@ -35,7 +35,7 @@ public static class LoginServiceMap
         IConfiguration config,
         SubmitEmailRequest request)
     {
-        if (!await userManager.LoginSubmitAsync(request.EmailAddress, config.WebUrl(), config.EnvironmentName()))
+        if (!await userManager.LoginSubmitAsync(request.EmailAddress, config.WebUrl()))
         {
             throw new KeyNotFoundException();
         }

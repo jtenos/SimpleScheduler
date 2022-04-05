@@ -2,7 +2,7 @@
 
 public interface IUserManager
 {
-    Task<bool> LoginSubmitAsync(string emailAddress, string webUrl, string environmentName);
+    Task<bool> LoginSubmitAsync(string emailAddress, string webUrl);
     Task<string[]> GetAllUserEmailsAsync(bool allowLoginDropdown);
     Task<string> LoginValidateAsync(Guid validationCode, Guid internalSecretAuthKey);
 }
