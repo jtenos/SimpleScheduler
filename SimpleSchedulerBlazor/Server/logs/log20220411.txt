@@ -1,0 +1,730 @@
+2022-04-11 14:34:07.679 [Information] [Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager] User profile is available. Using '"C:\Users\ENOSJ\AppData\Local\ASP.NET\DataProtection-Keys"' as key repository and Windows DPAPI to encrypt keys at rest.
+2022-04-11 14:34:08.068 [Information] [Microsoft.Hosting.Lifetime] Now listening on: "https://localhost:7235"
+2022-04-11 14:34:08.072 [Information] [Microsoft.Hosting.Lifetime] Now listening on: "http://localhost:5235"
+2022-04-11 14:34:08.080 [Information] [Microsoft.Hosting.Lifetime] Application started. Press Ctrl+C to shut down.
+2022-04-11 14:34:08.081 [Information] [Microsoft.Hosting.Lifetime] Hosting environment: "Development"
+2022-04-11 14:34:08.083 [Information] [Microsoft.Hosting.Lifetime] Content root path: "C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Server\"
+2022-04-11 14:34:09.065 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/ - -
+2022-04-11 14:34:09.407 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"Fallback {*path:nonfile}"'
+2022-04-11 14:34:09.608 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/index.html"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\wwwroot\index.html"'
+2022-04-11 14:34:09.611 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"Fallback {*path:nonfile}"'
+2022-04-11 14:34:09.661 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/ - - - 200 - text/html 601.7236ms
+2022-04-11 14:34:09.668 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/lib/bootstrap-5.1.3/bootstrap.bundle.min.js - -
+2022-04-11 14:34:09.668 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_content/CurrieTechnologies.Razor.SweetAlert2/sweetAlert2.min.js - -
+2022-04-11 14:34:09.668 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/lib/imask-6.4.2/imask.min.js - -
+2022-04-11 14:34:09.669 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/site.js - -
+2022-04-11 14:34:09.669 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_framework/aspnetcore-browser-refresh.js - -
+2022-04-11 14:34:09.669 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_framework/blazor.webassembly.js - -
+2022-04-11 14:34:09.684 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_framework/aspnetcore-browser-refresh.js - - - 200 12014 application/javascript;+charset=utf-8 15.1333ms
+2022-04-11 14:34:09.697 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/_content/CurrieTechnologies.Razor.SweetAlert2/sweetAlert2.min.js"'. Physical path: '"C:\Users\ENOSJ\.nuget\packages\currietechnologies.razor.sweetalert2\5.1.0\staticwebassets\sweetAlert2.min.js"'
+2022-04-11 14:34:09.700 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/site.js"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\wwwroot\site.js"'
+2022-04-11 14:34:09.701 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/lib/imask-6.4.2/imask.min.js"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\wwwroot\lib\imask-6.4.2\imask.min.js"'
+2022-04-11 14:34:09.703 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/lib/bootstrap-5.1.3/bootstrap.bundle.min.js"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\wwwroot\lib\bootstrap-5.1.3\bootstrap.bundle.min.js"'
+2022-04-11 14:34:09.714 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_content/CurrieTechnologies.Razor.SweetAlert2/sweetAlert2.min.js - - - 200 71650 application/javascript 45.6835ms
+2022-04-11 14:34:09.718 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/site.js - - - 200 561 application/javascript 49.6390ms
+2022-04-11 14:34:09.724 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/lib/imask-6.4.2/imask.min.js - - - 200 70964 application/javascript 54.3269ms
+2022-04-11 14:34:09.729 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/lib/bootstrap-5.1.3/bootstrap.bundle.min.js - - - 200 78129 application/javascript 60.6546ms
+2022-04-11 14:34:09.739 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] The file "/_framework/blazor.webassembly.js.gz" was not modified
+2022-04-11 14:34:09.746 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_framework/blazor.webassembly.js - - - 304 - application/javascript 77.7435ms
+2022-04-11 14:34:09.767 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_framework/blazor.boot.json - -
+2022-04-11 14:34:09.772 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/_framework/blazor.boot.json"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\bin\Debug\net6.0\wwwroot\_framework\blazor.boot.json"'
+2022-04-11 14:34:09.779 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_framework/blazor.boot.json - - - 200 20231 application/json 12.4024ms
+2022-04-11 14:34:09.796 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/appsettings.json - -
+2022-04-11 14:34:09.800 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] The file "/appsettings.json" was not modified
+2022-04-11 14:34:09.806 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/appsettings.json - - - 304 - application/json 9.9114ms
+2022-04-11 14:34:09.830 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_framework/dotnet.6.0.3.js2gyb1rlv.js - -
+2022-04-11 14:34:09.833 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] The file "/_framework/dotnet.6.0.3.js2gyb1rlv.js.gz" was not modified
+2022-04-11 14:34:09.840 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_framework/dotnet.6.0.3.js2gyb1rlv.js - - - 304 - application/javascript 10.3963ms
+2022-04-11 14:34:09.917 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_framework/SimpleSchedulerServiceClient.dll - -
+2022-04-11 14:34:09.917 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_framework/SimpleSchedulerApiModels.dll - -
+2022-04-11 14:34:09.920 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_framework/SimpleSchedulerServiceClient.pdb - -
+2022-04-11 14:34:09.922 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/favicon.ico - -
+2022-04-11 14:34:09.923 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_framework/SimpleSchedulerBlazor.Client.pdb - -
+2022-04-11 14:34:09.923 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_framework/SimpleSchedulerBlazor.Client.dll - -
+2022-04-11 14:34:09.920 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_framework/SimpleSchedulerApiModels.pdb - -
+2022-04-11 14:34:10.135 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/_framework/SimpleSchedulerBlazor.Client.pdb.gz"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\bin\Debug\net6.0\wwwroot\_framework\SimpleSchedulerBlazor.Client.pdb.gz"'
+2022-04-11 14:34:10.176 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_framework/SimpleSchedulerBlazor.Client.pdb - - - 200 47254 application/octet-stream 253.0543ms
+2022-04-11 14:34:10.158 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/_framework/SimpleSchedulerServiceClient.pdb.gz"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\bin\Debug\net6.0\wwwroot\_framework\SimpleSchedulerServiceClient.pdb.gz"'
+2022-04-11 14:34:10.158 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/_framework/SimpleSchedulerBlazor.Client.dll.gz"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\bin\Debug\net6.0\wwwroot\_framework\SimpleSchedulerBlazor.Client.dll.gz"'
+2022-04-11 14:34:10.166 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/manifest.json - -
+2022-04-11 14:34:10.344 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] The file "/manifest.json" was not modified
+2022-04-11 14:34:10.178 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/_framework/SimpleSchedulerApiModels.pdb.gz"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\bin\Debug\net6.0\wwwroot\_framework\SimpleSchedulerApiModels.pdb.gz"'
+2022-04-11 14:34:10.354 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_framework/SimpleSchedulerApiModels.pdb - - - 200 12558 application/octet-stream 433.9683ms
+2022-04-11 14:34:10.333 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_framework/SimpleSchedulerBlazor.Client.dll - - - 200 41973 application/octet-stream 409.6784ms
+2022-04-11 14:34:10.139 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/_framework/SimpleSchedulerServiceClient.dll.gz"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\bin\Debug\net6.0\wwwroot\_framework\SimpleSchedulerServiceClient.dll.gz"'
+2022-04-11 14:34:10.176 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/_framework/SimpleSchedulerApiModels.dll.gz"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\bin\Debug\net6.0\wwwroot\_framework\SimpleSchedulerApiModels.dll.gz"'
+2022-04-11 14:34:10.350 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/manifest.json - - - 304 - application/json 184.1398ms
+2022-04-11 14:34:10.329 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_framework/SimpleSchedulerServiceClient.pdb - - - 200 6589 application/octet-stream 409.4030ms
+2022-04-11 14:34:10.455 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_framework/SimpleSchedulerServiceClient.dll - - - 200 4797 application/octet-stream 537.9109ms
+2022-04-11 14:34:10.459 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_framework/SimpleSchedulerApiModels.dll - - - 200 27693 application/octet-stream 542.4142ms
+2022-04-11 14:34:10.658 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/favicon.ico - - - 404 0 - 736.5582ms
+2022-04-11 14:34:11.298 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/icon-192.png - -
+2022-04-11 14:34:11.316 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] The file "/icon-192.png" was not modified
+2022-04-11 14:34:11.330 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/icon-192.png - - - 304 - image/png 31.7125ms
+2022-04-11 14:34:12.054 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_framework/blazor-hotreload.js - -
+2022-04-11 14:34:12.056 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_framework/blazor-hotreload.js - - - 200 742 application/javascript;+charset=utf-8 2.2563ms
+2022-04-11 14:34:12.133 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_framework/blazor-hotreload - -
+2022-04-11 14:34:12.135 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_framework/blazor-hotreload - - - 204 - - 2.5052ms
+2022-04-11 14:34:12.380 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2
+2022-04-11 14:34:12.407 [Information] [Microsoft.AspNetCore.Cors.Infrastructure.CorsService] CORS policy execution successful.
+2022-04-11 14:34:12.410 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:34:12.441 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 POST https://localhost:7235/Workers/GetAllWorkers application/json;+charset=utf-8 2
+2022-04-11 14:34:12.447 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:34:12.449 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2 - 200 - application/json;+charset=utf-8 69.7635ms
+2022-04-11 14:34:12.470 [Information] [Microsoft.AspNetCore.Authorization.DefaultAuthorizationService] Authorization failed. "These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user."
+2022-04-11 14:34:12.475 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] AuthenticationScheme: "Bearer" was challenged.
+2022-04-11 14:34:12.477 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 POST https://localhost:7235/Workers/GetAllWorkers application/json;+charset=utf-8 2 - 401 0 - 36.5480ms
+2022-04-11 14:34:12.501 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/css/site.css?_=776b579f-a18b-46d9-bff0-f5f0869d2ee0 - -
+2022-04-11 14:34:12.501 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/SimpleSchedulerBlazor.Client.styles.css?_=776b579f-a18b-46d9-bff0-f5f0869d2ee0 - -
+2022-04-11 14:34:12.510 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/css/site.css"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\wwwroot\css\site.css"'
+2022-04-11 14:34:12.512 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/SimpleSchedulerBlazor.Client.styles.css"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\obj\Debug\net6.0\scopedcss\bundle\SimpleSchedulerBlazor.Client.styles.css"'
+2022-04-11 14:34:12.513 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/css/site.css?_=776b579f-a18b-46d9-bff0-f5f0869d2ee0 - - - 200 290805 text/css 12.7296ms
+2022-04-11 14:34:12.519 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/SimpleSchedulerBlazor.Client.styles.css?_=776b579f-a18b-46d9-bff0-f5f0869d2ee0 - - - 200 4889 text/css 18.3611ms
+2022-04-11 14:34:12.529 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/img/loading.svg - -
+2022-04-11 14:34:12.532 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] The file "/img/loading.svg" was not modified
+2022-04-11 14:34:12.536 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/img/loading.svg - - - 304 - image/svg+xml 7.4740ms
+2022-04-11 14:34:12.728 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 POST https://localhost:7235/Login/GetAllUserEmails application/json;+charset=utf-8 2
+2022-04-11 14:34:12.940 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:34:12 PM'.
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, JwtSecurityToken jwtToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateTokenPayload(JwtSecurityToken jwtToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateJWS(String token, TokenValidationParameters validationParameters, BaseConfiguration currentConfiguration, SecurityToken& signatureValidatedToken, ExceptionDispatchInfo& exceptionThrown)
+--- End of stack trace from previous location ---
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, JwtSecurityToken outerToken, TokenValidationParameters validationParameters, SecurityToken& signatureValidatedToken)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, TokenValidationParameters validationParameters, SecurityToken& validatedToken)
+   at Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler.HandleAuthenticateAsync()
+2022-04-11 14:34:12.959 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] "Bearer" was not authenticated. Failure message: "IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:34:12 PM'."
+2022-04-11 14:34:12.964 [Information] [Microsoft.AspNetCore.Cors.Infrastructure.CorsService] CORS policy execution successful.
+2022-04-11 14:34:12.967 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"HTTP: POST /Login/GetAllUserEmails => GetAllUserEmailsAsync"'
+2022-04-11 14:34:13.826 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"HTTP: POST /Login/GetAllUserEmails => GetAllUserEmailsAsync"'
+2022-04-11 14:34:13.829 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 POST https://localhost:7235/Login/GetAllUserEmails application/json;+charset=utf-8 2 - 200 - application/json;+charset=utf-8 1100.5595ms
+2022-04-11 14:34:14.055 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/login - -
+2022-04-11 14:34:14.060 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/css/site.css?_=776b579f-a18b-46d9-bff0-f5f0869d2ee0 - -
+2022-04-11 14:34:14.068 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] The file "/css/site.css" was not modified
+2022-04-11 14:34:14.200 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/css/site.css?_=776b579f-a18b-46d9-bff0-f5f0869d2ee0 - - - 304 - text/css 140.2212ms
+2022-04-11 14:34:14.209 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"Fallback {*path:nonfile}"'
+2022-04-11 14:34:14.212 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/index.html"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\wwwroot\index.html"'
+2022-04-11 14:34:14.219 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"Fallback {*path:nonfile}"'
+2022-04-11 14:34:14.221 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/login - - - 200 1523 text/html 166.2363ms
+2022-04-11 14:34:14.486 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/lib/bootstrap-5.1.3/bootstrap.bundle.min.js.map - -
+2022-04-11 14:34:14.495 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/lib/imask-6.4.2/imask.min.js.map - -
+2022-04-11 14:34:14.521 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/service-worker.js - -
+2022-04-11 14:34:14.547 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/service-worker.js"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\obj\Debug\net6.0\service-worker\service-worker.js"'
+2022-04-11 14:34:14.578 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/css/site.css.map - -
+2022-04-11 14:34:14.554 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/service-worker.js - - - 200 303 application/javascript 33.4419ms
+2022-04-11 14:34:14.584 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/lib/bootstrap-5.1.3/bootstrap.bundle.min.js.map - - - 404 0 - 98.2326ms
+2022-04-11 14:34:14.603 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/css/site.css.map"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\wwwroot\css\site.css.map"'
+2022-04-11 14:34:14.614 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/css/site.css.map - - - 200 77032 text/plain 35.8490ms
+2022-04-11 14:34:14.618 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/lib/imask-6.4.2/imask.min.js.map - - - 404 0 - 122.9989ms
+2022-04-11 14:34:19.925 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/login - -
+2022-04-11 14:34:19.947 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"Fallback {*path:nonfile}"'
+2022-04-11 14:34:19.955 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/index.html"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\wwwroot\index.html"'
+2022-04-11 14:34:19.959 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"Fallback {*path:nonfile}"'
+2022-04-11 14:34:19.964 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/login - - - 200 - text/html 39.3296ms
+2022-04-11 14:34:20.002 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_framework/blazor.webassembly.js - -
+2022-04-11 14:34:20.003 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/lib/bootstrap-5.1.3/bootstrap.bundle.min.js - -
+2022-04-11 14:34:20.003 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_content/CurrieTechnologies.Razor.SweetAlert2/sweetAlert2.min.js - -
+2022-04-11 14:34:20.008 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/lib/imask-6.4.2/imask.min.js - -
+2022-04-11 14:34:20.008 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/site.js - -
+2022-04-11 14:34:20.009 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_framework/aspnetcore-browser-refresh.js - -
+2022-04-11 14:34:20.028 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/lib/bootstrap-5.1.3/bootstrap.bundle.min.js"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\wwwroot\lib\bootstrap-5.1.3\bootstrap.bundle.min.js"'
+2022-04-11 14:34:20.019 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_framework/aspnetcore-browser-refresh.js - - - 200 12014 application/javascript;+charset=utf-8 10.2226ms
+2022-04-11 14:34:20.028 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/_framework/blazor.webassembly.js.gz"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\bin\Debug\net6.0\wwwroot\_framework\blazor.webassembly.js.gz"'
+2022-04-11 14:34:20.030 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/_content/CurrieTechnologies.Razor.SweetAlert2/sweetAlert2.min.js"'. Physical path: '"C:\Users\ENOSJ\.nuget\packages\currietechnologies.razor.sweetalert2\5.1.0\staticwebassets\sweetAlert2.min.js"'
+2022-04-11 14:34:20.032 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/lib/bootstrap-5.1.3/bootstrap.bundle.min.js - - - 200 78129 application/javascript 28.7319ms
+2022-04-11 14:34:20.037 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/site.js"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\wwwroot\site.js"'
+2022-04-11 14:34:20.044 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_framework/blazor.webassembly.js - - - 200 19168 application/javascript 41.9755ms
+2022-04-11 14:34:20.047 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/lib/imask-6.4.2/imask.min.js"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\wwwroot\lib\imask-6.4.2\imask.min.js"'
+2022-04-11 14:34:20.051 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_content/CurrieTechnologies.Razor.SweetAlert2/sweetAlert2.min.js - - - 200 71650 application/javascript 47.3492ms
+2022-04-11 14:34:20.057 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/site.js - - - 200 561 application/javascript 49.0778ms
+2022-04-11 14:34:20.063 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_framework/blazor.boot.json - -
+2022-04-11 14:34:20.063 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/lib/imask-6.4.2/imask.min.js - - - 200 70964 application/javascript 55.2133ms
+2022-04-11 14:34:20.073 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] The file "/_framework/blazor.boot.json" was not modified
+2022-04-11 14:34:20.086 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_framework/blazor.boot.json - - - 304 - application/json 22.7485ms
+2022-04-11 14:34:20.098 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/appsettings.json - -
+2022-04-11 14:34:20.103 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] The file "/appsettings.json" was not modified
+2022-04-11 14:34:20.107 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/appsettings.json - - - 304 - application/json 9.2133ms
+2022-04-11 14:34:20.137 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/lib/bootstrap-5.1.3/bootstrap.bundle.min.js.map - -
+2022-04-11 14:34:20.142 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/lib/imask-6.4.2/imask.min.js.map - -
+2022-04-11 14:34:20.164 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_framework/dotnet.6.0.3.js2gyb1rlv.js - -
+2022-04-11 14:34:20.185 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/_framework/dotnet.6.0.3.js2gyb1rlv.js.gz"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\bin\Debug\net6.0\wwwroot\_framework\dotnet.6.0.3.js2gyb1rlv.js.gz"'
+2022-04-11 14:34:20.189 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_framework/dotnet.6.0.3.js2gyb1rlv.js - - - 200 64474 application/javascript 24.8488ms
+2022-04-11 14:34:20.197 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/lib/bootstrap-5.1.3/bootstrap.bundle.min.js.map - - - 404 0 - 59.7257ms
+2022-04-11 14:34:20.199 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/lib/imask-6.4.2/imask.min.js.map - - - 404 0 - 57.0557ms
+2022-04-11 14:34:20.294 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/favicon.ico - -
+2022-04-11 14:34:20.326 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/favicon.ico - - - 404 0 - 32.6695ms
+2022-04-11 14:34:21.572 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_framework/blazor-hotreload.js - -
+2022-04-11 14:34:21.574 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_framework/blazor-hotreload.js - - - 200 742 application/javascript;+charset=utf-8 2.5858ms
+2022-04-11 14:34:21.803 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_framework/blazor-hotreload - -
+2022-04-11 14:34:21.805 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_framework/blazor-hotreload - - - 204 - - 1.7707ms
+2022-04-11 14:34:22.248 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2
+2022-04-11 14:34:22.264 [Information] [Microsoft.AspNetCore.Cors.Infrastructure.CorsService] CORS policy execution successful.
+2022-04-11 14:34:22.265 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:34:22.272 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:34:22.273 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2 - 200 - application/json;+charset=utf-8 25.1082ms
+2022-04-11 14:34:22.308 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 POST https://localhost:7235/Login/GetAllUserEmails application/json;+charset=utf-8 2
+2022-04-11 14:34:22.327 [Information] [Microsoft.AspNetCore.Cors.Infrastructure.CorsService] CORS policy execution successful.
+2022-04-11 14:34:22.328 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"HTTP: POST /Login/GetAllUserEmails => GetAllUserEmailsAsync"'
+2022-04-11 14:34:22.346 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"HTTP: POST /Login/GetAllUserEmails => GetAllUserEmailsAsync"'
+2022-04-11 14:34:22.348 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 POST https://localhost:7235/Login/GetAllUserEmails application/json;+charset=utf-8 2 - 200 - application/json;+charset=utf-8 40.5215ms
+2022-04-11 14:34:22.574 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/css/site.css?_=ab7a5bf0-3fcb-429d-ad1a-16ab587c0b79 - -
+2022-04-11 14:34:22.575 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/SimpleSchedulerBlazor.Client.styles.css?_=ab7a5bf0-3fcb-429d-ad1a-16ab587c0b79 - -
+2022-04-11 14:34:22.584 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/SimpleSchedulerBlazor.Client.styles.css"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\obj\Debug\net6.0\scopedcss\bundle\SimpleSchedulerBlazor.Client.styles.css"'
+2022-04-11 14:34:22.585 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/css/site.css"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\wwwroot\css\site.css"'
+2022-04-11 14:34:22.590 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/SimpleSchedulerBlazor.Client.styles.css?_=ab7a5bf0-3fcb-429d-ad1a-16ab587c0b79 - - - 200 4889 text/css 14.9642ms
+2022-04-11 14:34:22.593 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/css/site.css?_=ab7a5bf0-3fcb-429d-ad1a-16ab587c0b79 - - - 200 290805 text/css 18.4008ms
+2022-04-11 14:34:22.729 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/css/site.css.map - -
+2022-04-11 14:34:22.733 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/css/site.css.map"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\wwwroot\css\site.css.map"'
+2022-04-11 14:34:22.738 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/css/site.css.map - - - 200 77032 text/plain 9.5974ms
+2022-04-11 14:34:37.267 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2
+2022-04-11 14:34:37.283 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:34:37 PM'.
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, JwtSecurityToken jwtToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateTokenPayload(JwtSecurityToken jwtToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateJWS(String token, TokenValidationParameters validationParameters, BaseConfiguration currentConfiguration, SecurityToken& signatureValidatedToken, ExceptionDispatchInfo& exceptionThrown)
+--- End of stack trace from previous location ---
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, JwtSecurityToken outerToken, TokenValidationParameters validationParameters, SecurityToken& signatureValidatedToken)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, TokenValidationParameters validationParameters, SecurityToken& validatedToken)
+   at Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler.HandleAuthenticateAsync()
+2022-04-11 14:34:37.293 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] "Bearer" was not authenticated. Failure message: "IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:34:37 PM'."
+2022-04-11 14:34:37.297 [Information] [Microsoft.AspNetCore.Cors.Infrastructure.CorsService] CORS policy execution successful.
+2022-04-11 14:34:37.299 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:34:37.307 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:34:37.309 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2 - 200 - application/json;+charset=utf-8 41.6010ms
+2022-04-11 14:34:41.644 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 POST https://localhost:7235/Login/GetAllUserEmails application/json;+charset=utf-8 2
+2022-04-11 14:34:41.656 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:34:41 PM'.
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, JwtSecurityToken jwtToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateTokenPayload(JwtSecurityToken jwtToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateJWS(String token, TokenValidationParameters validationParameters, BaseConfiguration currentConfiguration, SecurityToken& signatureValidatedToken, ExceptionDispatchInfo& exceptionThrown)
+--- End of stack trace from previous location ---
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, JwtSecurityToken outerToken, TokenValidationParameters validationParameters, SecurityToken& signatureValidatedToken)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, TokenValidationParameters validationParameters, SecurityToken& validatedToken)
+   at Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler.HandleAuthenticateAsync()
+2022-04-11 14:34:41.662 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] "Bearer" was not authenticated. Failure message: "IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:34:41 PM'."
+2022-04-11 14:34:41.665 [Information] [Microsoft.AspNetCore.Cors.Infrastructure.CorsService] CORS policy execution successful.
+2022-04-11 14:34:41.666 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"HTTP: POST /Login/GetAllUserEmails => GetAllUserEmailsAsync"'
+2022-04-11 14:34:41.676 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"HTTP: POST /Login/GetAllUserEmails => GetAllUserEmailsAsync"'
+2022-04-11 14:34:41.678 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 POST https://localhost:7235/Login/GetAllUserEmails application/json;+charset=utf-8 2 - 200 - application/json;+charset=utf-8 34.5122ms
+2022-04-11 14:34:41.771 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 POST https://localhost:7235/_framework/blazor-hotreload application/json 15560
+2022-04-11 14:34:41.792 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 POST https://localhost:7235/_framework/blazor-hotreload application/json 15560 - 200 0 - 21.0346ms
+2022-04-11 14:34:52.314 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2
+2022-04-11 14:34:52.324 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:34:52 PM'.
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, JwtSecurityToken jwtToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateTokenPayload(JwtSecurityToken jwtToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateJWS(String token, TokenValidationParameters validationParameters, BaseConfiguration currentConfiguration, SecurityToken& signatureValidatedToken, ExceptionDispatchInfo& exceptionThrown)
+--- End of stack trace from previous location ---
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, JwtSecurityToken outerToken, TokenValidationParameters validationParameters, SecurityToken& signatureValidatedToken)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, TokenValidationParameters validationParameters, SecurityToken& validatedToken)
+   at Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler.HandleAuthenticateAsync()
+2022-04-11 14:34:52.330 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] "Bearer" was not authenticated. Failure message: "IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:34:52 PM'."
+2022-04-11 14:34:52.332 [Information] [Microsoft.AspNetCore.Cors.Infrastructure.CorsService] CORS policy execution successful.
+2022-04-11 14:34:52.333 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:34:52.337 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:34:52.339 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2 - 200 - application/json;+charset=utf-8 25.8393ms
+2022-04-11 14:35:07.298 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2
+2022-04-11 14:35:07.307 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:35:07 PM'.
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, JwtSecurityToken jwtToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateTokenPayload(JwtSecurityToken jwtToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateJWS(String token, TokenValidationParameters validationParameters, BaseConfiguration currentConfiguration, SecurityToken& signatureValidatedToken, ExceptionDispatchInfo& exceptionThrown)
+--- End of stack trace from previous location ---
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, JwtSecurityToken outerToken, TokenValidationParameters validationParameters, SecurityToken& signatureValidatedToken)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, TokenValidationParameters validationParameters, SecurityToken& validatedToken)
+   at Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler.HandleAuthenticateAsync()
+2022-04-11 14:35:07.312 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] "Bearer" was not authenticated. Failure message: "IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:35:07 PM'."
+2022-04-11 14:35:07.314 [Information] [Microsoft.AspNetCore.Cors.Infrastructure.CorsService] CORS policy execution successful.
+2022-04-11 14:35:07.315 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:35:07.319 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:35:07.320 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2 - 200 - application/json;+charset=utf-8 21.7776ms
+2022-04-11 14:35:14.889 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 POST https://localhost:7235/Login/SubmitEmail application/json;+charset=utf-8 37
+2022-04-11 14:35:14.904 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:35:14 PM'.
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, JwtSecurityToken jwtToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateTokenPayload(JwtSecurityToken jwtToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateJWS(String token, TokenValidationParameters validationParameters, BaseConfiguration currentConfiguration, SecurityToken& signatureValidatedToken, ExceptionDispatchInfo& exceptionThrown)
+--- End of stack trace from previous location ---
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, JwtSecurityToken outerToken, TokenValidationParameters validationParameters, SecurityToken& signatureValidatedToken)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, TokenValidationParameters validationParameters, SecurityToken& validatedToken)
+   at Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler.HandleAuthenticateAsync()
+2022-04-11 14:35:14.912 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] "Bearer" was not authenticated. Failure message: "IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:35:14 PM'."
+2022-04-11 14:35:14.914 [Information] [Microsoft.AspNetCore.Cors.Infrastructure.CorsService] CORS policy execution successful.
+2022-04-11 14:35:14.915 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"HTTP: POST /Login/SubmitEmail => SubmitEmailAsync"'
+2022-04-11 14:35:14.926 [Information] [SimpleSchedulerAppServices.Implementations.UserManager] LoginSubmitAsync("joe.enos@azdhs.gov", "https://localhost:7235"
+2022-04-11 14:35:15.078 [Information] [SimpleSchedulerAppServices.Implementations.UserManager] Result: "LoginSubmitResult { Success = True, ValidationCode = 5bfbe8c5-1317-42dc-b5cb-f082c26b842b }"
+2022-04-11 14:35:15.972 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"HTTP: POST /Login/SubmitEmail => SubmitEmailAsync"'
+2022-04-11 14:35:15.974 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 POST https://localhost:7235/Login/SubmitEmail application/json;+charset=utf-8 37 - 200 - application/json;+charset=utf-8 1084.1480ms
+2022-04-11 14:35:22.137 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2
+2022-04-11 14:35:22.148 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:35:22 PM'.
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, JwtSecurityToken jwtToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateTokenPayload(JwtSecurityToken jwtToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateJWS(String token, TokenValidationParameters validationParameters, BaseConfiguration currentConfiguration, SecurityToken& signatureValidatedToken, ExceptionDispatchInfo& exceptionThrown)
+--- End of stack trace from previous location ---
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, JwtSecurityToken outerToken, TokenValidationParameters validationParameters, SecurityToken& signatureValidatedToken)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, TokenValidationParameters validationParameters, SecurityToken& validatedToken)
+   at Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler.HandleAuthenticateAsync()
+2022-04-11 14:35:22.152 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] "Bearer" was not authenticated. Failure message: "IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:35:22 PM'."
+2022-04-11 14:35:22.155 [Information] [Microsoft.AspNetCore.Cors.Infrastructure.CorsService] CORS policy execution successful.
+2022-04-11 14:35:22.156 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:35:22.160 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:35:22.162 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2 - 200 - application/json;+charset=utf-8 24.2170ms
+2022-04-11 14:35:26.881 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/login - -
+2022-04-11 14:35:26.899 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"Fallback {*path:nonfile}"'
+2022-04-11 14:35:26.908 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/index.html"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\wwwroot\index.html"'
+2022-04-11 14:35:26.910 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"Fallback {*path:nonfile}"'
+2022-04-11 14:35:26.914 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/login - - - 200 - text/html 32.5694ms
+2022-04-11 14:35:26.955 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_framework/aspnetcore-browser-refresh.js - -
+2022-04-11 14:35:26.970 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_framework/blazor.webassembly.js - -
+2022-04-11 14:35:26.988 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_framework/aspnetcore-browser-refresh.js - - - 200 12014 application/javascript;+charset=utf-8 32.5554ms
+2022-04-11 14:35:26.993 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] The file "/_framework/blazor.webassembly.js.gz" was not modified
+2022-04-11 14:35:27.007 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_framework/blazor.webassembly.js - - - 304 - application/javascript 37.4956ms
+2022-04-11 14:35:27.039 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_framework/blazor.boot.json - -
+2022-04-11 14:35:27.060 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] The file "/_framework/blazor.boot.json" was not modified
+2022-04-11 14:35:27.096 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_framework/blazor.boot.json - - - 304 - application/json 57.3824ms
+2022-04-11 14:35:27.097 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/lib/bootstrap-5.1.3/bootstrap.bundle.min.js.map - -
+2022-04-11 14:35:27.099 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/lib/imask-6.4.2/imask.min.js.map - -
+2022-04-11 14:35:27.147 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/lib/bootstrap-5.1.3/bootstrap.bundle.min.js.map - - - 404 0 - 49.1710ms
+2022-04-11 14:35:27.152 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/lib/imask-6.4.2/imask.min.js.map - - - 404 0 - 52.7724ms
+2022-04-11 14:35:27.217 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/appsettings.json - -
+2022-04-11 14:35:27.223 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/favicon.ico - -
+2022-04-11 14:35:27.276 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] The file "/appsettings.json" was not modified
+2022-04-11 14:35:27.282 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/appsettings.json - - - 304 - application/json 64.7403ms
+2022-04-11 14:35:27.297 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/favicon.ico - - - 404 0 - 73.4971ms
+2022-04-11 14:35:27.486 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_framework/dotnet.6.0.3.js2gyb1rlv.js - -
+2022-04-11 14:35:27.510 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] The file "/_framework/dotnet.6.0.3.js2gyb1rlv.js.gz" was not modified
+2022-04-11 14:35:27.516 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_framework/dotnet.6.0.3.js2gyb1rlv.js - - - 304 - application/javascript 30.1159ms
+2022-04-11 14:35:28.542 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_framework/blazor-hotreload.js - -
+2022-04-11 14:35:28.544 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_framework/blazor-hotreload.js - - - 200 742 application/javascript;+charset=utf-8 2.3227ms
+2022-04-11 14:35:28.597 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_framework/blazor-hotreload - -
+2022-04-11 14:35:28.603 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_framework/blazor-hotreload - - - 200 - - 5.4667ms
+2022-04-11 14:35:28.980 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2
+2022-04-11 14:35:28.994 [Information] [Microsoft.AspNetCore.Cors.Infrastructure.CorsService] CORS policy execution successful.
+2022-04-11 14:35:28.995 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:35:29.000 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:35:29.001 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2 - 200 - application/json;+charset=utf-8 21.4244ms
+2022-04-11 14:35:29.027 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 POST https://localhost:7235/Login/GetAllUserEmails application/json;+charset=utf-8 2
+2022-04-11 14:35:29.041 [Information] [Microsoft.AspNetCore.Cors.Infrastructure.CorsService] CORS policy execution successful.
+2022-04-11 14:35:29.042 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"HTTP: POST /Login/GetAllUserEmails => GetAllUserEmailsAsync"'
+2022-04-11 14:35:29.048 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"HTTP: POST /Login/GetAllUserEmails => GetAllUserEmailsAsync"'
+2022-04-11 14:35:29.049 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 POST https://localhost:7235/Login/GetAllUserEmails application/json;+charset=utf-8 2 - 200 - application/json;+charset=utf-8 22.5248ms
+2022-04-11 14:35:29.253 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/css/site.css?_=7b1dbf88-9f65-4f57-86ee-0a852a414af6 - -
+2022-04-11 14:35:29.253 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/SimpleSchedulerBlazor.Client.styles.css?_=7b1dbf88-9f65-4f57-86ee-0a852a414af6 - -
+2022-04-11 14:35:29.265 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/SimpleSchedulerBlazor.Client.styles.css"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\obj\Debug\net6.0\scopedcss\bundle\SimpleSchedulerBlazor.Client.styles.css"'
+2022-04-11 14:35:29.268 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/css/site.css"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\wwwroot\css\site.css"'
+2022-04-11 14:35:29.270 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/SimpleSchedulerBlazor.Client.styles.css?_=7b1dbf88-9f65-4f57-86ee-0a852a414af6 - - - 200 4889 text/css 16.8880ms
+2022-04-11 14:35:29.272 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/css/site.css?_=7b1dbf88-9f65-4f57-86ee-0a852a414af6 - - - 200 290805 text/css 19.1031ms
+2022-04-11 14:35:29.364 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/css/site.css.map - -
+2022-04-11 14:35:29.368 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/css/site.css.map"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\wwwroot\css\site.css.map"'
+2022-04-11 14:35:29.370 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/css/site.css.map - - - 200 77032 text/plain 6.5715ms
+2022-04-11 14:35:30.225 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 POST https://localhost:7235/Login/GetAllUserEmails application/json;+charset=utf-8 2
+2022-04-11 14:35:30.240 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:35:30 PM'.
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, JwtSecurityToken jwtToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateTokenPayload(JwtSecurityToken jwtToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateJWS(String token, TokenValidationParameters validationParameters, BaseConfiguration currentConfiguration, SecurityToken& signatureValidatedToken, ExceptionDispatchInfo& exceptionThrown)
+--- End of stack trace from previous location ---
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, JwtSecurityToken outerToken, TokenValidationParameters validationParameters, SecurityToken& signatureValidatedToken)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, TokenValidationParameters validationParameters, SecurityToken& validatedToken)
+   at Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler.HandleAuthenticateAsync()
+2022-04-11 14:35:30.249 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] "Bearer" was not authenticated. Failure message: "IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:35:30 PM'."
+2022-04-11 14:35:30.252 [Information] [Microsoft.AspNetCore.Cors.Infrastructure.CorsService] CORS policy execution successful.
+2022-04-11 14:35:30.253 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"HTTP: POST /Login/GetAllUserEmails => GetAllUserEmailsAsync"'
+2022-04-11 14:35:30.261 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"HTTP: POST /Login/GetAllUserEmails => GetAllUserEmailsAsync"'
+2022-04-11 14:35:30.263 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 POST https://localhost:7235/Login/GetAllUserEmails application/json;+charset=utf-8 2 - 200 - application/json;+charset=utf-8 38.3636ms
+2022-04-11 14:35:32.170 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/service-worker.js - -
+2022-04-11 14:35:32.173 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] The file "/service-worker.js" was not modified
+2022-04-11 14:35:32.180 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/service-worker.js - - - 304 - application/javascript 10.2373ms
+2022-04-11 14:35:44.468 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2
+2022-04-11 14:35:44.483 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:35:44 PM'.
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, JwtSecurityToken jwtToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateTokenPayload(JwtSecurityToken jwtToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateJWS(String token, TokenValidationParameters validationParameters, BaseConfiguration currentConfiguration, SecurityToken& signatureValidatedToken, ExceptionDispatchInfo& exceptionThrown)
+--- End of stack trace from previous location ---
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, JwtSecurityToken outerToken, TokenValidationParameters validationParameters, SecurityToken& signatureValidatedToken)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, TokenValidationParameters validationParameters, SecurityToken& validatedToken)
+   at Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler.HandleAuthenticateAsync()
+2022-04-11 14:35:44.491 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] "Bearer" was not authenticated. Failure message: "IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:35:44 PM'."
+2022-04-11 14:35:44.494 [Information] [Microsoft.AspNetCore.Cors.Infrastructure.CorsService] CORS policy execution successful.
+2022-04-11 14:35:44.495 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:35:44.503 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:35:44.506 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2 - 200 - application/json;+charset=utf-8 37.6036ms
+2022-04-11 14:35:58.904 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2
+2022-04-11 14:35:58.911 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:35:58 PM'.
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, JwtSecurityToken jwtToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateTokenPayload(JwtSecurityToken jwtToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateJWS(String token, TokenValidationParameters validationParameters, BaseConfiguration currentConfiguration, SecurityToken& signatureValidatedToken, ExceptionDispatchInfo& exceptionThrown)
+--- End of stack trace from previous location ---
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, JwtSecurityToken outerToken, TokenValidationParameters validationParameters, SecurityToken& signatureValidatedToken)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, TokenValidationParameters validationParameters, SecurityToken& validatedToken)
+   at Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler.HandleAuthenticateAsync()
+2022-04-11 14:35:58.915 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] "Bearer" was not authenticated. Failure message: "IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:35:58 PM'."
+2022-04-11 14:35:58.917 [Information] [Microsoft.AspNetCore.Cors.Infrastructure.CorsService] CORS policy execution successful.
+2022-04-11 14:35:58.918 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:35:58.922 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:35:58.923 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2 - 200 - application/json;+charset=utf-8 19.5826ms
+2022-04-11 14:36:14.322 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2
+2022-04-11 14:36:14.331 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:36:14 PM'.
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, JwtSecurityToken jwtToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateTokenPayload(JwtSecurityToken jwtToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateJWS(String token, TokenValidationParameters validationParameters, BaseConfiguration currentConfiguration, SecurityToken& signatureValidatedToken, ExceptionDispatchInfo& exceptionThrown)
+--- End of stack trace from previous location ---
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, JwtSecurityToken outerToken, TokenValidationParameters validationParameters, SecurityToken& signatureValidatedToken)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, TokenValidationParameters validationParameters, SecurityToken& validatedToken)
+   at Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler.HandleAuthenticateAsync()
+2022-04-11 14:36:14.338 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] "Bearer" was not authenticated. Failure message: "IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:36:14 PM'."
+2022-04-11 14:36:14.340 [Information] [Microsoft.AspNetCore.Cors.Infrastructure.CorsService] CORS policy execution successful.
+2022-04-11 14:36:14.342 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:36:14.346 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:36:14.348 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2 - 200 - application/json;+charset=utf-8 26.4137ms
+2022-04-11 14:36:29.370 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2
+2022-04-11 14:36:29.403 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:36:29 PM'.
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, JwtSecurityToken jwtToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateTokenPayload(JwtSecurityToken jwtToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateJWS(String token, TokenValidationParameters validationParameters, BaseConfiguration currentConfiguration, SecurityToken& signatureValidatedToken, ExceptionDispatchInfo& exceptionThrown)
+--- End of stack trace from previous location ---
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, JwtSecurityToken outerToken, TokenValidationParameters validationParameters, SecurityToken& signatureValidatedToken)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, TokenValidationParameters validationParameters, SecurityToken& validatedToken)
+   at Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler.HandleAuthenticateAsync()
+2022-04-11 14:36:29.413 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] "Bearer" was not authenticated. Failure message: "IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:36:29 PM'."
+2022-04-11 14:36:29.417 [Information] [Microsoft.AspNetCore.Cors.Infrastructure.CorsService] CORS policy execution successful.
+2022-04-11 14:36:29.418 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:36:29.426 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:36:29.428 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2 - 200 - application/json;+charset=utf-8 58.2695ms
+2022-04-11 14:36:44.304 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2
+2022-04-11 14:36:44.316 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:36:44 PM'.
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, JwtSecurityToken jwtToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateTokenPayload(JwtSecurityToken jwtToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateJWS(String token, TokenValidationParameters validationParameters, BaseConfiguration currentConfiguration, SecurityToken& signatureValidatedToken, ExceptionDispatchInfo& exceptionThrown)
+--- End of stack trace from previous location ---
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, JwtSecurityToken outerToken, TokenValidationParameters validationParameters, SecurityToken& signatureValidatedToken)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, TokenValidationParameters validationParameters, SecurityToken& validatedToken)
+   at Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler.HandleAuthenticateAsync()
+2022-04-11 14:36:44.323 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] "Bearer" was not authenticated. Failure message: "IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:36:44 PM'."
+2022-04-11 14:36:44.326 [Information] [Microsoft.AspNetCore.Cors.Infrastructure.CorsService] CORS policy execution successful.
+2022-04-11 14:36:44.327 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:36:44.333 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:36:44.335 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2 - 200 - application/json;+charset=utf-8 30.9715ms
+2022-04-11 14:36:59.307 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2
+2022-04-11 14:36:59.318 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:36:59 PM'.
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, JwtSecurityToken jwtToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateTokenPayload(JwtSecurityToken jwtToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateJWS(String token, TokenValidationParameters validationParameters, BaseConfiguration currentConfiguration, SecurityToken& signatureValidatedToken, ExceptionDispatchInfo& exceptionThrown)
+--- End of stack trace from previous location ---
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, JwtSecurityToken outerToken, TokenValidationParameters validationParameters, SecurityToken& signatureValidatedToken)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, TokenValidationParameters validationParameters, SecurityToken& validatedToken)
+   at Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler.HandleAuthenticateAsync()
+2022-04-11 14:36:59.322 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] "Bearer" was not authenticated. Failure message: "IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:36:59 PM'."
+2022-04-11 14:36:59.324 [Information] [Microsoft.AspNetCore.Cors.Infrastructure.CorsService] CORS policy execution successful.
+2022-04-11 14:36:59.326 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:36:59.331 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:36:59.334 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2 - 200 - application/json;+charset=utf-8 26.0000ms
+2022-04-11 14:37:06.190 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 POST https://localhost:7235/Login/GetAllUserEmails application/json;+charset=utf-8 2
+2022-04-11 14:37:06.205 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:37:06 PM'.
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, JwtSecurityToken jwtToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateTokenPayload(JwtSecurityToken jwtToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateJWS(String token, TokenValidationParameters validationParameters, BaseConfiguration currentConfiguration, SecurityToken& signatureValidatedToken, ExceptionDispatchInfo& exceptionThrown)
+--- End of stack trace from previous location ---
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, JwtSecurityToken outerToken, TokenValidationParameters validationParameters, SecurityToken& signatureValidatedToken)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, TokenValidationParameters validationParameters, SecurityToken& validatedToken)
+   at Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler.HandleAuthenticateAsync()
+2022-04-11 14:37:06.234 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] "Bearer" was not authenticated. Failure message: "IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:37:06 PM'."
+2022-04-11 14:37:06.243 [Information] [Microsoft.AspNetCore.Cors.Infrastructure.CorsService] CORS policy execution successful.
+2022-04-11 14:37:06.244 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"HTTP: POST /Login/GetAllUserEmails => GetAllUserEmailsAsync"'
+2022-04-11 14:37:06.261 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"HTTP: POST /Login/GetAllUserEmails => GetAllUserEmailsAsync"'
+2022-04-11 14:37:06.266 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 POST https://localhost:7235/Login/GetAllUserEmails application/json;+charset=utf-8 2 - 200 - application/json;+charset=utf-8 76.1402ms
+2022-04-11 14:37:06.568 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 POST https://localhost:7235/_framework/blazor-hotreload application/json 15676
+2022-04-11 14:37:06.578 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 POST https://localhost:7235/_framework/blazor-hotreload application/json 15676 - 200 0 - 9.8380ms
+2022-04-11 14:37:14.310 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2
+2022-04-11 14:37:14.318 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:37:14 PM'.
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, JwtSecurityToken jwtToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateTokenPayload(JwtSecurityToken jwtToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateJWS(String token, TokenValidationParameters validationParameters, BaseConfiguration currentConfiguration, SecurityToken& signatureValidatedToken, ExceptionDispatchInfo& exceptionThrown)
+--- End of stack trace from previous location ---
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, JwtSecurityToken outerToken, TokenValidationParameters validationParameters, SecurityToken& signatureValidatedToken)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, TokenValidationParameters validationParameters, SecurityToken& validatedToken)
+   at Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler.HandleAuthenticateAsync()
+2022-04-11 14:37:14.323 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] "Bearer" was not authenticated. Failure message: "IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:37:14 PM'."
+2022-04-11 14:37:14.325 [Information] [Microsoft.AspNetCore.Cors.Infrastructure.CorsService] CORS policy execution successful.
+2022-04-11 14:37:14.326 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:37:14.330 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:37:14.332 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2 - 200 - application/json;+charset=utf-8 21.8492ms
+2022-04-11 14:37:21.173 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/login - -
+2022-04-11 14:37:21.184 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"Fallback {*path:nonfile}"'
+2022-04-11 14:37:21.193 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/index.html"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\wwwroot\index.html"'
+2022-04-11 14:37:21.195 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"Fallback {*path:nonfile}"'
+2022-04-11 14:37:21.198 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/login - - - 200 - text/html 25.4555ms
+2022-04-11 14:37:21.240 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_framework/blazor.webassembly.js - -
+2022-04-11 14:37:21.241 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/lib/bootstrap-5.1.3/bootstrap.bundle.min.js - -
+2022-04-11 14:37:21.241 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_content/CurrieTechnologies.Razor.SweetAlert2/sweetAlert2.min.js - -
+2022-04-11 14:37:21.243 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/lib/imask-6.4.2/imask.min.js - -
+2022-04-11 14:37:21.244 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_framework/aspnetcore-browser-refresh.js - -
+2022-04-11 14:37:21.244 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/site.js - -
+2022-04-11 14:37:21.254 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_framework/aspnetcore-browser-refresh.js - - - 200 12014 application/javascript;+charset=utf-8 9.6438ms
+2022-04-11 14:37:21.264 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/_framework/blazor.webassembly.js.gz"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\bin\Debug\net6.0\wwwroot\_framework\blazor.webassembly.js.gz"'
+2022-04-11 14:37:21.265 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/lib/bootstrap-5.1.3/bootstrap.bundle.min.js"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\wwwroot\lib\bootstrap-5.1.3\bootstrap.bundle.min.js"'
+2022-04-11 14:37:21.273 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/_content/CurrieTechnologies.Razor.SweetAlert2/sweetAlert2.min.js"'. Physical path: '"C:\Users\ENOSJ\.nuget\packages\currietechnologies.razor.sweetalert2\5.1.0\staticwebassets\sweetAlert2.min.js"'
+2022-04-11 14:37:21.276 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/lib/imask-6.4.2/imask.min.js"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\wwwroot\lib\imask-6.4.2\imask.min.js"'
+2022-04-11 14:37:21.282 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_framework/blazor.webassembly.js - - - 200 19168 application/javascript 42.2256ms
+2022-04-11 14:37:21.282 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/site.js"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\wwwroot\site.js"'
+2022-04-11 14:37:21.288 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/lib/bootstrap-5.1.3/bootstrap.bundle.min.js - - - 200 78129 application/javascript 47.2637ms
+2022-04-11 14:37:21.300 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_framework/blazor.boot.json - -
+2022-04-11 14:37:21.303 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_content/CurrieTechnologies.Razor.SweetAlert2/sweetAlert2.min.js - - - 200 71650 application/javascript 61.5968ms
+2022-04-11 14:37:21.305 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/lib/imask-6.4.2/imask.min.js - - - 200 70964 application/javascript 62.3198ms
+2022-04-11 14:37:21.310 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/site.js - - - 200 561 application/javascript 65.5275ms
+2022-04-11 14:37:21.320 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] The file "/_framework/blazor.boot.json" was not modified
+2022-04-11 14:37:21.323 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_framework/blazor.boot.json - - - 304 - application/json 22.9414ms
+2022-04-11 14:37:21.344 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/lib/bootstrap-5.1.3/bootstrap.bundle.min.js.map - -
+2022-04-11 14:37:21.352 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/appsettings.json - -
+2022-04-11 14:37:21.358 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] The file "/appsettings.json" was not modified
+2022-04-11 14:37:21.360 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/lib/imask-6.4.2/imask.min.js.map - -
+2022-04-11 14:37:21.373 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/appsettings.json - - - 304 - application/json 20.7388ms
+2022-04-11 14:37:21.380 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/lib/bootstrap-5.1.3/bootstrap.bundle.min.js.map - - - 404 0 - 36.4997ms
+2022-04-11 14:37:21.396 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/lib/imask-6.4.2/imask.min.js.map - - - 404 0 - 35.3628ms
+2022-04-11 14:37:21.465 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_framework/dotnet.6.0.3.js2gyb1rlv.js - -
+2022-04-11 14:37:21.465 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/favicon.ico - -
+2022-04-11 14:37:21.480 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] The file "/_framework/dotnet.6.0.3.js2gyb1rlv.js.gz" was not modified
+2022-04-11 14:37:21.503 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_framework/dotnet.6.0.3.js2gyb1rlv.js - - - 304 - application/javascript 38.1627ms
+2022-04-11 14:37:21.526 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/favicon.ico - - - 404 0 - 61.3912ms
+2022-04-11 14:37:22.934 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_framework/blazor-hotreload.js - -
+2022-04-11 14:37:22.937 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_framework/blazor-hotreload.js - - - 200 742 application/javascript;+charset=utf-8 2.2569ms
+2022-04-11 14:37:22.972 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_framework/blazor-hotreload - -
+2022-04-11 14:37:22.976 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_framework/blazor-hotreload - - - 200 - - 3.8030ms
+2022-04-11 14:37:23.369 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2
+2022-04-11 14:37:23.386 [Information] [Microsoft.AspNetCore.Cors.Infrastructure.CorsService] CORS policy execution successful.
+2022-04-11 14:37:23.388 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:37:23.393 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:37:23.395 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2 - 200 - application/json;+charset=utf-8 25.4717ms
+2022-04-11 14:37:23.435 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 POST https://localhost:7235/Login/GetAllUserEmails application/json;+charset=utf-8 2
+2022-04-11 14:37:23.453 [Information] [Microsoft.AspNetCore.Cors.Infrastructure.CorsService] CORS policy execution successful.
+2022-04-11 14:37:23.454 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"HTTP: POST /Login/GetAllUserEmails => GetAllUserEmailsAsync"'
+2022-04-11 14:37:23.462 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"HTTP: POST /Login/GetAllUserEmails => GetAllUserEmailsAsync"'
+2022-04-11 14:37:23.466 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 POST https://localhost:7235/Login/GetAllUserEmails application/json;+charset=utf-8 2 - 200 - application/json;+charset=utf-8 30.6022ms
+2022-04-11 14:37:23.674 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/css/site.css?_=ad61f949-8452-45e6-972e-922edd1328d5 - -
+2022-04-11 14:37:23.675 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/SimpleSchedulerBlazor.Client.styles.css?_=ad61f949-8452-45e6-972e-922edd1328d5 - -
+2022-04-11 14:37:23.681 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/SimpleSchedulerBlazor.Client.styles.css"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\obj\Debug\net6.0\scopedcss\bundle\SimpleSchedulerBlazor.Client.styles.css"'
+2022-04-11 14:37:23.686 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/SimpleSchedulerBlazor.Client.styles.css?_=ad61f949-8452-45e6-972e-922edd1328d5 - - - 200 4889 text/css 11.8772ms
+2022-04-11 14:37:23.693 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/css/site.css"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\wwwroot\css\site.css"'
+2022-04-11 14:37:23.696 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/css/site.css?_=ad61f949-8452-45e6-972e-922edd1328d5 - - - 200 290805 text/css 22.1539ms
+2022-04-11 14:37:24.705 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 POST https://localhost:7235/Login/GetAllUserEmails application/json;+charset=utf-8 2
+2022-04-11 14:37:24.719 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:37:24 PM'.
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, JwtSecurityToken jwtToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateTokenPayload(JwtSecurityToken jwtToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateJWS(String token, TokenValidationParameters validationParameters, BaseConfiguration currentConfiguration, SecurityToken& signatureValidatedToken, ExceptionDispatchInfo& exceptionThrown)
+--- End of stack trace from previous location ---
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, JwtSecurityToken outerToken, TokenValidationParameters validationParameters, SecurityToken& signatureValidatedToken)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, TokenValidationParameters validationParameters, SecurityToken& validatedToken)
+   at Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler.HandleAuthenticateAsync()
+2022-04-11 14:37:24.728 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] "Bearer" was not authenticated. Failure message: "IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:37:24 PM'."
+2022-04-11 14:37:24.732 [Information] [Microsoft.AspNetCore.Cors.Infrastructure.CorsService] CORS policy execution successful.
+2022-04-11 14:37:24.733 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"HTTP: POST /Login/GetAllUserEmails => GetAllUserEmailsAsync"'
+2022-04-11 14:37:24.742 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"HTTP: POST /Login/GetAllUserEmails => GetAllUserEmailsAsync"'
+2022-04-11 14:37:24.744 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 POST https://localhost:7235/Login/GetAllUserEmails application/json;+charset=utf-8 2 - 200 - application/json;+charset=utf-8 39.9485ms
+2022-04-11 14:37:25.162 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 POST https://localhost:7235/Login/GetAllUserEmails application/json;+charset=utf-8 2
+2022-04-11 14:37:25.175 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:37:25 PM'.
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, JwtSecurityToken jwtToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateTokenPayload(JwtSecurityToken jwtToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateJWS(String token, TokenValidationParameters validationParameters, BaseConfiguration currentConfiguration, SecurityToken& signatureValidatedToken, ExceptionDispatchInfo& exceptionThrown)
+--- End of stack trace from previous location ---
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, JwtSecurityToken outerToken, TokenValidationParameters validationParameters, SecurityToken& signatureValidatedToken)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, TokenValidationParameters validationParameters, SecurityToken& validatedToken)
+   at Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler.HandleAuthenticateAsync()
+2022-04-11 14:37:25.180 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] "Bearer" was not authenticated. Failure message: "IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:37:25 PM'."
+2022-04-11 14:37:25.183 [Information] [Microsoft.AspNetCore.Cors.Infrastructure.CorsService] CORS policy execution successful.
+2022-04-11 14:37:25.184 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"HTTP: POST /Login/GetAllUserEmails => GetAllUserEmailsAsync"'
+2022-04-11 14:37:25.191 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"HTTP: POST /Login/GetAllUserEmails => GetAllUserEmailsAsync"'
+2022-04-11 14:37:25.192 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 POST https://localhost:7235/Login/GetAllUserEmails application/json;+charset=utf-8 2 - 200 - application/json;+charset=utf-8 29.9867ms
+2022-04-11 14:37:25.289 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/css/site.css.map - -
+2022-04-11 14:37:25.296 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/css/site.css.map"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\wwwroot\css\site.css.map"'
+2022-04-11 14:37:25.298 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/css/site.css.map - - - 200 77032 text/plain 9.4386ms
+2022-04-11 14:37:38.342 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2
+2022-04-11 14:37:38.354 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:37:38 PM'.
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, JwtSecurityToken jwtToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateTokenPayload(JwtSecurityToken jwtToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateJWS(String token, TokenValidationParameters validationParameters, BaseConfiguration currentConfiguration, SecurityToken& signatureValidatedToken, ExceptionDispatchInfo& exceptionThrown)
+--- End of stack trace from previous location ---
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, JwtSecurityToken outerToken, TokenValidationParameters validationParameters, SecurityToken& signatureValidatedToken)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, TokenValidationParameters validationParameters, SecurityToken& validatedToken)
+   at Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler.HandleAuthenticateAsync()
+2022-04-11 14:37:38.360 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] "Bearer" was not authenticated. Failure message: "IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:37:38 PM'."
+2022-04-11 14:37:38.362 [Information] [Microsoft.AspNetCore.Cors.Infrastructure.CorsService] CORS policy execution successful.
+2022-04-11 14:37:38.363 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:37:38.367 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:37:38.368 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2 - 200 - application/json;+charset=utf-8 26.3434ms
+2022-04-11 14:37:53.272 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2
+2022-04-11 14:37:53.287 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:37:53 PM'.
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, JwtSecurityToken jwtToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateTokenPayload(JwtSecurityToken jwtToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateJWS(String token, TokenValidationParameters validationParameters, BaseConfiguration currentConfiguration, SecurityToken& signatureValidatedToken, ExceptionDispatchInfo& exceptionThrown)
+--- End of stack trace from previous location ---
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, JwtSecurityToken outerToken, TokenValidationParameters validationParameters, SecurityToken& signatureValidatedToken)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, TokenValidationParameters validationParameters, SecurityToken& validatedToken)
+   at Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler.HandleAuthenticateAsync()
+2022-04-11 14:37:53.297 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] "Bearer" was not authenticated. Failure message: "IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:37:53 PM'."
+2022-04-11 14:37:53.299 [Information] [Microsoft.AspNetCore.Cors.Infrastructure.CorsService] CORS policy execution successful.
+2022-04-11 14:37:53.300 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:37:53.305 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:37:53.308 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2 - 200 - application/json;+charset=utf-8 36.5873ms
+2022-04-11 14:37:58.219 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 POST https://localhost:7235/Login/GetAllUserEmails application/json;+charset=utf-8 2
+2022-04-11 14:37:58.231 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:37:58 PM'.
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, JwtSecurityToken jwtToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateTokenPayload(JwtSecurityToken jwtToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateJWS(String token, TokenValidationParameters validationParameters, BaseConfiguration currentConfiguration, SecurityToken& signatureValidatedToken, ExceptionDispatchInfo& exceptionThrown)
+--- End of stack trace from previous location ---
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, JwtSecurityToken outerToken, TokenValidationParameters validationParameters, SecurityToken& signatureValidatedToken)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, TokenValidationParameters validationParameters, SecurityToken& validatedToken)
+   at Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler.HandleAuthenticateAsync()
+2022-04-11 14:37:58.237 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] "Bearer" was not authenticated. Failure message: "IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:37:58 PM'."
+2022-04-11 14:37:58.239 [Information] [Microsoft.AspNetCore.Cors.Infrastructure.CorsService] CORS policy execution successful.
+2022-04-11 14:37:58.240 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"HTTP: POST /Login/GetAllUserEmails => GetAllUserEmailsAsync"'
+2022-04-11 14:37:58.249 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"HTTP: POST /Login/GetAllUserEmails => GetAllUserEmailsAsync"'
+2022-04-11 14:37:58.250 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 POST https://localhost:7235/Login/GetAllUserEmails application/json;+charset=utf-8 2 - 200 - application/json;+charset=utf-8 31.3489ms
+2022-04-11 14:37:58.330 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 POST https://localhost:7235/_framework/blazor-hotreload application/json 15832
+2022-04-11 14:37:58.340 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 POST https://localhost:7235/_framework/blazor-hotreload application/json 15832 - 200 0 - 9.7143ms
+2022-04-11 14:38:03.956 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 POST https://localhost:7235/Login/GetAllUserEmails application/json;+charset=utf-8 2
+2022-04-11 14:38:03.968 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:38:03 PM'.
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, JwtSecurityToken jwtToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateTokenPayload(JwtSecurityToken jwtToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateJWS(String token, TokenValidationParameters validationParameters, BaseConfiguration currentConfiguration, SecurityToken& signatureValidatedToken, ExceptionDispatchInfo& exceptionThrown)
+--- End of stack trace from previous location ---
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, JwtSecurityToken outerToken, TokenValidationParameters validationParameters, SecurityToken& signatureValidatedToken)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, TokenValidationParameters validationParameters, SecurityToken& validatedToken)
+   at Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler.HandleAuthenticateAsync()
+2022-04-11 14:38:03.973 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] "Bearer" was not authenticated. Failure message: "IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:38:03 PM'."
+2022-04-11 14:38:03.976 [Information] [Microsoft.AspNetCore.Cors.Infrastructure.CorsService] CORS policy execution successful.
+2022-04-11 14:38:03.977 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"HTTP: POST /Login/GetAllUserEmails => GetAllUserEmailsAsync"'
+2022-04-11 14:38:03.985 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"HTTP: POST /Login/GetAllUserEmails => GetAllUserEmailsAsync"'
+2022-04-11 14:38:03.987 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 POST https://localhost:7235/Login/GetAllUserEmails application/json;+charset=utf-8 2 - 200 - application/json;+charset=utf-8 30.7118ms
+2022-04-11 14:38:04.026 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 POST https://localhost:7235/_framework/blazor-hotreload application/json 15848
+2022-04-11 14:38:04.039 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 POST https://localhost:7235/_framework/blazor-hotreload application/json 15848 - 200 0 - 12.3349ms
+2022-04-11 14:38:08.303 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2
+2022-04-11 14:38:08.355 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:38:08 PM'.
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, JwtSecurityToken jwtToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateTokenPayload(JwtSecurityToken jwtToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateJWS(String token, TokenValidationParameters validationParameters, BaseConfiguration currentConfiguration, SecurityToken& signatureValidatedToken, ExceptionDispatchInfo& exceptionThrown)
+--- End of stack trace from previous location ---
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, JwtSecurityToken outerToken, TokenValidationParameters validationParameters, SecurityToken& signatureValidatedToken)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, TokenValidationParameters validationParameters, SecurityToken& validatedToken)
+   at Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler.HandleAuthenticateAsync()
+2022-04-11 14:38:08.361 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] "Bearer" was not authenticated. Failure message: "IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:38:08 PM'."
+2022-04-11 14:38:08.367 [Information] [Microsoft.AspNetCore.Cors.Infrastructure.CorsService] CORS policy execution successful.
+2022-04-11 14:38:08.368 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:38:08.373 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:38:08.375 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2 - 200 - application/json;+charset=utf-8 71.9305ms
+2022-04-11 14:38:24.355 [Information] [Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager] User profile is available. Using '"C:\Users\ENOSJ\AppData\Local\ASP.NET\DataProtection-Keys"' as key repository and Windows DPAPI to encrypt keys at rest.
+2022-04-11 14:38:24.587 [Information] [Microsoft.Hosting.Lifetime] Now listening on: "https://localhost:7235"
+2022-04-11 14:38:24.590 [Information] [Microsoft.Hosting.Lifetime] Now listening on: "http://localhost:5235"
+2022-04-11 14:38:24.594 [Information] [Microsoft.Hosting.Lifetime] Application started. Press Ctrl+C to shut down.
+2022-04-11 14:38:24.595 [Information] [Microsoft.Hosting.Lifetime] Hosting environment: "Development"
+2022-04-11 14:38:24.597 [Information] [Microsoft.Hosting.Lifetime] Content root path: "C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Server\"
+2022-04-11 14:38:24.924 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/login - -
+2022-04-11 14:38:24.924 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2
+2022-04-11 14:38:25.084 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"Fallback {*path:nonfile}"'
+2022-04-11 14:38:25.237 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/index.html"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\wwwroot\index.html"'
+2022-04-11 14:38:25.240 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"Fallback {*path:nonfile}"'
+2022-04-11 14:38:25.269 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/login - - - 200 - text/html 347.1486ms
+2022-04-11 14:38:25.272 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_framework/aspnetcore-browser-refresh.js - -
+2022-04-11 14:38:25.272 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_framework/blazor.webassembly.js - -
+2022-04-11 14:38:25.285 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_framework/aspnetcore-browser-refresh.js - - - 200 12014 application/javascript;+charset=utf-8 12.1223ms
+2022-04-11 14:38:25.327 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] The file "/_framework/blazor.webassembly.js.gz" was not modified
+2022-04-11 14:38:25.334 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_framework/blazor.webassembly.js - - - 304 - application/javascript 62.0995ms
+2022-04-11 14:38:25.358 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:38:25 PM'.
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, JwtSecurityToken jwtToken, TokenValidationParameters validationParameters)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateTokenPayload(JwtSecurityToken jwtToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateJWS(String token, TokenValidationParameters validationParameters, BaseConfiguration currentConfiguration, SecurityToken& signatureValidatedToken, ExceptionDispatchInfo& exceptionThrown)
+--- End of stack trace from previous location ---
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, JwtSecurityToken outerToken, TokenValidationParameters validationParameters, SecurityToken& signatureValidatedToken)
+   at System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.ValidateToken(String token, TokenValidationParameters validationParameters, SecurityToken& validatedToken)
+   at Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler.HandleAuthenticateAsync()
+2022-04-11 14:38:25.360 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_framework/blazor.boot.json - -
+2022-04-11 14:38:25.373 [Information] [Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler] "Bearer" was not authenticated. Failure message: "IDX10223: Lifetime validation failed. The token is expired. ValidTo: '4/2/2022 3:54:01 PM', Current time: '4/11/2022 9:38:25 PM'."
+2022-04-11 14:38:25.378 [Information] [Microsoft.AspNetCore.Cors.Infrastructure.CorsService] CORS policy execution successful.
+2022-04-11 14:38:25.380 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:38:25.381 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/_framework/blazor.boot.json"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\bin\Debug\net6.0\wwwroot\_framework\blazor.boot.json"'
+2022-04-11 14:38:25.388 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/lib/bootstrap-5.1.3/bootstrap.bundle.min.js.map - -
+2022-04-11 14:38:25.389 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_framework/blazor.boot.json - - - 200 20233 application/json 29.9387ms
+2022-04-11 14:38:25.389 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/lib/imask-6.4.2/imask.min.js.map - -
+2022-04-11 14:38:25.410 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:38:25.414 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2 - 0 - - 495.9214ms
+2022-04-11 14:38:25.435 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/lib/bootstrap-5.1.3/bootstrap.bundle.min.js.map - - - 404 0 - 47.4012ms
+2022-04-11 14:38:25.437 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/lib/imask-6.4.2/imask.min.js.map - - - 404 0 - 46.9293ms
+2022-04-11 14:38:25.447 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/appsettings.json - -
+2022-04-11 14:38:25.452 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] The file "/appsettings.json" was not modified
+2022-04-11 14:38:25.455 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/appsettings.json - - - 304 - application/json 8.3210ms
+2022-04-11 14:38:25.492 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_framework/dotnet.6.0.3.js2gyb1rlv.js - -
+2022-04-11 14:38:25.504 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] The file "/_framework/dotnet.6.0.3.js2gyb1rlv.js.gz" was not modified
+2022-04-11 14:38:25.508 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_framework/dotnet.6.0.3.js2gyb1rlv.js - - - 304 - application/javascript 15.3807ms
+2022-04-11 14:38:25.644 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_framework/SimpleSchedulerBlazor.Client.pdb - -
+2022-04-11 14:38:25.654 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_framework/SimpleSchedulerBlazor.Client.dll - -
+2022-04-11 14:38:25.730 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/_framework/SimpleSchedulerBlazor.Client.dll.gz"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\bin\Debug\net6.0\wwwroot\_framework\SimpleSchedulerBlazor.Client.dll.gz"'
+2022-04-11 14:38:25.736 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/_framework/SimpleSchedulerBlazor.Client.pdb.gz"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\bin\Debug\net6.0\wwwroot\_framework\SimpleSchedulerBlazor.Client.pdb.gz"'
+2022-04-11 14:38:25.771 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_framework/SimpleSchedulerBlazor.Client.dll - - - 200 42003 application/octet-stream 116.9241ms
+2022-04-11 14:38:25.779 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_framework/SimpleSchedulerBlazor.Client.pdb - - - 200 47348 application/octet-stream 134.9149ms
+2022-04-11 14:38:26.795 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_framework/blazor-hotreload.js - -
+2022-04-11 14:38:26.798 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_framework/blazor-hotreload.js - - - 200 742 application/javascript;+charset=utf-8 3.1796ms
+2022-04-11 14:38:26.876 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/_framework/blazor-hotreload - -
+2022-04-11 14:38:26.879 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/_framework/blazor-hotreload - - - 204 - - 3.6335ms
+2022-04-11 14:38:27.251 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2
+2022-04-11 14:38:27.265 [Information] [Microsoft.AspNetCore.Cors.Infrastructure.CorsService] CORS policy execution successful.
+2022-04-11 14:38:27.266 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:38:27.278 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"HTTP: POST /Home/GetUtcNow => GetUtcNowAsync"'
+2022-04-11 14:38:27.280 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 POST https://localhost:7235/Home/GetUtcNow application/json;+charset=utf-8 2 - 200 - application/json;+charset=utf-8 28.9253ms
+2022-04-11 14:38:27.291 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 POST https://localhost:7235/Login/GetAllUserEmails application/json;+charset=utf-8 2
+2022-04-11 14:38:27.305 [Information] [Microsoft.AspNetCore.Cors.Infrastructure.CorsService] CORS policy execution successful.
+2022-04-11 14:38:27.306 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executing endpoint '"HTTP: POST /Login/GetAllUserEmails => GetAllUserEmailsAsync"'
+2022-04-11 14:38:27.481 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/css/site.css?_=62e868c2-7026-4fab-9688-c9bc789f05ce - -
+2022-04-11 14:38:27.481 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/SimpleSchedulerBlazor.Client.styles.css?_=62e868c2-7026-4fab-9688-c9bc789f05ce - -
+2022-04-11 14:38:27.487 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/SimpleSchedulerBlazor.Client.styles.css"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\obj\Debug\net6.0\scopedcss\bundle\SimpleSchedulerBlazor.Client.styles.css"'
+2022-04-11 14:38:27.490 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/SimpleSchedulerBlazor.Client.styles.css?_=62e868c2-7026-4fab-9688-c9bc789f05ce - - - 200 4889 text/css 9.0339ms
+2022-04-11 14:38:27.490 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/css/site.css"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\wwwroot\css\site.css"'
+2022-04-11 14:38:27.495 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/css/site.css?_=62e868c2-7026-4fab-9688-c9bc789f05ce - - - 200 290805 text/css 14.6206ms
+2022-04-11 14:38:27.583 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/css/site.css.map - -
+2022-04-11 14:38:27.590 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/css/site.css.map"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\wwwroot\css\site.css.map"'
+2022-04-11 14:38:27.593 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/css/site.css.map - - - 200 77032 text/plain 10.3034ms
+2022-04-11 14:38:27.802 [Information] [Microsoft.AspNetCore.Routing.EndpointMiddleware] Executed endpoint '"HTTP: POST /Login/GetAllUserEmails => GetAllUserEmailsAsync"'
+2022-04-11 14:38:27.804 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 POST https://localhost:7235/Login/GetAllUserEmails application/json;+charset=utf-8 2 - 200 - application/json;+charset=utf-8 512.9499ms
+2022-04-11 14:38:29.348 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request starting HTTP/2 GET https://localhost:7235/service-worker.js - -
+2022-04-11 14:38:29.354 [Information] [Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware] Sending file. Request path: '"/service-worker.js"'. Physical path: '"C:\Users\ENOSJ\source\repos\SimpleScheduler\SimpleSchedulerBlazor\Client\obj\Debug\net6.0\service-worker\service-worker.js"'
+2022-04-11 14:38:29.356 [Information] [Microsoft.AspNetCore.Hosting.Diagnostics] Request finished HTTP/2 GET https://localhost:7235/service-worker.js - - - 200 303 application/javascript 7.7087ms

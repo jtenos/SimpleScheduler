@@ -18,7 +18,20 @@
                     <ValidationSummary />
 
                     <div class="input-group mb-3">
-                        <InputText id="email-address" @bind-Value="Model.Email" class="form-control" placeholder="Email Address" />
+                        @if (AllEmails.Any())
+                        {
+                            <InputSelect id="email-address" @bind-Value="Model.Email" class="form-select">
+                                <option></option>
+                                @foreach (string emailAddress in AllEmails)
+                                {
+                                    <option value="@emailAddress">@emailAddress</option>
+                                }
+                            </InputSelect>
+                        }
+                        else
+                        {
+                            <InputText id="email-address" @bind-Value="Model.Email" class="form-control" placeholder="Email Address" />
+                        }
                         <div class="input-group-append">
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </div>

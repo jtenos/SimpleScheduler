@@ -20,11 +20,29 @@ partial class Login
     private bool Loading { get; set; }
     private bool SubmittedSuccessfully { get; set; }
 
+    private string[] AllEmails { get; set; } = Array.Empty<string>();
+
     private class LoginModel
     {
         [Required]
         [EmailAddress]
         public string? Email { get; set; }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        (Error? error, GetAllUserEmailsReply? reply) = await ServiceClient.PostAsync<GetAllUserEmailsRequest, GetAllUserEmailsReply>(
+            "Login/GetAllUserEmails",
+            new());
+
+        if (error is not null || reply?.EmailAddresses.Any() != true)
+        {
+            return;
+        }
+
+        AllEmails = reply.EmailAddresses;
+
+        await base.OnParametersSetAsync();
     }
 
     private async Task HandleValidSubmit()
