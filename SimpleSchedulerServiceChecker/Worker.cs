@@ -8,8 +8,6 @@ using SimpleSchedulerApiModels.Request.Workers;
 using SimpleSchedulerApiModels.Reply.Workers;
 using SimpleSchedulerServiceClient;
 using SimpleSchedulerEmail;
-using SimpleSchedulerApiModels.Reply.Login;
-using SimpleSchedulerApiModels.Request.Login;
 
 namespace SimpleSchedulerServiceChecker;
 
@@ -17,30 +15,24 @@ public class Worker
     : BackgroundService
 {
     private static readonly Timer _timer = new(TimeSpan.FromMinutes(20).TotalMilliseconds);
-    private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly ServiceClient _serviceClient;
     private readonly string[] _serviceNames;
     private readonly ILogger<Worker> _logger;
     private readonly string _apiUrl;
-    private readonly Guid _internalSecretAuthKey;
 
     public Worker(
         IEmailer emailer, // forces DI loading
         IConfiguration config,
         ILogger<Worker> logger,
-        IServiceScopeFactory serviceScopeFactory,
         ServiceClient serviceClient)
     {
         System.Diagnostics.Debug.WriteLine(emailer);
-
-        _internalSecretAuthKey = config.GetValue<Guid>("InternalSecretAuthKey");
 
         _serviceNames = config.GetSection("ServiceNames")
             .GetChildren()
             .Select(x => x.Value)
             .ToArray();
         _logger = logger;
-        _serviceScopeFactory = serviceScopeFactory;
         _serviceClient = serviceClient;
         _apiUrl = config["ApiUrl"];
     }
@@ -54,30 +46,6 @@ public class Worker
         async Task GoAsync()
         {
             _logger.LogInformation("In GoAsync()");
-
-            try
-            {
-                _logger.LogDebug("Internal secret auth key: {authKey}", _internalSecretAuthKey);
-                using IServiceScope scope = _serviceScopeFactory.CreateAsyncScope();
-                ServiceClient client = scope.ServiceProvider.GetRequiredService<ServiceClient>();
-                (Error? error, ValidateEmailReply? reply) = await client.PostAsync<ValidateEmailRequest, ValidateEmailReply>(
-                    "Login/ValidateEmail",
-                    new(_internalSecretAuthKey)
-                );
-
-                if (error is not null)
-                {
-                    throw new ApplicationException($"Error authenticating for service. Make sure InternalSecretAuthKey in the config matches the value in the API config: {error.Message}");
-                }
-
-                _logger.LogInformation("reply: {reply}", reply);
-
-                scope.ServiceProvider.GetRequiredService<JwtContainer>().Token = reply!.JwtToken;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogCritical(ex, "Error setting token");
-            }
 
             try
             {

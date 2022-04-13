@@ -18,13 +18,13 @@ await Host.CreateDefaultBuilder(args)
         });
 
         services.AddScoped(sp => new ServiceClient(
-            new HttpClient { BaseAddress = new Uri(sp.GetRequiredService<IConfiguration>()["ApiUrl"]) },
-            sp.GetRequiredService<JwtContainer>(),
-            () => throw new ApplicationException("Unauthorized"),
-            sp.GetRequiredService<ILogger<ServiceClient>>()
+            httpClient: new HttpClient { BaseAddress = new Uri(sp.GetRequiredService<IConfiguration>()["ApiUrl"]) },
+            tokenLookup: sp.GetRequiredService<ITokenLookup>(),
+            redirectToLogin: () => throw new ApplicationException("Unauthorized"),
+            logger: sp.GetRequiredService<ILogger<ServiceClient>>()
         ));
 
-        services.AddSingleton<JwtContainer>();
+        services.AddSingleton<ITokenLookup, TokenLookup>();
         services.AddSingleton<JobExecutor>();
         services.AddSingleton<JobScheduler>();
         services.AddHostedService<Worker>();

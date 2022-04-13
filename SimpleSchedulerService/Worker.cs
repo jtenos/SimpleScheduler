@@ -11,14 +11,14 @@ public class Worker
     private readonly JobScheduler _scheduler;
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly Guid _internalSecretAuthKey;
-    private readonly JwtContainer _jwtContainer;
+    private readonly ITokenLookup _tokenLookup;
     private static readonly Timer _authTimer = new(TimeSpan.FromMinutes(30).TotalMilliseconds);
 
-    public Worker(JobScheduler scheduler, JwtContainer jwtContainer,
+    public Worker(JobScheduler scheduler, ITokenLookup tokenLookup,
         IServiceScopeFactory serviceScopeFactory, IConfiguration config)
     {
         _scheduler = scheduler;
-        _jwtContainer = jwtContainer;
+        _tokenLookup = tokenLookup;
         _serviceScopeFactory = serviceScopeFactory;
         _internalSecretAuthKey = config.GetValue<Guid>("InternalSecretAuthKey");
     }
@@ -48,7 +48,7 @@ public class Worker
             throw new ApplicationException($"Error authenticating for service. Make sure InternalSecretAuthKey in the config matches the value in the API config: {error.Message}");
         }
 
-        _jwtContainer.Token = reply!.JwtToken;
+        ((TokenLookup)_tokenLookup).Token = reply!.JwtToken;
     }
 
     public override Task StopAsync(CancellationToken cancellationToken)

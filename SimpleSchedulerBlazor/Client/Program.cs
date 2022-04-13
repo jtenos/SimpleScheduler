@@ -18,19 +18,27 @@ builder.Services.AddSweetAlert2(options =>
     options.Theme = SweetAlertTheme.Bootstrap4;
 });
 
+builder.Services.AddScoped<ITokenLookup, TokenLookup>();
+
 builder.Services.AddScoped(sp =>
 {
+    ITokenLookup tokenLookup = sp.GetRequiredService<ITokenLookup>();
+
+    Console.WriteLine("Creating new ServiceClient");
     NavigationManager navManager = sp.GetRequiredService<NavigationManager>();
     void redirectToLogin() => navManager.NavigateTo("login");
-    return new ServiceClient(
-        new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) },
-        sp.GetRequiredService<JwtContainer>(),
-        redirectToLogin,
-        sp.GetRequiredService<ILogger<ServiceClient>>()
+    ServiceClient sc = new(
+        httpClient: new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) },
+        tokenLookup: tokenLookup,
+        redirectToLogin: redirectToLogin,
+        logger: sp.GetRequiredService<ILogger<ServiceClient>>()
     );
+
+    Console.WriteLine("ServiceClient is created");
+
+    return sc;
 });
 
-builder.Services.AddSingleton<JwtContainer>();
 builder.Services.AddSingleton<ClientAppInfo>();
 
 await builder.Build().RunAsync();

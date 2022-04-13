@@ -8,15 +8,15 @@ namespace SimpleSchedulerServiceClient;
 public class ServiceClient
 {
     private readonly HttpClient _httpClient;
-    private readonly JwtContainer _jwt;
+    private readonly ITokenLookup _tokenLookup;
     private readonly Action _redirectToLogin;
     private readonly ILogger<ServiceClient> _logger;
 
-    public ServiceClient(HttpClient httpClient, JwtContainer jwt, Action redirectToLogin,
+    public ServiceClient(HttpClient httpClient, ITokenLookup tokenLookup, Action redirectToLogin,
         ILogger<ServiceClient> logger)
     {
         _httpClient = httpClient;
-        _jwt = jwt;
+        _tokenLookup = tokenLookup;
         _redirectToLogin = redirectToLogin;
         _logger = logger;
     }
@@ -35,14 +35,15 @@ public class ServiceClient
         where TRequest : class
         where TReply : class
     {
-        if (_jwt?.Token is not null)
+        string? token = await _tokenLookup.LookupTokenAsync();
+
+        if (token is not null)
         {
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",
-                _jwt.Token);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
         try
         {
-            _logger.LogDebug("Token: {token}", _jwt?.Token);
+            _logger.LogDebug("Token: {token}", token);
             _logger.LogDebug("URL: {baseAddress} | {requestUri}", _httpClient.BaseAddress, requestUri);
             _logger.LogDebug("Request: {request}", request);
 
