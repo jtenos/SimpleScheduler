@@ -19,7 +19,11 @@ partial class Jobs
     public bool Loading { get; set; } = true;
 
     [Parameter]
-    public long? WorkerID { get; set; }
+    public long? WorkerID
+    {
+        get => SearchCriteria?.WorkerID;
+        set { if (SearchCriteria is not null) { SearchCriteria.WorkerID = value; } }
+    }
 
     [Inject]
     private ServiceClient ServiceClient { get; set; } = default!;
@@ -74,6 +78,9 @@ partial class Jobs
             await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
             return;
         }
+
+        Console.WriteLine($"error: {error}");
+        Console.WriteLine($"reply: {reply}");
 
         AllWorkers = reply!.Workers
             .Select(w => w.Worker)
