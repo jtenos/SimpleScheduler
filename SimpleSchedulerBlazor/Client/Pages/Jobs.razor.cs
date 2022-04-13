@@ -36,12 +36,13 @@ partial class Jobs
         SearchEditContext = new(SearchCriteria);
         SearchEditContext.OnFieldChanged += async (sender, e) =>
         {
+            SetLoadingOn();
             await LoadJobsAsync();
-            StateHasChanged();
+            SetLoadingOff();
         };
         await LoadWorkersAsync();
         await LoadJobsAsync();
-        Loading = false;
+        SetLoadingOff();
     }
 
     protected override Task OnAfterRenderAsync(bool firstRender)
@@ -87,8 +88,9 @@ partial class Jobs
 
     private async Task RefreshJobs()
     {
+        SetLoadingOn();
         await LoadJobsAsync();
-        StateHasChanged();
+        SetLoadingOff();
     }
 
     private async Task LoadJobsAsync()
