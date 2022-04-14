@@ -1,3 +1,7 @@
+## WORK IN PROGRESS
+
+I'm still in the process of converting the project from Angular to Blazor, and reworking the data layer - most of the below stuff is not applicable any longer.
+
 To build from command line:
 
 ## SimpleSchedulerAngular:
