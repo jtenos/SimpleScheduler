@@ -17,8 +17,6 @@ Serilog.Debugging.SelfLog.Enable(msg => System.Diagnostics.Debug.WriteLine(msg))
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.Configuration.AddJsonFile("secrets.json", optional: true);
-
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddEndpointsApiExplorer();

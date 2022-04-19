@@ -44,10 +44,6 @@ await Host.CreateDefaultBuilder()
         services.AddSingleton<ITokenLookup, TokenLookup>();
         services.AddHostedService<Worker>();
     })
-    .ConfigureHostConfiguration(configure =>
-    {
-        configure.AddJsonFile("secrets.json", optional: true);
-    })
     .UseWindowsService()
     .Build()
     .RunAsync();

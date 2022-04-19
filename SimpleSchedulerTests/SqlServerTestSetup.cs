@@ -29,9 +29,6 @@ class SqlServerTestSetup
         await comm.ExecuteNonQueryAsync();
     }
 
-    internal static void AddDatabaseSpecificConfig(IConfigurationBuilder configBuilder)
-        => configBuilder.AddJsonFile("secrets.sqlserver.json", optional: true);
-
     internal static void AddDatabaseSpecificServices(IServiceCollection sc)
         => sc.AddScoped<IWorkerManager, WorkerManager>()
             .AddScoped<IScheduleManager, ScheduleManager>()

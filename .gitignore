@@ -10,9 +10,6 @@ SimpleSchedulerAngular/package-lock.json
 **/*.jfm
 _db
 **/.vscode
-**/secrets.json
-**/secrets.sqlite.json
-**/secrets.sqlserver.json
 **/publish-local.bat
 
 **/dist/
