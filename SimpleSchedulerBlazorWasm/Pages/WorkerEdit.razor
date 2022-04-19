@@ -1,0 +1,62 @@
+﻿@page "/workers/{ID:long}"
+@using System.Text.Json
+
+<div class="d-flex flex-column align-items-center">
+    <form>
+        @if (Loading)
+        {
+            <LoadingAnimation />
+        }
+        else
+        {
+            <EditForm Model="Worker">
+                <div class="form-group">
+                    <label>Worker Name</label>
+                    <InputText class="form-control" @bind-Value="Worker.WorkerName" />
+                </div>
+                <div class="form-group">
+                    <label>Detailed Description</label>
+                    <InputTextArea class="form-control" @bind-Value="Worker.DetailedDescription" />
+                </div>
+                <div class="form-group">
+                    <label>Email On Success (semi-colon delimited)</label>
+                    <InputText class="form-control" @bind-Value="Worker.EmailOnSuccess" />
+                </div>
+                <div class="form-group">
+                    <label>Parent Worker (this worker will run after the parent is successful)</label>
+                    <InputSelect TValue="long?" class="form-select" @bind-Value="Worker.ParentWorkerID">
+                        <option></option>
+                        @foreach (WorkerIDName w in AllWorkers)
+                        {
+                            if (w.ID == Worker.ID)
+                            {
+                                continue;
+                            }
+                            <option value="@w.ID">@w.WorkerName</option>
+                        }
+                    </InputSelect>
+                </div>
+                <div class="form-group">
+                    <label>Timeout (Minutes)</label>
+                    <InputNumber class="form-control" @bind-Value="Worker.TimeoutMinutes" />
+                </div>
+                <div class="form-group">
+                    <label>Directory Name</label>
+                    <InputText class="form-control" @bind-Value="Worker.DirectoryName" />
+                </div>
+                <div class="form-group">
+                    <label>Executable</label>
+                    <InputText class="form-control" @bind-Value="Worker.Executable" />
+                </div>
+                <div class="form-group">
+                    <label>Arguments</label>
+                    <InputText class="form-control" @bind-Value="Worker.ArgumentValues" />
+                </div>
+
+                <div class="form-group d-grid">
+                    <a class="btn btn-primary btn-block" @onclick="SaveWorker">Save</a>
+                </div>
+            </EditForm>
+        }
+    </form>
+</div>

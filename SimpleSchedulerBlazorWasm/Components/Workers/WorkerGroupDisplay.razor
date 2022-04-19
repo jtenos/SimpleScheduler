@@ -1,0 +1,8 @@
+﻿@using SimpleSchedulerApiModels
+
+<div class="worker-container d-flex" data-num-workers="@Workers.Length">
+    @foreach (WorkerWithSchedules? worker in Workers)
+    {
+        <WorkerDisplay Worker="worker" AllWorkers="AllWorkers" WorkersComponent="WorkersComponent" @ref="CurrentWorkerDisplay" />
+    }
+</div>

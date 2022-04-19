@@ -1,0 +1,35 @@
+﻿.job-row-ERR {
+    border-color: #f00;
+    border-width: 3px;
+}
+
+@media (max-width: 1400px) {
+    .job-container {
+        flex-direction: column;
+    }
+    .worker-name {
+        font-weight: bold;
+    }
+}
+
+.job-container {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: 15px;
+}
+
+    .job-container:nth-of-type(2n+1) {
+        background-color: #ddd;
+    }
+
+.worker-name-container {
+    flex: 4;
+}
+
+.queue-date-container {
+    flex: 1;
+}
+
+.status-container {
+    flex: 1;
+}
