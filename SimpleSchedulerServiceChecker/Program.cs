@@ -7,6 +7,10 @@ using SimpleSchedulerServiceClient;
 Serilog.Debugging.SelfLog.Enable(msg => System.Diagnostics.Debug.WriteLine(msg));
 
 await Host.CreateDefaultBuilder()
+    .ConfigureAppConfiguration((hostContext, builder) =>
+    {
+        builder.AddUserSecrets<Program>();
+    })
     .ConfigureServices((hostContext, services) =>
     {
         Log.Logger = new LoggerConfiguration()

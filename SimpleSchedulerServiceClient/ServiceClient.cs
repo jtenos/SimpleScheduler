@@ -30,12 +30,17 @@ public class ServiceClient
     /// <returns></returns>
     public async Task<(Error?, TReply?)> PostAsync<TRequest, TReply>(
         string requestUri,
-        TRequest request
+        TRequest request,
+        bool forceUnauthenticated = false
     )
         where TRequest : class
         where TReply : class
     {
-        string? token = await _tokenLookup.LookupTokenAsync();
+        string? token = null;
+        if (!forceUnauthenticated)
+        {
+            token = await _tokenLookup.LookupTokenAsync();
+        }
 
         if (token is not null)
         {

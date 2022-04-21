@@ -23,13 +23,14 @@ internal class TokenLookup
         try
         {
             Guid internalSecretAuthKey = _config.GetValue<Guid>("InternalSecretAuthKey");
-            _logger.LogDebug("Internal secret auth key: {authKey}", internalSecretAuthKey);
+            //_logger.LogDebug("Internal secret auth key: {authKey}", internalSecretAuthKey);
 
             using IServiceScope scope = _serviceScopeFactory.CreateAsyncScope();
             ServiceClient client = scope.ServiceProvider.GetRequiredService<ServiceClient>();
             (Error? error, ValidateEmailReply? reply) = await client.PostAsync<ValidateEmailRequest, ValidateEmailReply>(
                 "Login/ValidateEmail",
-                new(internalSecretAuthKey)
+                new(internalSecretAuthKey),
+                forceUnauthenticated: true
             );
 
             if (error is not null)
