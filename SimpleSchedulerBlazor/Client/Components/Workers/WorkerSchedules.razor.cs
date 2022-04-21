@@ -8,4 +8,8 @@ partial class WorkerSchedules
     [Parameter]
     [EditorRequired]
     public WorkerWithSchedules Worker { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public WorkerDisplay WorkerDisplayComponent { get; set; } = default!;
 }

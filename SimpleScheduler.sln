@@ -17,8 +17,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleSchedulerTests", "Sim
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleSchedulerFakeData", "SimpleSchedulerFakeData\SimpleSchedulerFakeData.csproj", "{FD205ADB-62AE-43C6-8829-425D4F353FB5}"
 EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "SimpleSchedulerDB", "SqlDB\SimpleSchedulerDB.sqlproj", "{760899A4-0FCE-4B5C-A9E4-7C0F11CC0831}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleSchedulerBlazor.Server", "SimpleSchedulerBlazor\Server\SimpleSchedulerBlazor.Server.csproj", "{5ACE8B19-FADE-476D-A875-C46963207F4D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleSchedulerBlazor.Client", "SimpleSchedulerBlazor\Client\SimpleSchedulerBlazor.Client.csproj", "{A944A7B3-FC26-4A68-9D97-3B82032DAE8B}"
@@ -31,11 +29,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeyGen", "KeyGen\KeyGen.csp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utilities", "Utilities", "{69C732AA-266E-4CC2-9AB4-AD70CA0477F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleSchedulerSerilogEmail", "SimpleSchedulerSerilogEmail\SimpleSchedulerSerilogEmail.csproj", "{9699E602-9F88-4827-89D3-4C855FF93DBE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleSchedulerSerilogEmail", "SimpleSchedulerSerilogEmail\SimpleSchedulerSerilogEmail.csproj", "{9699E602-9F88-4827-89D3-4C855FF93DBE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleSchedulerApiModels", "SimpleSchedulerApiModels\SimpleSchedulerApiModels.csproj", "{EFFDFBFA-9375-49F7-9980-C099CFB6FF73}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleSchedulerApiModels", "SimpleSchedulerApiModels\SimpleSchedulerApiModels.csproj", "{EFFDFBFA-9375-49F7-9980-C099CFB6FF73}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleSchedulerDataEntities", "SimpleSchedulerDataEntities\SimpleSchedulerDataEntities.csproj", "{DCF34AD8-FC5A-48E0-B88C-CB4A742905DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleSchedulerDataEntities", "SimpleSchedulerDataEntities\SimpleSchedulerDataEntities.csproj", "{DCF34AD8-FC5A-48E0-B88C-CB4A742905DF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5E59DC57-1BD1-4554-8402-1E3010573850}"
 	ProjectSection(SolutionItems) = preProject
@@ -55,6 +53,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{4E5F2980-52CD-45AF-BEC0-8105D2B17592}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleScheduler.Blazor.Shared", "SimpleSchedulerBlazor\Shared\SimpleScheduler.Blazor.Shared.csproj", "{802C3329-4F97-4CB9-BFFF-5B1A3C0E0F2D}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "SimpleSchedulerSqlServerDB", "SimpleSchedulerSqlServerDB\SimpleSchedulerSqlServerDB.sqlproj", "{89D3F1CB-DAB6-4493-B088-4B02B9E84948}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -120,18 +120,6 @@ Global
 		{FD205ADB-62AE-43C6-8829-425D4F353FB5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FD205ADB-62AE-43C6-8829-425D4F353FB5}.Release|x64.ActiveCfg = Release|Any CPU
 		{FD205ADB-62AE-43C6-8829-425D4F353FB5}.Release|x64.Build.0 = Release|Any CPU
-		{760899A4-0FCE-4B5C-A9E4-7C0F11CC0831}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{760899A4-0FCE-4B5C-A9E4-7C0F11CC0831}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{760899A4-0FCE-4B5C-A9E4-7C0F11CC0831}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{760899A4-0FCE-4B5C-A9E4-7C0F11CC0831}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{760899A4-0FCE-4B5C-A9E4-7C0F11CC0831}.Debug|x64.Build.0 = Debug|Any CPU
-		{760899A4-0FCE-4B5C-A9E4-7C0F11CC0831}.Debug|x64.Deploy.0 = Debug|Any CPU
-		{760899A4-0FCE-4B5C-A9E4-7C0F11CC0831}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{760899A4-0FCE-4B5C-A9E4-7C0F11CC0831}.Release|Any CPU.Build.0 = Release|Any CPU
-		{760899A4-0FCE-4B5C-A9E4-7C0F11CC0831}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{760899A4-0FCE-4B5C-A9E4-7C0F11CC0831}.Release|x64.ActiveCfg = Release|Any CPU
-		{760899A4-0FCE-4B5C-A9E4-7C0F11CC0831}.Release|x64.Build.0 = Release|Any CPU
-		{760899A4-0FCE-4B5C-A9E4-7C0F11CC0831}.Release|x64.Deploy.0 = Release|Any CPU
 		{5ACE8B19-FADE-476D-A875-C46963207F4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5ACE8B19-FADE-476D-A875-C46963207F4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5ACE8B19-FADE-476D-A875-C46963207F4D}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -204,6 +192,18 @@ Global
 		{802C3329-4F97-4CB9-BFFF-5B1A3C0E0F2D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{802C3329-4F97-4CB9-BFFF-5B1A3C0E0F2D}.Release|x64.ActiveCfg = Release|Any CPU
 		{802C3329-4F97-4CB9-BFFF-5B1A3C0E0F2D}.Release|x64.Build.0 = Release|Any CPU
+		{89D3F1CB-DAB6-4493-B088-4B02B9E84948}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89D3F1CB-DAB6-4493-B088-4B02B9E84948}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89D3F1CB-DAB6-4493-B088-4B02B9E84948}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{89D3F1CB-DAB6-4493-B088-4B02B9E84948}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{89D3F1CB-DAB6-4493-B088-4B02B9E84948}.Debug|x64.Build.0 = Debug|Any CPU
+		{89D3F1CB-DAB6-4493-B088-4B02B9E84948}.Debug|x64.Deploy.0 = Debug|Any CPU
+		{89D3F1CB-DAB6-4493-B088-4B02B9E84948}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89D3F1CB-DAB6-4493-B088-4B02B9E84948}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89D3F1CB-DAB6-4493-B088-4B02B9E84948}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{89D3F1CB-DAB6-4493-B088-4B02B9E84948}.Release|x64.ActiveCfg = Release|Any CPU
+		{89D3F1CB-DAB6-4493-B088-4B02B9E84948}.Release|x64.Build.0 = Release|Any CPU
+		{89D3F1CB-DAB6-4493-B088-4B02B9E84948}.Release|x64.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -216,7 +216,6 @@ Global
 		{09B2F39D-FB6E-45D3-A628-B4ACC478FB29} = {A7D899AF-D69D-4431-AE19-F53F78A44F75}
 		{46FF81EE-5B13-4547-91FC-1282370E5D0B} = {4E5F2980-52CD-45AF-BEC0-8105D2B17592}
 		{FD205ADB-62AE-43C6-8829-425D4F353FB5} = {69C732AA-266E-4CC2-9AB4-AD70CA0477F9}
-		{760899A4-0FCE-4B5C-A9E4-7C0F11CC0831} = {A2E11CD5-BCA1-4332-B864-E292679E371C}
 		{5ACE8B19-FADE-476D-A875-C46963207F4D} = {C062D6D3-0F27-49B7-A00D-F5341A96C0A2}
 		{A944A7B3-FC26-4A68-9D97-3B82032DAE8B} = {A7D899AF-D69D-4431-AE19-F53F78A44F75}
 		{E8A7DAE4-FEE3-4159-B7D3-AA65ABC5D700} = {5A20E141-618E-4569-9B4A-2B1F2D9868DE}
@@ -226,6 +225,7 @@ Global
 		{EFFDFBFA-9375-49F7-9980-C099CFB6FF73} = {C062D6D3-0F27-49B7-A00D-F5341A96C0A2}
 		{DCF34AD8-FC5A-48E0-B88C-CB4A742905DF} = {A2E11CD5-BCA1-4332-B864-E292679E371C}
 		{802C3329-4F97-4CB9-BFFF-5B1A3C0E0F2D} = {5A20E141-618E-4569-9B4A-2B1F2D9868DE}
+		{89D3F1CB-DAB6-4493-B088-4B02B9E84948} = {A2E11CD5-BCA1-4332-B864-E292679E371C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AC5D8F42-E595-4DC6-8D63-20CFCE297AB6}

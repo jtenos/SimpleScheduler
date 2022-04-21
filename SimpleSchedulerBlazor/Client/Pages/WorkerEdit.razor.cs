@@ -28,7 +28,7 @@ partial class WorkerEdit
 
     protected override async Task OnInitializedAsync()
     {
-        Worker = (await WorkersService.GetWorkerAsync(new(ID))).Worker;
+        Worker = (await WorkersService.GetWorkerAsync(new(ID))).Worker.Worker;
         AllWorkers = (await WorkersService.GetAllActiveWorkerIDNamesAsync(new())).Workers.ToArray();
         Loading = false;
     }

@@ -1,26 +1,35 @@
 ﻿<li class="list-group-item">
-    <div>
-        @if (IsEditing)
-        {
-            <ScheduleEdit Schedule="Schedule" />
-        }
-        else
-        {
-            <div>
-                @Schedule.GetFormatted()
-            </div>
-        }
-    </div>
-    <div>
-        @if (IsEditing)
-        {
-            <button class="btn btn-sm btn-primary" @onclick="SaveSchedule"><i class="bi bi-check-circle"></i> Save</button>
-            <button class="btn btn-sm btn-secondary" @onclick="CancelEditSchedule"><i class="bi bi-x-lg"></i> Cancel</button>
-        }
-        else
-        {
-            <button class="btn btn-sm btn-outline-warning" @onclick="EditSchedule"><i class="bi bi-pencil"></i> Edit</button>
-            <button class="btn btn-sm btn-outline-danger" @onclick="DeleteSchedule"><i class="bi bi-trash"></i> Delete</button>
-        }
-    </div>
+
+    @if (IsLoading)
+    {
+        <LoadingAnimation />
+    }
+    else
+    {
+        <div>
+            @if (IsEditing)
+            {
+                <ScheduleEdit Schedule="Schedule" />
+            }
+            else
+            {
+                <div>
+                    @Schedule.GetFormatted()
+                </div>
+            }
+        </div>
+        <div>
+            @if (IsEditing)
+            {
+                <button class="btn btn-sm btn-primary" @onclick="SaveSchedule"><i class="bi bi-check-circle"></i> Save</button>
+                <button class="btn btn-sm btn-secondary" @onclick="CancelEditSchedule"><i class="bi bi-x-lg"></i> Cancel</button>
+            }
+            else
+            {
+                <button class="btn btn-sm btn-outline-warning" @onclick="EditSchedule"><i class="bi bi-pencil"></i> Edit</button>
+                <button class="btn btn-sm btn-outline-danger" @onclick="DeleteSchedule"><i class="bi bi-trash"></i> Delete</button>
+            }
+        </div>
+    }
+
 </li>

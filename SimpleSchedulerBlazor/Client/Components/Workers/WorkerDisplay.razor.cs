@@ -37,6 +37,12 @@ partial class WorkerDisplay
         return Task.CompletedTask;
     }
 
+    public async Task RefreshAsync()
+    {
+        Worker = (await WorkerService.GetWorkerAsync(new(Worker!.Worker.ID))).Worker;
+        StateHasChanged();
+    }
+
     private Task EditWorker()
     {
         Nav.NavigateTo($"workers/{Worker!.Worker.ID}");
