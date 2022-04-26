@@ -1,5 +1,4 @@
-﻿-- All of the regular schedules (not one-time)
-CREATE PROCEDURE [app].[Schedules_SelectAll]
+﻿CREATE PROCEDURE [app].[Schedules_SelectAll]
 AS
 BEGIN
 	SET TRANSACTION ISOLATION LEVEL SNAPSHOT;

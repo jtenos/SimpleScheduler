@@ -8,7 +8,7 @@ BEGIN
 
 	BEGIN TRY
 		BEGIN TRANSACTION;
-        
+
         DECLARE @DescendantWorkerIDs TABLE (
             [ID] BIGINT
         );
