@@ -127,4 +127,10 @@ partial class WorkerDisplay
 
         Nav.NavigateTo($"jobs/{Worker!.Worker.ID}");
     }
+
+    private Task GoToJobs()
+    {
+        Nav.NavigateTo($"jobs/{Worker!.Worker.ID}");
+        return Task.CompletedTask;
+    }
 }
