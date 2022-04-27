@@ -19,6 +19,7 @@ public class Worker
     private readonly string[] _serviceNames;
     private readonly ILogger<Worker> _logger;
     private readonly string _apiUrl;
+    private readonly string _appUrl;
 
     public Worker(
         IEmailer emailer, // forces DI loading
@@ -35,6 +36,7 @@ public class Worker
         _logger = logger;
         _serviceClient = serviceClient;
         _apiUrl = config["ApiUrl"];
+        _appUrl = config["AppUrl"];
     }
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken) => Task.CompletedTask;
@@ -117,7 +119,7 @@ public class Worker
                     if (job.StatusCode == "ERR")
                     {
                         Guid acknowledgementCode = job.AcknowledgementCode;
-                        string url = $"{_apiUrl}/acknowledge-error/{acknowledgementCode:N}";
+                        string url = $"{_appUrl}acknowledge-error/{acknowledgementCode:N}";
                         message.AppendLine($"Acknowledge: {url}");
                     }
                     message.AppendLine("-----------------------------------");
