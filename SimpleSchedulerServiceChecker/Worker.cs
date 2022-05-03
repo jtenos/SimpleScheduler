@@ -21,7 +21,6 @@ public class Worker
     private readonly string[] _serviceNames;
     private readonly ILogger<Worker> _logger;
     private readonly string _appUrl;
-    private readonly string _environmentName;
 
     public Worker(
         IEmailer emailer, // forces DI loading
@@ -39,7 +38,6 @@ public class Worker
         _serviceClient = serviceClient;
         _emailer = emailer;
         _appUrl = config["AppUrl"];
-        _environmentName = config["EnvironmentName"];
     }
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken) => Task.CompletedTask;
@@ -137,7 +135,7 @@ public class Worker
                 }
                 _logger.LogWarning("Error: {message}", message);
                 await _emailer.SendEmailToAdminAsync(
-                    subject: $"Overdue scheduled jobs on {Environment.MachineName} ({_environmentName})",
+                    subject: $"Overdue scheduled jobs on {Environment.MachineName}",
                     bodyHTML: message.ToString()
                 );
             }
