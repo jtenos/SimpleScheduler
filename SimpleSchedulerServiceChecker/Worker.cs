@@ -8,6 +8,7 @@ using SimpleSchedulerApiModels.Request.Workers;
 using SimpleSchedulerApiModels.Reply.Workers;
 using SimpleSchedulerServiceClient;
 using SimpleSchedulerEmail;
+using System.Reflection;
 
 namespace SimpleSchedulerServiceChecker;
 
@@ -16,10 +17,11 @@ public class Worker
 {
     private static readonly Timer _timer = new(TimeSpan.FromMinutes(20).TotalMilliseconds);
     private readonly ServiceClient _serviceClient;
+    private readonly IEmailer _emailer;
     private readonly string[] _serviceNames;
     private readonly ILogger<Worker> _logger;
-    private readonly string _apiUrl;
     private readonly string _appUrl;
+    private readonly string _environmentName;
 
     public Worker(
         IEmailer emailer, // forces DI loading
@@ -35,15 +37,19 @@ public class Worker
             .ToArray();
         _logger = logger;
         _serviceClient = serviceClient;
-        _apiUrl = config["ApiUrl"];
+        _emailer = emailer;
         _appUrl = config["AppUrl"];
+        _environmentName = config["EnvironmentName"];
     }
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken) => Task.CompletedTask;
 
     public override async Task StartAsync(CancellationToken cancellationToken)
     {
-        _logger.LogCritical("SimpleSchedulerServiceChecker started on {machineName}", Environment.MachineName);
+        await _emailer.SendEmailToAdminAsync(
+            subject: $"SimpleSchedulerServiceChecker started on {Environment.MachineName}",
+            bodyHTML: Assembly.GetExecutingAssembly().Location
+        );
 
         async Task GoAsync()
         {
@@ -57,7 +63,12 @@ public class Worker
                 {
                     if (!IsRunning(serviceName))
                     {
-                        _logger.LogCritical("Service {serviceName} is not running", serviceName);
+                        _logger.LogWarning("Service {serviceName} is not running on {machineName}",
+                            serviceName, Environment.MachineName);
+                        await _emailer.SendEmailToAdminAsync(
+                            subject: $"Service {serviceName} is not running on {Environment.MachineName}",
+                            bodyHTML: Assembly.GetExecutingAssembly().Location
+                        );
                     }
                 }
 
@@ -108,23 +119,27 @@ public class Worker
 
                 WorkerWithSchedules[] workers = workersReply.Workers.Where(w => w.Schedules is not null).ToArray();
 
-                var message = new StringBuilder("OVERDUE JOBS\n\n");
+                StringBuilder message = new("OVERDUE JOBS:<br><br>");
                 foreach (var job in jobsReply.Jobs)
                 {
                     WorkerWithSchedules? worker = workers.FirstOrDefault(w => w.Schedules.Any(s => s.ID == job.ScheduleID));
                     string workerName = worker?.Worker.WorkerName ?? "[unknown worker]";
-                    message.AppendLine($"{workerName}");
-                    message.AppendLine($"Queued on {job.QueueDateUTC:yyyy\\-MM\\-dd HH\\:mm\\:ss} (UTC)");
-                    message.AppendLine($"Status: {job.StatusCode}");
+                    message.Append($"{workerName}<br>");
+                    message.Append($"Queued on {job.QueueDateUTC:yyyy\\-MM\\-dd HH\\:mm\\:ss} (UTC)<br>");
+                    message.Append($"Status: {job.StatusCode}<br>");
                     if (job.StatusCode == "ERR")
                     {
                         Guid acknowledgementCode = job.AcknowledgementCode;
                         string url = $"{_appUrl}acknowledge-error/{acknowledgementCode:N}";
-                        message.AppendLine($"Acknowledge: {url}");
+                        message.Append($"Acknowledge: <a href='{url}'>{url}</a><br>");
                     }
-                    message.AppendLine("-----------------------------------");
+                    message.Append("-----------------------------------<br>");
                 }
-                _logger.LogCritical("Error: {message}", message.Replace("\r\n", "<br>").Replace("\n", "<br>"));
+                _logger.LogWarning("Error: {message}", message);
+                await _emailer.SendEmailToAdminAsync(
+                    subject: $"Overdue scheduled jobs on {Environment.MachineName} ({_environmentName})",
+                    bodyHTML: message.ToString()
+                );
             }
             catch (Exception ex)
             {
