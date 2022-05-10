@@ -26,7 +26,7 @@ This will put your output into ./bin/Release/net6.0/publish/
 
 Copy the output to your server, and execute the following as administrator (This is for Windows):
 
-`sc.exe create MyServiceName binpath="X:\path-to-app\SimpleSchedulerService.exe"
+`sc.exe create MyServiceName binpath="X:\path-to-app\SimpleSchedulerService.exe"`
 
 -- TODO: Provide the PowerShell equivalent
 
