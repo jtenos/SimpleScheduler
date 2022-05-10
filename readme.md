@@ -33,3 +33,5 @@ You'll need to add an email address to the Users table manually.
 -- TODO: Make a better SQL Server install script
 
 -- TODO: More instructions on how to use scheduler
+
+-- TODO: On start of API, read config file, and create account for AdminEmail if it doesn't already exist
