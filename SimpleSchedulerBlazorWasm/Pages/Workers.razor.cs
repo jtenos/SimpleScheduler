@@ -18,6 +18,13 @@ partial class Workers
     [Inject]
     private SweetAlertService Swal { get; set; } = default!;
 
+    [Parameter]
+    public long? WorkerID
+    {
+        get => SearchCriteria?.WorkerID;
+        set { if (SearchCriteria is not null) { SearchCriteria.WorkerID = value; } }
+    }
+
     private AsYouTypeInputText? SearchTextBox { get; set; } = default!;
 
     private readonly SearchModel SearchCriteria = new();
@@ -38,6 +45,7 @@ partial class Workers
         };
 
         await LoadGroupsAsync();
+        SetFilteredWorkerGroups();
     }
 
     private async Task LoadGroupsAsync()
@@ -122,6 +130,11 @@ partial class Workers
         if (w.Worker.IsActive && SearchCriteria.ActiveType != SearchModel.ACTIVE) { return false; }
         if (!w.Worker.IsActive && SearchCriteria.ActiveType != SearchModel.INACTIVE) { return false; }
 
+        if (SearchCriteria.WorkerID.HasValue)
+        {
+            return w.Worker.ID == SearchCriteria.WorkerID;
+        }
+
         string searchText = SearchCriteria.SearchText;
         return w.Worker.WorkerName.Contains(searchText, StringComparison.InvariantCultureIgnoreCase)
             || w.Worker.DetailedDescription.Contains(searchText, StringComparison.InvariantCultureIgnoreCase)
@@ -135,7 +148,13 @@ partial class Workers
         public const string ACTIVE = "ACTIVE";
         public const string INACTIVE = "INACTIVE";
 
-        public string SearchText { get; set; } = "";
+        private string _searchText = "";
+        public string SearchText
+        {
+            get => _searchText;
+            set { _searchText = value; WorkerID = null; }
+        }
         public string ActiveType { get; set; } = ACTIVE;
+        public long? WorkerID { get; set; }
     }
 }

@@ -9,6 +9,12 @@
                 (Child of @ParentWorker.WorkerName)
             </div>
         }
+        <div>
+            <button class="btn btn-xs btn-outline-success" @onclick="GoToWorker">
+                <i class="bi bi-building"></i>
+                Worker
+            </button>
+        </div>
     </div>
     <div class="queue-date-container" title="Inserted @Job.InsertDateUTC.FormatDate() @Job.InsertDateUTC.FormatTime()">
         <div class="queue-date-full">
@@ -33,13 +39,19 @@
             @if (Job.StatusCode == "NEW")
             {
                 <div>
-                    <button class="btn btn-xs btn-outline-primary" @onclick="CancelJob">Cancel</button>
+                    <button class="btn btn-xs btn-outline-primary" @onclick="CancelJob">
+                        <i class="bi bi-x-octagon"></i>
+                        Cancel
+                    </button>
                 </div>
             }
             else if (Job.StatusCode == "ERR")
             {
                 <div>
-                    <button class="btn btn-xs btn-outline-primary" @onclick="AcknowledgeError">Acknowledge</button>
+                    <button class="btn btn-xs btn-outline-primary" @onclick="AcknowledgeError">
+                        <i class="bi bi-bandaid"></i>
+                        Acknowledge
+                    </button>
                 </div>
             }
             else if (Job.StatusCode == "SUC")
@@ -52,7 +64,10 @@
             @if (Job.HasDetailedMessage)
             {
                 <div>
-                    <button class="btn btn-xs btn-outline-primary" @onclick="ViewDetailedMessage">View Results</button>
+                    <button class="btn btn-xs btn-outline-primary" @onclick="ViewDetailedMessage">
+                        <i class="bi bi-card-text"></i>
+                        View Results
+                    </button>
                 </div>
 
             }

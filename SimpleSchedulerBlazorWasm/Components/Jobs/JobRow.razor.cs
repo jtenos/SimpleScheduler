@@ -38,6 +38,9 @@ partial class JobRow
     [Inject]
     private IJSRuntime JSRuntime { get; set; } = default!;
 
+    [Inject]
+    private NavigationManager Nav { get; set; } = default!;
+
     protected override Task OnInitializedAsync()
     {
         Loading = false;
@@ -177,5 +180,11 @@ partial class JobRow
 
             await ReloadJobAsync();
         }
+    }
+
+    private Task GoToWorker()
+    {
+        Nav.NavigateTo($"workers/filter/{Worker.ID}");
+        return Task.CompletedTask;
     }
 }
