@@ -15,7 +15,7 @@ namespace SimpleSchedulerServiceChecker;
 public class Worker
     : BackgroundService
 {
-    private static readonly Timer _timer = new(TimeSpan.FromMinutes(20).TotalMilliseconds);
+    private readonly Timer _timer;
     private readonly ServiceClient _serviceClient;
     private readonly IEmailer _emailer;
     private readonly string[] _serviceNames;
@@ -38,6 +38,11 @@ public class Worker
         _serviceClient = serviceClient;
         _emailer = emailer;
         _appUrl = config["AppUrl"];
+
+        int timerMinutes = config.GetValue<int>("TimerMinutes");
+        if (timerMinutes <= 0) { timerMinutes = 20; }
+        _logger.LogInformation("Timer set for {timerMinutes} minutes", timerMinutes);
+        _timer = new(TimeSpan.FromMinutes(timerMinutes).TotalMilliseconds);
     }
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken) => Task.CompletedTask;
