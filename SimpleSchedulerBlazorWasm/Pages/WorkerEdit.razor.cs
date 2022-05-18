@@ -53,6 +53,15 @@ partial class WorkerEdit
 
     private async Task LoadWorkerAsync()
     {
+        if (ID == 0)
+        {
+            Worker = new()
+            {
+                TimeoutMinutes = 20
+            };
+            return;
+        }
+
         (Error? error, GetWorkerReply? reply) = await ServiceClient.PostAsync<GetWorkerRequest, GetWorkerReply>(
             "Workers/GetWorker",
             new GetWorkerRequest(ID)
@@ -69,9 +78,10 @@ partial class WorkerEdit
 
     private async Task SaveWorker()
     {
+        Error? error;
         if (Worker.ID > 0)
         {
-            (Error? error, _) = await ServiceClient.PostAsync<UpdateWorkerRequest, UpdateWorkerReply>(
+            (error, _) = await ServiceClient.PostAsync<UpdateWorkerRequest, UpdateWorkerReply>(
                 "Workers/UpdateWorker",
                 new UpdateWorkerRequest(
                     ID: Worker.ID,
@@ -93,6 +103,29 @@ partial class WorkerEdit
             }
 
             Nav.NavigateTo("workers");
+            return;
         }
+
+        (error, _) = await ServiceClient.PostAsync<CreateWorkerRequest, CreateWorkerReply>(
+            "Workers/CreateWorker",
+            new CreateWorkerRequest(
+                WorkerName: Worker.WorkerName,
+                DetailedDescription: Worker.DetailedDescription,
+                EmailOnSuccess: Worker.EmailOnSuccess,
+                ParentWorkerID: Worker.ParentWorkerID,
+                TimeoutMinutes: Worker.TimeoutMinutes,
+                DirectoryName: Worker.DirectoryName,
+                Executable: Worker.Executable,
+                ArgumentValues: Worker.ArgumentValues
+            )
+        );
+
+        if (error is not null)
+        {
+            await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
+            return;
+        }
+
+        Nav.NavigateTo("workers");
     }
 }

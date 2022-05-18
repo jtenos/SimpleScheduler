@@ -10,7 +10,7 @@
 else
 {
     <div class="container" style="margin-top: 25px;">
-        <EditForm EditContext="SearchEditContext" class="d-flex">
+        <EditForm EditContext="SearchEditContext" class="d-flex justify-content-center">
             <div class="btn-group" role="group" style="margin-right: 10px;">
                 <InputRadioGroup Name="ActiveFilter" @bind-Value="SearchCriteria.ActiveType">
 
@@ -24,8 +24,10 @@ else
             </div>
             <AsYouTypeInputText class="form-control"
                             placeholder="Search for a worker..."
+                            style="margin-right: 10px; width: 400px;"
                             @bind-Value="SearchCriteria.SearchText"
                             @ref="SearchTextBox" />
+            <button class="btn btn-primary" @onclick="CreateWorker"><i class="bi bi-plus-circle"></i> Create Worker</button>
         </EditForm>
     </div>
 

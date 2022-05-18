@@ -18,6 +18,9 @@ partial class Workers
     [Inject]
     private SweetAlertService Swal { get; set; } = default!;
 
+    [Inject]
+    private NavigationManager Nav { get; set; } = default!;
+
     [Parameter]
     public long? WorkerID
     {
@@ -141,6 +144,12 @@ partial class Workers
             || w.Worker.DirectoryName.Contains(searchText, StringComparison.InvariantCultureIgnoreCase)
             || w.Worker.Executable.Contains(searchText, StringComparison.InvariantCultureIgnoreCase)
             || w.Worker.ArgumentValues.Contains(searchText, StringComparison.InvariantCultureIgnoreCase);
+    }
+
+    private Task CreateWorker()
+    {
+        Nav.NavigateTo($"workers/0");
+        return Task.CompletedTask;
     }
 
     public class SearchModel
