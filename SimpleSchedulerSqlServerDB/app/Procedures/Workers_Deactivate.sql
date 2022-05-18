@@ -22,6 +22,12 @@ BEGIN
 		SET [IsActive] = 0, [WorkerName] = @NewWorkerName
 		WHERE [ID] = @ID;
 
+		DELETE j
+		FROM [app].[Jobs] j
+		JOIN [app].[Schedules] s ON j.[ScheduleID] = s.[ID]
+		WHERE s.[WorkerID] = @ID
+		AND j.[StatusCode] = 'NEW';
+
 		COMMIT TRANSACTION;
 	END TRY
 	BEGIN CATCH
