@@ -13,6 +13,10 @@ partial class WorkerSchedules
     [EditorRequired]
     public WorkerDisplay WorkerDisplayComponent { get; set; } = default!;
 
+    [Parameter]
+    [EditorRequired]
+    public Worker[] AllWorkers { get; set; } = default!;
+
     public Task AddSchedule()
     {
         Worker = Worker with { Schedules = Worker.Schedules.Union(new[] { Schedule.GetDummySchedule(Worker.Worker.ID) }).ToArray() };

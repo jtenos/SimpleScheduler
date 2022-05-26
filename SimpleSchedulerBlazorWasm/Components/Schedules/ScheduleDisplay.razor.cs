@@ -18,6 +18,14 @@ partial class ScheduleDisplay
     [EditorRequired]
     public WorkerDisplay WorkerDisplayComponent { get; set; } = default!;
 
+    [Parameter]
+    [EditorRequired]
+    public WorkerWithSchedules Worker { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public Worker[] AllWorkers { get; set; } = default!;
+
     [Inject]
     private ServiceClient ServiceClient { get; set; } = default!;
 
@@ -37,10 +45,16 @@ partial class ScheduleDisplay
 
     private async Task DeleteSchedule()
     {
+        string text = "This schedule will be deactivated.";
+        if (AllWorkers.Any(w => w.IsActive && w.ParentWorkerID == Worker.Worker.ID))
+        {
+            text += " This worker has one or more children, so those children will no longer run.";
+        }
+
         SweetAlertResult result = await Swal.FireAsync(new SweetAlertOptions
         {
             Title = "Are you sure?",
-            Text = "This schedule will be deactivated",
+            Text = text,
             Icon = SweetAlertIcon.Warning,
             ShowCancelButton = true,
             ConfirmButtonText = "Delete",

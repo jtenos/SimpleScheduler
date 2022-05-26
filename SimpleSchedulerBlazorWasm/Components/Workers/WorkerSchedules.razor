@@ -2,7 +2,13 @@
 
 @foreach (Schedule schedule in Worker.Schedules)
 {
-    <ScheduleDisplay Schedule="schedule" WorkerDisplayComponent="WorkerDisplayComponent" IsEditing="schedule.ID == 0" />
+    <ScheduleDisplay
+        Schedule="schedule"
+        WorkerDisplayComponent="WorkerDisplayComponent"
+        IsEditing="schedule.ID == 0"
+        Worker="Worker"
+        AllWorkers="AllWorkers"
+    />
 }
 
 <li class="list-group-item">
