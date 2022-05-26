@@ -125,6 +125,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -133,8 +135,6 @@ app.MapJobsService();
 app.MapLoginService();
 app.MapSchedulesService();
 app.MapWorkersService();
-
-app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 app.MapFallbackToFile("index.html");
 
