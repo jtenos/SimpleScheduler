@@ -54,9 +54,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleSchedulerServiceClien
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MigrateDetailedMessages", "MigrateDetailedMessages\MigrateDetailedMessages.csproj", "{F15D1334-64DC-4C5D-95DA-67897ADF8521}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleSchedulerAPI", "SimpleSchedulerAPI\SimpleSchedulerAPI.csproj", "{8C824C09-8241-4683-A046-6A356C67ABFF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleSchedulerAPI", "SimpleSchedulerAPI\SimpleSchedulerAPI.csproj", "{8C824C09-8241-4683-A046-6A356C67ABFF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleSchedulerBlazorWasm", "SimpleSchedulerBlazorWasm\SimpleSchedulerBlazorWasm.csproj", "{0A23DCE0-91E5-4972-A4F5-FD0B75A46FB6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleSchedulerBlazorWasm", "SimpleSchedulerBlazorWasm\SimpleSchedulerBlazorWasm.csproj", "{0A23DCE0-91E5-4972-A4F5-FD0B75A46FB6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
