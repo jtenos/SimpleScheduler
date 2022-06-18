@@ -26,7 +26,7 @@
                     <label>Parent Worker (this worker will run after the parent is successful)</label>
                     <InputSelect TValue="long?" class="form-select" @bind-Value="Worker.ParentWorkerID">
                         <option></option>
-                        @foreach (WorkerIDName w in AllWorkers)
+                        @foreach (WorkerIDName w in AllWorkers.OrderBy(w => w.WorkerName))
                         {
                             if (w.ID == Worker.ID)
                             {
