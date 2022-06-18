@@ -60,6 +60,8 @@ public sealed class JobManager
         if (!string.IsNullOrWhiteSpace(detailedMessage))
         {
             DirectoryInfo messageDir = new(Path.Combine(workerPath, "__messages__"));
+            messageDir.Create();
+            messageDir.Refresh();
             FileInfo messageGZipFile = new(Path.Combine(messageDir.FullName, $"{id}.txt.gz"));
 
             GZipTextFile(messageGZipFile, detailedMessage.Trim());
@@ -117,10 +119,8 @@ public sealed class JobManager
     Task<string> IJobManager.GetDetailedMessageAsync(long id, string workerPath)
     {
         DirectoryInfo messageDir = new(Path.Combine(workerPath, "__messages__"));
-        if (!messageDir.Exists)
-        {
-            return Task.FromResult("** NO MESSAGE FILE FOUND **");
-        }
+        messageDir.Create();
+        messageDir.Refresh();
         FileInfo messageGZipFile = new(Path.Combine(messageDir.FullName, $"{id}.txt.gz"));
         if (!messageGZipFile.Exists)
         {
