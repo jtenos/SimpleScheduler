@@ -8,6 +8,25 @@ BEGIN
 	BEGIN TRY
 		BEGIN TRANSACTION;
 
+		IF NOT EXISTS (
+			SELECT TOP 1 1 FROM app.[Jobs]
+			WHERE [AcknowledgementCode] = @AcknowledgementCode
+		)
+		BEGIN
+			RAISERROR('Job not found', 16, 99);
+			RETURN;
+		END;
+
+		IF EXISTS (
+			SELECT TOP 1 1 FROM app.[Jobs]
+			WHERE [AcknowledgementCode] = @AcknowledgementCode
+			AND [StatusCode] = 'ACK'
+		)
+		BEGIN
+			RAISERROR('Error already acknowledged', 16, 99);
+			RETURN;
+		END;
+
 		UPDATE app.[Jobs]
 		SET [StatusCode] = 'ACK'
 		WHERE [AcknowledgementCode] = @AcknowledgementCode

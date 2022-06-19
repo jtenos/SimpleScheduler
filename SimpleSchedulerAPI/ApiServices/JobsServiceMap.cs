@@ -8,7 +8,7 @@ namespace SimpleSchedulerAPI.ApiServices;
 
 public static class JobsServiceMap
 {
-    [Authorize]
+    [AllowAnonymous]
     private static async Task<AcknowledgeErrorReply> AcknowledgeErrorAsync(
         IJobManager jobManager, AcknowledgeErrorRequest request)
     {
