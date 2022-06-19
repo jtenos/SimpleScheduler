@@ -22,7 +22,7 @@ internal class TokenLookup
     {
         try
         {
-            Guid internalSecretAuthKey = _config.GetValue<Guid>("InternalSecretAuthKey");
+            Guid internalSecretAuthKey = _config.InternalSecretAuthKey();
             //_logger.LogDebug("Internal secret auth key: {authKey}", internalSecretAuthKey);
 
             using IServiceScope scope = _serviceScopeFactory.CreateAsyncScope();

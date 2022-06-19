@@ -26,14 +26,27 @@ await Host.CreateDefaultBuilder()
         services.AddSingleton<IEmailer>((sp) =>
         {
             IConfiguration config = sp.GetRequiredService<IConfiguration>();
-            Emailer emailer = new(
-                Port: config.GetValue<int>("MailSettings:Port"),
-                EmailFrom: config["MailSettings:EmailFrom"],
-                AdminEmail: config["MailSettings:AdminEmail"],
-                Host: config["MailSettings:Host"],
-                UserName: config["MailSettings:UserName"],
-                Password: config["MailSettings:Password"],
-                EnvironmentName: config["EnvironmentName"]);
+
+            IEmailer emailer;
+            if (!string.IsNullOrWhiteSpace(config["EmailFolder"]))
+            {
+                emailer = new LogFileEmailer(config["EmailFolder"]);
+            }
+            else
+            {
+                var mailSettings = config.MailSettings();
+
+                emailer = new Emailer(
+                    Port: mailSettings.Port,
+                    EmailFrom: mailSettings.EmailFrom,
+                    AdminEmail: mailSettings.AdminEmail,
+                    Host: mailSettings.Host,
+                    UserName: mailSettings.UserName,
+                    Password: mailSettings.Password,
+                    EnvironmentName: config.EnvironmentName()
+                );
+            }
+
             EmailSink.SetEmailer(emailer);
             return emailer;
         });

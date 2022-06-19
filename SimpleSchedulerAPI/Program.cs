@@ -61,16 +61,27 @@ builder.Services.AddLogging(builder =>
 builder.Services.AddSingleton<IEmailer>((sp) =>
 {
     IConfiguration config = sp.GetRequiredService<IConfiguration>();
-    var mailSettings = config.MailSettings();
-    Emailer emailer = new(
-        Port: mailSettings.Port,
-        EmailFrom: mailSettings.EmailFrom,
-        AdminEmail: mailSettings.AdminEmail,
-        Host: mailSettings.Host,
-        UserName: mailSettings.UserName,
-        Password: mailSettings.Password,
-        EnvironmentName: config.EnvironmentName()
-    );
+
+    IEmailer emailer;
+    if (!string.IsNullOrWhiteSpace(config["EmailFolder"]))
+    {
+        emailer = new LogFileEmailer(config["EmailFolder"]);
+    }
+    else
+    {
+        var mailSettings = config.MailSettings();
+
+        emailer = new Emailer(
+            Port: mailSettings.Port,
+            EmailFrom: mailSettings.EmailFrom,
+            AdminEmail: mailSettings.AdminEmail,
+            Host: mailSettings.Host,
+            UserName: mailSettings.UserName,
+            Password: mailSettings.Password,
+            EnvironmentName: config.EnvironmentName()
+        );
+    }
+
     EmailSink.SetEmailer(emailer);
     return emailer;
 });
