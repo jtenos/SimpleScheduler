@@ -20,7 +20,7 @@ BEGIN
 			,'00:00', 1
 		FROM @WorkerIDs
 		WHERE [Value] NOT IN (
-			SELECT TOP 1 [ID] FROM [app].[Schedules]
+			SELECT [WorkerID] FROM [app].[Schedules]
 			WHERE [OneTime] = 1
 		);
 
