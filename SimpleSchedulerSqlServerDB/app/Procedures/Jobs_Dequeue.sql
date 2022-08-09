@@ -11,19 +11,37 @@ BEGIN
 
         DECLARE @Jobs [app].[JobsType];
 
-        ;WITH five_records AS (
-            SELECT *
-            FROM [app].[Jobs]
-            WHERE [StatusCode] = 'NEW'
-            AND [QueueDateUTC] < @Now
+        -- Retrieve up to five NEW records that are ready to start
+        -- If that worker is already running, then exclude it
+        DECLARE @FiveRecords TABLE ([JobID] BIGINT, [WorkerID] BIGINT);
+        INSERT INTO @FiveRecords ([JobID], [WorkerID])
+            SELECT j.[ID], s.[WorkerID]
+            FROM [app].[Jobs] j
+            JOIN [app].[Schedules] s ON j.[ScheduleID] = s.[ID]
+            WHERE j.[StatusCode] = 'NEW'
+            AND j.[QueueDateUTC] < @Now
+            AND s.[WorkerID] NOT IN (
+                SELECT s1.[WorkerID]
+                FROM [app].[Jobs] j1
+                JOIN [app].[Schedules] s1 ON j1.[ScheduleID] = s1.[ID]
+                WHERE j1.[StatusCode] = 'RUN'
+            )
             ORDER BY [QueueDateUTC]
             OFFSET 0 ROWS
-            FETCH NEXT 5 ROWS ONLY
-        )
-        UPDATE five_records
+            FETCH NEXT 5 ROWS ONLY;
+
+        -- Further filter so that if you're trying to run the same worker twice, you'll
+        -- only get one of them this time
+        DECLARE @FiveRecordsFiltered TABLE ([JobID] BIGINT);
+        INSERT INTO @FiveRecordsFiltered ([JobID])
+            SELECT MIN([JobID])
+            FROM @FiveRecords
+            GROUP BY [WorkerID];
+
+        UPDATE [app].[Jobs]
         SET [StatusCode] = 'RUN'
         OUTPUT INSERTED.* INTO @Jobs
-        FROM five_records;
+        WHERE [ID] IN (SELECT [JobID] FROM @FiveRecordsFiltered);
 
         SELECT * FROM [app].[JobsWithWorkerID]
         WHERE [ID] IN (SELECT [ID] FROM @Jobs);
