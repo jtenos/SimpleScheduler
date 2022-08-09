@@ -116,7 +116,6 @@ partial class JobRow
 
     private async Task ViewDetailedMessage()
     {
-        JobsComponent.SetLoadingOn();
         (Error? error, GetDetailedMessageReply? reply) = await ServiceClient.PostAsync<GetDetailedMessageRequest, GetDetailedMessageReply>(
             "Jobs/GetDetailedMessage",
             new(Job.ID)
@@ -130,7 +129,6 @@ partial class JobRow
 
         await JSRuntime.InvokeVoidAsync("Jobs.viewDetailedMessage",
             Worker.WorkerName, reply!.DetailedMessage);
-        JobsComponent.SetLoadingOff();
     }
 
     private async Task AcknowledgeError()
