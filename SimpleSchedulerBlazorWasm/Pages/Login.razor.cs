@@ -49,15 +49,15 @@ partial class Login
     {
         Loading = true;
         StateHasChanged();
-        (Error? error, _) = await ServiceClient.PostAsync<SubmitEmailRequest, SubmitEmailReply>(
+        (Error? error, SubmitEmailReply? reply) = await ServiceClient.PostAsync<SubmitEmailRequest, SubmitEmailReply>(
             "Login/SubmitEmail",
             new(EmailAddress: Model.Email!)
         );
 
         Loading = false;
-        if (error is not null)
+        if (error is not null || reply?.Success != true)
         {
-            await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
+            await Swal.FireAsync("Error", error?.Message ?? "Unknown error", SweetAlertIcon.Error);
         }
         else
         {
