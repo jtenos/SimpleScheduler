@@ -30,14 +30,6 @@ partial class WorkerDisplay
     [EditorRequired]
     public Pages.Workers WorkersComponent { get; set; } = default!;
 
-    private string? ParentWorkerName { get; set; }
-
-    protected override Task OnInitializedAsync()
-    {
-        ParentWorkerName = AllWorkers.SingleOrDefault(w => w.ID == Worker?.Worker.ParentWorkerID)?.WorkerName;
-        return Task.CompletedTask;
-    }
-
     public async Task RefreshAsync()
     {
         (Error? error, GetWorkerReply? reply) = await ServiceClient.PostAsync<GetWorkerRequest, GetWorkerReply>(

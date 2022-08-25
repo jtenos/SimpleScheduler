@@ -17,7 +17,7 @@
                         <div style="font-size: smaller;">Timeout: @Worker.Worker.TimeoutMinutes minutes</div>
                         @if (Worker.Worker.ParentWorkerID.HasValue)
                         {
-                            <div style="font-size: smaller;"><em>Child of @ParentWorkerName</em></div>
+                            <div style="font-size: smaller;"><em>Child of @(AllWorkers.SingleOrDefault(w => w.ID == Worker?.Worker.ParentWorkerID)?.WorkerName)</em></div>
                         }
                         @if (!string.IsNullOrWhiteSpace(Worker.Worker.EmailOnSuccess))
                         {
