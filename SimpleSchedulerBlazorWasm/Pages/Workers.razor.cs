@@ -33,7 +33,7 @@ partial class Workers
     private readonly SearchModel SearchCriteria = new();
     private EditContext SearchEditContext { get; set; } = default!;
 
-    private (Wws Worker1, Wws? Worker2, Wws? Worker3)[] WorkerGroups { get; set; } = default!;
+    private Wws[] FilteredWorkers { get; set; } = default!;
     private Wws[] AllWorkersWithSchedules { get; set; } = default!;
     private Worker[] AllWorkers => AllWorkersWithSchedules.Select(w => w.Worker).ToArray();
 
@@ -106,25 +106,8 @@ partial class Workers
 
     private void SetFilteredWorkerGroups()
     {
-        Wws[] filteredWorkers = AllWorkersWithSchedules.Where(IsSearchMatch).ToArray();
+        FilteredWorkers = AllWorkersWithSchedules.Where(IsSearchMatch).ToArray();
 
-        List<(Wws, Wws?, Wws?)> workerGroups = new();
-        for (int i = 0; i < filteredWorkers.Length; i += 3)
-        {
-            Wws worker1 = filteredWorkers[i];
-            Wws? worker2 = null;
-            if (i < filteredWorkers.Length - 1)
-            {
-                worker2 = filteredWorkers[i + 1];
-            }
-            Wws? worker3 = null;
-            if (i < filteredWorkers.Length - 2)
-            {
-                worker3 = filteredWorkers[i + 2];
-            }
-            workerGroups.Add((worker1, worker2, worker3));
-        }
-        WorkerGroups = workerGroups.ToArray();
         StateHasChanged();
     }
 

@@ -31,8 +31,8 @@ else
         </EditForm>
     </div>
 
-    foreach ((WorkerWithSchedules w1, WorkerWithSchedules? w2, WorkerWithSchedules? w3) in WorkerGroups)
+    foreach (WorkerWithSchedules w in FilteredWorkers)
     {
-        <WorkerGroupDisplay Workers="new[] { w1, w2, w3 }" AllWorkers="AllWorkers" WorkersComponent="this" />
+        <WorkerDisplay Worker="w" AllWorkers="AllWorkers" WorkersComponent="this" />
     }
 }
