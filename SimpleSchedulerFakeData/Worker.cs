@@ -59,7 +59,7 @@ internal class Worker
                     ,[Executable]
                     ,[ArgumentValues]
                 ) VALUES (
-                    'Worker {i} ' + CAST(NEWID() AS VARCHAR(36))
+                    '{Faker.Company.Name().Replace("'", "")}'
                     ,''
                     ,''
                     ,20
