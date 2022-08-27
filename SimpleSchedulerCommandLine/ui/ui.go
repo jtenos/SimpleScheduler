@@ -3,7 +3,6 @@ package ui
 import (
 	"bufio"
 	"fmt"
-	"log"
 	"os"
 	"strings"
 
@@ -24,7 +23,7 @@ func ShowHeader() {
 	fmt.Print("\n*** SIMPLE SCHEDULER ***\n\n")
 }
 
-func LogIn() {
+func LogIn() (*apireply.ValidateEmailReply, error) {
 	fmt.Print("E-Mail Address: ")
 
 	email := readFromConsole()
@@ -37,10 +36,29 @@ func LogIn() {
 	err := api.Post("Login/SubmitEmail", req, rep)
 
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
-	fmt.Printf("Success is %v\n", rep.Success)
+	if !rep.Success {
+		fmt.Println("Login failed. Please try again.")
+		fmt.Println("")
+		return LogIn()
+	}
+
+	fmt.Println("Please check your email for a login code.")
+	fmt.Println("")
+	fmt.Print("Enter login code: ")
+	loginCode := readFromConsole()
+
+	req2 := apirequest.NewValidateEmailRequest(loginCode)
+	rep2 := apireply.NewValidateEmailReply()
+	err = api.Post("Login/ValidateEmail", req2, rep2)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return rep2, nil
 }
 
 func readFromConsole() string {

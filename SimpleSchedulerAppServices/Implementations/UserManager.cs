@@ -52,9 +52,14 @@ public sealed class UserManager
         if (!result.Success) { return false; }
 
         string url = $"{webUrl}/validate-user/{result.ValidationCode}";
-        await _emailer.SendEmailAsync(new[] { emailAddress }.ToArray(),
-            $"Log In",
-            $"<a href='{url}' target=_blank>Click here to log in</a>");
+        string body = $@"
+            <a href='{url}' target=_blank>Click here to log in</a>
+            <br><br>
+            Or copy and paste the following:
+            <br><br>
+            {result.ValidationCode:N}
+        ";
+        await _emailer.SendEmailAsync(new[] { emailAddress }.ToArray(), $"Log In", body);
 
         return true;
     }
