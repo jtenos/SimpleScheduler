@@ -1,4 +1,4 @@
-package apirequest
+package apimodels
 
 type SubmitEmailRequest struct {
 	EmailAddress string `json:"emailAddress"`

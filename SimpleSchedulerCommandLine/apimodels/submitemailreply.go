@@ -1,4 +1,4 @@
-package apireply
+package apimodels
 
 type SubmitEmailReply struct {
 	Success bool `json:"success"`

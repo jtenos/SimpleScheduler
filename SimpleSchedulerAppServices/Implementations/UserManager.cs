@@ -57,7 +57,7 @@ public sealed class UserManager
             <br><br>
             Or copy and paste the following:
             <br><br>
-            {result.ValidationCode:N}
+            {result.ValidationCode:D}
         ";
         await _emailer.SendEmailAsync(new[] { emailAddress }.ToArray(), $"Log In", body);
 

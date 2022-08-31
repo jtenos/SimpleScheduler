@@ -1,4 +1,4 @@
-package apirequest
+package apimodels
 
 type ValidateEmailRequest struct {
 	ValidationCode string `json:"validationCode"`
