@@ -6,23 +6,21 @@ import (
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/apimodels"
 )
 
-func LogIn() string {
+func LogIn() {
 
 	for err := processEmailAddress(); err != nil; {
 		fmt.Println(err.Error())
-		return LogIn()
+		LogIn()
 	}
 
-	var result string
 	for {
 		jwtToken, err := processLoginCode()
 		if err != nil {
 			continue
 		}
-		result = jwtToken
+		apiClient.SetJwtToken(jwtToken)
 		break
 	}
-	return result
 }
 
 func processEmailAddress() error {
