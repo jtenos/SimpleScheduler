@@ -2,6 +2,7 @@ package ui
 
 import (
 	"fmt"
+	"sort"
 
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/apimodels"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/models"
@@ -24,17 +25,21 @@ func listWorkers() {
 
 	if err != nil {
 		fmt.Printf("%v\n", err)
-	} else {
-		menuItems := make([]*menuItem, len(rep.Workers))
-		for i := range rep.Workers {
-			worker := &rep.Workers[i].Worker
-			menuItems[i] = newMenuItem(rep.Workers[i].Worker.WorkerName, func() { showWorker(worker) })
-		}
-		newMenu("WORKERS",
-			menuItems,
-			showWorkers,
-		).show()
+		return
 	}
+
+	sort.Slice(rep.Workers, func(i, j int) bool {
+		return rep.Workers[i].Worker.WorkerName < rep.Workers[j].Worker.WorkerName
+	})
+	menuItems := make([]*menuItem, len(rep.Workers))
+	for i := range rep.Workers {
+		worker := &rep.Workers[i].Worker
+		menuItems[i] = newMenuItem(rep.Workers[i].Worker.WorkerName, func() { showWorker(worker) })
+	}
+	newMenu("WORKERS",
+		menuItems,
+		showWorkers,
+	).show()
 }
 
 func showWorker(worker *models.Worker) {

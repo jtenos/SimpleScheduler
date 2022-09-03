@@ -22,7 +22,7 @@ func (m *menu) show() {
 	for {
 		fmt.Printf("\n*** %s ***\n\n", m.title)
 		for i, elem := range m.items {
-			fmt.Printf("%v: %s\n", i+1, elem.text)
+			fmt.Printf("%3d: %s\n", i+1, elem.text)
 		}
 		fmt.Println("")
 		fmt.Print("Make a selection (ENTER to exit): ")
