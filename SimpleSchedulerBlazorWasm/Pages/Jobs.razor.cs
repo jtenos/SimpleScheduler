@@ -44,14 +44,17 @@ partial class Jobs
             await LoadJobsAsync();
             SetLoadingOff();
         };
-        await LoadWorkersAsync();
-        await LoadJobsAsync();
-        SetLoadingOff();
+        await Task.CompletedTask;
     }
 
-    protected override Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        return base.OnAfterRenderAsync(firstRender);
+        if (firstRender)
+        {
+			await LoadWorkersAsync();
+			await LoadJobsAsync();
+			SetLoadingOff();
+		}
     }
 
     public void SetLoadingOn()

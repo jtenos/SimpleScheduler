@@ -41,17 +41,22 @@ partial class Workers
 
     protected override async Task OnInitializedAsync()
     {
+        Console.WriteLine("Workers OnInitializedAsync");
         SearchEditContext = new(SearchCriteria);
         SearchEditContext.OnFieldChanged += (sender, e) =>
         {
             SetFilteredWorkerGroups();
         };
-
-        await LoadGroupsAsync();
-        SetFilteredWorkerGroups();
+        await Task.CompletedTask;
     }
 
-    private async Task LoadGroupsAsync()
+    protected override async Task OnParametersSetAsync()
+    {
+		await LoadGroupsAsync();
+		SetFilteredWorkerGroups();
+	}
+
+	private async Task LoadGroupsAsync()
     {
         (Error? error, GetAllWorkersReply? reply) = await ServiceClient.PostAsync<GetAllWorkersRequest, GetAllWorkersReply>(
             "Workers/GetAllWorkers",
