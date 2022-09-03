@@ -7,7 +7,7 @@ public sealed class JobScheduler
     private readonly IConfiguration _config;
     private readonly JobExecutor _jobExecutor;
 
-    private readonly System.Timers.Timer _timer = new(5000);
+    private readonly System.Timers.Timer _timer = new(2000);
 
     public JobScheduler(
         ILogger<JobScheduler> logger,
