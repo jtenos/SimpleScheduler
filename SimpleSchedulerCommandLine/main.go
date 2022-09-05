@@ -1,13 +1,16 @@
 package main
 
 import (
+	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/config"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/ui"
 )
 
-const API_URL = "http://localhost:5266" // TODO: Get this from config file
+var conf *config.Configuration
 
 func main() {
-	ui.Initialize(API_URL)
+	conf = config.LoadConfig()
+
+	ui.Initialize(conf.ApiUrl)
 	ui.ShowHeader()
 	ui.LogIn()
 
