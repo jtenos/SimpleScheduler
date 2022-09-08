@@ -79,6 +79,17 @@ func getWorkerName(workerID int64, allWorkers []models.WorkerWithSchedules) stri
 }
 
 func showWorker(worker *models.WorkerWithSchedules, allWorkers []models.WorkerWithSchedules) {
+	displayWorkerDetails(worker, allWorkers)
+
+	newMenu("WORKER",
+		[]*menuItem{
+			newMenuItem("Edit Worker", func() { editWorker(worker, allWorkers) }),
+			newMenuItem("Edit Schedules", func() { editSchedules(worker) }),
+		}, showWorkers,
+	).show()
+}
+
+func displayWorkerDetails(worker *models.WorkerWithSchedules, allWorkers []models.WorkerWithSchedules) {
 	fmt.Println("")
 	fmt.Printf("Worker: %s", worker.Worker.WorkerName)
 	if worker.Worker.IsActive {
@@ -110,4 +121,76 @@ func showWorker(worker *models.WorkerWithSchedules, allWorkers []models.WorkerWi
 func searchWorkers() {
 	fmt.Println("TODO: SEARCH WORKERS")
 	showWorkers()
+}
+
+func editWorker(worker *models.WorkerWithSchedules, allWorkers []models.WorkerWithSchedules) {
+	editName := func() {
+		fmt.Println("editName")
+	}
+	makeActive := func() {
+		fmt.Println("makeActive")
+	}
+	makeInactive := func() {
+		fmt.Println("makeInactive")
+	}
+	editDescription := func() {
+		fmt.Println("editDescription")
+	}
+	editEmail := func() {
+		fmt.Println("editEmail")
+	}
+	editParent := func() {
+		fmt.Println("editParent")
+	}
+	editTimeout := func() {
+		fmt.Println("editTimeout")
+	}
+	editExecutable := func() {
+		fmt.Println("editDirectory")
+		fmt.Println("editExecutable")
+	}
+	editArguments := func() {
+		fmt.Println("editArguments")
+	}
+
+	var activeInactiveLabel string
+	var activeInactiveFunc func()
+	if worker.Worker.IsActive {
+		activeInactiveLabel = "Deactivate Worker"
+		activeInactiveFunc = makeInactive
+	} else {
+		activeInactiveLabel = "Activate Worker"
+		activeInactiveFunc = makeActive
+	}
+
+	displayWorkerDetails(worker, allWorkers)
+
+	newMenu("WORKER",
+		[]*menuItem{
+			newMenuItem("Edit Name", editName),
+			newMenuItem(activeInactiveLabel, activeInactiveFunc),
+			newMenuItem("Edit Description", editDescription),
+			newMenuItem("Edit Email on Success", editEmail),
+			newMenuItem("Edit Parent Worker", editParent),
+			newMenuItem("Edit Timeout", editTimeout),
+			newMenuItem("Edit Directory/Executable", editExecutable),
+			newMenuItem("Edit Arguments", editArguments),
+		}, showWorkers,
+	).show()
+}
+
+func editSchedules(worker *models.WorkerWithSchedules) {
+	addSchedule := func() {
+
+	}
+	editSchedule := func() {
+
+	}
+	newMenu("SCHEDULES",
+		[]*menuItem{
+			newMenuItem("Add Schedule", addSchedule),
+			newMenuItem("Edit Schedule", editSchedule),
+		},
+		showWorkers,
+	).show()
 }
