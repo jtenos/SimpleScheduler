@@ -102,6 +102,11 @@ public sealed class WorkerManager
             throw new ApplicationException("Invalid executable");
         }
 
+        if (workerID == parentWorkerID)
+        {
+            throw new ApplicationException("Worker cannot be its own parent");
+        }
+
         DynamicParameters param = new DynamicParameters()
             .AddLongParam("@ID", workerID)
             .AddNVarCharParam("@WorkerName", workerName, 100)

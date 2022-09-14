@@ -51,13 +51,13 @@ func (api *ApiClient) Post(url string, postObj any, resultObj any) error {
 	}
 	defer res.Body.Close()
 
-	if res.StatusCode != 200 {
-		return fmt.Errorf("error code %v: %s", res.StatusCode, res.Status)
-	}
-
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		return err
+	}
+
+	if res.StatusCode != 200 {
+		return fmt.Errorf("error code %v: %s\n%s", res.StatusCode, res.Status, body)
 	}
 
 	err = json.Unmarshal(body, resultObj)

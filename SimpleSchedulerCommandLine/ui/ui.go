@@ -9,6 +9,9 @@ import (
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/api"
 )
 
+const COLOR_RESET = "\033[0m"
+const COLOR_RED = "\033[31m"
+
 var rdr = bufio.NewReader(os.Stdin)
 
 var apiClient *api.ApiClient
@@ -25,4 +28,8 @@ func readFromConsole() string {
 	text, _ := rdr.ReadString('\n')
 	text = strings.TrimSpace(text)
 	return text
+}
+
+func writeError(msg string) {
+	fmt.Printf("%s %s %s", COLOR_RED, msg, COLOR_RESET)
 }

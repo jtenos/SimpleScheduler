@@ -26,7 +26,9 @@ func LogIn() {
 func processEmailAddress() error {
 	fmt.Print("E-Mail Address: ")
 
-	email := readFromConsole()
+	// email := readFromConsole()
+	email := "test@example.com"
+	fmt.Println("")
 
 	fmt.Println("Submitting to API, please wait...")
 
