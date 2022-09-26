@@ -3,6 +3,7 @@ package ui
 import (
 	"fmt"
 
+	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/api"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/apimodels"
 )
 
@@ -18,7 +19,7 @@ func LogIn() {
 		if err != nil {
 			continue
 		}
-		apiClient.SetJwtToken(jwtToken)
+		api.SetJwtToken(jwtToken)
 		break
 	}
 }
@@ -34,7 +35,7 @@ func processEmailAddress() error {
 
 	req := apimodels.NewSubmitEmailRequest(email)
 	rep := apimodels.NewSubmitEmailReply()
-	err := apiClient.Post("Login/SubmitEmail", req, rep)
+	err := api.Post("Login/SubmitEmail", req, rep)
 
 	if err != nil {
 		return err
@@ -54,7 +55,7 @@ func processLoginCode() (string, error) {
 
 	req := apimodels.NewValidateEmailRequest(loginCode)
 	rep := apimodels.NewValidateEmailReply()
-	err := apiClient.Post("Login/ValidateEmail", req, rep)
+	err := api.Post("Login/ValidateEmail", req, rep)
 
 	if err != nil {
 		return "", err

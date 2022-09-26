@@ -8,23 +8,19 @@ import (
 	"net/http"
 )
 
-type ApiClient struct {
-	baseUrl  string
-	jwtToken string
+var baseUrl string
+var jwtToken string
+
+func SetBaseUrl(url string) {
+	baseUrl = url
 }
 
-func NewApiClient(baseUrl string) *ApiClient {
-	return &ApiClient{
-		baseUrl: baseUrl,
-	}
+func SetJwtToken(token string) {
+	jwtToken = token
 }
 
-func (api *ApiClient) SetJwtToken(token string) {
-	api.jwtToken = token
-}
-
-func (api *ApiClient) Post(url string, postObj any, resultObj any) error {
-	url = fmt.Sprintf("%s/%s", api.baseUrl, url)
+func Post(url string, postObj any, resultObj any) error {
+	url = fmt.Sprintf("%s/%s", baseUrl, url)
 
 	reqBody, err := json.Marshal(postObj)
 	if err != nil {
@@ -40,8 +36,8 @@ func (api *ApiClient) Post(url string, postObj any, resultObj any) error {
 
 	req.Header.Add("Content-Type", "application/json;charset=utf-8")
 
-	if len(api.jwtToken) > 0 {
-		req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", api.jwtToken))
+	if len(jwtToken) > 0 {
+		req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", jwtToken))
 	}
 
 	res, err := client.Do(req)

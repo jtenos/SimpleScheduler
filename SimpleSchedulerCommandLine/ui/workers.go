@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"sort"
 
+	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/api"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/apimodels"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/models"
 )
@@ -21,7 +22,7 @@ func showWorkers() {
 func listWorkers() {
 	req := apimodels.NewGetAllWorkersRequest()
 	rep := apimodels.NewGetAllWorkersReply()
-	err := apiClient.Post("Workers/GetAllWorkers", req, rep)
+	err := api.Post("Workers/GetAllWorkers", req, rep)
 
 	if err != nil {
 		fmt.Printf("%v\n", err)
@@ -216,7 +217,7 @@ func editName(workerID int64, allWorkers []models.WorkerWithSchedules) {
 
 	resultObj := apimodels.NewUpdateWorkerReply()
 
-	err = apiClient.Post("Workers/UpdateWorker", postObj, resultObj)
+	err = api.Post("Workers/UpdateWorker", postObj, resultObj)
 
 	if err != nil {
 		writeError(fmt.Sprintf("Error: %v", err))
@@ -234,7 +235,7 @@ func editParent(workerID int64, allWorkers []models.WorkerWithSchedules) {
 
 	req := apimodels.NewGetAllWorkersRequest()
 	rep := apimodels.NewGetAllWorkersReply()
-	err = apiClient.Post("Workers/GetAllWorkers", req, rep)
+	err = api.Post("Workers/GetAllWorkers", req, rep)
 
 	if err != nil {
 		writeError(err.Error())
@@ -269,7 +270,7 @@ func editParent(workerID int64, allWorkers []models.WorkerWithSchedules) {
 
 			resultObj := apimodels.NewUpdateWorkerReply()
 
-			err := apiClient.Post("Workers/UpdateWorker", postObj, resultObj)
+			err := api.Post("Workers/UpdateWorker", postObj, resultObj)
 
 			if err != nil {
 				writeError(fmt.Sprintf("Error: %v", err))
@@ -303,7 +304,7 @@ func editSchedules(worker *models.WorkerWithSchedules) {
 
 func getWorker(workerID int64) (*models.WorkerWithSchedules, error) {
 	rep := apimodels.NewGetWorkerReply()
-	err := apiClient.Post("Workers/GetWorker", apimodels.NewGetWorkerRequest(workerID), rep)
+	err := api.Post("Workers/GetWorker", apimodels.NewGetWorkerRequest(workerID), rep)
 	if err != nil {
 		return nil, err
 	}
