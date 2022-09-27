@@ -2,24 +2,23 @@ package api
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
+
+	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/ctxhelper"
 )
 
-var baseUrl string
 var jwtToken string
-
-func SetBaseUrl(url string) {
-	baseUrl = url
-}
 
 func SetJwtToken(token string) {
 	jwtToken = token
 }
 
-func Post(url string, postObj any, resultObj any) error {
+func Post(ctx context.Context, url string, postObj any, resultObj any) error {
+	baseUrl := ctxhelper.GetApiUrl(ctx)
 	url = fmt.Sprintf("%s/%s", baseUrl, url)
 
 	reqBody, err := json.Marshal(postObj)

@@ -2,10 +2,7 @@ package ui
 
 import (
 	"fmt"
-	"sort"
 
-	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/api"
-	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/apimodels"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/models"
 )
 
@@ -20,54 +17,54 @@ func showWorkers() {
 }
 
 func listWorkers() {
-	req := apimodels.NewGetAllWorkersRequest()
-	rep := apimodels.NewGetAllWorkersReply()
-	err := api.Post("Workers/GetAllWorkers", req, rep)
+	// req := apimodels.NewGetAllWorkersRequest()
+	// rep := apimodels.NewGetAllWorkersReply()
+	// err := api.Post("Workers/GetAllWorkers", req, rep)
 
-	if err != nil {
-		fmt.Printf("%v\n", err)
-		return
-	}
+	// if err != nil {
+	// 	fmt.Printf("%v\n", err)
+	// 	return
+	// }
 
-	// Sort by worker name
-	sort.Slice(rep.Workers, func(i, j int) bool {
-		w1 := rep.Workers[i].Worker
-		w2 := rep.Workers[j].Worker
+	// // Sort by worker name
+	// sort.Slice(rep.Workers, func(i, j int) bool {
+	// 	w1 := rep.Workers[i].Worker
+	// 	w2 := rep.Workers[j].Worker
 
-		var compare int
-		if w1.IsActive && w2.IsActive {
-			compare = 0
-		} else if w1.IsActive {
-			compare = -1
-		} else if w2.IsActive {
-			compare = 1
-		}
-		switch compare {
-		case 0:
-			return w1.WorkerName < w2.WorkerName
-		case 1:
-			return false
-		case -1:
-			return true
-		}
-		return false
-	})
+	// 	var compare int
+	// 	if w1.IsActive && w2.IsActive {
+	// 		compare = 0
+	// 	} else if w1.IsActive {
+	// 		compare = -1
+	// 	} else if w2.IsActive {
+	// 		compare = 1
+	// 	}
+	// 	switch compare {
+	// 	case 0:
+	// 		return w1.WorkerName < w2.WorkerName
+	// 	case 1:
+	// 		return false
+	// 	case -1:
+	// 		return true
+	// 	}
+	// 	return false
+	// })
 
-	menuItems := make([]*menuItem, len(rep.Workers))
-	for i := range rep.Workers {
-		worker := &rep.Workers[i].Worker
-		workerID := &rep.Workers[i].Worker.ID
-		title := worker.WorkerName
-		if !worker.IsActive {
-			title += " (INACTIVE)"
-		}
-		menuItems[i] = newMenuItem(title, func() { showWorker(*workerID, rep.Workers) })
-	}
+	// menuItems := make([]*menuItem, len(rep.Workers))
+	// for i := range rep.Workers {
+	// 	worker := &rep.Workers[i].Worker
+	// 	workerID := &rep.Workers[i].Worker.ID
+	// 	title := worker.WorkerName
+	// 	if !worker.IsActive {
+	// 		title += " (INACTIVE)"
+	// 	}
+	// 	menuItems[i] = newMenuItem(title, func() { showWorker(*workerID, rep.Workers) })
+	// }
 
-	newMenu("WORKERS",
-		menuItems,
-		showWorkers,
-	).show()
+	// newMenu("WORKERS",
+	// 	menuItems,
+	// 	showWorkers,
+	// ).show()
 }
 
 func getWorkerName(workerID int64, allWorkers []models.WorkerWithSchedules) string {
@@ -195,95 +192,95 @@ func editWorker(workerID int64, allWorkers []models.WorkerWithSchedules) {
 }
 
 func editName(workerID int64, allWorkers []models.WorkerWithSchedules) {
-	defer editWorker(workerID, allWorkers)
+	// defer editWorker(workerID, allWorkers)
 
-	worker, err := getWorker(workerID)
-	if err != nil {
-		writeError(err.Error())
-		return
-	}
+	// worker, err := getWorker(workerID)
+	// if err != nil {
+	// 	writeError(err.Error())
+	// 	return
+	// }
 
-	fmt.Printf("Old name: %s\n", worker.Worker.WorkerName)
-	fmt.Print("New name: ")
-	newName := readFromConsole()
-	if len(newName) == 0 || len(newName) > models.WORKER_NAME_MAX_LENGTH {
-		writeError(fmt.Sprintf("Invalid name - must be between 1 and %v characters", models.WORKER_NAME_MAX_LENGTH))
-		return
-	}
+	// fmt.Printf("Old name: %s\n", worker.Worker.WorkerName)
+	// fmt.Print("New name: ")
+	// newName := readFromConsole()
+	// if len(newName) == 0 || len(newName) > models.WORKER_NAME_MAX_LENGTH {
+	// 	writeError(fmt.Sprintf("Invalid name - must be between 1 and %v characters", models.WORKER_NAME_MAX_LENGTH))
+	// 	return
+	// }
 
-	postObj := apimodels.NewUpdateWorkerRequest(worker.Worker.ID, newName, worker.Worker.DetailedDescription,
-		worker.Worker.EmailOnSuccess, worker.Worker.ParentWorkerID, worker.Worker.TimeoutMinutes,
-		worker.Worker.DirectoryName, worker.Worker.Executable, worker.Worker.ArgumentValues)
+	// postObj := apimodels.NewUpdateWorkerRequest(worker.Worker.ID, newName, worker.Worker.DetailedDescription,
+	// 	worker.Worker.EmailOnSuccess, worker.Worker.ParentWorkerID, worker.Worker.TimeoutMinutes,
+	// 	worker.Worker.DirectoryName, worker.Worker.Executable, worker.Worker.ArgumentValues)
 
-	resultObj := apimodels.NewUpdateWorkerReply()
+	// resultObj := apimodels.NewUpdateWorkerReply()
 
-	err = api.Post("Workers/UpdateWorker", postObj, resultObj)
+	// err = api.Post("Workers/UpdateWorker", postObj, resultObj)
 
-	if err != nil {
-		writeError(fmt.Sprintf("Error: %v", err))
-		return
-	}
+	// if err != nil {
+	// 	writeError(fmt.Sprintf("Error: %v", err))
+	// 	return
+	// }
 }
 
 func editParent(workerID int64, allWorkers []models.WorkerWithSchedules) {
 
-	wws, err := getWorker(workerID)
-	if err != nil {
-		writeError(err.Error())
-		return
-	}
+	// wws, err := getWorker(workerID)
+	// if err != nil {
+	// 	writeError(err.Error())
+	// 	return
+	// }
 
-	req := apimodels.NewGetAllWorkersRequest()
-	rep := apimodels.NewGetAllWorkersReply()
-	err = api.Post("Workers/GetAllWorkers", req, rep)
+	// req := apimodels.NewGetAllWorkersRequest()
+	// rep := apimodels.NewGetAllWorkersReply()
+	// err = api.Post("Workers/GetAllWorkers", req, rep)
 
-	if err != nil {
-		writeError(err.Error())
-		return
-	}
+	// if err != nil {
+	// 	writeError(err.Error())
+	// 	return
+	// }
 
-	workers := make([]models.Worker, 0)
-	for _, w := range rep.Workers {
-		if w.Worker.IsActive {
-			workers = append(workers, w.Worker)
-		}
-	}
+	// workers := make([]models.Worker, 0)
+	// for _, w := range rep.Workers {
+	// 	if w.Worker.IsActive {
+	// 		workers = append(workers, w.Worker)
+	// 	}
+	// }
 
-	// Sort by worker name
-	sort.Slice(workers, func(i, j int) bool {
-		w1 := workers[i]
-		w2 := workers[j]
+	// // Sort by worker name
+	// sort.Slice(workers, func(i, j int) bool {
+	// 	w1 := workers[i]
+	// 	w2 := workers[j]
 
-		return w1.WorkerName < w2.WorkerName
-	})
+	// 	return w1.WorkerName < w2.WorkerName
+	// })
 
-	menuItems := make([]*menuItem, len(workers))
-	for i := range workers {
-		worker := &workers[i]
-		title := worker.WorkerName
-		menuItems[i] = newMenuItem(title, func() {
-			defer editWorker(wws.Worker.ID, allWorkers)
+	// menuItems := make([]*menuItem, len(workers))
+	// for i := range workers {
+	// 	worker := &workers[i]
+	// 	title := worker.WorkerName
+	// 	menuItems[i] = newMenuItem(title, func() {
+	// 		defer editWorker(wws.Worker.ID, allWorkers)
 
-			postObj := apimodels.NewUpdateWorkerRequest(wws.Worker.ID, wws.Worker.WorkerName, wws.Worker.DetailedDescription,
-				wws.Worker.EmailOnSuccess, &worker.ID, wws.Worker.TimeoutMinutes,
-				wws.Worker.DirectoryName, wws.Worker.Executable, wws.Worker.ArgumentValues)
+	// 		postObj := apimodels.NewUpdateWorkerRequest(wws.Worker.ID, wws.Worker.WorkerName, wws.Worker.DetailedDescription,
+	// 			wws.Worker.EmailOnSuccess, &worker.ID, wws.Worker.TimeoutMinutes,
+	// 			wws.Worker.DirectoryName, wws.Worker.Executable, wws.Worker.ArgumentValues)
 
-			resultObj := apimodels.NewUpdateWorkerReply()
+	// 		resultObj := apimodels.NewUpdateWorkerReply()
 
-			err := api.Post("Workers/UpdateWorker", postObj, resultObj)
+	// 		err := api.Post("Workers/UpdateWorker", postObj, resultObj)
 
-			if err != nil {
-				writeError(fmt.Sprintf("Error: %v", err))
-				return
-			}
-		})
-	}
+	// 		if err != nil {
+	// 			writeError(fmt.Sprintf("Error: %v", err))
+	// 			return
+	// 		}
+	// 	})
+	// }
 
-	// TODO: Add a "no parent" option
-	newMenu("CHOOSE NEW PARENT",
-		menuItems,
-		func() { editWorker(wws.Worker.ID, allWorkers) },
-	).show()
+	// // TODO: Add a "no parent" option
+	// newMenu("CHOOSE NEW PARENT",
+	// 	menuItems,
+	// 	func() { editWorker(wws.Worker.ID, allWorkers) },
+	// ).show()
 }
 
 func editSchedules(worker *models.WorkerWithSchedules) {
@@ -303,10 +300,12 @@ func editSchedules(worker *models.WorkerWithSchedules) {
 }
 
 func getWorker(workerID int64) (*models.WorkerWithSchedules, error) {
-	rep := apimodels.NewGetWorkerReply()
-	err := api.Post("Workers/GetWorker", apimodels.NewGetWorkerRequest(workerID), rep)
-	if err != nil {
-		return nil, err
-	}
-	return rep.Worker, nil
+	// rep := apimodels.NewGetWorkerReply()
+	// err := api.Post("Workers/GetWorker", apimodels.NewGetWorkerRequest(workerID), rep)
+	// if err != nil {
+	// return nil, err
+	// }
+	// return rep.Worker, nil
+
+	return nil, nil
 }
