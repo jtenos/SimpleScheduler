@@ -7,165 +7,173 @@ using SimpleSchedulerDomainModels;
 namespace SimpleSchedulerAppServices.Implementations;
 
 public sealed class WorkerManager
-    : IWorkerManager
+	: IWorkerManager
 {
-    private readonly SqlDatabase _db;
+	private readonly SqlDatabase _db;
 
-    public WorkerManager(SqlDatabase db)
-    {
-        _db = db;
-    }
+	public WorkerManager(SqlDatabase db)
+	{
+		_db = db;
+	}
 
-    async Task IWorkerManager.RunNowAsync(long id)
-    {
-        DynamicParameters param = new DynamicParameters()
-            .AddBigIntArrayParam("@WorkerIDs", new[] { id }.ToArray());
+	async Task IWorkerManager.RunNowAsync(long id)
+	{
+		DynamicParameters param = new DynamicParameters()
+			.AddBigIntArrayParam("@WorkerIDs", new[] { id }.ToArray());
 
-        await _db.NonQueryAsync("[app].[Jobs_RunNow]",
-            param
-        ).ConfigureAwait(false);
-    }
+		await _db.NonQueryAsync("[app].[Jobs_RunNow]",
+			param
+		).ConfigureAwait(false);
+	}
 
-    async Task<Worker[]> IWorkerManager.GetAllWorkersAsync()
-    {
-        return (await _db.GetManyAsync<WorkerEntity>(
-            "[app].[Workers_SelectAll]",
-            parameters: null
-        ).ConfigureAwait(false))
-        .Select(w => ModelBuilders.GetWorker(w))
-        .ToArray();
-    }
+	async Task<Worker[]> IWorkerManager.GetAllWorkersAsync(string? workerName, string? directoryName, string? executable,
+		bool? activeOnly, bool? inactiveOnly)
+	{
+		DynamicParameters param = new DynamicParameters();
+		if (workerName != null) { param.AddNullableNVarCharParam("@WorkerName", workerName, 100); }
+		if (directoryName != null) { param.AddNullableNVarCharParam("@DirectoryName", directoryName, 1000); }
+		if (executable != null) { param.AddNullableNVarCharParam("@Executable", executable, 1000); }
+		if (activeOnly != null) { param.AddNullableBitParam("@ActiveOnly", activeOnly); }
+		if (inactiveOnly != null) { param.AddNullableBitParam("@InactiveOnly", inactiveOnly); }
 
-    async Task<Worker[]> IWorkerManager.GetWorkersAsync(long[] ids)
-    {
-        DynamicParameters param = new DynamicParameters()
-            .AddBigIntArrayParam("@IDs", ids);
+		return (await _db.GetManyAsync<WorkerEntity>(
+			"[app].[Workers_SelectAll]",
+			parameters: param
+		).ConfigureAwait(false))
+		.Select(w => ModelBuilders.GetWorker(w))
+		.ToArray();
+	}
 
-        return (await _db.GetManyAsync<WorkerEntity>(
-            "[app].[Workers_SelectMany]",
-            parameters: param
-        ).ConfigureAwait(false))
-        .Select(w => ModelBuilders.GetWorker(w))
-        .ToArray();
-    }
+	async Task<Worker[]> IWorkerManager.GetWorkersAsync(long[] ids)
+	{
+		DynamicParameters param = new DynamicParameters()
+			.AddBigIntArrayParam("@IDs", ids);
 
-    async Task<Worker> IWorkerManager.GetWorkerAsync(long id)
-    {
-        DynamicParameters param = new DynamicParameters()
-            .AddLongParam("@ID", id);
+		return (await _db.GetManyAsync<WorkerEntity>(
+			"[app].[Workers_SelectMany]",
+			parameters: param
+		).ConfigureAwait(false))
+		.Select(w => ModelBuilders.GetWorker(w))
+		.ToArray();
+	}
 
-        return ModelBuilders.GetWorker(await _db.GetOneAsync<WorkerEntity>(
-            "[app].[Workers_Select]",
-            param
-        ).ConfigureAwait(false));
-    }
+	async Task<Worker> IWorkerManager.GetWorkerAsync(long id)
+	{
+		DynamicParameters param = new DynamicParameters()
+			.AddLongParam("@ID", id);
 
-    private record class AddWorkerResult(bool Success, bool NameAlreadyExists, bool CircularReference);
-    async Task IWorkerManager.AddWorkerAsync(
-        string workerName, string detailedDescription, string emailOnSuccess, long? parentWorkerID,
-        int timeoutMinutes, string directoryName, string executable, string argumentValues,
-        string workerPath)
-    {
-        if (!IsValidExecutable(directoryName, executable, workerPath))
-        {
-            throw new ApplicationException("Invalid executable");
-        }
+		return ModelBuilders.GetWorker(await _db.GetOneAsync<WorkerEntity>(
+			"[app].[Workers_Select]",
+			param
+		).ConfigureAwait(false));
+	}
 
-        DynamicParameters param = new DynamicParameters()
-            .AddNVarCharParam("@WorkerName", workerName, 100)
-            .AddNVarCharParam("@DetailedDescription", detailedDescription, -1)
-            .AddNVarCharParam("@EmailOnSuccess", emailOnSuccess, 100)
-            .AddNullableLongParam("@ParentWorkerID", parentWorkerID)
-            .AddIntParam("@TimeoutMinutes", timeoutMinutes)
-            .AddNVarCharParam("@DirectoryName", directoryName, 1000)
-            .AddNVarCharParam("@Executable", executable, 1000)
-            .AddNVarCharParam("@ArgumentValues", argumentValues, 1000);
+	private record class AddWorkerResult(bool Success, bool NameAlreadyExists, bool CircularReference);
+	async Task IWorkerManager.AddWorkerAsync(
+		string workerName, string detailedDescription, string emailOnSuccess, long? parentWorkerID,
+		int timeoutMinutes, string directoryName, string executable, string argumentValues,
+		string workerPath)
+	{
+		if (!IsValidExecutable(directoryName, executable, workerPath))
+		{
+			throw new ApplicationException("Invalid executable");
+		}
 
-        AddWorkerResult result = await _db.GetOneAsync<AddWorkerResult>(
-            "[app].[Workers_Insert]",
-            param
-        ).ConfigureAwait(false);
+		DynamicParameters param = new DynamicParameters()
+			.AddNVarCharParam("@WorkerName", workerName, 100)
+			.AddNVarCharParam("@DetailedDescription", detailedDescription, -1)
+			.AddNVarCharParam("@EmailOnSuccess", emailOnSuccess, 100)
+			.AddNullableLongParam("@ParentWorkerID", parentWorkerID)
+			.AddIntParam("@TimeoutMinutes", timeoutMinutes)
+			.AddNVarCharParam("@DirectoryName", directoryName, 1000)
+			.AddNVarCharParam("@Executable", executable, 1000)
+			.AddNVarCharParam("@ArgumentValues", argumentValues, 1000);
 
-        if (result.NameAlreadyExists) { throw new ApplicationException("Name already exists"); }
-        if (result.CircularReference) { throw new ApplicationException("Circular reference"); }
-        if (!result.Success) { throw new ApplicationException("Invalid call to AddWorker"); }
-    }
+		AddWorkerResult result = await _db.GetOneAsync<AddWorkerResult>(
+			"[app].[Workers_Insert]",
+			param
+		).ConfigureAwait(false);
 
-    private record class UpdateWorkerResult(bool Success, bool NameAlreadyExists, bool CircularReference);
-    async Task IWorkerManager.UpdateWorkerAsync(
-        long workerID, string workerName, string detailedDescription, string emailOnSuccess,
-        long? parentWorkerID, int timeoutMinutes, string directoryName, string executable, string argumentValues,
-        string workerPath)
-    {
-        if (!IsValidExecutable(directoryName, executable, workerPath))
-        {
-            throw new ApplicationException("Invalid executable");
-        }
+		if (result.NameAlreadyExists) { throw new ApplicationException("Name already exists"); }
+		if (result.CircularReference) { throw new ApplicationException("Circular reference"); }
+		if (!result.Success) { throw new ApplicationException("Invalid call to AddWorker"); }
+	}
 
-        if (workerID == parentWorkerID)
-        {
-            throw new ApplicationException("Worker cannot be its own parent");
-        }
+	private record class UpdateWorkerResult(bool Success, bool NameAlreadyExists, bool CircularReference);
+	async Task IWorkerManager.UpdateWorkerAsync(
+		long workerID, string workerName, string detailedDescription, string emailOnSuccess,
+		long? parentWorkerID, int timeoutMinutes, string directoryName, string executable, string argumentValues,
+		string workerPath)
+	{
+		if (!IsValidExecutable(directoryName, executable, workerPath))
+		{
+			throw new ApplicationException("Invalid executable");
+		}
 
-        DynamicParameters param = new DynamicParameters()
-            .AddLongParam("@ID", workerID)
-            .AddNVarCharParam("@WorkerName", workerName, 100)
-            .AddNVarCharParam("@DetailedDescription", detailedDescription, -1)
-            .AddNVarCharParam("@EmailOnSuccess", emailOnSuccess, 100)
-            .AddNullableLongParam("@ParentWorkerID", parentWorkerID)
-            .AddIntParam("@TimeoutMinutes", timeoutMinutes)
-            .AddNVarCharParam("@DirectoryName", directoryName, 1000)
-            .AddNVarCharParam("@Executable", executable, 1000)
-            .AddNVarCharParam("@ArgumentValues", argumentValues, 1000);
+		if (workerID == parentWorkerID)
+		{
+			throw new ApplicationException("Worker cannot be its own parent");
+		}
 
-        UpdateWorkerResult result = await _db.GetOneAsync<UpdateWorkerResult>(
-            "[app].[Workers_Update]",
-            param
-        ).ConfigureAwait(false);
+		DynamicParameters param = new DynamicParameters()
+			.AddLongParam("@ID", workerID)
+			.AddNVarCharParam("@WorkerName", workerName, 100)
+			.AddNVarCharParam("@DetailedDescription", detailedDescription, -1)
+			.AddNVarCharParam("@EmailOnSuccess", emailOnSuccess, 100)
+			.AddNullableLongParam("@ParentWorkerID", parentWorkerID)
+			.AddIntParam("@TimeoutMinutes", timeoutMinutes)
+			.AddNVarCharParam("@DirectoryName", directoryName, 1000)
+			.AddNVarCharParam("@Executable", executable, 1000)
+			.AddNVarCharParam("@ArgumentValues", argumentValues, 1000);
 
-        if (result.NameAlreadyExists) { throw new ApplicationException("Name already exists"); }
-        if (result.CircularReference) { throw new ApplicationException("Circular reference"); }
-        if (!result.Success) { throw new ApplicationException("Invalid call to AddWorker"); }
-    }
+		UpdateWorkerResult result = await _db.GetOneAsync<UpdateWorkerResult>(
+			"[app].[Workers_Update]",
+			param
+		).ConfigureAwait(false);
 
-    async Task IWorkerManager.DeactivateWorkerAsync(long id)
-    {
-        DynamicParameters param = new DynamicParameters()
-            .AddLongParam("@ID", id);
+		if (result.NameAlreadyExists) { throw new ApplicationException("Name already exists"); }
+		if (result.CircularReference) { throw new ApplicationException("Circular reference"); }
+		if (!result.Success) { throw new ApplicationException("Invalid call to AddWorker"); }
+	}
 
-        await _db.NonQueryAsync(
-            "[app].[Workers_Deactivate]",
-            param
-        ).ConfigureAwait(false);
-    }
+	async Task IWorkerManager.DeactivateWorkerAsync(long id)
+	{
+		DynamicParameters param = new DynamicParameters()
+			.AddLongParam("@ID", id);
 
-    async Task IWorkerManager.ReactivateWorkerAsync(long id)
-    {
-        DynamicParameters param = new DynamicParameters()
-            .AddLongParam("@ID", id);
+		await _db.NonQueryAsync(
+			"[app].[Workers_Deactivate]",
+			param
+		).ConfigureAwait(false);
+	}
 
-        await _db.NonQueryAsync(
-            "[app].[Workers_Reactivate]",
-            param
-        ).ConfigureAwait(false);
-    }
+	async Task IWorkerManager.ReactivateWorkerAsync(long id)
+	{
+		DynamicParameters param = new DynamicParameters()
+			.AddLongParam("@ID", id);
 
-    private static bool IsValidExecutable(string directoryName, string executable, string workerPath)
-    {
-        if (directoryName.Contains('/')
-            || executable.Contains('/')
-            || directoryName.Contains('\\')
-            || executable.Contains('\\'))
-        {
-            return false;
-        }
+		await _db.NonQueryAsync(
+			"[app].[Workers_Reactivate]",
+			param
+		).ConfigureAwait(false);
+	}
 
-        string fullPath = Path.Combine(workerPath, directoryName, executable);
-        if (!File.Exists(fullPath))
-        {
-            return false;
-        }
+	private static bool IsValidExecutable(string directoryName, string executable, string workerPath)
+	{
+		if (directoryName.Contains('/')
+			|| executable.Contains('/')
+			|| directoryName.Contains('\\')
+			|| executable.Contains('\\'))
+		{
+			return false;
+		}
 
-        return true;
-    }
+		string fullPath = Path.Combine(workerPath, directoryName, executable);
+		if (!File.Exists(fullPath))
+		{
+			return false;
+		}
+
+		return true;
+	}
 }

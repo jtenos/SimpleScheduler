@@ -11,4 +11,5 @@ type Worker struct {
 	DirectoryName       string `json:"directoryName"`
 	Executable          string `json:"executable"`
 	ArgumentValues      string `json:"argumentValues"`
+	WorkerNameLower     string
 }

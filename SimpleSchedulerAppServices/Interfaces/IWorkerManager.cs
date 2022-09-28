@@ -5,7 +5,8 @@ namespace SimpleSchedulerAppServices.Interfaces;
 public interface IWorkerManager
 {
     Task RunNowAsync(long id);
-    Task<Worker[]> GetAllWorkersAsync();
+    Task<Worker[]> GetAllWorkersAsync(string? workerName = null, string? directoryName = null, string? executable = null,
+        bool? activeOnly = null, bool? inactiveOnly = null);
     Task<Worker[]> GetWorkersAsync(long[] ids);
     Task<Worker> GetWorkerAsync(long id);
     Task AddWorkerAsync(string workerName,

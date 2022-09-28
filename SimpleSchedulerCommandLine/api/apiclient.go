@@ -7,15 +7,10 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/ctxhelper"
 )
-
-var jwtToken string
-
-func SetJwtToken(token string) {
-	jwtToken = token
-}
 
 func Post(ctx context.Context, url string, postObj any, resultObj any) error {
 	baseUrl := ctxhelper.GetApiUrl(ctx)
@@ -35,8 +30,10 @@ func Post(ctx context.Context, url string, postObj any, resultObj any) error {
 
 	req.Header.Add("Content-Type", "application/json;charset=utf-8")
 
-	if len(jwtToken) > 0 {
-		req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", jwtToken))
+	jwt := ctxhelper.GetToken(ctx)
+
+	if len(jwt) > 0 {
+		req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", jwt))
 	}
 
 	res, err := client.Do(req)
@@ -51,8 +48,14 @@ func Post(ctx context.Context, url string, postObj any, resultObj any) error {
 		return err
 	}
 
+	if res.StatusCode == 401 {
+		fmt.Println("Token is missing or expired. To log in again:")
+		fmt.Println("sched user login --email test@example.com")
+		os.Exit(1)
+	}
+
 	if res.StatusCode != 200 {
-		return fmt.Errorf("error code %v: %s\n%s", res.StatusCode, res.Status, body)
+		return fmt.Errorf("hello error code %v: %s\n%s", res.StatusCode, res.Status, body)
 	}
 
 	err = json.Unmarshal(body, resultObj)

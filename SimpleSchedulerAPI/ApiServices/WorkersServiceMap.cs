@@ -43,7 +43,12 @@ public static class WorkersServiceMap
         IScheduleManager scheduleManager,
         GetAllWorkersRequest request)
     {
-        Worker[] workers = (await workerManager.GetAllWorkersAsync())
+        Worker[] workers = (await workerManager.GetAllWorkersAsync(
+            workerName: request.WorkerName,
+            directoryName: request.DirectoryName,
+            executable: request.Executable,
+            activeOnly: request.ActiveOnly,
+            inactiveOnly: request.InactiveOnly))
             .Select(w => ApiModelBuilders.GetWorker(w))
             .ToArray();
         Schedule[] allSchedules = (await scheduleManager.GetAllSchedulesAsync())
