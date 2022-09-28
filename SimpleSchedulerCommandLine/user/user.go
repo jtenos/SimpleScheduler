@@ -4,12 +4,12 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/api"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/apimodels"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/ctxhelper"
+	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/ui"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/userdir"
 )
 
@@ -23,7 +23,7 @@ func Execute(ctx context.Context) {
 	case "validate":
 		validate(ctx)
 	default:
-		log.Fatal("Invalid verb: Must be 'login' or 'validate'")
+		ui.WriteFatalf("Invalid verb: Must be 'login' or 'validate'")
 	}
 }
 
@@ -34,18 +34,18 @@ func login(ctx context.Context) {
 	email = strings.TrimSpace(email)
 	if email == "" {
 		flag.PrintDefaults()
-		log.Fatal("--email is required")
+		ui.WriteFatalf("--email is required")
 	}
 	req := apimodels.NewSubmitEmailRequest(email)
 	rep := apimodels.NewSubmitEmailReply()
 	err := api.Post(ctx, "Login/SubmitEmail", req, rep)
 
 	if err != nil {
-		log.Fatal(err.Error())
+		ui.WriteFatalf(err.Error())
 	}
 
 	if !rep.Success {
-		log.Fatal("Login failed")
+		ui.WriteFatalf("Login failed")
 	}
 
 	fmt.Println("Please check your email for a login code.")
@@ -60,7 +60,7 @@ func validate(ctx context.Context) {
 	code = strings.TrimSpace(code)
 	if code == "" {
 		flag.PrintDefaults()
-		log.Fatal("--code is required")
+		ui.WriteFatalf("--code is required")
 	}
 
 	req := apimodels.NewValidateEmailRequest(code)
@@ -68,13 +68,13 @@ func validate(ctx context.Context) {
 	err := api.Post(ctx, "Login/ValidateEmail", req, rep)
 
 	if err != nil {
-		log.Fatal(err.Error())
+		ui.WriteFatalf(err.Error())
 	}
 
 	jwt := rep.JwtToken
 	err = userdir.WriteToken(jwt)
 	if err != nil {
-		log.Fatalf("Error writing token: %s", err.Error())
+		ui.WriteFatalf("Error writing token: %s", err.Error())
 	}
 
 	fmt.Println("User has been authenticated. You may proceed with commands.")

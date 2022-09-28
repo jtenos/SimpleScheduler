@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 	"os"
 	"sync"
 
@@ -12,6 +11,7 @@ import (
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/job"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/schedule"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/token"
+	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/ui"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/user"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/userdir"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/worker"
@@ -44,7 +44,7 @@ func main() {
 	case "token":
 		token.Execute(ctx)
 	default:
-		log.Fatal("Invalid noun: Must be 'user', 'job', 'worker', or 'schedule'")
+		ui.WriteFatalf("Invalid noun: Must be 'user', 'job', 'worker', or 'schedule'")
 	}
 }
 
@@ -77,7 +77,7 @@ func hydrateContext(ctx *context.Context) {
 	go func() {
 		token, err := userdir.ReadToken()
 		if err != nil {
-			log.Fatalf("Error reading token: %s", err.Error())
+			ui.WriteFatalf("Error reading token: %s", err.Error())
 		}
 
 		ctxhelper.SetToken(ctx, token)
@@ -92,27 +92,23 @@ func writeHelp(exitCode int) {
 Usage:
   sched NOUN VERB OPTIONS
 Details:
-  user
-    login
-      --email test@example.com
-    validate
-      --code abcdabcd-0123-4567-8910-1234567890ab
-  worker
-    list
-      --name "Some Work"
-      --dir "MyDir"
-      --exe "MyEx"
-      --activeonly
-      --inactiveonly
-  schedule
-    list
-      --worker 123
-      --workername 234
-  job
-    list
-      --status ERR
-      --workername "Some"
+
+user
+	login --email test@example.com
+	validate --code abcdabcd-0123-4567-8910-1234567890ab
+
+worker
+	list --name "Some Work" --dir "MyDir" --exe "MyEx" --activeonly --inactiveonly
+	show --id 123
+
+schedule
+    list --worker 123
+
+job
+	list --status ERR --worker 123 --workername "Some"
+	run --worker 123
+	details --id 123456
 `)
-	// TODO: Complete this
+
 	os.Exit(exitCode)
 }

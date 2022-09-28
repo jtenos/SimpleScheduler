@@ -4,7 +4,6 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"log"
 	"sort"
 	"strings"
 	"unicode/utf8"
@@ -12,6 +11,7 @@ import (
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/api"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/apimodels"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/ctxhelper"
+	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/ui"
 )
 
 func Execute(ctx context.Context) {
@@ -20,12 +20,8 @@ func Execute(ctx context.Context) {
 	switch verb {
 	case "list":
 		list(ctx)
-	case "edit":
-		edit()
 	case "show":
-		show()
-	case "run":
-		run()
+		show(ctx)
 	}
 }
 
@@ -49,7 +45,7 @@ func list(ctx context.Context) {
 	}
 
 	if err != nil {
-		log.Fatalf("Error retrieving workers: %s", err.Error())
+		ui.WriteFatalf("Error retrieving workers: %s", err.Error())
 	}
 
 	// Sort by worker name, but with active workers first
@@ -115,14 +111,18 @@ func list(ctx context.Context) {
 
 }
 
-func edit() {
+func show(ctx context.Context) {
+	//show --id 123
 
-}
+	// func getWorker(workerID int64) (*models.WorkerWithSchedules, error) {
+	// 	// rep := apimodels.NewGetWorkerReply()
+	// 	// err := api.Post("Workers/GetWorker", apimodels.NewGetWorkerRequest(workerID), rep)
+	// 	// if err != nil {
+	// 	// return nil, err
+	// 	// }
+	// 	// return rep.Worker, nil
 
-func show() {
-
-}
-
-func run() {
+	// 	return nil, nil
+	// }
 
 }

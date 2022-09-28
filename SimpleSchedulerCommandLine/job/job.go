@@ -2,30 +2,34 @@ package job
 
 import (
 	"context"
-	"os"
+
+	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/ctxhelper"
 )
 
 func Execute(ctx context.Context) {
-	verb := os.Args[2]
+	verb := ctxhelper.GetVerb(ctx)
 
 	switch verb {
 	case "list":
-		list()
-	case "cancel":
-		cancel()
+		list(ctx)
+	case "run":
+		run(ctx)
 	case "details":
-		details()
+		details(ctx)
 	}
 }
 
-func list() {
+func list(ctx context.Context) {
+	//	list --status ERR --worker 123 --workername "Some"
 
 }
 
-func cancel() {
-
+func run(ctx context.Context) {
+	//	run --worker 123
+	//
 }
 
-func details() {
+func details(ctx context.Context) {
+	//details --id 123456
 
 }

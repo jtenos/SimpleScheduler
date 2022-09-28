@@ -2,8 +2,9 @@ package config
 
 import (
 	"encoding/json"
-	"log"
 	"os"
+
+	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/ui"
 )
 
 type Configuration struct {
@@ -13,14 +14,14 @@ type Configuration struct {
 func LoadConfig() *Configuration {
 	file, err := os.Open("conf.json")
 	if err != nil {
-		log.Fatal(err)
+		ui.WriteFatalf(err.Error())
 	}
 	defer file.Close()
 	decoder := json.NewDecoder(file)
 	config := &Configuration{}
 	err = decoder.Decode(config)
 	if err != nil {
-		log.Fatal(err)
+		ui.WriteFatalf(err.Error())
 	}
 	return config
 }

@@ -2,30 +2,20 @@ package schedule
 
 import (
 	"context"
-	"os"
+
+	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/ctxhelper"
 )
 
 func Execute(ctx context.Context) {
-	verb := os.Args[2]
+	verb := ctxhelper.GetVerb(ctx)
 
 	switch verb {
-	case "add":
-		add()
-	case "delete":
-		delete()
-	case "edit":
-		edit()
+	case "list":
+		list(ctx)
 	}
 }
 
-func add() {
-
-}
-
-func delete() {
-
-}
-
-func edit() {
+func list(ctx context.Context) {
+	//list --worker 123
 
 }
