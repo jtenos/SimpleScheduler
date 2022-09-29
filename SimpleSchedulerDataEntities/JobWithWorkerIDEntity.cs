@@ -10,7 +10,8 @@ public record class JobWithWorkerIDEntity(
     Guid AcknowledgementCode,
     DateTime? AcknowledgementDate,
     bool HasDetailedMessage,
-    long WorkerID
+    long WorkerID,
+    string WorkerName
 ) : JobEntity(
     ID,
     ScheduleID,

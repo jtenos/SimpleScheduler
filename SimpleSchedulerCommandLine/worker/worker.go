@@ -40,12 +40,12 @@ func list(ctx context.Context) {
 	rep := apimodels.NewGetAllWorkersReply()
 	err := api.Post(ctx, "Workers/GetAllWorkers", req, rep)
 
-	for i := range rep.Workers {
-		rep.Workers[i].Worker.WorkerNameLower = strings.ToLower(rep.Workers[i].Worker.WorkerName)
-	}
-
 	if err != nil {
 		ui.WriteFatalf("Error retrieving workers: %s", err.Error())
+	}
+
+	for i := range rep.Workers {
+		rep.Workers[i].Worker.WorkerNameLower = strings.ToLower(rep.Workers[i].Worker.WorkerName)
 	}
 
 	// Sort by worker name, but with active workers first

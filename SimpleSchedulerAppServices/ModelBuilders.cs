@@ -35,7 +35,8 @@ internal static class ModelBuilders
             AcknowledgementDate: j.AcknowledgementDate,
             HasDetailedMessage: j.HasDetailedMessage,
             FriendlyDuration: GetFriendlyDuration(j),
-            WorkerID: j.WorkerID
+            WorkerID: j.WorkerID,
+            WorkerName: j.WorkerName
         );
     }
 

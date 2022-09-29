@@ -33,7 +33,8 @@ internal static class ApiModelBuilders
             AcknowledgementDate: j.AcknowledgementDate,
             HasDetailedMessage: j.HasDetailedMessage,
             FriendlyDuration: j.FriendlyDuration,
-            WorkerID: j.WorkerID
+            WorkerID: j.WorkerID,
+            WorkerName: j.WorkerName
         );
     }
 

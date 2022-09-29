@@ -109,6 +109,7 @@ partial class Jobs
             "Jobs/GetJobs",
             new GetJobsRequest(
                 WorkerID: SearchCriteria.WorkerID,
+                WorkerName: "", // TODO: Maybe implement a search?
                 StatusCode: SearchCriteria.StatusCode,
                 PageNumber: SearchCriteria.PageNumber,
                 OverdueOnly: false
@@ -129,6 +130,7 @@ partial class Jobs
             "Jobs/GetJobs",
             new GetJobsRequest(
                 WorkerID: null,
+                WorkerName: "",
                 StatusCode: "ERR",
                 PageNumber: 1,
                 OverdueOnly: false

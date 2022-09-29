@@ -11,7 +11,8 @@ public record class JobWithWorkerID(
     DateTime? AcknowledgementDate,
     bool HasDetailedMessage,
     string? FriendlyDuration,
-    long WorkerID
+    long WorkerID,
+    string WorkerName
 ): Job(
     ID: ID,
     ScheduleID: ScheduleID,
