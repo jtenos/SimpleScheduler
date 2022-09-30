@@ -46,6 +46,7 @@ public sealed class JobExecutor
                 throw new ApplicationException(error.Message);
             }
 
+            // TODO: I don't remember what the purpose of this is
             if (startReply!.NumRunningJobs >= 10)
             {
                 return;

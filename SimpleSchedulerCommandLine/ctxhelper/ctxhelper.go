@@ -6,6 +6,7 @@ type nounKey struct{}
 type verbKey struct{}
 type apiUrlKey struct{}
 type tokenKey struct{}
+type verboseKey struct{}
 
 func SetNoun(ctx *context.Context, noun string) {
 	*ctx = context.WithValue(*ctx, nounKey{}, noun)
@@ -41,4 +42,13 @@ func SetToken(ctx *context.Context, token string) {
 func GetToken(ctx context.Context) string {
 	token, _ := ctx.Value(tokenKey{}).(string)
 	return token
+}
+
+func SetVerbose(ctx *context.Context, verbose bool) {
+	*ctx = context.WithValue(*ctx, verboseKey{}, verbose)
+}
+
+func GetVerbose(ctx context.Context) bool {
+	verbose, _ := ctx.Value(verboseKey{}).(bool)
+	return verbose
 }

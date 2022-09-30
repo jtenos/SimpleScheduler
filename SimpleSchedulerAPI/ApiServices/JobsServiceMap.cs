@@ -78,6 +78,7 @@ public static class JobsServiceMap
             rowsPerPage: 100,
             statusCode: request.StatusCode,
             workerID: request.WorkerID,
+            workerName: request.WorkerName,
             overdueOnly: request.OverdueOnly
         )).Select(ApiModelBuilders.GetJobWithWorkerID).ToArray();
 

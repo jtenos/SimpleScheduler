@@ -37,7 +37,22 @@ func list(ctx context.Context) {
 	flag.StringVar(&workerName, "workername", "", "Search text for the worker name")
 	flag.Parse()
 
-	req := apimodels.NewGetJobsRequest(worker, workerName, status, 1, false)
+	var workerPtr *int64
+	if worker != 0 {
+		workerPtr = &worker
+	}
+
+	var workerNamePtr *string
+	if workerName != "" {
+		workerNamePtr = &workerName
+	}
+
+	var statusPtr *string
+	if status != "" {
+		statusPtr = &status
+	}
+
+	req := apimodels.NewGetJobsRequest(workerPtr, workerNamePtr, statusPtr, 1, false)
 	rep := apimodels.NewGetJobsReply()
 	err := api.Post(ctx, "Jobs/GetJobs", req, rep)
 
@@ -45,14 +60,23 @@ func list(ctx context.Context) {
 		ui.WriteFatalf("Error retrieving workers: %s", err.Error())
 	}
 
-	fmt.Println("| Job ID    | Worker Name                                    | Start/Complete  | Status | Details |")
+	fmt.Println("-------------------------------------------------------------------------------------------------------|")
+	fmt.Println("| Job ID    | Worker Name                                    | Start/Complete (UTC) | Status | Details |")
 	for i := range rep.Jobs {
-		fmt.Println("---------------------------------------------------------------------------------------------------")
+		fmt.Println("-------------------------------------------------------------------------------------------------------|")
 		job := rep.Jobs[i]
 		jobID := job.ID
 		workerName := job.WorkerName
-		startDate := job.QueueDateUTC
-		complDate := job.CompleteDateUTC
+		var startDate string
+		if job.QueueDateUTC != nil {
+			startDate = job.QueueDateUTC.Time.Format("2006-01-02 15:04:05")
+		}
+		var complDate string
+		if job.CompleteDateUTC != nil {
+			complDate = job.CompleteDateUTC.Time.Format("2006-01-02 15:04:05")
+		} else {
+			complDate = "                   "
+		}
 		stat := job.StatusCode
 		hasDetails := job.HasDetailedMessage
 
@@ -60,10 +84,10 @@ func list(ctx context.Context) {
 			workerName = workerName[:44] + "..."
 		}
 
-		fmt.Printf("| %-10d| %-47s| %-23s| %-20s| %-18v|\n", jobID, workerName, startDate, stat, hasDetails)
-		fmt.Printf("|           |                                                | %s              |        |         |", complDate)
+		fmt.Printf("| %-10d| %-47s| %-21s|   %s  | %-8v|\n", jobID, workerName, startDate, stat, hasDetails)
+		fmt.Printf("|           |                                                | %-21s|        |         |\n", complDate)
 	}
-	fmt.Println("---------------------------------------------------------------------------------------------------")
+	fmt.Println("-------------------------------------------------------------------------------------------------------|")
 
 }
 

@@ -13,12 +13,23 @@ import (
 )
 
 func Post(ctx context.Context, url string, postObj any, resultObj any) error {
+
+	verbose := ctxhelper.GetVerbose(ctx)
+
 	baseUrl := ctxhelper.GetApiUrl(ctx)
 	url = fmt.Sprintf("%s/%s", baseUrl, url)
+
+	if verbose {
+		fmt.Printf("URL: %s\n", url)
+	}
 
 	reqBody, err := json.Marshal(postObj)
 	if err != nil {
 		return err
+	}
+
+	if verbose {
+		fmt.Printf("POST Body: %s\n", reqBody)
 	}
 
 	client := &http.Client{}
@@ -46,6 +57,10 @@ func Post(ctx context.Context, url string, postObj any, resultObj any) error {
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		return err
+	}
+
+	if verbose {
+		fmt.Printf("Response: %s\n", body)
 	}
 
 	if res.StatusCode == 401 {

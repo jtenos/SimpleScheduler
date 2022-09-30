@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"os"
 	"sync"
@@ -15,6 +16,7 @@ import (
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/user"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/userdir"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/worker"
+	"golang.org/x/exp/slices"
 )
 
 func main() {
@@ -70,6 +72,13 @@ func hydrateContext(ctx *context.Context) {
 
 		ctxhelper.SetNoun(ctx, noun)
 		ctxhelper.SetVerb(ctx, verb)
+
+		// Not parsing here - but this will cause it to not fail in future parsing steps
+		flag.Bool("verbose", false, "Display debugging information")
+
+		verbose := slices.Contains(os.Args, "--verbose") || slices.Contains(os.Args, "-verbose")
+		ctxhelper.SetVerbose(ctx, verbose)
+
 		wg.Done()
 	}()
 

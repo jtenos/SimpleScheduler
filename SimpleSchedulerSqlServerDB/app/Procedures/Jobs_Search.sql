@@ -1,6 +1,7 @@
 ﻿CREATE PROCEDURE [app].[Jobs_Search]
 	@StatusCode NCHAR(3) = NULL
     ,@WorkerID BIGINT = NULL
+    ,@WorkerName NVARCHAR(100) = NULL
     ,@OverdueOnly BIT = 0
     ,@Offset INT = 0
     ,@NumRows INT = 100
@@ -27,6 +28,11 @@ BEGIN
                 AND [WorkerID] = @WorkerID
             ';
 
+        IF @WorkerName IS NOT NULL
+            SET @SQL += N'
+                AND [WorkerName] LIKE ''%'' + @WorkerName + ''%''
+            ';
+
         IF @OverdueOnly = 1
             SET @SQL += N'
                 AND [StatusCode] IN (''ERR'', ''NEW'', ''RUN'')
@@ -40,9 +46,10 @@ BEGIN
 
         EXEC sp_executesql
             @SQL
-            ,N'@StatusCode NCHAR(3), @WorkerID BIGINT'
+            ,N'@StatusCode NCHAR(3), @WorkerID BIGINT, @WorkerName NVARCHAR(100)'
             ,@StatusCode = @StatusCode
-            ,@WorkerID = @WorkerID;
+            ,@WorkerID = @WorkerID
+            ,@WorkerName = @WorkerName;
 
 		COMMIT TRANSACTION;
 	END TRY

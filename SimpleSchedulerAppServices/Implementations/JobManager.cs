@@ -151,11 +151,12 @@ public sealed class JobManager
     }
 
     async Task<JobWithWorkerID[]> IJobManager.GetLatestJobsAsync(int pageNumber,
-        int rowsPerPage, string? statusCode, long? workerID, bool overdueOnly)
+        int rowsPerPage, string? statusCode, long? workerID, string? workerName, bool overdueOnly)
     {
         DynamicParameters param = new DynamicParameters()
             .AddNullableNCharParam("@StatusCode", statusCode, 3)
             .AddNullableLongParam("@WorkerID", workerID)
+            .AddNullableNVarCharParam("@WorkerName", workerName, 100)
             .AddBitParam("@OverdueOnly", overdueOnly)
             .AddIntParam("@Offset", (pageNumber - 1) * rowsPerPage)
             .AddIntParam("@NumRows", rowsPerPage);
@@ -230,6 +231,7 @@ public sealed class JobManager
             rowsPerPage: 999,
             statusCode: null,
             workerID: null,
+            workerName: null,
             overdueOnly: true
         ).ConfigureAwait(false))
         .OrderBy(x => x.QueueDateUTC)
@@ -282,6 +284,7 @@ public sealed class JobManager
             rowsPerPage: 999,
             statusCode: "RUN",
             workerID: null,
+            workerName: null,
             overdueOnly: false);
 
         return jobs.Length;
