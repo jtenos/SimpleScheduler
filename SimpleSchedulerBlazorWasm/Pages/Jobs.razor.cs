@@ -111,6 +111,7 @@ partial class Jobs
                 WorkerID: SearchCriteria.WorkerID,
                 WorkerName: "", // TODO: Maybe implement a search?
                 StatusCode: SearchCriteria.StatusCode,
+                RowsPerPage: 100,
                 PageNumber: SearchCriteria.PageNumber,
                 OverdueOnly: false
             )
@@ -132,6 +133,7 @@ partial class Jobs
                 WorkerID: null,
                 WorkerName: "",
                 StatusCode: "ERR",
+                RowsPerPage: 100,
                 PageNumber: 1,
                 OverdueOnly: false
             )

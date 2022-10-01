@@ -26,15 +26,16 @@ func Execute(ctx context.Context) {
 }
 
 func list(ctx context.Context) {
-	//	list --status ERR --worker 123 --workername "Some"
 
 	var status string
 	var worker int64
 	var workerName string
+	var limit int64
 
 	flag.StringVar(&status, "status", "", "Job status code")
 	flag.Int64Var(&worker, "worker", 0, "Worker ID")
 	flag.StringVar(&workerName, "workername", "", "Search text for the worker name")
+	flag.Int64Var(&limit, "limit", 100, "Num results to return")
 	flag.Parse()
 
 	var workerPtr *int64
@@ -52,7 +53,7 @@ func list(ctx context.Context) {
 		statusPtr = &status
 	}
 
-	req := apimodels.NewGetJobsRequest(workerPtr, workerNamePtr, statusPtr, 1, false)
+	req := apimodels.NewGetJobsRequest(workerPtr, workerNamePtr, statusPtr, int32(limit), 1, false)
 	rep := apimodels.NewGetJobsReply()
 	err := api.Post(ctx, "Jobs/GetJobs", req, rep)
 
@@ -97,6 +98,23 @@ func run(ctx context.Context) {
 }
 
 func details(ctx context.Context) {
-	//details --id 123456
+	var id int64
 
+	flag.Int64Var(&id, "id", 0, "The Job ID")
+	flag.Parse()
+
+	req := apimodels.NewGetDetailedMessageRequest(id)
+	rep := apimodels.NewGetDetailedMessageReply()
+	err := api.Post(ctx, "Jobs/GetDetailedMessage", req, rep)
+
+	if err != nil {
+		ui.WriteFatalf("Error retrieving workers: %s", err.Error())
+	}
+
+	if rep.DetailedMessage == nil || len(*rep.DetailedMessage) == 0 {
+		fmt.Print("...No details found...")
+		return
+	}
+
+	fmt.Println(*rep.DetailedMessage)
 }

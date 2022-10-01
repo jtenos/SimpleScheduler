@@ -48,6 +48,8 @@ func main() {
 	default:
 		ui.WriteFatalf("Invalid noun: Must be 'user', 'job', 'worker', or 'schedule'")
 	}
+
+	fmt.Println()
 }
 
 func hydrateContext(ctx *context.Context) {
@@ -114,7 +116,7 @@ schedule
     list --worker 123
 
 job
-	list --status ERR --worker 123 --workername "Some"
+	list --status ERR --worker 123 --workername "Some" --limit 10
 	run --worker 123
 	details --id 123456
 `)

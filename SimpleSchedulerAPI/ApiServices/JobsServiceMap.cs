@@ -75,7 +75,7 @@ public static class JobsServiceMap
     {
         JobWithWorkerID[] jobs = (await jobManager.GetLatestJobsAsync(
             pageNumber: request.PageNumber,
-            rowsPerPage: 100,
+            rowsPerPage: request.RowsPerPage,
             statusCode: request.StatusCode,
             workerID: request.WorkerID,
             workerName: request.WorkerName,
