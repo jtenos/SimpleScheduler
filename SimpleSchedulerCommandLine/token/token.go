@@ -4,13 +4,13 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/ctxhelper"
+	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/ctxutil"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/ui"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/userdir"
 )
 
 func Execute(ctx context.Context) {
-	verb := ctxhelper.GetVerb(ctx)
+	verb := ctxutil.GetVerb(ctx)
 	switch verb {
 	case "show":
 		token, err := userdir.ReadToken()

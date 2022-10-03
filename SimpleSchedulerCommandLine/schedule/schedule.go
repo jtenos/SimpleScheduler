@@ -3,11 +3,11 @@ package schedule
 import (
 	"context"
 
-	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/ctxhelper"
+	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/ctxutil"
 )
 
 func Execute(ctx context.Context) {
-	verb := ctxhelper.GetVerb(ctx)
+	verb := ctxutil.GetVerb(ctx)
 
 	switch verb {
 	case "list":

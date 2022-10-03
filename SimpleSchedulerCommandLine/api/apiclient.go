@@ -9,14 +9,14 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/ctxhelper"
+	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/ctxutil"
 )
 
 func Post(ctx context.Context, url string, postObj any, resultObj any) error {
 
-	verbose := ctxhelper.GetVerbose(ctx)
+	verbose := ctxutil.GetVerbose(ctx)
 
-	baseUrl := ctxhelper.GetApiUrl(ctx)
+	baseUrl := ctxutil.GetApiUrl(ctx)
 	url = fmt.Sprintf("%s/%s", baseUrl, url)
 
 	if verbose {
@@ -41,7 +41,7 @@ func Post(ctx context.Context, url string, postObj any, resultObj any) error {
 
 	req.Header.Add("Content-Type", "application/json;charset=utf-8")
 
-	jwt := ctxhelper.GetToken(ctx)
+	jwt := ctxutil.GetToken(ctx)
 
 	if len(jwt) > 0 {
 		req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", jwt))

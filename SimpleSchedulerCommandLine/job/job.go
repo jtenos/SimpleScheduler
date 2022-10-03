@@ -8,12 +8,12 @@ import (
 
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/api"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/apimodels"
-	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/ctxhelper"
+	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/ctxutil"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/ui"
 )
 
 func Execute(ctx context.Context) {
-	verb := ctxhelper.GetVerb(ctx)
+	verb := ctxutil.GetVerb(ctx)
 
 	switch verb {
 	case "list":

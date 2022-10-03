@@ -8,7 +8,7 @@ import (
 	"sync"
 
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/config"
-	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/ctxhelper"
+	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/ctxutil"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/job"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/schedule"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/token"
@@ -32,7 +32,7 @@ func main() {
 
 	hydrateContext(&ctx)
 
-	noun := ctxhelper.GetNoun(ctx)
+	noun := ctxutil.GetNoun(ctx)
 
 	switch noun {
 	case "user":
@@ -60,7 +60,7 @@ func hydrateContext(ctx *context.Context) {
 	// API Url
 	go func() {
 		cfg := config.LoadConfig()
-		ctxhelper.SetApiUrl(ctx, cfg.ApiUrl)
+		ctxutil.SetApiUrl(ctx, cfg.ApiUrl)
 		wg.Done()
 	}()
 
@@ -72,14 +72,14 @@ func hydrateContext(ctx *context.Context) {
 		// Remove the noun and verb, leaving only the options to be parsed later
 		os.Args = os.Args[2:]
 
-		ctxhelper.SetNoun(ctx, noun)
-		ctxhelper.SetVerb(ctx, verb)
+		ctxutil.SetNoun(ctx, noun)
+		ctxutil.SetVerb(ctx, verb)
 
 		// Not parsing here - but this will cause it to not fail in future parsing steps
 		flag.Bool("verbose", false, "Display debugging information")
 
 		verbose := slices.Contains(os.Args, "--verbose") || slices.Contains(os.Args, "-verbose")
-		ctxhelper.SetVerbose(ctx, verbose)
+		ctxutil.SetVerbose(ctx, verbose)
 
 		wg.Done()
 	}()
@@ -91,7 +91,7 @@ func hydrateContext(ctx *context.Context) {
 			ui.WriteFatalf("Error reading token: %s", err.Error())
 		}
 
-		ctxhelper.SetToken(ctx, token)
+		ctxutil.SetToken(ctx, token)
 		wg.Done()
 	}()
 
