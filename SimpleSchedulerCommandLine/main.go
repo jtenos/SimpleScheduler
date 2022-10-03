@@ -2,12 +2,12 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"os"
 	"sync"
 
-	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/config"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/ctxutil"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/job"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/schedule"
@@ -52,6 +52,25 @@ func main() {
 	fmt.Println()
 }
 
+type configuration struct {
+	ApiUrl string `json:"apiUrl"`
+}
+
+func loadConfig() *configuration {
+	file, err := os.Open("conf.json")
+	if err != nil {
+		ui.WriteFatalf(err.Error())
+	}
+	defer file.Close()
+	decoder := json.NewDecoder(file)
+	config := &configuration{}
+	err = decoder.Decode(config)
+	if err != nil {
+		ui.WriteFatalf(err.Error())
+	}
+	return config
+}
+
 func hydrateContext(ctx *context.Context) {
 
 	var wg sync.WaitGroup
@@ -59,7 +78,7 @@ func hydrateContext(ctx *context.Context) {
 
 	// API Url
 	go func() {
-		cfg := config.LoadConfig()
+		cfg := loadConfig()
 		ctxutil.SetApiUrl(ctx, cfg.ApiUrl)
 		wg.Done()
 	}()

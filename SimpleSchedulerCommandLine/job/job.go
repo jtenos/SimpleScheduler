@@ -105,6 +105,7 @@ func list(ctx context.Context) {
 
 }
 
+// TODO: This should live in Worker, not in Job
 func run(ctx context.Context) {
 	var worker int64
 
