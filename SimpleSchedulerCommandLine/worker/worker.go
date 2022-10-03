@@ -9,8 +9,8 @@ import (
 	"unicode/utf8"
 
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/api"
-	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/apimodels"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/ctxutil"
+	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/models"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/ui"
 )
 
@@ -36,8 +36,20 @@ func list(ctx context.Context) {
 	flag.BoolVar(&inactiveOnly, "inactiveonly", false, "Only return inactive workers")
 	flag.Parse()
 
-	req := apimodels.NewGetAllWorkersRequest(name, dir, exe, activeOnly, inactiveOnly)
-	rep := apimodels.NewGetAllWorkersReply()
+	type request struct {
+		WorkerName    string `json:"WorkerName"`
+		DirectoryName string `json:"DirectoryName"`
+		Executable    string `json:"Executable"`
+		ActiveOnly    bool   `json:"ActiveOnly"`
+		InactiveOnly  bool   `json:"InactiveOnly"`
+	}
+
+	type reply struct {
+		Workers []models.WorkerWithSchedules `json:"workers"`
+	}
+
+	req := request{name, dir, exe, activeOnly, inactiveOnly}
+	rep := &reply{}
 	err := api.Post(ctx, "Workers/GetAllWorkers", req, rep)
 
 	if err != nil {
@@ -114,8 +126,16 @@ func list(ctx context.Context) {
 func show(ctx context.Context) {
 	//show --id 123
 
+	// type request struct {
+	// 	ID int64 `json:"id"`
+	// }
+	// type reply struct {
+	// 	Worker *models.WorkerWithSchedules `json:"worker"`
+	// }
+
 	// func getWorker(workerID int64) (*models.WorkerWithSchedules, error) {
-	// 	// rep := apimodels.NewGetWorkerReply()
+	// req := request{workerID}
+	// 	// rep := &reply{}
 	// 	// err := api.Post("Workers/GetWorker", apimodels.NewGetWorkerRequest(workerID), rep)
 	// 	// if err != nil {
 	// 	// return nil, err

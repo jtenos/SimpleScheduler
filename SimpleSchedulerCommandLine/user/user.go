@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/api"
-	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/apimodels"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/ctxutil"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/ui"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/userdir"
@@ -36,8 +35,16 @@ func login(ctx context.Context) {
 		flag.PrintDefaults()
 		ui.WriteFatalf("--email is required")
 	}
-	req := apimodels.NewSubmitEmailRequest(email)
-	rep := apimodels.NewSubmitEmailReply()
+
+	type request struct {
+		EmailAddress string `json:"emailAddress"`
+	}
+	type reply struct {
+		Success bool `json:"success"`
+	}
+
+	req := request{email}
+	rep := &reply{}
 	err := api.Post(ctx, "Login/SubmitEmail", req, rep)
 
 	if err != nil {
@@ -63,8 +70,15 @@ func validate(ctx context.Context) {
 		ui.WriteFatalf("--code is required")
 	}
 
-	req := apimodels.NewValidateEmailRequest(code)
-	rep := apimodels.NewValidateEmailReply()
+	type request struct {
+		ValidationCode string `json:"validationCode"`
+	}
+	type reply struct {
+		JwtToken string `json:"jwtToken"`
+	}
+
+	req := request{code}
+	rep := &reply{}
 	err := api.Post(ctx, "Login/ValidateEmail", req, rep)
 
 	if err != nil {

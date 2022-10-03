@@ -7,8 +7,8 @@ import (
 	"unicode/utf8"
 
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/api"
-	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/apimodels"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/ctxutil"
+	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/models"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerCommandLine/ui"
 )
 
@@ -53,8 +53,20 @@ func list(ctx context.Context) {
 		statusPtr = &status
 	}
 
-	req := apimodels.NewGetJobsRequest(workerPtr, workerNamePtr, statusPtr, int32(limit), 1, false)
-	rep := apimodels.NewGetJobsReply()
+	type request struct {
+		WorkerID    *int64  `json:"WorkerID"`
+		WorkerName  *string `json:"WorkerName"`
+		StatusCode  *string `json:"StatusCode"`
+		RowsPerPage int32   `json:"RowsPerPage"`
+		PageNumber  int32   `json:"PageNumber"`
+		OverdueOnly bool    `json:"OverdueOnly"`
+	}
+	type reply struct {
+		Jobs []models.JobWithWorkerID `json:"Jobs"`
+	}
+
+	req := request{workerPtr, workerNamePtr, statusPtr, int32(limit), 1, false}
+	rep := &reply{}
 	err := api.Post(ctx, "Jobs/GetJobs", req, rep)
 
 	if err != nil {
@@ -103,8 +115,15 @@ func details(ctx context.Context) {
 	flag.Int64Var(&id, "id", 0, "The Job ID")
 	flag.Parse()
 
-	req := apimodels.NewGetDetailedMessageRequest(id)
-	rep := apimodels.NewGetDetailedMessageReply()
+	type request struct {
+		ID int64 `json:"ID"`
+	}
+	type reply struct {
+		DetailedMessage *string
+	}
+
+	req := request{id}
+	rep := &reply{}
 	err := api.Post(ctx, "Jobs/GetDetailedMessage", req, rep)
 
 	if err != nil {
