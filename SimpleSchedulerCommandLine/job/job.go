@@ -80,6 +80,7 @@ func list(ctx context.Context) {
 		job := rep.Jobs[i]
 		jobID := job.ID
 		workerName := job.WorkerName
+		workerID := job.WorkerID
 		var startDate string
 		if job.QueueDateUTC != nil {
 			startDate = job.QueueDateUTC.Time.Format("2006-01-02 15:04:05")
@@ -98,15 +99,32 @@ func list(ctx context.Context) {
 		}
 
 		fmt.Printf("| %-10d| %-47s| %-21s|   %s  | %-8v|\n", jobID, workerName, startDate, stat, hasDetails)
-		fmt.Printf("|           |                                                | %-21s|        |         |\n", complDate)
+		fmt.Printf("|           | Worker ID: %-10d                          | %-21s|        |         |\n", workerID, complDate)
 	}
 	fmt.Println("-------------------------------------------------------------------------------------------------------|")
 
 }
 
 func run(ctx context.Context) {
-	//	run --worker 123
-	//
+	var worker int64
+
+	flag.Int64Var(&worker, "worker", 0, "The Worker ID")
+	flag.Parse()
+
+	type request struct {
+		ID int64 `json:"ID"`
+	}
+	type reply struct{}
+
+	req := request{worker}
+	rep := &reply{}
+	err := api.Post(ctx, "Workers/RunNow", req, &rep)
+
+	if err != nil {
+		ui.WriteFatalf("Error running job: %s", err.Error())
+	}
+
+	fmt.Println("Job created")
 }
 
 func details(ctx context.Context) {
