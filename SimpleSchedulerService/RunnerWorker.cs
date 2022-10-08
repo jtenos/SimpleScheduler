@@ -33,30 +33,28 @@ public sealed class RunnerWorker
         };
 
         int exitCode;
-        string? output;
-        string? error;
-        try
-        {
+		List<string> standardOutput = new();
+		List<string> standardError = new();
+		try
+		{
             using CancellationTokenSource cancellationTokenSource = new(TimeSpan.FromMinutes(_worker.TimeoutMinutes));
-            var result = await ProcessEx.RunAsync(processStartInfo, cancellationTokenSource.Token);
+            var result = await ProcessEx.RunAsync(processStartInfo, standardOutput, standardError, cancellationTokenSource.Token);
             exitCode = result.ExitCode;
-            output = string.Join("\n", result.StandardOutput ?? Array.Empty<string>());
-            error = string.Join("\n", result.StandardError ?? Array.Empty<string>());
         }
         catch (OperationCanceledException)
         {
             exitCode = -1;
-            output = "";
-            error = $"Timeout: {_worker.TimeoutMinutes} minutes";
+            standardError.Add($"Timeout: {_worker.TimeoutMinutes} minutes");
         }
         catch (Exception ex)
         {
             exitCode = -1;
-            output = "";
-            error = ex.ToString();
+            standardError.Add(ex.ToString());
         }
+		string? output = string.Join("\n", standardOutput);
+		string? error = string.Join("\n", standardError);
 
-        bool success;
+		bool success;
         string? detailedMessage;
         if (exitCode == 0)
         {
