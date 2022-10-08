@@ -15,7 +15,7 @@
             {
                 <EditForm id="email-form" Model="@Model" OnValidSubmit="@HandleValidSubmit">
                     <DataAnnotationsValidator />
-                    <ValidationSummary />
+                    <Microsoft.AspNetCore.Components.Forms.ValidationSummary />
 
                     <div class="input-group mb-3">
                         @if (AllEmails.Any())
