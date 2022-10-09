@@ -5,5 +5,6 @@ public record class GetAllWorkersRequest(
 	string? DirectoryName = null,
 	string? Executable = null,
 	bool? ActiveOnly = null,
-	bool? InactiveOnly = null
+	bool? InactiveOnly = null,
+	bool IncludeInactiveSchedules = false
 );

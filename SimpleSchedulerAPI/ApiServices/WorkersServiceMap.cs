@@ -51,9 +51,21 @@ public static class WorkersServiceMap
             inactiveOnly: request.InactiveOnly))
             .Select(w => ApiModelBuilders.GetWorker(w))
             .ToArray();
-        Schedule[] allSchedules = (await scheduleManager.GetAllSchedulesAsync())
-            .Select(s => ApiModelBuilders.GetSchedule(s))
-            .ToArray();
+
+        Schedule[] allSchedules;
+        if (request.IncludeInactiveSchedules)
+        {
+            allSchedules = (await scheduleManager.GetAllSchedulesIncludingInactiveAsync())
+                .Select(s => ApiModelBuilders.GetSchedule(s))
+                .ToArray();
+        }
+        else
+        {
+            allSchedules = (await scheduleManager.GetAllSchedulesAsync())
+                .Select(s => ApiModelBuilders.GetSchedule(s))
+                .ToArray();
+        }
+
         return new(
             Workers: workers.Select(w =>
             {

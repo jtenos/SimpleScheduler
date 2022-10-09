@@ -103,7 +103,7 @@ public class Worker
 
                 (error, GetAllWorkersReply? workersReply) = await _serviceClient.PostAsync<GetAllWorkersRequest, GetAllWorkersReply>(
                     "Workers/GetAllWorkers",
-                    new()
+                    new(IncludeInactiveSchedules: true)
                 );
 
                 if (error is not null)
@@ -121,6 +121,8 @@ public class Worker
                 }
 
                 WorkerWithSchedules[] workers = workersReply.Workers.Where(w => w.Schedules is not null).ToArray();
+
+                _logger.LogDebug("Workers: {0}", System.Text.Json.JsonSerializer.Serialize(workers));
 
                 StringBuilder message = new("OVERDUE JOBS:<br><br>");
                 foreach (var job in jobsReply.Jobs)

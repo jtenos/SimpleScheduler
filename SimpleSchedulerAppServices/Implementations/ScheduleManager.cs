@@ -79,7 +79,20 @@ public sealed class ScheduleManager
         .ToArray();
     }
 
-    async Task<Schedule[]> IScheduleManager.GetSchedulesForWorkerAsync(long workerID)
+    async Task<Schedule[]> IScheduleManager.GetAllSchedulesIncludingInactiveAsync()
+    {
+        DynamicParameters param = new DynamicParameters()
+            .AddBitParam("@IncludeInactive", true);
+
+		return (await _db.GetManyAsync<ScheduleEntity>(
+			"[app].[Schedules_SelectAll]",
+			parameters: param
+		).ConfigureAwait(false))
+		.Select(s => ModelBuilders.GetSchedule(s))
+		.ToArray();
+	}
+
+	async Task<Schedule[]> IScheduleManager.GetSchedulesForWorkerAsync(long workerID)
     {
         DynamicParameters param = new DynamicParameters()
             .AddLongParam("@WorkerID", workerID);
