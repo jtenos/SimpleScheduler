@@ -6,8 +6,8 @@
 		<Nullable>enable</Nullable>
 		<WarningsAsErrors />
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-		<Version>5.0.0</Version>
-		<AssemblyVersion>5.0.0</AssemblyVersion>
+		<Version>6.0.0</Version>
+		<AssemblyVersion>6.0.0</AssemblyVersion>
 	</PropertyGroup>
 
 	<ItemGroup>

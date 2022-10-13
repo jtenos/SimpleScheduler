@@ -6,8 +6,8 @@
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<WarningsAsErrors />
 		<ImplicitUsings>enable</ImplicitUsings>
-		<Version>5.0.0</Version>
-		<AssemblyVersion>5.0.0</AssemblyVersion>
+		<Version>6.0.0</Version>
+		<AssemblyVersion>6.0.0</AssemblyVersion>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Dapper" Version="2.0.123" />

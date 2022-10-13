@@ -7,8 +7,8 @@
 		<WarningsAsErrors />
 		<ImplicitUsings>enable</ImplicitUsings>
 		<UserSecretsId>559df25f-a058-417c-b576-e9a5409a9118</UserSecretsId>
-		<Version>5.0.0</Version>
-		<AssemblyVersion>5.0.0</AssemblyVersion>
+		<Version>6.0.0</Version>
+		<AssemblyVersion>6.0.0</AssemblyVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
