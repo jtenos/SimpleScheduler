@@ -1,0 +1,27 @@
+{
+    "connectionString":"Server=(localdb)\\MSSqlLocalDb;Database=SimpleSchedulerSqlServerDB;Integrated Security=True;",
+    "pathBase": "/",
+    "_emailFolder": "If this is here, then and emails will write to a file instead of sending an actual email.",
+    "emailFolder": "/tmp/Emails",
+    "mailSettings": {
+        "port": 25,
+        "emailFrom": "noreply@example.com",
+        "adminEmail": "admin@example.com",
+        "host": "mysmtpserver",
+        "userName": "",
+        "password": ""
+    },
+    "workerPath": "/tmp/workers",
+    "webUrl": "http://localhost:8081",
+    "environmentName": "DEV",
+    "jwt": {
+        "key": "64 hex characters",
+        "issuer": "localhost",
+        "audience": "https://localhost:8080"
+    },
+    "internalSecretAuthKey": "32 hex characters",
+    "allowLoginDropdown": false,
+    "terminalLogLevel":"DEBUG",
+    "fileLogLevel": "INFO",
+    "logFileName": "/tmp/logs/scheduler-api-dev/log.txt"
+}
