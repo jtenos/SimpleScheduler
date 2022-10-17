@@ -2,5 +2,5 @@ package datamodels
 
 // [app].[Users] table
 type User struct {
-	EmailAddress string `db:"EmailAddress"`
+	Email string `db:"EmailAddress"`
 }

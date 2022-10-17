@@ -28,6 +28,7 @@ type Configuration struct {
 	MailSettings          MailSettings `json:"mailSettings"`
 	WorkerPath            string       `json:"workerPath"`
 	WebUrl                string       `json:"webUrl"`
+	ApiUrl                string       `json:"apiUrl"`
 	EnvironmentName       string       `json:"environmentName"`
 	Jwt                   Jwt          `json:"jwt"`
 	InternalSecretAuthKey string       `json:"internalSecretAuthKey"`

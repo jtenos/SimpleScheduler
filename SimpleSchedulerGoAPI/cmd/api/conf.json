@@ -12,6 +12,7 @@
         "password": ""
     },
     "workerPath": "/tmp/workers",
+    "apiUrl": "http://localhost:8080",
     "webUrl": "http://localhost:8081",
     "environmentName": "DEV",
     "jwt": {

@@ -16,6 +16,9 @@ var conf *config.Configuration
 func main() {
 	ctx := context.Background()
 	conf = config.LoadConfig()
+
+	// TODO: Set up emailer - real or fake - based on config settings
+
 	r := newRouter(ctx, conf)
 	port, ok := os.LookupEnv("PORT")
 	if !ok {

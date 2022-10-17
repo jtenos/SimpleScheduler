@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/microsoft/go-mssqldb"
@@ -25,22 +26,33 @@ func (r UserRepo) GetAllUserEmails(ctx context.Context) (emails []string, err er
 	defer db.Close()
 
 	var users []datamodels.User
-	err = db.Select(&users, "[app].[Users_SelectAll]")
-	//rows, err := db.QueryContext(ctx, "[app].[Users_SelectAll]")
+	err = db.SelectContext(ctx, &users, "[app].[Users_SelectAll]")
 	if err != nil {
 		return
 	}
 
 	for i := range users {
-		emails = append(emails, users[i].EmailAddress)
+		emails = append(emails, users[i].Email)
+	}
+	return
+}
+
+func (r UserRepo) SubmitEmail(ctx context.Context, email string) (valCd string, err error) {
+	db, err := sqlx.Open("sqlserver", r.connStr)
+	if err != nil {
+		valCd = ""
+		return
+	}
+	defer db.Close()
+
+	var submitResp datamodels.SubmitLoginResult
+	row := db.QueryRowxContext(ctx, "[app].[Users_SubmitLogin]", sql.Named("EmailAddress", email))
+	err = row.StructScan(&submitResp)
+	if err != nil {
+		valCd = ""
+		return
 	}
 
-	// defer rows.Close()
-	// for rows.Next() {
-	// 	u := new(datamodels.User)
-	// 	rows.Scan(&u)
-	// 	emails = append(emails, u.EmailAddress)
-	// 	log.Printf("user: %s\n", u.EmailAddress)
-	// }
+	valCd = submitResp.ValidationCode.String()
 	return
 }
