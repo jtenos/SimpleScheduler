@@ -1,5 +1,5 @@
 {
-    "connectionString":"Server=(localdb)\\MSSqlLocalDb;Database=SimpleSchedulerSqlServerDB;Integrated Security=True;",
+    "connectionString":"Server=host.docker.internal;Database=SimpleScheduler;User Id=scheduser;Password=scheduser;",
     "pathBase": "/",
     "_emailFolder": "If this is here, then and emails will write to a file instead of sending an actual email.",
     "emailFolder": "/tmp/Emails",

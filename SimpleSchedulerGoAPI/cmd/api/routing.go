@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
@@ -10,11 +11,12 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/config"
 	homeHandlers "github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/handlers/home"
+	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/handlers/security"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
 )
 
-func newRouter(conf *config.Configuration) *mux.Router {
+func newRouter(ctx context.Context, conf *config.Configuration) *mux.Router {
 	r := mux.NewRouter()
 
 	// HOME
@@ -36,6 +38,7 @@ func newRouter(conf *config.Configuration) *mux.Router {
 	*/
 
 	// SECURITY
+	setHandling(r, "/security/getAllUserEmails", security.NewGetAllUserEmailsHandler(ctx, conf.ConnectionString))
 	/*
 			        app.MapPost("/Login/GetAllUserEmails", GetAllUserEmailsAsync);
 		        app.MapPost("/Login/IsLoggedIn", IsLoggedInAsync);

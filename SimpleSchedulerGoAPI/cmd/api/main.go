@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
@@ -13,8 +14,9 @@ import (
 var conf *config.Configuration
 
 func main() {
+	ctx := context.Background()
 	conf = config.LoadConfig()
-	r := newRouter(conf)
+	r := newRouter(ctx, conf)
 	port, ok := os.LookupEnv("PORT")
 	if !ok {
 		port = "8080"
