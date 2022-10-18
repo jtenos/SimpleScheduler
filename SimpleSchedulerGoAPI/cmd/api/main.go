@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/config"
+	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/emailer"
 )
 
 var conf *config.Configuration
@@ -17,7 +18,16 @@ func main() {
 	ctx := context.Background()
 	conf = config.LoadConfig()
 
-	// TODO: Set up emailer - real or fake - based on config settings
+	if len(conf.EmailFolder) > 0 {
+		emailer.SetEmailFolder(conf.EmailFolder)
+	} else if len(conf.MailSettings.Host) > 0 {
+		emailer.SetEmailConfiguration(conf.MailSettings.Port, conf.MailSettings.EmailFrom,
+			conf.MailSettings.AdminEmail, conf.MailSettings.Host, conf.MailSettings.UserName,
+			conf.MailSettings.Password)
+	} else {
+		log.Fatal("You must have MailSettings or EmailFolder in your configuration")
+		return
+	}
 
 	r := newRouter(ctx, conf)
 	port, ok := os.LookupEnv("PORT")

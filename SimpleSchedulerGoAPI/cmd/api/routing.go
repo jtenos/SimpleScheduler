@@ -16,6 +16,16 @@ import (
 	"golang.org/x/text/message"
 )
 
+type statusRecorder struct {
+	http.ResponseWriter
+	status int
+}
+
+func (r *statusRecorder) WriteHeader(status int) {
+	r.status = status
+	r.ResponseWriter.WriteHeader(status)
+}
+
 func newRouter(ctx context.Context, conf *config.Configuration) *mux.Router {
 	r := mux.NewRouter()
 
@@ -39,7 +49,7 @@ func newRouter(ctx context.Context, conf *config.Configuration) *mux.Router {
 
 	// SECURITY
 	setHandling(r, "/security/getAllUserEmails", security.NewGetAllUserEmailsHandler(ctx, conf.ConnectionString)).Methods("GET")
-	setHandling(r, "/security/submitEmail", security.NewSubmitEmailHandler(ctx, conf.ConnectionString, conf.ApiUrl)).Methods("POST")
+	setHandling(r, "/security/submitEmail", security.NewSubmitEmailHandler(ctx, conf.ConnectionString, conf.ApiUrl, conf.EnvironmentName)).Methods("GET")
 	/*
 			        app.MapPost("/Login/GetAllUserEmails", GetAllUserEmailsAsync);
 		        app.MapPost("/Login/IsLoggedIn", IsLoggedInAsync);
@@ -90,19 +100,25 @@ var loggingMu = sync.Mutex{}
 func logging(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
+
+		recorder := &statusRecorder{
+			ResponseWriter: w,
+			status:         200,
+		}
+
 		req := fmt.Sprintf("%s %s", r.Method, r.URL)
 
 		loggingMu.Lock()
 		log.Println(req)
 		loggingMu.Unlock()
 
-		next.ServeHTTP(w, r)
+		next.ServeHTTP(recorder, r)
 		us := time.Since(start).Microseconds()
 		var msg string
 		if us < 1000 {
-			msg = printer.Sprintf("%s completed in %dμs", req, us)
+			msg = printer.Sprintf("%d %s completed in %dμs", recorder.status, req, us)
 		} else {
-			msg = printer.Sprintf("%s completed in %dms", req, us/1000)
+			msg = printer.Sprintf("%d %s completed in %dms", recorder.status, req, us/1000)
 		}
 
 		loggingMu.Lock()

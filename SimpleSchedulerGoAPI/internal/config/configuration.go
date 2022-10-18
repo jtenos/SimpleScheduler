@@ -8,6 +8,7 @@ import (
 )
 
 type MailSettings struct {
+	Port       int    `json:"port"`
 	EmailFrom  string `json:"emailFrom"`
 	AdminEmail string `json:"adminEmail"`
 	Host       string `json:"host"`
