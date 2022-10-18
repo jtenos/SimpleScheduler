@@ -50,11 +50,11 @@ func newRouter(ctx context.Context, conf *config.Configuration) *mux.Router {
 	// SECURITY
 	setHandling(r, "/security/getAllUserEmails", security.NewGetAllUserEmailsHandler(ctx, conf.ConnectionString)).Methods("GET")
 	setHandling(r, "/security/submitEmail", security.NewSubmitEmailHandler(ctx, conf.ConnectionString, conf.ApiUrl, conf.EnvironmentName)).Methods("GET")
+	setHandling(r, "/security/validateEmail", security.NewValidateEmailHandler(ctx, conf.ConnectionString)).Methods("GET")
 	/*
 			        app.MapPost("/Login/GetAllUserEmails", GetAllUserEmailsAsync);
 		        app.MapPost("/Login/IsLoggedIn", IsLoggedInAsync);
 		        app.MapPost("/Login/SubmitEmail", SubmitEmailAsync);
-		        app.MapPost("/Login/ValidateEmail", ValidateEmailAsync);
 	*/
 
 	// SCHEDULES

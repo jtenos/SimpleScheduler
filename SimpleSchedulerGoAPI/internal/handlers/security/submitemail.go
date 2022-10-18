@@ -48,7 +48,7 @@ func (h *SubmitEmailHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	url := fmt.Sprintf("%s/security/validateUser?cd=%s", h.apiUrl, valCd)
+	url := fmt.Sprintf("%s/security/validateEmail?cd=%s", h.apiUrl, valCd)
 	body := new(strings.Builder)
 	fmt.Fprintf(body, "<a href='%s' target=_blank>Click here to log in</a><br><br>", url)
 	fmt.Fprint(body, "Or copy and paste the following:<br><br>")

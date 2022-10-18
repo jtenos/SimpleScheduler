@@ -40,19 +40,40 @@ func (r UserRepo) GetAllUserEmails(ctx context.Context) (emails []string, err er
 func (r UserRepo) SubmitEmail(ctx context.Context, email string) (valCd string, err error) {
 	db, err := sqlx.Open("sqlserver", r.connStr)
 	if err != nil {
-		valCd = ""
 		return
 	}
 	defer db.Close()
 
-	var submitResp datamodels.SubmitLoginResult
+	var submitRes datamodels.SubmitLoginResult
 	row := db.QueryRowxContext(ctx, "[app].[Users_SubmitLogin]", sql.Named("EmailAddress", email))
-	err = row.StructScan(&submitResp)
+	err = row.StructScan(&submitRes)
 	if err != nil {
-		valCd = ""
 		return
 	}
 
-	valCd = submitResp.ValidationCode.String()
+	valCd = submitRes.ValidationCode.String()
+	return
+}
+
+func (r UserRepo) ValidateEmail(ctx context.Context, valCd string) (success bool, email string, notFound bool, expired bool, err error) {
+	db, err := sqlx.Open("sqlserver", r.connStr)
+	if err != nil {
+		return
+	}
+	defer db.Close()
+
+	var valRes datamodels.ValidateLoginResult
+	row := db.QueryRowxContext(ctx, "[app].[Users_ValidateLogin]", sql.Named("ValidationCode", valCd))
+	err = row.StructScan(&valRes)
+	if err != nil {
+		return
+	}
+
+	success = valRes.Success
+	if valRes.Email.Valid {
+		email = valRes.Email.String
+	}
+	notFound = valRes.NotFound
+	expired = valRes.Expired
 	return
 }
