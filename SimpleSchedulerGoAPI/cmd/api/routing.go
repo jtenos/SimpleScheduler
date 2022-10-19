@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/hex"
 	"fmt"
 	"log"
 	"net/http"
@@ -47,10 +48,17 @@ func newRouter(ctx context.Context, conf *config.Configuration) *mux.Router {
 		        app.MapPost("/Jobs/StartDueJobs", StartDueJobsAsync);
 	*/
 
+	jwtKey, err := hex.DecodeString(conf.Jwt.Key)
+	if err != nil {
+		log.Fatalf("error decoding JWT key")
+	}
+
 	// SECURITY
 	setHandling(r, "/security/getAllUserEmails", security.NewGetAllUserEmailsHandler(ctx, conf.ConnectionString)).Methods("GET")
-	setHandling(r, "/security/submitEmail", security.NewSubmitEmailHandler(ctx, conf.ConnectionString, conf.ApiUrl, conf.EnvironmentName)).Methods("GET")
-	setHandling(r, "/security/validateEmail", security.NewValidateEmailHandler(ctx, conf.ConnectionString)).Methods("GET")
+	setHandling(r, "/security/submitEmail", security.NewSubmitEmailHandler(ctx,
+		conf.ConnectionString, conf.ApiUrl, conf.EnvironmentName)).Methods("GET")
+	setHandling(r, "/security/validateEmail", security.NewValidateEmailHandler(ctx,
+		conf.ConnectionString, jwtKey, conf.Jwt.Issuer)).Methods("GET")
 	/*
 			        app.MapPost("/Login/GetAllUserEmails", GetAllUserEmailsAsync);
 		        app.MapPost("/Login/IsLoggedIn", IsLoggedInAsync);

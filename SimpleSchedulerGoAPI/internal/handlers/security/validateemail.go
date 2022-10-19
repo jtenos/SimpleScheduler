@@ -7,15 +7,18 @@ import (
 
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/data"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/handlers/errors"
+	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/jwt"
 )
 
 type ValidateEmailHandler struct {
-	ctx     context.Context
-	connStr string
+	ctx       context.Context
+	connStr   string
+	JwtKey    []byte
+	JwtIssuer string
 }
 
-func NewValidateEmailHandler(ctx context.Context, connStr string) *ValidateEmailHandler {
-	return &ValidateEmailHandler{ctx, connStr}
+func NewValidateEmailHandler(ctx context.Context, connStr string, jwtKey []byte, jwtIssuer string) *ValidateEmailHandler {
+	return &ValidateEmailHandler{ctx, connStr, jwtKey, jwtIssuer}
 }
 
 type validateEmailReply struct {
@@ -52,7 +55,13 @@ func (h *ValidateEmailHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
+	token, err := jwt.CreateToken(h.JwtKey, h.JwtIssuer, email)
+	if err != nil {
+		errors.HandleError(w, r, http.StatusInternalServerError, err.Error(), false)
+		return
+	}
+
 	json.NewEncoder(w).Encode(validateEmailReply{
-		Jwt: "TODO: Insert Token Here",
+		Jwt: token,
 	})
 }

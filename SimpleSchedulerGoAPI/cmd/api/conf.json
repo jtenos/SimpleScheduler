@@ -16,9 +16,9 @@
     "webUrl": "http://localhost:8081",
     "environmentName": "DEV",
     "jwt": {
-        "key": "64 hex characters",
+        "key": "4D65C7C113C348495B2AC69C1823C1528AB05E1741C15951B8049BE9C2398A98",
         "issuer": "localhost",
-        "audience": "https://localhost:8080"
+        "audience": "http://localhost:8080"
     },
     "internalSecretAuthKey": "32 hex characters",
     "allowLoginDropdown": false,
