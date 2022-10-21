@@ -5,8 +5,8 @@ import (
 	"encoding/hex"
 	"fmt"
 	"log"
+	"math/rand"
 	"net/http"
-	"sync"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -60,11 +60,6 @@ func newRouter(ctx context.Context, conf *config.Configuration) *mux.Router {
 	setHandling(r, "/security/validateEmail", security.NewValidateEmailHandler(ctx,
 		conf.ConnectionString, jwtKey)).Methods("GET")
 	setHandling(r, "/security/validateToken", security.NewValidateTokenHandler(ctx, jwtKey)).Methods("GET")
-	/*
-			        app.MapPost("/Login/GetAllUserEmails", GetAllUserEmailsAsync);
-		        app.MapPost("/Login/IsLoggedIn", IsLoggedInAsync);
-		        app.MapPost("/Login/SubmitEmail", SubmitEmailAsync);
-	*/
 
 	// SCHEDULES
 	/*
@@ -104,11 +99,11 @@ func setHandling(r *mux.Router, path string, handler http.Handler) *mux.Route {
 }
 
 var printer = message.NewPrinter(language.English)
-var loggingMu = sync.Mutex{}
 
 func logging(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
+		reqID := rand.Intn(9000000) + 1000000
 
 		recorder := &statusRecorder{
 			ResponseWriter: w,
@@ -116,22 +111,17 @@ func logging(next http.Handler) http.Handler {
 		}
 
 		req := fmt.Sprintf("%s %s", r.Method, r.URL)
-
-		loggingMu.Lock()
-		log.Println(req)
-		loggingMu.Unlock()
+		log.Printf("%d: >>> %s", reqID, req)
 
 		next.ServeHTTP(recorder, r)
 		us := time.Since(start).Microseconds()
 		var msg string
 		if us < 1000 {
-			msg = printer.Sprintf("%d %s completed in %dμs", recorder.status, req, us)
+			msg = fmt.Sprintf("%d: %d %s completed in %sμs", reqID, recorder.status, req, printer.Sprint(us))
 		} else {
-			msg = printer.Sprintf("%d %s completed in %dms", recorder.status, req, us/1000)
+			msg = fmt.Sprintf("%d: %d %s completed in %sms", reqID, recorder.status, req, printer.Sprint(us/1000))
 		}
 
-		loggingMu.Lock()
 		log.Println(msg)
-		loggingMu.Unlock()
 	})
 }
