@@ -1,21 +1,28 @@
 package jwt
 
 // "time"
+import (
+	"time"
 
-// "github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt"
+)
 
-func CreateToken(jwtKey []byte, jwtIssuer string, email string) (token string, err error) {
-	// TODO: Get this working
-	// key, err := jwt.ParseRSAPrivateKeyFromPEM(jwtKey)
-	// if err != nil {
-	// 	return
-	// }
-	// t := jwt.New(jwt.SigningMethodRS256)
-	// claims := t.Claims.(jwt.MapClaims)
-	// claims["exp"] = time.Now().Add(time.Hour * 12)
-	// claims["authorized"] = true
-	// claims["user"] = email
+type claims struct {
+	Email string `json:"email"`
+	jwt.StandardClaims
+}
 
-	// token, err = t.SignedString(key)
-	// return
+func CreateToken(jwtKey []byte, jwtIssuer string, email string) (tokenStr string, err error) {
+
+	expDt := time.Now().Add(12 * time.Hour)
+	claims := &claims{
+		Email: email,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: expDt.Unix(),
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenStr, err = token.SignedString(jwtKey)
+	return
 }

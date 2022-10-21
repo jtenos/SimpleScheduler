@@ -1,3 +1,9 @@
+## cert: generate a key for the JWT
+.PHONY: cert
+cert:
+	openssl genrsa -out cert/id_rsa 4096
+	openssl rsa -in cert/id_rsa -pubout -out cert/id_rsa.pub
+
 ## tidy: format code and tidy modfile
 .PHONY: tidy
 tidy:
