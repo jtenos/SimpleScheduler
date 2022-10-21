@@ -11,14 +11,13 @@ import (
 )
 
 type ValidateEmailHandler struct {
-	ctx       context.Context
-	connStr   string
-	JwtKey    []byte
-	JwtIssuer string
+	ctx     context.Context
+	connStr string
+	jwtKey  []byte
 }
 
-func NewValidateEmailHandler(ctx context.Context, connStr string, jwtKey []byte, jwtIssuer string) *ValidateEmailHandler {
-	return &ValidateEmailHandler{ctx, connStr, jwtKey, jwtIssuer}
+func NewValidateEmailHandler(ctx context.Context, connStr string, jwtKey []byte) *ValidateEmailHandler {
+	return &ValidateEmailHandler{ctx, connStr, jwtKey}
 }
 
 type validateEmailReply struct {
@@ -55,7 +54,7 @@ func (h *ValidateEmailHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	token, err := jwt.CreateToken(h.JwtKey, h.JwtIssuer, email)
+	token, err := jwt.CreateToken(h.jwtKey, email)
 	if err != nil {
 		errors.HandleError(w, r, http.StatusInternalServerError, err.Error(), false)
 		return
