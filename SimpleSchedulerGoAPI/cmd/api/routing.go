@@ -7,12 +7,14 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/config"
 	homeHandlers "github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/handlers/home"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/handlers/security"
+	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/jwt"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
 )
@@ -28,11 +30,17 @@ func (r *statusRecorder) WriteHeader(status int) {
 }
 
 func newRouter(ctx context.Context, conf *config.Configuration) *mux.Router {
+
+	jwtKey, err := hex.DecodeString(conf.Jwt.Key)
+	if err != nil {
+		log.Fatalf("error decoding JWT key")
+	}
+
 	r := mux.NewRouter()
 
 	// HOME
-	setHandling(r, "/home/getUtcNow", new(homeHandlers.GetUtcNowHandler)).Methods("GET")
-	setHandling(r, "/home/helloThere", new(homeHandlers.HelloThereHandler)).Methods("GET")
+	setHandling(r, "/home/getUtcNow", new(homeHandlers.GetUtcNowHandler), jwtKey).Methods("GET")
+	setHandling(r, "/home/helloThere", new(homeHandlers.HelloThereHandler), jwtKey).Methods("GET")
 
 	// JOBS
 	/*
@@ -48,18 +56,13 @@ func newRouter(ctx context.Context, conf *config.Configuration) *mux.Router {
 		        app.MapPost("/Jobs/StartDueJobs", StartDueJobsAsync);
 	*/
 
-	jwtKey, err := hex.DecodeString(conf.Jwt.Key)
-	if err != nil {
-		log.Fatalf("error decoding JWT key")
-	}
-
 	// SECURITY
-	setHandling(r, "/security/getAllUserEmails", security.NewGetAllUserEmailsHandler(ctx, conf.ConnectionString)).Methods("GET")
+	setHandling(r, "/security/getAllUserEmails", security.NewGetAllUserEmailsHandler(ctx, conf.ConnectionString), jwtKey).Methods("GET")
 	setHandling(r, "/security/submitEmail", security.NewSubmitEmailHandler(ctx,
-		conf.ConnectionString, conf.ApiUrl, conf.EnvironmentName)).Methods("GET")
+		conf.ConnectionString, conf.ApiUrl, conf.EnvironmentName), jwtKey).Methods("GET")
 	setHandling(r, "/security/validateEmail", security.NewValidateEmailHandler(ctx,
-		conf.ConnectionString, jwtKey)).Methods("GET")
-	setHandling(r, "/security/validateToken", security.NewValidateTokenHandler(ctx, jwtKey)).Methods("GET")
+		conf.ConnectionString, jwtKey), jwtKey).Methods("GET")
+	setHandling(r, "/security/validateToken", security.NewValidateTokenHandler(ctx, jwtKey), jwtKey).Methods("GET")
 
 	// SCHEDULES
 	/*
@@ -94,11 +97,46 @@ func newRouter(ctx context.Context, conf *config.Configuration) *mux.Router {
 	return r
 }
 
-func setHandling(r *mux.Router, path string, handler http.Handler) *mux.Route {
-	return r.Handle(path, logging(handler))
+func setHandling(r *mux.Router, path string, handler http.Handler, jwtKey []byte) *mux.Route {
+	return r.Handle(path, authenticating(logging(handler), jwtKey))
 }
 
 var printer = message.NewPrinter(language.English)
+
+func authenticating(next http.Handler, jwtKey []byte) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.Println("Authenticating...")
+		authFields := strings.Split(r.Header.Get("Authorization"), "Bearer ")
+		defer func() {
+			next.ServeHTTP(w, r)
+		}()
+
+		if len(authFields) != 2 {
+			log.Println("Authorization missing or invalid")
+			return
+		}
+
+		tokenStr := authFields[1]
+		log.Printf("JWT Token: %s", tokenStr)
+		email, expires, err := jwt.ReadToken(jwtKey, tokenStr)
+		if err != nil {
+			log.Printf("Error: %s", err.Error())
+			return
+		}
+		log.Printf("Email: %s", email)
+		if expires.Before(time.Now()) {
+			log.Printf("Token expired on %x", expires)
+			return
+		}
+		if len(email) == 0 {
+			return
+		}
+
+		ctx := context.WithValue(r.Context(), jwt.EmailClaimKey{}, email)
+		ctx = context.WithValue(ctx, jwt.TokenExpiresKey{}, expires)
+		r = r.WithContext(ctx)
+	})
+}
 
 func logging(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

@@ -26,11 +26,22 @@ type validateTokenReply struct {
 }
 
 func (h *ValidateTokenHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	tokenStr := r.URL.Query().Get("token")
-	email, expires, err := jwt.ReadToken(h.jwtKey, tokenStr)
-	if err != nil {
-		json.NewEncoder(w).Encode(validateTokenReply{false, "", time.Time{}, err.Error()})
+	val := r.Context().Value(jwt.EmailClaimKey{})
+	if val == nil {
+		json.NewEncoder(w).Encode(validateTokenReply{false, "", time.Time{}, "not logged in"})
 		return
 	}
+	email := val.(string)
+	if len(email) == 0 {
+		json.NewEncoder(w).Encode(validateTokenReply{false, "", time.Time{}, "not logged in"})
+		return
+	}
+	val = r.Context().Value(jwt.TokenExpiresKey{})
+	if val == nil {
+		json.NewEncoder(w).Encode(validateTokenReply{false, "", time.Time{}, "invalid expiration date"})
+		return
+	}
+	expires := val.(time.Time)
+
 	json.NewEncoder(w).Encode(validateTokenReply{true, email, expires, ""})
 }
