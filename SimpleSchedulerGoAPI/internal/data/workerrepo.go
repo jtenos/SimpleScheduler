@@ -3,6 +3,7 @@ package data
 import (
 	"context"
 	"database/sql"
+	"log"
 	"strings"
 
 	"github.com/jmoiron/sqlx"
@@ -42,6 +43,8 @@ func (r WorkerRepo) Search(ctx context.Context, nameFilter string, directoryFilt
 		return
 	}
 
+	log.Printf("Num workerDMs: %d", len(workerDMs))
+
 	// TODO: Improve performance by filtering these schedules
 	var scheduleDMs []datamodels.Schedule
 	err = db.SelectContext(ctx, &scheduleDMs, "[app].[Schedules_SelectAll]",
@@ -50,6 +53,8 @@ func (r WorkerRepo) Search(ctx context.Context, nameFilter string, directoryFilt
 	if err != nil {
 		return
 	}
+
+	log.Printf("Num scheduleDMs: %d", len(scheduleDMs))
 
 	workerScheds := map[int64][]*datamodels.Schedule{}
 
@@ -79,11 +84,11 @@ func (r WorkerRepo) Search(ctx context.Context, nameFilter string, directoryFilt
 				s.TimeOfDayUTC, s.RecurTime, s.RecurBetweenStartUTC, s.RecurBetweenEndUTC, s.OneTime))
 		}
 
-		workers = append(workers, models.NewWorker(
+		workers[i] = models.NewWorker(
 			wdm.ID, wdm.IsActive, wdm.WorkerName, wdm.DetailedDescription, wdm.EmailOnSuccess,
 			wdm.ParentWorkerID, wdm.TimeoutMinutes, wdm.DirectoryName, wdm.Executable,
 			wdm.ArgumentValues, scheds,
-		))
+		)
 	}
 
 	return

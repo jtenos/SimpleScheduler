@@ -7,6 +7,7 @@ import (
 )
 
 func HandleError(w http.ResponseWriter, r *http.Request, statusCode int, errMsg string, showError bool) {
+	w.Header().Set("Content-Type", "text/plain")
 	w.WriteHeader(statusCode)
 	if showError {
 		fmt.Fprintf(w, "%d %s\n", statusCode, errMsg)

@@ -96,14 +96,21 @@ func newRouter(ctx context.Context, conf *config.Configuration) *mux.Router {
 }
 
 func setHandling(r *mux.Router, path string, handler http.Handler, jwtKey []byte) *mux.Route {
-	return r.Handle(path, authenticating(logging(handler), jwtKey))
+	return r.Handle(path, jsoning(authenticating(logging(handler), jwtKey)))
 }
 
 func setHandlingWithoutAuth(r *mux.Router, path string, handler http.Handler, jwtKey []byte) *mux.Route {
-	return r.Handle(path, logging(handler))
+	return r.Handle(path, jsoning(logging(handler)))
 }
 
 var printer = message.NewPrinter(language.English)
+
+func jsoning(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		next.ServeHTTP(w, r)
+	})
+}
 
 func authenticating(next http.Handler, jwtKey []byte) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
