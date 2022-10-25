@@ -7,6 +7,10 @@ import (
 
 type HelloThereHandler struct{}
 
+func NewHelloThereHandler() *HelloThereHandler {
+	return &HelloThereHandler{}
+}
+
 type helloThereReply struct {
 	Message string `json:"message"`
 }

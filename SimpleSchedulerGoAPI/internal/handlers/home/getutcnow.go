@@ -8,6 +8,10 @@ import (
 
 type GetUtcNowHandler struct{}
 
+func NewGetUtcNowHandler() *GetUtcNowHandler {
+	return &GetUtcNowHandler{}
+}
+
 type getUtcNowReply struct {
 	FormattedDateTime string `json:"formattedDateTime"`
 }

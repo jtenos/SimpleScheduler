@@ -14,6 +14,7 @@ import (
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/config"
 	homeHandlers "github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/handlers/home"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/handlers/security"
+	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/handlers/workers"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/jwt"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
@@ -39,8 +40,8 @@ func newRouter(ctx context.Context, conf *config.Configuration) *mux.Router {
 	r := mux.NewRouter()
 
 	// HOME
-	setHandling(r, "/home/getUtcNow", new(homeHandlers.GetUtcNowHandler), jwtKey).Methods("GET")
-	setHandling(r, "/home/helloThere", new(homeHandlers.HelloThereHandler), jwtKey).Methods("GET")
+	setHandling(r, "/home/getUtcNow", homeHandlers.NewGetUtcNowHandler(), jwtKey).Methods("GET")
+	setHandling(r, "/home/helloThere", homeHandlers.NewHelloThereHandler(), jwtKey).Methods("GET")
 
 	// JOBS
 	/*
@@ -58,9 +59,9 @@ func newRouter(ctx context.Context, conf *config.Configuration) *mux.Router {
 
 	// SECURITY
 	setHandling(r, "/security/getAllUserEmails", security.NewGetAllUserEmailsHandler(ctx, conf.ConnectionString), jwtKey).Methods("GET")
-	setHandling(r, "/security/submitEmail", security.NewSubmitEmailHandler(ctx,
+	setHandlingWithoutAuth(r, "/security/submitEmail", security.NewSubmitEmailHandler(ctx,
 		conf.ConnectionString, conf.ApiUrl, conf.EnvironmentName), jwtKey).Methods("GET")
-	setHandling(r, "/security/validateEmail", security.NewValidateEmailHandler(ctx,
+	setHandlingWithoutAuth(r, "/security/validateEmail", security.NewValidateEmailHandler(ctx,
 		conf.ConnectionString, jwtKey), jwtKey).Methods("GET")
 	setHandling(r, "/security/validateToken", security.NewValidateTokenHandler(ctx, jwtKey), jwtKey).Methods("GET")
 
@@ -76,14 +77,11 @@ func newRouter(ctx context.Context, conf *config.Configuration) *mux.Router {
 
 	*/
 
+	setHandling(r, "/workers/search", workers.NewSearchHandler(ctx, conf.ConnectionString), jwtKey).Methods("GET")
 	// WORKERS
 	/*
 			        app.MapPost("/Workers/CreateWorker", CreateWorkerAsync);
 		        app.MapPost("/Workers/DeleteWorker", DeleteWorkerAsync);
-		        app.MapPost("/Workers/GetAllWorkers", GetAllWorkersAsync);
-		        app.MapPost("/Workers/GetAllActiveWorkerIDNames", GetAllActiveWorkerIDNamesAsync);
-		        app.MapPost("/Workers/GetWorkers", GetWorkersAsync);
-		        app.MapPost("/Workers/GetWorker", GetWorkerAsync);
 		        app.MapPost("/Workers/ReactivateWorker", ReactivateWorkerAsync);
 		        app.MapPost("/Workers/RunNow", RunNowAsync);
 		        app.MapPost("/Workers/UpdateWorker", UpdateWorkerAsync);
@@ -101,18 +99,21 @@ func setHandling(r *mux.Router, path string, handler http.Handler, jwtKey []byte
 	return r.Handle(path, authenticating(logging(handler), jwtKey))
 }
 
+func setHandlingWithoutAuth(r *mux.Router, path string, handler http.Handler, jwtKey []byte) *mux.Route {
+	return r.Handle(path, logging(handler))
+}
+
 var printer = message.NewPrinter(language.English)
 
 func authenticating(next http.Handler, jwtKey []byte) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Println("Authenticating...")
 		authFields := strings.Split(r.Header.Get("Authorization"), "Bearer ")
-		defer func() {
-			next.ServeHTTP(w, r)
-		}()
 
 		if len(authFields) != 2 {
 			log.Println("Authorization missing or invalid")
+			w.WriteHeader(http.StatusUnauthorized)
+			fmt.Fprintf(w, "Unauthorized\n")
 			return
 		}
 
@@ -121,20 +122,28 @@ func authenticating(next http.Handler, jwtKey []byte) http.Handler {
 		email, expires, err := jwt.ReadToken(jwtKey, tokenStr)
 		if err != nil {
 			log.Printf("Error: %s", err.Error())
+			w.WriteHeader(http.StatusBadRequest)
+			fmt.Fprintf(w, "Error reading token\n")
 			return
 		}
 		log.Printf("Email: %s", email)
 		if expires.Before(time.Now()) {
 			log.Printf("Token expired on %x", expires)
+			w.WriteHeader(http.StatusUnauthorized)
+			fmt.Fprintf(w, "Token expired\n")
 			return
 		}
 		if len(email) == 0 {
+			log.Printf("Email is empty")
+			w.WriteHeader(http.StatusUnauthorized)
+			fmt.Fprintf(w, "Unauthorized\n")
 			return
 		}
 
 		ctx := context.WithValue(r.Context(), jwt.EmailClaimKey{}, email)
 		ctx = context.WithValue(ctx, jwt.TokenExpiresKey{}, expires)
 		r = r.WithContext(ctx)
+		next.ServeHTTP(w, r)
 	})
 }
 
