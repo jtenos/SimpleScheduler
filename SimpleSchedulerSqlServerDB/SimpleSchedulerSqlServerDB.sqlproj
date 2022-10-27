@@ -91,8 +91,6 @@
     <Build Include="app\Procedures\Workers_Insert.sql" />
     <Build Include="app\Procedures\Workers_Reactivate.sql" />
     <Build Include="app\Procedures\Workers_Select.sql" />
-    <Build Include="app\Procedures\Workers_SelectAll.sql" />
-    <Build Include="app\Procedures\Workers_SelectMany.sql" />
     <Build Include="app\Procedures\Workers_Update.sql" />
     <Build Include="app\Tables\Jobs.sql" />
     <Build Include="app\Tables\LoginAttempts.sql" />

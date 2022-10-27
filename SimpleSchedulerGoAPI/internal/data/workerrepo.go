@@ -31,8 +31,23 @@ func (r WorkerRepo) Search(ctx context.Context, nameFilter string, directoryFilt
 	activeOnly := strings.EqualFold(statusFilter, "active")
 	inactiveOnly := strings.EqualFold(statusFilter, "inactive")
 
+	/*
+		Workers_Select:
+
+		@ID BIGINT = NULL
+		,@IDs NVARCHAR(MAX) = NULL -- JSON: [123,456]
+		,@ParentWorkerID BIGINT = NULL
+		,@WorkerName NVARCHAR(100) = NULL
+		,@DirectoryName NVARCHAR(1000) = NULL
+		,@Executable NVARCHAR(1000) = NULL
+		,@ActiveOnly BIT = NULL
+		,@InactiveOnly BIT = NULL
+
+		Selects matching workers and then all matching schedules in second query
+	*/
+
 	var workerDMs []datamodels.Worker
-	err = db.SelectContext(ctx, &workerDMs, "[app].[Workers_SelectAll]",
+	err = db.SelectContext(ctx, &workerDMs, "[app].[Workers_Select]",
 		sql.Named("WorkerName", nameFilter),
 		sql.Named("DirectoryName", directoryFilter),
 		sql.Named("Executable", executableFilter),

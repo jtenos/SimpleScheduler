@@ -38,3 +38,5 @@ BEGIN
 	END CATCH;
 END;
 GO
+
+-- TODO: Move this into regular Update proc

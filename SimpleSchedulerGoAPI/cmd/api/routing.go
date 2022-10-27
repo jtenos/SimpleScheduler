@@ -58,7 +58,7 @@ func newRouter(ctx context.Context, conf *config.Configuration) *mux.Router {
 	*/
 
 	// SECURITY
-	setHandling(r, "/security/getAllUserEmails", security.NewGetAllUserEmailsHandler(ctx, conf.ConnectionString), jwtKey).Methods("GET")
+	setHandlingWithoutAuth(r, "/security/getAllUserEmails", security.NewGetAllUserEmailsHandler(ctx, conf.ConnectionString), jwtKey).Methods("GET")
 	setHandlingWithoutAuth(r, "/security/submitEmail", security.NewSubmitEmailHandler(ctx,
 		conf.ConnectionString, conf.ApiUrl, conf.EnvironmentName), jwtKey).Methods("GET")
 	setHandlingWithoutAuth(r, "/security/validateEmail", security.NewValidateEmailHandler(ctx,

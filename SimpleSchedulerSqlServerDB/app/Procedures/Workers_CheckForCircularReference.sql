@@ -41,3 +41,5 @@ BEGIN
 	END CATCH;
 END;
 GO
+
+-- TODO: Remove this proc and do it in code after running Workers_Select [all]
