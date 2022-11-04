@@ -1,6 +1,5 @@
 ﻿CREATE PROCEDURE [app].[Workers_Select]
-	 @ID BIGINT = NULL
-	,@IDs NVARCHAR(MAX) = NULL -- JSON: [123,456]
+	 @IDs NVARCHAR(MAX) = NULL -- JSON: [123,456]
 	,@ParentWorkerID BIGINT = NULL
 	,@WorkerName NVARCHAR(100) = NULL
 	,@DirectoryName NVARCHAR(1000) = NULL
@@ -30,10 +29,8 @@ BEGIN
 			';
 		END;
 
-		SET @SQL += N' SELECT * INTO #Workers FROM [app].[Workers] WHERE 1 = 1 ';
+		SET @SQL += N' SELECT * FROM [app].[Workers] WHERE 1 = 1 ';
 
-		IF @ID IS NOT NULL
-			SET @SQL += N' AND [ID] = @ID ';
 		IF @ParentWorkerID IS NOT NULL
 			SET @SQL += N' AND [ParentWorkerID] = @ParentWorkerID ';
 		IF @WorkerName IS NOT NULL
@@ -46,30 +43,20 @@ BEGIN
 			SET @SQL += N' AND [IsActive] = 1 ';
 		IF @InactiveOnly = 1
 			SET @SQL += N' AND [IsActive] = 0 ';
-
 		IF @IDs IS NOT NULL
-		BEGIN
 			SET @SQL += N' AND [ID] IN (SELECT [ID] FROM #IDs) ';
-		END;
 
-		SET @SQL += N';
-			SELECT * FROM #Workers;
-			SELECT * FROM [app].[Schedules] WHERE [WorkerID] IN (
-				SELECT [ID] FROM #Workers
-			);
-		';
+		SET @SQL += N';';
 
 		EXECUTE sp_executesql
 			@SQL
 			,N'
-				 @ID BIGINT
-				,@IDs NVARCHAR(MAX)
+				 @IDs NVARCHAR(MAX)
 				,@ParentWorkerID BIGINT
 				,@WorkerName NVARCHAR(100)
 				,@DirectoryName NVARCHAR(1000)
 				,@Executable NVARCHAR(1000)
 			'
-			,@ID = @ID
 			,@IDs = @IDs
 			,@ParentWorkerID = @ParentWorkerID
 			,@WorkerName = @WorkerName
