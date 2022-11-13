@@ -20,10 +20,6 @@ func NewCreateHandler(ctx context.Context, connStr string, workerPath string) *C
 	return &CreateHandler{ctx, connStr, workerPath}
 }
 
-type createReply struct {
-	WorkerID int64 `json:"workerID"`
-}
-
 func (h *CreateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	var worker models.Worker
@@ -35,7 +31,7 @@ func (h *CreateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		worker.TimeoutMinutes, worker.Directory, worker.Executable, worker.Args, h.workerPath,
 	)
 	if err != nil {
-		errorhandling.HandleError(w, r, err)
+		errorhandling.HandleError(w, r, err, "CreateHandler.ServeHTTP")
 	}
 }
 

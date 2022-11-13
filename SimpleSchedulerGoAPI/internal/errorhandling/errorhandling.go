@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func HandleError(w http.ResponseWriter, r *http.Request, err error) {
+func HandleError(w http.ResponseWriter, r *http.Request, err error, caller string) {
 	w.Header().Set("Content-Type", "text/plain")
 
 	var statusCode int
@@ -22,5 +22,5 @@ func HandleError(w http.ResponseWriter, r *http.Request, err error) {
 		w.WriteHeader(statusCode)
 	}
 
-	log.Printf("Status %d: %s", statusCode, err.Error())
+	log.Printf("Status %d: %s | %s", statusCode, err.Error(), caller)
 }

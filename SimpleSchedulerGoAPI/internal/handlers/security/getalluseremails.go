@@ -26,7 +26,7 @@ func (h *GetAllUserEmailsHandler) ServeHTTP(w http.ResponseWriter, r *http.Reque
 	userRepo := data.NewUserRepo(h.connStr)
 	emails, err := userRepo.GetAllUserEmails(h.ctx)
 	if err != nil {
-		errorhandling.HandleError(w, r, err)
+		errorhandling.HandleError(w, r, err, "GetAllUserEmailsHandler.ServeHTTP")
 		return
 	}
 	json.NewEncoder(w).Encode(getEmailsReply{

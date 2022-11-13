@@ -1,5 +1,7 @@
 package datamodels
 
+import "database/sql"
+
 // [app].[Workers] table
 type Worker struct {
 	ID                  int64  `db:"ID"`
@@ -12,4 +14,9 @@ type Worker struct {
 	DirectoryName       string `db:"DirectoryName"`
 	Executable          string `db:"Executable"`
 	ArgumentValues      string `db:"ArgumentValues"`
+}
+
+func (w *Worker) Hydrate(rows *sql.Rows) error {
+	return rows.Scan(&w.ID, &w.IsActive, &w.WorkerName, &w.DetailedDescription, &w.EmailOnSuccess,
+		&w.ParentWorkerID, &w.TimeoutMinutes, &w.DirectoryName, &w.Executable, &w.ArgumentValues)
 }

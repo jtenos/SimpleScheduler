@@ -37,7 +37,7 @@ BEGIN
         SET [ValidateDateUTC] = SYSUTCDATETIME()
         WHERE [ID] = @ID;
 
-        SELECT CAST(1 AS BIT) [Success], @EmailAddress [EmailAddress], CAST(0 AS BIT) [NotFound], CAST(0 AS BIT) [Expired];
+        SELECT CAST(1 AS BIT) [Success], ISNULL(@EmailAddress, '') [EmailAddress], CAST(0 AS BIT) [NotFound], CAST(0 AS BIT) [Expired];
 
 		COMMIT TRANSACTION;
 	END TRY

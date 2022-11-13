@@ -28,27 +28,11 @@ type submitEmailReply struct {
 	Success bool `json:"success"`
 }
 
-type emailRequiredError struct {
-	errorhandling.BadRequestError
-}
-
-func (ere emailRequiredError) Error() string {
-	return "email is required"
-}
-
-type userNotFoundError struct {
-	errorhandling.BadRequestError
-}
-
-func (unfe userNotFoundError) Error() string {
-	return "user not found"
-}
-
 func (h *SubmitEmailHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	email := r.URL.Query().Get("email")
 	if len(email) == 0 {
-		errorhandling.HandleError(w, r, emailRequiredError{})
+		errorhandling.HandleError(w, r, errorhandling.NewBadRequestError("email is required"), "SubmitEmailHandler.ServeHTTP")
 		return
 	}
 
@@ -56,11 +40,11 @@ func (h *SubmitEmailHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	valCd, err := userRepo.SubmitEmail(h.ctx, email)
 	if err != nil {
-		errorhandling.HandleError(w, r, err)
+		errorhandling.HandleError(w, r, errorhandling.NewBadRequestError("user not found"), "SubmitEmailHandler.ServeHTTP")
 		return
 	}
 	if valCd == uuid.Nil.String() {
-		errorhandling.HandleError(w, r, userNotFoundError{})
+		errorhandling.HandleError(w, r, errorhandling.NewBadRequestError("user not found"), "SubmitEmailHandler.ServeHTTP")
 		return
 	}
 

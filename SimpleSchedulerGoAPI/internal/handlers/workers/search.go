@@ -40,7 +40,7 @@ func (h *SearchHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if len(idFilter) > 0 {
 		id, err := strconv.ParseInt(idFilter, 10, 64)
 		if err != nil {
-			errorhandling.HandleError(w, r, errorhandling.NewBadRequestError("invalid id parameter"))
+			errorhandling.HandleError(w, r, errorhandling.NewBadRequestError("invalid id parameter"), "SearchHandler.ServeHTTP")
 			return
 		}
 		idsFilter = []int64{id}
@@ -48,7 +48,7 @@ func (h *SearchHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if len(parentIdFilter) > 0 {
 		pid, err := strconv.ParseInt(parentIdFilter, 10, 64)
 		if err != nil {
-			errorhandling.HandleError(w, r, errorhandling.NewBadRequestError("invalid parent parameter"))
+			errorhandling.HandleError(w, r, errorhandling.NewBadRequestError("invalid parent parameter"), "SearchHandler.ServeHTTP")
 			return
 		}
 		parentWorkerIDFilter = &pid
@@ -58,7 +58,7 @@ func (h *SearchHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	workers, err := workerRepo.Search(h.ctx, idsFilter, parentWorkerIDFilter,
 		nameFilter, directoryFilter, executableFilter, statusFilter)
 	if err != nil {
-		errorhandling.HandleError(w, r, errorhandling.NewInternalServerError(err.Error()))
+		errorhandling.HandleError(w, r, errorhandling.NewInternalServerError(err.Error()), "SearchHandler.ServeHTTP")
 		return
 	}
 	json.NewEncoder(w).Encode(searchReply{Workers: workers})

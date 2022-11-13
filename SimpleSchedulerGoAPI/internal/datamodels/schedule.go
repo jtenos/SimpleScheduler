@@ -1,6 +1,9 @@
 package datamodels
 
-import "time"
+import (
+	"database/sql"
+	"time"
+)
 
 // [app].[Schedules table]
 type Schedule struct {
@@ -22,4 +25,10 @@ type Schedule struct {
 	RecurBetweenStartUTC *time.Time `db:"RecurBetweenStartUTC"`
 	RecurBetweenEndUTC   *time.Time `db:"RecurBetweenEndUTC"`
 	OneTime              bool       `db:"OneTime"`
+}
+
+func (s *Schedule) Hydrate(rows *sql.Rows) error {
+	return rows.Scan(&s.ID, &s.IsActive, &s.WorkerID, &s.Sunday, &s.Monday, &s.Tuesday,
+		&s.Wednesday, &s.Thursday, &s.Friday, &s.Saturday, &s.TimeOfDayUTC, &s.RecurTime,
+		&s.RecurBetweenStartUTC, &s.RecurBetweenEndUTC, &s.OneTime)
 }

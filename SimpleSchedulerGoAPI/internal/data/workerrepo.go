@@ -10,7 +10,6 @@ import (
 	"path"
 	"strings"
 
-	"github.com/jmoiron/sqlx"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/datamodels"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/errorhandling"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/models"
@@ -43,22 +42,18 @@ func (r WorkerRepo) Create(ctx context.Context, name string, description string,
 		return
 	}
 
-	db, err := sqlx.Open("sqlserver", r.connStr)
+	db, err := sql.Open("sqlserver", r.connStr)
 	if err != nil {
 		return
 	}
 	defer db.Close()
 
-	type insertResult struct {
-		ID                int64 `db:"ID"`
-		Success           bool  `db:"Success"`
-		NameAlreadyExists bool  `db:"NameAlreadyExists"`
-		CircularReference bool  `db:"CircularReference"`
-	}
+	var id int64
+	var success bool
+	var nameAlreadyExists bool
+	var circularReference bool
 
-	var res insertResult
-
-	err = db.GetContext(ctx, &res, "[app].[Workers_Insert]",
+	row := db.QueryRowContext(ctx, "[app].[Workers_Insert]",
 		sql.Named("WorkerName", name),
 		sql.Named("DetailedDescription", description),
 		sql.Named("EmailOnSuccess", emailOnSuccess),
@@ -68,22 +63,22 @@ func (r WorkerRepo) Create(ctx context.Context, name string, description string,
 		sql.Named("Executable", executable),
 		sql.Named("ArgumentValues", args),
 	)
-	if err != nil {
+	if err = row.Scan(&id, &success, &nameAlreadyExists, &circularReference); err != nil {
 		return
 	}
-	if res.CircularReference {
+	if circularReference {
 		err = errorhandling.NewBadRequestError("circular reference")
 		return
 	}
-	if res.NameAlreadyExists {
+	if nameAlreadyExists {
 		err = errorhandling.NewBadRequestError("name already exists")
 		return
 	}
-	if !res.Success {
+	if !success {
 		err = errors.New("unknown error")
 		return
 	}
-	workers, err := r.Search(ctx, []int64{res.ID}, nil, "", "", "", "")
+	workers, err := r.Search(ctx, []int64{id}, nil, "", "", "", "")
 	worker = workers[0]
 	log.Println(worker)
 	return
@@ -92,7 +87,7 @@ func (r WorkerRepo) Create(ctx context.Context, name string, description string,
 func (r WorkerRepo) Search(ctx context.Context, idsFilter []int64, parentWorkerIDFilter *int64,
 	nameFilter string, directoryFilter string, executableFilter string, statusFilter string) (workers []*models.Worker, err error) {
 
-	db, err := sqlx.Open("sqlserver", r.connStr)
+	db, err := sql.Open("sqlserver", r.connStr)
 	if err != nil {
 		return
 	}
@@ -101,11 +96,14 @@ func (r WorkerRepo) Search(ctx context.Context, idsFilter []int64, parentWorkerI
 	activeOnly := strings.EqualFold(statusFilter, "active")
 	inactiveOnly := strings.EqualFold(statusFilter, "inactive")
 
-	idsJson, _ := json.Marshal(idsFilter)
+	var idsJson []byte
+	if idsFilter != nil {
+		idsJson, _ = json.Marshal(idsFilter)
+	}
 
 	var workerDMs []datamodels.Worker
-	err = db.SelectContext(ctx, &workerDMs, "[app].[Workers_Select]",
-		sql.Named("IDs", string(idsJson)),
+	rows, err := db.QueryContext(ctx, "[app].[Workers_Select]",
+		sql.Named("IDs", sql.NullString{String: string(idsJson), Valid: idsJson != nil}),
 		sql.Named("ParentWorkerID", parentWorkerIDFilter),
 		sql.Named("WorkerName", nameFilter),
 		sql.Named("DirectoryName", directoryFilter),
@@ -115,6 +113,15 @@ func (r WorkerRepo) Search(ctx context.Context, idsFilter []int64, parentWorkerI
 	)
 	if err != nil {
 		return
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var w datamodels.Worker
+		err = w.Hydrate(rows)
+		if err != nil {
+			return
+		}
+		workerDMs = append(workerDMs, w)
 	}
 
 	log.Printf("Num workerDMs: %d", len(workerDMs))
@@ -127,14 +134,26 @@ func (r WorkerRepo) Search(ctx context.Context, idsFilter []int64, parentWorkerI
 	workerIDsJson, _ := json.Marshal(workerIDs)
 
 	var scheduleDMs []datamodels.Schedule
-	err = db.SelectContext(ctx, &scheduleDMs, "[app].[Schedules_Select]",
+	rows, err = db.QueryContext(ctx, "[app].[Schedules_Select]",
 		sql.Named("WorkerIDs", string(workerIDsJson)),
 	)
 	if err != nil {
 		return
 	}
+	for rows.Next() {
+		var s datamodels.Schedule
+		err = s.Hydrate(rows)
+		if err != nil {
+			return
+		}
+		scheduleDMs = append(scheduleDMs, s)
+	}
 
 	log.Printf("Num scheduleDMs: %d", len(scheduleDMs))
+
+	for i := range scheduleDMs {
+		log.Printf("%#v", scheduleDMs[i])
+	}
 
 	// WorkerID, Worker
 	workerMap := map[int64]*models.Worker{}
@@ -157,6 +176,7 @@ func (r WorkerRepo) Search(ctx context.Context, idsFilter []int64, parentWorkerI
 
 	for i := range scheduleDMs {
 		w := workerMap[scheduleDMs[i].WorkerID]
+		log.Printf("Looking up worker %d for schedule %d", scheduleDMs[i].WorkerID, scheduleDMs[i].ID)
 		w.Schedules = append(w.Schedules, models.NewSchedule(
 			scheduleDMs[i].ID,
 			scheduleDMs[i].IsActive,
