@@ -4,11 +4,15 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"log"
+	"os"
+	"path"
 	"strings"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/data/datamodels"
+	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/datamodels"
+	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/errorhandling"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/models"
 )
 
@@ -18,6 +22,71 @@ type WorkerRepo struct {
 
 func NewWorkerRepo(connStr string) WorkerRepo {
 	return WorkerRepo{connStr}
+}
+
+func isValidExec(dir string, exe string, workerPath string) bool {
+	if strings.Contains(dir, "/") || strings.Contains(dir, "\\") || strings.Contains(exe, "/") || strings.Contains(exe, "\\") {
+		return false
+	}
+
+	fullPath := path.Join(workerPath, dir, exe)
+	_, err := os.Lstat(fullPath)
+
+	return err == nil
+}
+
+func (r WorkerRepo) Create(ctx context.Context, name string, description string, emailOnSuccess string, parentWorkerID *int64,
+	timeoutMinutes int32, directory string, executable string, args string, workerPath string) (worker *models.Worker, err error) {
+
+	if !isValidExec(directory, executable, workerPath) {
+		err = errors.New("invalid executable")
+		return
+	}
+
+	db, err := sqlx.Open("sqlserver", r.connStr)
+	if err != nil {
+		return
+	}
+	defer db.Close()
+
+	type insertResult struct {
+		ID                int64 `db:"ID"`
+		Success           bool  `db:"Success"`
+		NameAlreadyExists bool  `db:"NameAlreadyExists"`
+		CircularReference bool  `db:"CircularReference"`
+	}
+
+	var res insertResult
+
+	err = db.GetContext(ctx, &res, "[app].[Workers_Insert]",
+		sql.Named("WorkerName", name),
+		sql.Named("DetailedDescription", description),
+		sql.Named("EmailOnSuccess", emailOnSuccess),
+		sql.Named("ParentWorkerID", parentWorkerID),
+		sql.Named("TimeoutMinutes", timeoutMinutes),
+		sql.Named("DirectoryName", directory),
+		sql.Named("Executable", executable),
+		sql.Named("ArgumentValues", args),
+	)
+	if err != nil {
+		return
+	}
+	if res.CircularReference {
+		err = errorhandling.NewBadRequestError("circular reference")
+		return
+	}
+	if res.NameAlreadyExists {
+		err = errorhandling.NewBadRequestError("name already exists")
+		return
+	}
+	if !res.Success {
+		err = errors.New("unknown error")
+		return
+	}
+	workers, err := r.Search(ctx, []int64{res.ID}, nil, "", "", "", "")
+	worker = workers[0]
+	log.Println(worker)
+	return
 }
 
 func (r WorkerRepo) Search(ctx context.Context, idsFilter []int64, parentWorkerIDFilter *int64,

@@ -7,7 +7,7 @@ import (
 	"strconv"
 
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/data"
-	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/handlers/errors"
+	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/errorhandling"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/models"
 )
 
@@ -40,7 +40,7 @@ func (h *SearchHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if len(idFilter) > 0 {
 		id, err := strconv.ParseInt(idFilter, 10, 64)
 		if err != nil {
-			errors.HandleError(w, r, http.StatusBadRequest, "invalid id parameter", true)
+			errorhandling.HandleError(w, r, errorhandling.NewBadRequestError("invalid id parameter"))
 			return
 		}
 		idsFilter = []int64{id}
@@ -48,7 +48,7 @@ func (h *SearchHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if len(parentIdFilter) > 0 {
 		pid, err := strconv.ParseInt(parentIdFilter, 10, 64)
 		if err != nil {
-			errors.HandleError(w, r, http.StatusBadRequest, "invalid parent parameter", true)
+			errorhandling.HandleError(w, r, errorhandling.NewBadRequestError("invalid parent parameter"))
 			return
 		}
 		parentWorkerIDFilter = &pid
@@ -58,7 +58,7 @@ func (h *SearchHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	workers, err := workerRepo.Search(h.ctx, idsFilter, parentWorkerIDFilter,
 		nameFilter, directoryFilter, executableFilter, statusFilter)
 	if err != nil {
-		errors.HandleError(w, r, http.StatusInternalServerError, err.Error(), false)
+		errorhandling.HandleError(w, r, errorhandling.NewInternalServerError(err.Error()))
 		return
 	}
 	json.NewEncoder(w).Encode(searchReply{Workers: workers})

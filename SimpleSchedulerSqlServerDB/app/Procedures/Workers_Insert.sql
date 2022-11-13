@@ -47,7 +47,7 @@ BEGIN
             RETURN;
         END;
 
-        SELECT CAST(1 AS BIT) [Success], CAST(0 AS BIT) [NameAlreadyExists], CAST(0 AS BIT) [CircularReference];
+        SELECT @ID [ID], CAST(1 AS BIT) [Success], CAST(0 AS BIT) [NameAlreadyExists], CAST(0 AS BIT) [CircularReference];
 
 		COMMIT TRANSACTION;
 	END TRY

@@ -7,7 +7,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	_ "github.com/microsoft/go-mssqldb"
 
-	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/data/datamodels"
+	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/datamodels"
 )
 
 type UserRepo struct {

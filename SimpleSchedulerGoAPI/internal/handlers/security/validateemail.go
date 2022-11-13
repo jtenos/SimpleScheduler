@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/data"
-	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/handlers/errors"
+	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/errorhandling"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/jwt"
 )
 
@@ -27,36 +27,36 @@ type validateEmailReply struct {
 func (h *ValidateEmailHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	valCd := r.URL.Query().Get("cd")
 	if len(valCd) == 0 {
-		errors.HandleError(w, r, http.StatusBadRequest, "cd parameter is required", true)
+		errorhandling.HandleError(w, r, errorhandling.NewBadRequestError("cd parameter is required"))
 		return
 	}
 
 	userRepo := data.NewUserRepo(h.connStr)
 	success, email, notFound, expired, err := userRepo.ValidateEmail(h.ctx, valCd)
 	if err != nil {
-		errors.HandleError(w, r, http.StatusInternalServerError, err.Error(), false)
+		errorhandling.HandleError(w, r, err)
 		return
 	}
 	if notFound {
-		errors.HandleError(w, r, http.StatusBadRequest, "Validation code not found", true)
+		errorhandling.HandleError(w, r, errorhandling.NewBadRequestError("validation code not found"))
 		return
 	}
 	if expired {
-		errors.HandleError(w, r, http.StatusBadRequest, "Validation code expired", true)
+		errorhandling.HandleError(w, r, errorhandling.NewBadRequestError("validation code expired"))
 		return
 	}
 	if len(email) == 0 {
-		errors.HandleError(w, r, http.StatusInternalServerError, "email is empty", false)
+		errorhandling.HandleError(w, r, errorhandling.NewBadRequestError("email is empty"))
 		return
 	}
 	if !success {
-		errors.HandleError(w, r, http.StatusInternalServerError, "Error calling ValidateEmail, success=false", false)
+		errorhandling.HandleError(w, r, errorhandling.NewInternalServerError("unknown error calling ValidateEmail, success=false"))
 		return
 	}
 
 	token, err := jwt.CreateToken(h.jwtKey, email)
 	if err != nil {
-		errors.HandleError(w, r, http.StatusInternalServerError, err.Error(), false)
+		errorhandling.HandleError(w, r, err)
 		return
 	}
 

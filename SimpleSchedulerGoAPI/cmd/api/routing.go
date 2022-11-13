@@ -27,6 +27,7 @@ type statusRecorder struct {
 
 func (r *statusRecorder) WriteHeader(status int) {
 	r.status = status
+	log.Println("Writing header from statusRecorder.WriteHeader", status)
 	r.ResponseWriter.WriteHeader(status)
 }
 
@@ -78,6 +79,7 @@ func newRouter(ctx context.Context, conf *config.Configuration) *mux.Router {
 	*/
 
 	setHandling(r, "/workers/search", workers.NewSearchHandler(ctx, conf.ConnectionString), jwtKey).Methods("GET")
+	setHandling(r, "/workers/create", workers.NewCreateHandler(ctx, conf.ConnectionString, conf.WorkerPath), jwtKey).Methods("POST")
 	// WORKERS
 	/*
 			        app.MapPost("/Workers/CreateWorker", CreateWorkerAsync);

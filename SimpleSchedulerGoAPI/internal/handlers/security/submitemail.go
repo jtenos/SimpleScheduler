@@ -10,7 +10,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/data"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/emailer"
-	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/handlers/errors"
+	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/errorhandling"
 )
 
 type SubmitEmailHandler struct {
@@ -28,11 +28,27 @@ type submitEmailReply struct {
 	Success bool `json:"success"`
 }
 
+type emailRequiredError struct {
+	errorhandling.BadRequestError
+}
+
+func (ere emailRequiredError) Error() string {
+	return "email is required"
+}
+
+type userNotFoundError struct {
+	errorhandling.BadRequestError
+}
+
+func (unfe userNotFoundError) Error() string {
+	return "user not found"
+}
+
 func (h *SubmitEmailHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	email := r.URL.Query().Get("email")
 	if len(email) == 0 {
-		errors.HandleError(w, r, http.StatusBadRequest, "email parameter is required", true)
+		errorhandling.HandleError(w, r, emailRequiredError{})
 		return
 	}
 
@@ -40,11 +56,11 @@ func (h *SubmitEmailHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	valCd, err := userRepo.SubmitEmail(h.ctx, email)
 	if err != nil {
-		errors.HandleError(w, r, http.StatusInternalServerError, err.Error(), false)
+		errorhandling.HandleError(w, r, err)
 		return
 	}
 	if valCd == uuid.Nil.String() {
-		errors.HandleError(w, r, http.StatusBadRequest, fmt.Errorf("user not found").Error(), true)
+		errorhandling.HandleError(w, r, userNotFoundError{})
 		return
 	}
 

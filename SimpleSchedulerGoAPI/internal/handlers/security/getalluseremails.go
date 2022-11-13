@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/data"
-	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/handlers/errors"
+	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/errorhandling"
 )
 
 type GetAllUserEmailsHandler struct {
@@ -26,7 +26,7 @@ func (h *GetAllUserEmailsHandler) ServeHTTP(w http.ResponseWriter, r *http.Reque
 	userRepo := data.NewUserRepo(h.connStr)
 	emails, err := userRepo.GetAllUserEmails(h.ctx)
 	if err != nil {
-		errors.HandleError(w, r, http.StatusInternalServerError, err.Error(), false)
+		errorhandling.HandleError(w, r, err)
 		return
 	}
 	json.NewEncoder(w).Encode(getEmailsReply{

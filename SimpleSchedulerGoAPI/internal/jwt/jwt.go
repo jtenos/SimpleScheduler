@@ -34,8 +34,8 @@ func CreateToken(jwtKey []byte, email string) (tokenStr string, err error) {
 
 func ReadToken(jwtKey []byte, tokenStr string) (email string, expires time.Time, err error) {
 	c := &claims{}
-	log.Println("jwtKey: ", jwtKey)
-	log.Println("tokenStr: ", tokenStr)
+	//log.Println("jwtKey: ", jwtKey)
+	//log.Println("tokenStr: ", tokenStr)
 	token, err := jwt.ParseWithClaims(tokenStr, c, func(token *jwt.Token) (interface{}, error) {
 		return jwtKey, nil
 	})
