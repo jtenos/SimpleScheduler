@@ -29,7 +29,7 @@ func main() {
 		return
 	}
 
-	r := newRouter(ctx, conf)
+	mux := newMux(ctx, conf)
 	port, ok := os.LookupEnv("PORT")
 	if !ok {
 		port = "8080"
@@ -38,7 +38,7 @@ func main() {
 	addr := fmt.Sprintf(":%s", port)
 	server := http.Server{
 		Addr:         addr,
-		Handler:      r,
+		Handler:      mux,
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 5 * time.Second,
 		IdleTimeout:  5 * time.Second,

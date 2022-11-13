@@ -10,7 +10,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gorilla/mux"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/config"
 	homeHandlers "github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/handlers/home"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/handlers/security"
@@ -31,18 +30,18 @@ func (r *statusRecorder) WriteHeader(status int) {
 	r.ResponseWriter.WriteHeader(status)
 }
 
-func newRouter(ctx context.Context, conf *config.Configuration) *mux.Router {
+func newMux(ctx context.Context, conf *config.Configuration) *http.ServeMux {
+
+	mux := http.NewServeMux()
 
 	jwtKey, err := hex.DecodeString(conf.Jwt.Key)
 	if err != nil {
 		log.Fatalf("error decoding JWT key")
 	}
 
-	r := mux.NewRouter()
-
 	// HOME
-	setHandling(r, "/home/getUtcNow", homeHandlers.NewGetUtcNowHandler(), jwtKey).Methods("GET")
-	setHandling(r, "/home/helloThere", homeHandlers.NewHelloThereHandler(), jwtKey).Methods("GET")
+	setHandling(mux, "/home/getUtcNow", "GET", homeHandlers.NewGetUtcNowHandler(), jwtKey)
+	setHandling(mux, "/home/helloThere", "GET", homeHandlers.NewHelloThereHandler(), jwtKey)
 
 	// JOBS
 	/*
@@ -59,12 +58,12 @@ func newRouter(ctx context.Context, conf *config.Configuration) *mux.Router {
 	*/
 
 	// SECURITY
-	setHandlingWithoutAuth(r, "/security/getAllUserEmails", security.NewGetAllUserEmailsHandler(ctx, conf.ConnectionString), jwtKey).Methods("GET")
-	setHandlingWithoutAuth(r, "/security/submitEmail", security.NewSubmitEmailHandler(ctx,
-		conf.ConnectionString, conf.ApiUrl, conf.EnvironmentName), jwtKey).Methods("GET")
-	setHandlingWithoutAuth(r, "/security/validateEmail", security.NewValidateEmailHandler(ctx,
-		conf.ConnectionString, jwtKey), jwtKey).Methods("GET")
-	setHandling(r, "/security/validateToken", security.NewValidateTokenHandler(ctx, jwtKey), jwtKey).Methods("GET")
+	setHandlingWithoutAuth(mux, "/security/getAllUserEmails", "GET", security.NewGetAllUserEmailsHandler(ctx, conf.ConnectionString), jwtKey)
+	setHandlingWithoutAuth(mux, "/security/submitEmail", "GET", security.NewSubmitEmailHandler(ctx,
+		conf.ConnectionString, conf.ApiUrl, conf.EnvironmentName), jwtKey)
+	setHandlingWithoutAuth(mux, "/security/validateEmail", "GET", security.NewValidateEmailHandler(ctx,
+		conf.ConnectionString, jwtKey), jwtKey)
+	setHandling(mux, "/security/validateToken", "GET", security.NewValidateTokenHandler(ctx, jwtKey), jwtKey)
 
 	// SCHEDULES
 	/*
@@ -78,8 +77,8 @@ func newRouter(ctx context.Context, conf *config.Configuration) *mux.Router {
 
 	*/
 
-	setHandling(r, "/workers/search", workers.NewSearchHandler(ctx, conf.ConnectionString), jwtKey).Methods("GET")
-	setHandling(r, "/workers/create", workers.NewCreateHandler(ctx, conf.ConnectionString, conf.WorkerPath), jwtKey).Methods("POST")
+	setHandling(mux, "/workers/search", "GET", workers.NewSearchHandler(ctx, conf.ConnectionString), jwtKey)
+	setHandling(mux, "/workers/create", "POST", workers.NewCreateHandler(ctx, conf.ConnectionString, conf.WorkerPath), jwtKey)
 	// WORKERS
 	/*
 			        app.MapPost("/Workers/CreateWorker", CreateWorkerAsync);
@@ -90,19 +89,27 @@ func newRouter(ctx context.Context, conf *config.Configuration) *mux.Router {
 
 	*/
 
-	statDir := http.Dir("./www/")
-	statHandler := http.StripPrefix("/www/", http.FileServer(statDir))
-	r.PathPrefix("/www/").Handler(statHandler).Methods("GET")
-
-	return r
+	return mux
 }
 
-func setHandling(r *mux.Router, path string, handler http.Handler, jwtKey []byte) *mux.Route {
-	return r.Handle(path, jsoning(authenticating(logging(handler), jwtKey)))
+func setHandling(r *http.ServeMux, path string, verb string, handler http.Handler, jwtKey []byte) {
+	r.Handle(path, jsoning(authenticating(verbing(logging(handler), verb), jwtKey)))
 }
 
-func setHandlingWithoutAuth(r *mux.Router, path string, handler http.Handler, jwtKey []byte) *mux.Route {
-	return r.Handle(path, jsoning(logging(handler)))
+func setHandlingWithoutAuth(r *http.ServeMux, path string, verb string, handler http.Handler, jwtKey []byte) {
+	r.Handle(path, jsoning(verbing(logging(handler), verb)))
+}
+
+func verbing(next http.Handler, verb string) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != verb {
+			w.Header().Set("Allow", verb)
+			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
 }
 
 var printer = message.NewPrinter(language.English)
