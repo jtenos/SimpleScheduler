@@ -9,11 +9,11 @@ BEGIN
 	BEGIN TRY
 		BEGIN TRANSACTION;
 
-        INSERT INTO [app].[Jobs] (
-            [ScheduleID], [QueueDateUTC]
-        ) VALUES (
+		INSERT INTO [app].[Jobs] (
+			[ScheduleID], [QueueDateUTC]
+		) VALUES (
 			@ScheduleID, @QueueDateUTC
-        );
+		);
 
 		COMMIT TRANSACTION;
 	END TRY

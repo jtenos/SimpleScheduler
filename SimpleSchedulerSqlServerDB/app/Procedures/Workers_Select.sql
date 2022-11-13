@@ -29,7 +29,20 @@ BEGIN
 			';
 		END;
 
-		SET @SQL += N' SELECT * FROM [app].[Workers] WHERE 1 = 1 ';
+		SET @SQL += N' 
+			SELECT
+				 [ID]
+				,[IsActive]
+				,[WorkerName]
+				,[DetailedDescription]
+				,[EmailOnSuccess]
+				,[ParentWorkerID]
+				,[TimeoutMinutes]
+				,[DirectoryName]
+				,[Executable]
+				,[ArgumentValues]
+			FROM [app].[Workers]
+			WHERE 1 = 1 ';
 
 		IF @ParentWorkerID IS NOT NULL
 			SET @SQL += N' AND [ParentWorkerID] = @ParentWorkerID ';

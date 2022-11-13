@@ -8,13 +8,34 @@ BEGIN
 	BEGIN TRY
 		BEGIN TRANSACTION;
 
-		SELECT * FROM [Jobs]
-        WHERE [ID] = @ID;
+		SELECT
+			 [ID]
+			,[ScheduleID]
+			,[InsertDateUTC]
+			,[QueueDateUTC]
+			,[CompleteDateUTC]
+			,[StatusCode]
+			,[AcknowledgementCode]
+			,[AcknowledgementDate]
+			,[HasDetailedMessage]
+		FROM [Jobs]
+		WHERE [ID] = @ID;
 
-		SELECT w.* FROM [app].[Workers] w
-        JOIN [app].[Schedules] s ON w.[ID] = s.[WorkerID]
-        JOIN [app].[Jobs] j ON s.[ID] = j.[ScheduleID]
-        WHERE j.[ID] = @ID;
+		SELECT
+			 w.[ID]
+			,w.[IsActive]
+			,w.[WorkerName]
+			,w.[DetailedDescription]
+			,w.[EmailOnSuccess]
+			,w.[ParentWorkerID]
+			,w.[TimeoutMinutes]
+			,w.[DirectoryName]
+			,w.[Executable]
+			,w.[ArgumentValues]
+		FROM [app].[Workers] w
+		JOIN [app].[Schedules] s ON w.[ID] = s.[WorkerID]
+		JOIN [app].[Jobs] j ON s.[ID] = j.[ScheduleID]
+		WHERE j.[ID] = @ID;
 
 		COMMIT TRANSACTION;
 	END TRY

@@ -9,7 +9,7 @@ BEGIN
 	BEGIN TRY
 		BEGIN TRANSACTION;
 
-        DECLARE @SQL NVARCHAR(MAX) = N' ';
+		DECLARE @SQL NVARCHAR(MAX) = N' ';
 
 		IF @IDs IS NOT NULL
 		BEGIN
@@ -31,7 +31,24 @@ BEGIN
 			';
 		END;
 
-		SET @SQL += N' SELECT * FROM [app].[Schedules] WHERE 1 = 1 ';
+		SET @SQL += N'
+			SELECT
+				 [ID]
+				,[IsActive]
+				,[WorkerID]
+				,[Sunday]
+				,[Monday]
+				,[Tuesday]
+				,[Wednesday]
+				,[Thursday]
+				,[Friday]
+				,[Saturday]
+				,[TimeOfDayUTC]
+				,[RecurTime]
+				,[RecurBetweenStartUTC]
+				,[RecurBetweenEndUTC]
+				,[OneTime]
+			FROM [app].[Schedules] WHERE 1 = 1 ';
 
 		IF @IDs IS NOT NULL
 			SET @SQL += N' AND [ID] IN (SELECT [ID] FROM #IDs) ';

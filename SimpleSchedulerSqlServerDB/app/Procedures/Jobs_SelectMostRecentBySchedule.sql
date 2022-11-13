@@ -8,7 +8,17 @@ BEGIN
 	BEGIN TRY
 		BEGIN TRANSACTION;
 
-		SELECT * FROM [Jobs]
+		SELECT
+			 [ID]
+			,[ScheduleID]
+			,[InsertDateUTC]
+			,[QueueDateUTC]
+			,[CompleteDateUTC]
+			,[StatusCode]
+			,[AcknowledgementCode]
+			,[AcknowledgementDate]
+			,[HasDetailedMessage]
+		FROM [Jobs]
 		WHERE ScheduleID = @ScheduleID
 		ORDER BY QueueDateUTC DESC
 		OFFSET 0 ROWS FETCH NEXT 1 ROW ONLY;

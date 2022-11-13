@@ -1,5 +1,5 @@
 ﻿CREATE PROCEDURE [app].[Workers_Deactivate]
-    @ID BIGINT
+	@ID BIGINT
 AS
 BEGIN
 	SET TRANSACTION ISOLATION LEVEL SNAPSHOT;
@@ -10,13 +10,13 @@ BEGIN
 
 		UPDATE [app].[Schedules] SET [IsActive] = 0 WHERE [WorkerID] = @ID;
 
-        DECLARE @WorkerName NVARCHAR(100);
-        SELECT @WorkerName = [WorkerName] FROM [app].[Workers] WHERE [ID] = @ID;
+		DECLARE @WorkerName NVARCHAR(100);
+		SELECT @WorkerName = [WorkerName] FROM [app].[Workers] WHERE [ID] = @ID;
 
-        DECLARE @NewWorkerName NVARCHAR(150) = N'INACTIVE: ' + FORMAT(SYSUTCDATETIME(), 'yyyyMMddHHmmss')
-            + ' ' + @WorkerName;
+		DECLARE @NewWorkerName NVARCHAR(150) = N'INACTIVE: ' + FORMAT(SYSUTCDATETIME(), 'yyyyMMddHHmmss')
+			+ ' ' + @WorkerName;
 
-        SET @NewWorkerName = LTRIM(RTRIM(LEFT(@NewWorkerName, 100)));
+		SET @NewWorkerName = LTRIM(RTRIM(LEFT(@NewWorkerName, 100)));
 
 		UPDATE [app].[Workers]
 		SET [IsActive] = 0, [WorkerName] = @NewWorkerName

@@ -1,10 +1,10 @@
 ﻿CREATE PROCEDURE [app].[Jobs_Search]
 	@StatusCode NCHAR(3) = NULL
-    ,@WorkerID BIGINT = NULL
-    ,@WorkerName NVARCHAR(100) = NULL
-    ,@OverdueOnly BIT = 0
-    ,@Offset INT = 0
-    ,@NumRows INT = 100
+	,@WorkerID BIGINT = NULL
+	,@WorkerName NVARCHAR(100) = NULL
+	,@OverdueOnly BIT = 0
+	,@Offset INT = 0
+	,@NumRows INT = 100
 AS
 BEGIN
 	SET TRANSACTION ISOLATION LEVEL SNAPSHOT;
@@ -13,43 +13,55 @@ BEGIN
 	BEGIN TRY
 		BEGIN TRANSACTION;
 
-        DECLARE @SQL NVARCHAR(MAX) = N'
-		    SELECT * FROM [app].[JobsWithWorkerID]
-            WHERE 1 = 1
-        ';
+		DECLARE @SQL NVARCHAR(MAX) = N'
+			SELECT
+				 [ID]
+				,[ScheduleID]
+				,[InsertDateUTC]
+				,[QueueDateUTC]
+				,[CompleteDateUTC]
+				,[StatusCode]
+				,[AcknowledgementCode]
+				,[AcknowledgementDate]
+				,[HasDetailedMessage]
+				,[WorkerID]
+				,[WorkerName]
+			FROM [app].[JobsWithWorkerID]
+			WHERE 1 = 1
+		';
 
-        IF @StatusCode IS NOT NULL
-            SET @SQL += N'
-                AND [StatusCode] = @StatusCode
-            ';
+		IF @StatusCode IS NOT NULL
+			SET @SQL += N'
+				AND [StatusCode] = @StatusCode
+			';
 
-        IF @WorkerID IS NOT NULL
-            SET @SQL += N'
-                AND [WorkerID] = @WorkerID
-            ';
+		IF @WorkerID IS NOT NULL
+			SET @SQL += N'
+				AND [WorkerID] = @WorkerID
+			';
 
-        IF @WorkerName IS NOT NULL
-            SET @SQL += N'
-                AND [WorkerName] LIKE ''%'' + @WorkerName + ''%''
-            ';
+		IF @WorkerName IS NOT NULL
+			SET @SQL += N'
+				AND [WorkerName] LIKE ''%'' + @WorkerName + ''%''
+			';
 
-        IF @OverdueOnly = 1
-            SET @SQL += N'
-                AND [StatusCode] IN (''ERR'', ''NEW'', ''RUN'')
-            ';
+		IF @OverdueOnly = 1
+			SET @SQL += N'
+				AND [StatusCode] IN (''ERR'', ''NEW'', ''RUN'')
+			';
 
-        SET @SQL += N'
-            ORDER BY [QueueDateUTC] DESC
-            OFFSET ' + CAST(@Offset AS NVARCHAR(10)) + N' ROWS
-            FETCH NEXT ' + CAST(@NumRows AS NVARCHAR(10)) + N' ROWS ONLY;
-        ';
+		SET @SQL += N'
+			ORDER BY [QueueDateUTC] DESC
+			OFFSET ' + CAST(@Offset AS NVARCHAR(10)) + N' ROWS
+			FETCH NEXT ' + CAST(@NumRows AS NVARCHAR(10)) + N' ROWS ONLY;
+		';
 
-        EXEC sp_executesql
-            @SQL
-            ,N'@StatusCode NCHAR(3), @WorkerID BIGINT, @WorkerName NVARCHAR(100)'
-            ,@StatusCode = @StatusCode
-            ,@WorkerID = @WorkerID
-            ,@WorkerName = @WorkerName;
+		EXEC sp_executesql
+			@SQL
+			,N'@StatusCode NCHAR(3), @WorkerID BIGINT, @WorkerName NVARCHAR(100)'
+			,@StatusCode = @StatusCode
+			,@WorkerID = @WorkerID
+			,@WorkerName = @WorkerName;
 
 		COMMIT TRANSACTION;
 	END TRY

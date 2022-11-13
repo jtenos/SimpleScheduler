@@ -1,5 +1,5 @@
 ﻿CREATE PROCEDURE [app].[Workers_Reactivate]
-    @ID BIGINT
+	@ID BIGINT
 AS
 BEGIN
 	SET TRANSACTION ISOLATION LEVEL SNAPSHOT;
@@ -8,8 +8,8 @@ BEGIN
 	BEGIN TRY
 		BEGIN TRANSACTION;
 
-        DECLARE @WorkerName NVARCHAR(100);
-        SELECT @WorkerName = [WorkerName] FROM [app].[Workers] WHERE [ID] = @ID;
+		DECLARE @WorkerName NVARCHAR(100);
+		SELECT @WorkerName = [WorkerName] FROM [app].[Workers] WHERE [ID] = @ID;
 
 		IF @WorkerName LIKE 'INACTIVE: ______________ %'
 			SET @WorkerName = LTRIM(RTRIM(SUBSTRING(@WorkerName, 26, 100)));

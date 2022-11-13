@@ -8,8 +8,18 @@ BEGIN
 	BEGIN TRY
 		BEGIN TRANSACTION;
 
-		SELECT * FROM [Jobs]
-        WHERE [ID] = @ID;
+		SELECT
+			 [ID]
+			,[ScheduleID]
+			,[InsertDateUTC]
+			,[QueueDateUTC]
+			,[CompleteDateUTC]
+			,[StatusCode]
+			,[AcknowledgementCode]
+			,[AcknowledgementDate]
+			,[HasDetailedMessage]
+		FROM [Jobs]
+		WHERE [ID] = @ID;
 
 		COMMIT TRANSACTION;
 	END TRY

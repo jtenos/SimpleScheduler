@@ -8,7 +8,23 @@ BEGIN
 	BEGIN TRY
 		BEGIN TRANSACTION;
 
-        SELECT * FROM [app].[Schedules] 
+		SELECT
+			 [ID]
+			,[IsActive]
+			,[WorkerID]
+			,[Sunday]
+			,[Monday]
+			,[Tuesday]
+			,[Wednesday]
+			,[Thursday]
+			,[Friday]
+			,[Saturday]
+			,[TimeOfDayUTC]
+			,[RecurTime]
+			,[RecurBetweenStartUTC]
+			,[RecurBetweenEndUTC]
+			,[OneTime]
+		FROM [app].[Schedules] 
 		WHERE [OneTime] = 0 
 		AND [WorkerID] = @WorkerID 
 		AND [IsActive] = 1;

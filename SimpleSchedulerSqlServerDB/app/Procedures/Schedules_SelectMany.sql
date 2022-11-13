@@ -8,8 +8,24 @@ BEGIN
 	BEGIN TRY
 		BEGIN TRANSACTION;
 
-        SELECT * FROM [app].[Schedules]
-        WHERE [ID] IN (SELECT [ID] FROM @IDs);
+		SELECT
+			 [ID]
+			,[IsActive]
+			,[WorkerID]
+			,[Sunday]
+			,[Monday]
+			,[Tuesday]
+			,[Wednesday]
+			,[Thursday]
+			,[Friday]
+			,[Saturday]
+			,[TimeOfDayUTC]
+			,[RecurTime]
+			,[RecurBetweenStartUTC]
+			,[RecurBetweenEndUTC]
+			,[OneTime]
+		FROM [app].[Schedules]
+		WHERE [ID] IN (SELECT [ID] FROM @IDs);
 
 		COMMIT TRANSACTION;
 	END TRY

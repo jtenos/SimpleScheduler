@@ -7,7 +7,9 @@ BEGIN
 	BEGIN TRY
 		BEGIN TRANSACTION;
 
-		SELECT * FROM [app].[Users]
+		SELECT
+			[EmailAddress]
+		FROM [app].[Users]
 		ORDER BY [EmailAddress];
 
 		COMMIT TRANSACTION;

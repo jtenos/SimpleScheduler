@@ -7,7 +7,22 @@ BEGIN
 	BEGIN TRY
 		BEGIN TRANSACTION;
 
-		SELECT *
+		SELECT
+			 [ID]
+			,[IsActive]
+			,[WorkerID]
+			,[Sunday]
+			,[Monday]
+			,[Tuesday]
+			,[Wednesday]
+			,[Thursday]
+			,[Friday]
+			,[Saturday]
+			,[TimeOfDayUTC]
+			,[RecurTime]
+			,[RecurBetweenStartUTC]
+			,[RecurBetweenEndUTC]
+			,[OneTime]
 		FROM [app].[Schedules]
 		WHERE [IsActive] = 1
 		AND [ID] NOT IN (

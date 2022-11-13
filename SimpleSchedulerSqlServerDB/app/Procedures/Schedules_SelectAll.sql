@@ -10,11 +10,59 @@ BEGIN
 		BEGIN TRANSACTION;
 
 		IF @IncludeInactive = 1 AND @IncludeOneTime = 1
-			SELECT * FROM [app].[Schedules];
+			SELECT
+				 [ID]
+				,[IsActive]
+				,[WorkerID]
+				,[Sunday]
+				,[Monday]
+				,[Tuesday]
+				,[Wednesday]
+				,[Thursday]
+				,[Friday]
+				,[Saturday]
+				,[TimeOfDayUTC]
+				,[RecurTime]
+				,[RecurBetweenStartUTC]
+				,[RecurBetweenEndUTC]
+				,[OneTime]
+			FROM [app].[Schedules];
 		ELSE IF @IncludeInactive = 1 AND @IncludeOneTime = 0
-			SELECT * FROM [app].[Schedules] WHERE [OneTime] = 0;
+			SELECT
+				 [ID]
+				,[IsActive]
+				,[WorkerID]
+				,[Sunday]
+				,[Monday]
+				,[Tuesday]
+				,[Wednesday]
+				,[Thursday]
+				,[Friday]
+				,[Saturday]
+				,[TimeOfDayUTC]
+				,[RecurTime]
+				,[RecurBetweenStartUTC]
+				,[RecurBetweenEndUTC]
+				,[OneTime]
+			FROM [app].[Schedules] WHERE [OneTime] = 0;
 		ELSE
-			SELECT * FROM [app].[Schedules] WHERE [OneTime] = 0 AND [IsActive] = 1;
+			SELECT
+				 [ID]
+				,[IsActive]
+				,[WorkerID]
+				,[Sunday]
+				,[Monday]
+				,[Tuesday]
+				,[Wednesday]
+				,[Thursday]
+				,[Friday]
+				,[Saturday]
+				,[TimeOfDayUTC]
+				,[RecurTime]
+				,[RecurBetweenStartUTC]
+				,[RecurBetweenEndUTC]
+				,[OneTime]
+			FROM [app].[Schedules] WHERE [OneTime] = 0 AND [IsActive] = 1;
 
 		COMMIT TRANSACTION;
 	END TRY

@@ -19,15 +19,15 @@ BEGIN
 	BEGIN TRY
 		BEGIN TRANSACTION;
 
-        INSERT INTO [app].[Schedules] (
-            [WorkerID]
+		INSERT INTO [app].[Schedules] (
+			[WorkerID]
 			,[Sunday], [Monday], [Tuesday], [Wednesday], [Thursday], [Friday], [Saturday]
 			,[TimeOfDayUTC], [RecurTime], [RecurBetweenStartUTC], [RecurBetweenEndUTC], [OneTime]
-        ) VALUES (
+		) VALUES (
 			@WorkerID
 			,@Sunday, @Monday, @Tuesday, @Wednesday, @Thursday, @Friday, @Saturday
 			,@TimeOfDayUTC, @RecurTime, @RecurBetweenStartUTC, @RecurBetweenEndUTC, CAST(0 AS BIT)
-        );
+		);
 
 		COMMIT TRANSACTION;
 	END TRY

@@ -1,6 +1,6 @@
 ﻿CREATE PROCEDURE [app].[Workers_CheckForCircularReference]
-    @WorkerID BIGINT
-    ,@IsCircularReference BIT OUTPUT
+	@WorkerID BIGINT
+	,@IsCircularReference BIT OUTPUT
 AS
 BEGIN
 	SET TRANSACTION ISOLATION LEVEL SNAPSHOT;
@@ -9,27 +9,27 @@ BEGIN
 	BEGIN TRY
 		BEGIN TRANSACTION;
 
-        DECLARE @DescendantWorkerIDs TABLE (
-            [ID] BIGINT
-        );
+		DECLARE @DescendantWorkerIDs TABLE (
+			[ID] BIGINT
+		);
 
-        INSERT INTO @DescendantWorkerIDs VALUES (@WorkerID);
+		INSERT INTO @DescendantWorkerIDs VALUES (@WorkerID);
 
-        DECLARE @ParentWorkerID BIGINT;
-        SELECT @ParentWorkerID = [ParentWorkerID] FROM [app].[Workers] WHERE [ID] = @WorkerID;
+		DECLARE @ParentWorkerID BIGINT;
+		SELECT @ParentWorkerID = [ParentWorkerID] FROM [app].[Workers] WHERE [ID] = @WorkerID;
 
-        WHILE @ParentWorkerID IS NOT NULL
-        BEGIN
-            IF EXISTS (SELECT TOP 1 1 FROM @DescendantWorkerIDs WHERE [ID] = @ParentWorkerID)
-            BEGIN
-                SET @IsCircularReference = 1;
-                RETURN;
-            END;
-            INSERT INTO @DescendantWorkerIDs VALUES (@ParentWorkerID);
-            SELECT @ParentWorkerID = [ParentWorkerID] FROM [app].[Workers] WHERE [ID] = @ParentWorkerID;
-        END;
+		WHILE @ParentWorkerID IS NOT NULL
+		BEGIN
+			IF EXISTS (SELECT TOP 1 1 FROM @DescendantWorkerIDs WHERE [ID] = @ParentWorkerID)
+			BEGIN
+				SET @IsCircularReference = 1;
+				RETURN;
+			END;
+			INSERT INTO @DescendantWorkerIDs VALUES (@ParentWorkerID);
+			SELECT @ParentWorkerID = [ParentWorkerID] FROM [app].[Workers] WHERE [ID] = @ParentWorkerID;
+		END;
 
-        SET @IsCircularReference = 0;
+		SET @IsCircularReference = 0;
 
 		COMMIT TRANSACTION;
 	END TRY
