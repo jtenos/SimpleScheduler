@@ -74,6 +74,19 @@ func (r ScheduleRepo) Delete(ctx context.Context, id int64) (err error) {
 	return
 }
 
+func (r ScheduleRepo) Reactivate(ctx context.Context, id int64) (err error) {
+	db, err := sql.Open("sqlserver", r.connStr)
+	if err != nil {
+		return
+	}
+	defer db.Close()
+
+	_, err = db.ExecContext(ctx, "[app].[Schedules_Reactivate]",
+		sql.Named("ID", id),
+	)
+	return
+}
+
 /*
 
 
@@ -131,18 +144,6 @@ func (r WorkerRepo) Update(ctx context.Context, id int64, name string, descripti
 }
 
 
-func (r WorkerRepo) Reactivate(ctx context.Context, id int64) (err error) {
-	db, err := sql.Open("sqlserver", r.connStr)
-	if err != nil {
-		return
-	}
-	defer db.Close()
-
-	_, err = db.ExecContext(ctx, "[app].[Workers_Reactivate]",
-		sql.Named("ID", id),
-	)
-	return
-}
 
 func (r WorkerRepo) RunNow(ctx context.Context, id int64) (err error) {
 	db, err := sql.Open("sqlserver", r.connStr)

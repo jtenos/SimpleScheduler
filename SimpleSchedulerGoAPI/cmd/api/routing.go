@@ -68,13 +68,13 @@ func newMux(ctx context.Context, conf *config.Configuration) *http.ServeMux {
 
 	setHandling(mux, "/schedules/create", "POST", schedules.NewCreateHandler(ctx, conf.ConnectionString), jwtKey)
 	setHandling(mux, "/schedules/delete", "POST", schedules.NewDeleteHandler(ctx, conf.ConnectionString), jwtKey)
+	setHandling(mux, "/schedules/reactivate", "POST", schedules.NewReactivateHandler(ctx, conf.ConnectionString), jwtKey)
 
 	// SCHEDULES
 	/*
 	   app.MapPost("/Schedules/GetAllSchedules", GetAllSchedulesAsync);
 	   app.MapPost("/Schedules/GetSchedules", GetSchedulesAsync);
 	   app.MapPost("/Schedules/GetSchedule", GetScheduleAsync);
-	   app.MapPost("/Schedules/ReactivateSchedule", ReactivateScheduleAsync);
 	   app.MapPost("/Schedules/UpdateSchedule", UpdateScheduleAsync);
 
 	*/
