@@ -67,10 +67,10 @@ func newMux(ctx context.Context, conf *config.Configuration) *http.ServeMux {
 	setHandling(mux, "/security/validateToken", "GET", security.NewValidateTokenHandler(ctx, jwtKey), jwtKey)
 
 	setHandling(mux, "/schedules/create", "POST", schedules.NewCreateHandler(ctx, conf.ConnectionString), jwtKey)
+	setHandling(mux, "/schedules/delete", "POST", schedules.NewDeleteHandler(ctx, conf.ConnectionString), jwtKey)
 
 	// SCHEDULES
 	/*
-	   app.MapPost("/Schedules/DeleteSchedule", DeleteScheduleAsync);
 	   app.MapPost("/Schedules/GetAllSchedules", GetAllSchedulesAsync);
 	   app.MapPost("/Schedules/GetSchedules", GetSchedulesAsync);
 	   app.MapPost("/Schedules/GetSchedule", GetScheduleAsync);

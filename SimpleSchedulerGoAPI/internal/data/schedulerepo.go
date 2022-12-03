@@ -61,49 +61,21 @@ func (r ScheduleRepo) Create(ctx context.Context, workerID int64, sunday bool,
 	return
 }
 
-/*
-
-func (r WorkerRepo) Create(ctx context.Context, name string, description string, emailOnSuccess string, parentWorkerID *int64,
-	timeoutMinutes int32, directory string, executable string, args string, workerPath string) (err error) {
-
+func (r ScheduleRepo) Delete(ctx context.Context, id int64) (err error) {
 	db, err := sql.Open("sqlserver", r.connStr)
 	if err != nil {
 		return
 	}
 	defer db.Close()
 
-	var id int64
-	var success bool
-	var nameAlreadyExists bool
-	var circularReference bool
-
-	row := db.QueryRowContext(ctx, "[app].[Workers_Insert]",
-		sql.Named("WorkerName", name),
-		sql.Named("DetailedDescription", description),
-		sql.Named("EmailOnSuccess", emailOnSuccess),
-		sql.Named("ParentWorkerID", parentWorkerID),
-		sql.Named("TimeoutMinutes", timeoutMinutes),
-		sql.Named("DirectoryName", directory),
-		sql.Named("Executable", executable),
-		sql.Named("ArgumentValues", args),
+	_, err = db.ExecContext(ctx, "[app].[Schedules_Deactivate]",
+		sql.Named("ID", id),
 	)
-	if err = row.Scan(&id, &success, &nameAlreadyExists, &circularReference); err != nil {
-		return
-	}
-	if circularReference {
-		err = errorhandling.NewBadRequestError("circular reference")
-		return
-	}
-	if nameAlreadyExists {
-		err = errorhandling.NewBadRequestError("name already exists")
-		return
-	}
-	if !success {
-		err = errors.New("unknown error")
-		return
-	}
 	return
 }
+
+/*
+
 
 func (r WorkerRepo) Update(ctx context.Context, id int64, name string, description string,
 	emailOnSuccess string, parentWorkerID *int64, timeoutMinutes int32, directory string,
@@ -158,18 +130,6 @@ func (r WorkerRepo) Update(ctx context.Context, id int64, name string, descripti
 	return
 }
 
-func (r WorkerRepo) Delete(ctx context.Context, id int64) (err error) {
-	db, err := sql.Open("sqlserver", r.connStr)
-	if err != nil {
-		return
-	}
-	defer db.Close()
-
-	_, err = db.ExecContext(ctx, "[app].[Workers_Deactivate]",
-		sql.Named("ID", id),
-	)
-	return
-}
 
 func (r WorkerRepo) Reactivate(ctx context.Context, id int64) (err error) {
 	db, err := sql.Open("sqlserver", r.connStr)
