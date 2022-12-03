@@ -11,28 +11,29 @@ import (
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/models"
 )
 
-type CreateHandler struct {
+type UpdateHandler struct {
 	ctx        context.Context
 	connStr    string
 	workerPath string
 }
 
-func NewCreateHandler(ctx context.Context, connStr string, workerPath string) *CreateHandler {
-	return &CreateHandler{ctx, connStr, workerPath}
+func NewUpdateHandler(ctx context.Context, connStr string, workerPath string) *UpdateHandler {
+	return &UpdateHandler{ctx, connStr, workerPath}
 }
 
-func (h *CreateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h *UpdateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	var worker models.Worker
 	decoder := json.NewDecoder(r.Body)
 	decoder.Decode(&worker)
 
 	repo := data.NewWorkerRepo(h.connStr)
-	err := repo.Create(h.ctx, worker.Name, worker.Description, worker.EmailOnSuccess, worker.ParentWorkerID,
-		worker.TimeoutMinutes, worker.Directory, worker.Executable, worker.Args, h.workerPath,
+	err := repo.Update(h.ctx, worker.ID, worker.Name, worker.Description,
+		worker.EmailOnSuccess, worker.ParentWorkerID, worker.TimeoutMinutes,
+		worker.Directory, worker.Executable, worker.Args, h.workerPath,
 	)
 	if err != nil {
-		errorhandling.HandleError(w, r, err, "CreateHandler.ServeHTTP")
+		errorhandling.HandleError(w, r, err, "UpdateHandler.ServeHTTP")
 		return
 	}
 	fmt.Fprint(w, "{}")

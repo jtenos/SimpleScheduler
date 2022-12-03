@@ -35,7 +35,7 @@ func isValidExec(dir string, exe string, workerPath string) bool {
 }
 
 func (r WorkerRepo) Create(ctx context.Context, name string, description string, emailOnSuccess string, parentWorkerID *int64,
-	timeoutMinutes int32, directory string, executable string, args string, workerPath string) (worker *models.Worker, err error) {
+	timeoutMinutes int32, directory string, executable string, args string, workerPath string) (err error) {
 
 	if !isValidExec(directory, executable, workerPath) {
 		err = errors.New("invalid executable")
@@ -78,9 +78,59 @@ func (r WorkerRepo) Create(ctx context.Context, name string, description string,
 		err = errors.New("unknown error")
 		return
 	}
-	workers, err := r.Search(ctx, []int64{id}, nil, "", "", "", "")
-	worker = workers[0]
-	log.Println(worker)
+	return
+}
+
+func (r WorkerRepo) Update(ctx context.Context, id int64, name string, description string,
+	emailOnSuccess string, parentWorkerID *int64, timeoutMinutes int32, directory string,
+	executable string, args string, workerPath string) (err error) {
+
+	if !isValidExec(directory, executable, workerPath) {
+		err = errors.New("invalid executable")
+		return
+	}
+
+	if id == *parentWorkerID {
+		err = errors.New("worker cannot be its own parent")
+		return
+	}
+
+	db, err := sql.Open("sqlserver", r.connStr)
+	if err != nil {
+		return
+	}
+	defer db.Close()
+
+	var success bool
+	var nameAlreadyExists bool
+	var circularReference bool
+
+	row := db.QueryRowContext(ctx, "[app].[Workers_Update]",
+		sql.Named("ID", id),
+		sql.Named("WorkerName", name),
+		sql.Named("DetailedDescription", description),
+		sql.Named("EmailOnSuccess", emailOnSuccess),
+		sql.Named("ParentWorkerID", parentWorkerID),
+		sql.Named("TimeoutMinutes", timeoutMinutes),
+		sql.Named("DirectoryName", directory),
+		sql.Named("Executable", executable),
+		sql.Named("ArgumentValues", args),
+	)
+	if err = row.Scan(&success, &nameAlreadyExists, &circularReference); err != nil {
+		return
+	}
+	if circularReference {
+		err = errorhandling.NewBadRequestError("circular reference")
+		return
+	}
+	if nameAlreadyExists {
+		err = errorhandling.NewBadRequestError("name already exists")
+		return
+	}
+	if !success {
+		err = errors.New("unknown error")
+		return
+	}
 	return
 }
 

@@ -82,11 +82,7 @@ func newMux(ctx context.Context, conf *config.Configuration) *http.ServeMux {
 	setHandling(mux, "/workers/delete", "POST", workers.NewDeleteHandler(ctx, conf.ConnectionString), jwtKey)
 	setHandling(mux, "/workers/reactivate", "POST", workers.NewReactivateHandler(ctx, conf.ConnectionString), jwtKey)
 	setHandling(mux, "/workers/run", "POST", workers.NewRunHandler(ctx, conf.ConnectionString), jwtKey)
-	// WORKERS
-	/*
-	   app.MapPost("/Workers/UpdateWorker", UpdateWorkerAsync);
-
-	*/
+	setHandling(mux, "/workers/update", "POST", workers.NewUpdateHandler(ctx, conf.ConnectionString, conf.WorkerPath), jwtKey)
 
 	return mux
 }
