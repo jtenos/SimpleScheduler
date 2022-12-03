@@ -3,6 +3,7 @@ package workers
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/data"
@@ -33,35 +34,5 @@ func (h *CreateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		errorhandling.HandleError(w, r, err, "CreateHandler.ServeHTTP")
 	}
+	fmt.Fprint(w, "{}")
 }
-
-/*
-func (h *SearchHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-
-	workerRepo := data.NewWorkerRepo(h.connStr)
-	workers, err := workerRepo.Search(h.ctx, idsFilter, parentWorkerIDFilter,
-		nameFilter, directoryFilter, executableFilter, statusFilter)
-	if err != nil {
-		errors.HandleError(w, r, http.StatusInternalServerError, err.Error(), false)
-		return
-	}
-	json.NewEncoder(w).Encode(searchReply{Workers: workers})
-}
-
-*/
-
-/*
-namespace SimpleSchedulerApiModels.Request.Workers;
-
-public record class CreateWorkerRequest(
-    string WorkerName,
-    string DetailedDescription,
-    string EmailOnSuccess,
-    long? ParentWorkerID,
-    int TimeoutMinutes,
-    string DirectoryName,
-    string Executable,
-    string ArgumentValues
-);
-
-*/
