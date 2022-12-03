@@ -79,10 +79,10 @@ func newMux(ctx context.Context, conf *config.Configuration) *http.ServeMux {
 
 	setHandling(mux, "/workers/search", "GET", workers.NewSearchHandler(ctx, conf.ConnectionString), jwtKey)
 	setHandling(mux, "/workers/create", "POST", workers.NewCreateHandler(ctx, conf.ConnectionString, conf.WorkerPath), jwtKey)
-	setHandling(mux, "/workers/delete" /*?id=12345*/, "POST", workers.NewDeleteHandler(ctx, conf.ConnectionString), jwtKey)
+	setHandling(mux, "/workers/delete", "POST", workers.NewDeleteHandler(ctx, conf.ConnectionString), jwtKey)
+	setHandling(mux, "/workers/reactivate", "POST", workers.NewReactivateHandler(ctx, conf.ConnectionString), jwtKey)
 	// WORKERS
 	/*
-	   app.MapPost("/Workers/DeleteWorker", DeleteWorkerAsync);
 	   app.MapPost("/Workers/ReactivateWorker", ReactivateWorkerAsync);
 	   app.MapPost("/Workers/RunNow", RunNowAsync);
 	   app.MapPost("/Workers/UpdateWorker", UpdateWorkerAsync);

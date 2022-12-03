@@ -33,6 +33,7 @@ func (h *CreateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	)
 	if err != nil {
 		errorhandling.HandleError(w, r, err, "CreateHandler.ServeHTTP")
+		return
 	}
 	fmt.Fprint(w, "{}")
 }
