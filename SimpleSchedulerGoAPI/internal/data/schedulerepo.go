@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/errorhandling"
+	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/models"
 )
 
 type ScheduleRepo struct {
@@ -14,6 +15,49 @@ type ScheduleRepo struct {
 
 func NewScheduleRepo(connStr string) ScheduleRepo {
 	return ScheduleRepo{connStr}
+}
+
+func (r ScheduleRepo) Get(ctx context.Context, id int64) (sched models.Schedule, err error) {
+	db, err := sql.Open("sqlserver", r.connStr)
+	if err != nil {
+		return
+	}
+	defer db.Close()
+
+	var (
+		isActive             bool
+		workerID             int64
+		sunday               bool
+		monday               bool
+		tuesday              bool
+		wednesday            bool
+		thursday             bool
+		friday               bool
+		saturday             bool
+		timeOfDayUTC         *time.Time
+		recurTime            *time.Time
+		recurBetweenStartUTC *time.Time
+		recurBetweenEndUTC   *time.Time
+		oneTime              bool
+	)
+	row := db.QueryRowContext(ctx, "[app].[Schedules_Select]",
+		sql.Named("ID", id),
+	)
+	err = row.Scan(&id, &isActive, &workerID, &sunday, &monday,
+		&tuesday, &wednesday, &thursday, &friday, &saturday,
+		&timeOfDayUTC, &recurTime, &recurBetweenStartUTC,
+		&recurBetweenEndUTC, &oneTime)
+
+	if err != nil {
+		return
+	}
+
+	sched = *models.NewSchedule(id, isActive, workerID, sunday,
+		monday, tuesday, wednesday, thursday, friday, saturday,
+		timeOfDayUTC, recurTime, recurBetweenStartUTC,
+		recurBetweenEndUTC, oneTime,
+	)
+	return
 }
 
 func (r ScheduleRepo) Create(ctx context.Context, workerID int64, sunday bool,

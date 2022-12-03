@@ -8,7 +8,6 @@ import (
 
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/data"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/errorhandling"
-	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/models"
 )
 
 type SearchHandler struct {
@@ -18,10 +17,6 @@ type SearchHandler struct {
 
 func NewSearchHandler(ctx context.Context, connStr string) *SearchHandler {
 	return &SearchHandler{ctx, connStr}
-}
-
-type searchReply struct {
-	Workers []*models.Worker `json:"workers"`
 }
 
 func (h *SearchHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -61,5 +56,5 @@ func (h *SearchHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		errorhandling.HandleError(w, r, errorhandling.NewInternalServerError(err.Error()), "SearchHandler.ServeHTTP")
 		return
 	}
-	json.NewEncoder(w).Encode(searchReply{Workers: workers})
+	json.NewEncoder(w).Encode(workers)
 }
