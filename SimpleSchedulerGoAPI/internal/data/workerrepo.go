@@ -110,6 +110,19 @@ func (r WorkerRepo) Reactivate(ctx context.Context, id int64) (err error) {
 	return
 }
 
+func (r WorkerRepo) RunNow(ctx context.Context, id int64) (err error) {
+	db, err := sql.Open("sqlserver", r.connStr)
+	if err != nil {
+		return
+	}
+	defer db.Close()
+
+	_, err = db.ExecContext(ctx, "[app].[Jobs_RunNow]",
+		sql.Named("ID", id),
+	)
+	return
+}
+
 func (r WorkerRepo) Search(ctx context.Context, idsFilter []int64, parentWorkerIDFilter *int64,
 	nameFilter string, directoryFilter string, executableFilter string, statusFilter string) (workers []*models.Worker, err error) {
 
