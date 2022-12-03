@@ -12,6 +12,7 @@ import (
 
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/config"
 	homeHandlers "github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/handlers/home"
+	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/handlers/schedules"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/handlers/security"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/handlers/workers"
 	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/jwt"
@@ -65,15 +66,16 @@ func newMux(ctx context.Context, conf *config.Configuration) *http.ServeMux {
 		conf.ConnectionString, jwtKey), jwtKey)
 	setHandling(mux, "/security/validateToken", "GET", security.NewValidateTokenHandler(ctx, jwtKey), jwtKey)
 
+	setHandling(mux, "/schedules/create", "POST", schedules.NewCreateHandler(ctx, conf.ConnectionString), jwtKey)
+
 	// SCHEDULES
 	/*
-			        app.MapPost("/Schedules/CreateSchedule", CreateScheduleAsync);
-		        app.MapPost("/Schedules/DeleteSchedule", DeleteScheduleAsync);
-		        app.MapPost("/Schedules/GetAllSchedules", GetAllSchedulesAsync);
-		        app.MapPost("/Schedules/GetSchedules", GetSchedulesAsync);
-		        app.MapPost("/Schedules/GetSchedule", GetScheduleAsync);
-		        app.MapPost("/Schedules/ReactivateSchedule", ReactivateScheduleAsync);
-		        app.MapPost("/Schedules/UpdateSchedule", UpdateScheduleAsync);
+	   app.MapPost("/Schedules/DeleteSchedule", DeleteScheduleAsync);
+	   app.MapPost("/Schedules/GetAllSchedules", GetAllSchedulesAsync);
+	   app.MapPost("/Schedules/GetSchedules", GetSchedulesAsync);
+	   app.MapPost("/Schedules/GetSchedule", GetScheduleAsync);
+	   app.MapPost("/Schedules/ReactivateSchedule", ReactivateScheduleAsync);
+	   app.MapPost("/Schedules/UpdateSchedule", UpdateScheduleAsync);
 
 	*/
 
