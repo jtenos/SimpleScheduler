@@ -41,7 +41,7 @@ func newMux(ctx context.Context, conf *config.Configuration) *http.ServeMux {
 	}
 
 	// HOME
-	setHandling(mux, "/home/getUtcNow", "GET", homeHandlers.NewGetUtcNowHandler(), jwtKey)
+	setHandlingWithoutAuth(mux, "/home/getUtcNow", "GET", homeHandlers.NewGetUtcNowHandler(), jwtKey)
 	setHandling(mux, "/home/helloThere", "GET", homeHandlers.NewHelloThereHandler(), jwtKey)
 
 	// JOBS
@@ -89,16 +89,27 @@ func newMux(ctx context.Context, conf *config.Configuration) *http.ServeMux {
 }
 
 func setHandling(r *http.ServeMux, path string, verb string, handler http.Handler, jwtKey []byte) {
-	r.Handle(path, jsoning(authenticating(verbing(logging(handler), verb), jwtKey)))
+	r.Handle(path, corsing(jsoning(authenticating(verbing(logging(handler), verb), jwtKey))))
 }
 
 func setHandlingWithoutAuth(r *http.ServeMux, path string, verb string, handler http.Handler, jwtKey []byte) {
-	r.Handle(path, jsoning(verbing(logging(handler), verb)))
+	r.Handle(path, corsing(jsoning(verbing(logging(handler), verb))))
+}
+
+func corsing(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("Setting CORS headers")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+		next.ServeHTTP(w, r)
+	})
 }
 
 func verbing(next http.Handler, verb string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != verb {
+
+		if r.Method != verb && r.Method != "OPTIONS" {
 			w.Header().Set("Allow", verb)
 			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
 			return
