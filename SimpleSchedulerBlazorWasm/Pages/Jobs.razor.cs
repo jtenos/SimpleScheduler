@@ -5,7 +5,6 @@ using SimpleSchedulerApiModels;
 using SimpleSchedulerApiModels.Reply.Jobs;
 using SimpleSchedulerApiModels.Reply.Workers;
 using SimpleSchedulerApiModels.Request.Jobs;
-using SimpleSchedulerApiModels.Request.Workers;
 using SimpleSchedulerServiceClient;
 
 namespace SimpleSchedulerBlazorWasm.Pages;
@@ -71,9 +70,8 @@ partial class Jobs
 
     private async Task LoadWorkersAsync()
     {
-        (Error? error, GetAllWorkersReply? reply) = await ServiceClient.PostAsync<GetAllWorkersRequest, GetAllWorkersReply>(
-            "Workers/GetAllWorkers",
-            new GetAllWorkersRequest()
+        (Error? error, GetAllWorkersReply? reply) = await ServiceClient.GetAsync<GetAllWorkersReply>(
+            "workers/search"
         );
 
         if (error is not null)

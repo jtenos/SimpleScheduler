@@ -16,7 +16,16 @@ build:
 	go mod verify
 	go build -ldflags='-s' -o=./bin/api ./cmd/api
 	GOOS=linux GOARCH=amd64 go build -ldflags='-s' -o=./bin/linux_amd64/api ./cmd/api
-	cp ./cmd/api/conf.json ./bin/conf.json
+	cp ./cmd/api/conf.json ./bin/linux_amd64/conf.json
+
+## buildwin: build the cmd/api application for Windows
+.PHONY: buildwin
+buildwin:
+	go mod verify
+	go build -ldflags='-s' -o=./bin/api ./cmd/api
+	GOOS=windows GOARCH=amd64 go build -ldflags='-s' -o=./bin/windows_amd64/api.exe ./cmd/api
+	cp ./cmd/api/conf.json ./bin/windows_amd64/conf.json
+
 
 ## run: run the cmd/api application
 .PHONY: run

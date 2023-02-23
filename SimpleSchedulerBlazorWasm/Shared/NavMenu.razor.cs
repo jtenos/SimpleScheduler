@@ -38,9 +38,9 @@ partial class NavMenu
 
     private async Task RetrieveTimeAsync(object? sender, ElapsedEventArgs e)
     {
-        (Error? error, GetUtcNowReply? reply) = await ServiceClient.PostAsync<GetUtcNowRequest, GetUtcNowReply>(
-            "Home/GetUtcNow",
-            new()
+        (Error? error, GetUtcNowReply? reply) = await ServiceClient.GetAsync<GetUtcNowReply>(
+            "home/getUtcNow",
+            forceUnauthenticated: true
         );
         UTCNowFormatted = error?.Message ?? reply!.FormattedDateTime;
         StateHasChanged();

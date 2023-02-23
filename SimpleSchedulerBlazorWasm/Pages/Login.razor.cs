@@ -31,8 +31,8 @@ partial class Login
 
     protected override async Task OnParametersSetAsync()
     {
-        (Error? error, GetAllUserEmailsReply? reply) = await ServiceClient.PostAsync<GetAllUserEmailsRequest, GetAllUserEmailsReply>(
-            "Login/GetAllUserEmails",
+        (Error? error, GetAllUserEmailsReply? reply) = await ServiceClient.GetAsync<GetAllUserEmailsReply>(
+            "security/getAllUserEmails",
             new());
 
         if (error is not null || reply?.EmailAddresses.Any() != true)

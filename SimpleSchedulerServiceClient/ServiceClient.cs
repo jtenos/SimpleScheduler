@@ -21,14 +21,55 @@ public class ServiceClient
         _logger = logger;
     }
 
-    /// <summary>
-    /// Posts to the server, and handles 404 as NotFound, and all others as Error.
-    /// </summary>
-    /// <typeparam name="TRequest"></typeparam>
-    /// <typeparam name="TReply"></typeparam>
-    /// <param name="request"></param>
-    /// <returns></returns>
-    public async Task<(Error?, TReply?)> PostAsync<TRequest, TReply>(
+	public async Task<(Error?, TReply?)> GetAsync<TReply>(
+        string requestUri,
+		bool forceUnauthenticated = false)
+        where TReply : class
+	{
+		string? token = null;
+		if (!forceUnauthenticated)
+		{
+			token = await _tokenLookup.LookupTokenAsync();
+		}
+
+		if (token is not null)
+		{
+			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+		}
+		try
+		{
+			_logger.LogDebug("Token: {token}", token);
+			_logger.LogDebug("URL: {baseAddress} | {requestUri}", _httpClient.BaseAddress, requestUri);
+			_logger.LogDebug("Method: GET");
+
+			HttpResponseMessage response = await _httpClient.GetAsync(requestUri);
+			_logger.LogDebug("Status Code: {statusCode}", response.StatusCode);
+			_logger.LogDebug("Reason Phrase: {message}", response.ReasonPhrase);
+			if (response.IsSuccessStatusCode)
+			{
+				return (null, await response.Content.ReadFromJsonAsync<TReply>());
+			}
+			if (response.StatusCode == HttpStatusCode.Unauthorized)
+			{
+				_redirectToLogin();
+				return (null, null);
+			}
+			return (new Error(await response.Content.ReadAsStringAsync()), null);
+		}
+		catch (Exception ex)
+		{
+			return (new Error(ex.Message), null);
+		}
+	}
+
+	/// <summary>
+	/// Posts to the server, and handles 404 as NotFound, and all others as Error.
+	/// </summary>
+	/// <typeparam name="TRequest"></typeparam>
+	/// <typeparam name="TReply"></typeparam>
+	/// <param name="request"></param>
+	/// <returns></returns>
+	public async Task<(Error?, TReply?)> PostAsync<TRequest, TReply>(
         string requestUri,
         TRequest request,
         bool forceUnauthenticated = false
