@@ -8,8 +8,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/config"
-	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/emailer"
+	"github.com/jtenos/simplescheduler/internal/config"
+	"github.com/jtenos/simplescheduler/internal/emailer"
 )
 
 var conf *config.Configuration

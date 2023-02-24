@@ -10,14 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/config"
-	homeHandlers "github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/handlers/home"
-	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/handlers/schedules"
-	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/handlers/security"
-	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/handlers/workers"
-	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/jwt"
-	"golang.org/x/text/language"
-	"golang.org/x/text/message"
+	"github.com/jtenos/simplescheduler/internal/config"
 )
 
 type statusRecorder struct {
@@ -88,12 +81,39 @@ func newMux(ctx context.Context, conf *config.Configuration) *http.ServeMux {
 	return mux
 }
 
-func setHandling(r *http.ServeMux, path string, verb string, handler http.Handler, jwtKey []byte) {
-	r.Handle(path, corsing(jsoning(authenticating(verbing(logging(handler), verb), jwtKey))))
+func setHandling(mux *http.ServeMux, path string, verb string, handler http.Handler, jwtKey []byte) {
+	mux.Handle(
+		path,
+		corsing(
+			jsoning(
+				authenticating(
+					verbing(
+						logging(
+							handler,
+						),
+						verb,
+					),
+					jwtKey,
+				),
+			),
+		),
+	)
 }
 
-func setHandlingWithoutAuth(r *http.ServeMux, path string, verb string, handler http.Handler, jwtKey []byte) {
-	r.Handle(path, corsing(jsoning(verbing(logging(handler), verb))))
+func setHandlingWithoutAuth(mux *http.ServeMux, path string, verb string, handler http.Handler, jwtKey []byte) {
+	mux.Handle(
+		path,
+		corsing(
+			jsoning(
+				verbing(
+					logging(
+						handler,
+					),
+					verb,
+				),
+			),
+		),
+	)
 }
 
 func corsing(next http.Handler) http.Handler {
@@ -118,8 +138,6 @@ func verbing(next http.Handler, verb string) http.Handler {
 		next.ServeHTTP(w, r)
 	})
 }
-
-var printer = message.NewPrinter(language.English)
 
 func jsoning(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -169,6 +187,8 @@ func authenticating(next http.Handler, jwtKey []byte) http.Handler {
 		next.ServeHTTP(w, r)
 	})
 }
+
+var printer = message.NewPrinter(language.English)
 
 func logging(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
