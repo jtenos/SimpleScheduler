@@ -16,3 +16,4 @@ _db
 **/logs/
 SimpleSchedulerCommandLine/b.bat
 SimpleSchedulerGoAPI/cert
+data/
