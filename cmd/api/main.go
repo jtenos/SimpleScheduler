@@ -8,8 +8,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/jtenos/simplescheduler/internal/config"
-	"github.com/jtenos/simplescheduler/internal/emailer"
+	"jtenos.com/simplescheduler/internal/config"
+	"jtenos.com/simplescheduler/internal/emailer"
 )
 
 var conf *config.Configuration
@@ -29,7 +29,7 @@ func main() {
 		return
 	}
 
-	mux := newMux(ctx, conf)
+	mux := newMux(ctx, newMuxParms(conf.ConnectionString, conf.ApiUrl, []byte(conf.Jwt.Key), conf.EnvironmentName, conf.WorkerPath))
 	port, ok := os.LookupEnv("PORT")
 	if !ok {
 		port = "8080"

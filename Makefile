@@ -21,4 +21,4 @@ build:
 ## run: run the cmd/api application
 .PHONY: run
 run: tidy build
-	./bin/api
+	./bin/linux_amd64/api

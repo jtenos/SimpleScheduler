@@ -1,26 +1,26 @@
-package workers
+package api
 
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 
-	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/data"
-	"github.com/jtenos/SimpleScheduler/SimpleSchedulerGoAPI/internal/errorhandling"
+	"github.com/julienschmidt/httprouter"
+	"jtenos.com/simplescheduler/internal/api/errorhandling"
 )
 
-type SearchHandler struct {
+type WorkersHandler struct {
 	ctx     context.Context
 	connStr string
 }
 
-func NewSearchHandler(ctx context.Context, connStr string) *SearchHandler {
-	return &SearchHandler{ctx, connStr}
+func NewWorkersHandler(ctx context.Context, connStr string) *WorkersHandler {
+	return &WorkersHandler{ctx, connStr}
 }
 
-func (h *SearchHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-
+func (h *WorkersHandler) Get(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	q := r.URL.Query()
 	idFilter := q.Get("id")
 	parentIdFilter := q.Get("parent")
@@ -49,12 +49,16 @@ func (h *SearchHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		parentWorkerIDFilter = &pid
 	}
 
-	workerRepo := data.NewWorkerRepo(h.connStr)
-	workers, err := workerRepo.Search(h.ctx, idsFilter, parentWorkerIDFilter,
-		nameFilter, directoryFilter, executableFilter, statusFilter)
-	if err != nil {
-		errorhandling.HandleError(w, r, errorhandling.NewInternalServerError(err.Error()), "SearchHandler.ServeHTTP")
-		return
-	}
+	workers := fmt.Sprintf("%s%s%s%s", nameFilter, directoryFilter, executableFilter, statusFilter)
+	fmt.Println(idsFilter)
+	fmt.Println(parentWorkerIDFilter)
+
+	// workerRepo := data.NewWorkerRepo(h.connStr)
+	// workers, err := workerRepo.Search(h.ctx, idsFilter, parentWorkerIDFilter,
+	// 	nameFilter, directoryFilter, executableFilter, statusFilter)
+	// if err != nil {
+	// 	errorhandling.HandleError(w, r, errorhandling.NewInternalServerError(err.Error()), "SearchHandler.ServeHTTP")
+	// 	return
+	// }
 	json.NewEncoder(w).Encode(workers)
 }

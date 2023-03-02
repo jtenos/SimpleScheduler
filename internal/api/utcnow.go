@@ -1,22 +1,24 @@
-package home
+package api
 
 import (
 	"encoding/json"
 	"net/http"
 	"time"
+
+	"github.com/julienschmidt/httprouter"
 )
 
-type GetUtcNowHandler struct{}
+type UtcNowHandler struct{}
 
-func NewGetUtcNowHandler() *GetUtcNowHandler {
-	return &GetUtcNowHandler{}
+func NewUtcNowHandler() *UtcNowHandler {
+	return &UtcNowHandler{}
 }
 
 type getUtcNowReply struct {
 	FormattedDateTime string `json:"formattedDateTime"`
 }
 
-func (h *GetUtcNowHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h *UtcNowHandler) Get(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	json.NewEncoder(w).Encode(getUtcNowReply{
 		FormattedDateTime: time.Now().UTC().Format("Jan 02 2006, 15:04") + " (UTC)",
 	})
