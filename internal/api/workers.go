@@ -2,8 +2,6 @@ package api
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -12,53 +10,59 @@ import (
 )
 
 type WorkersHandler struct {
-	ctx     context.Context
-	connStr string
+	ctx context.Context
 }
 
-func NewWorkersHandler(ctx context.Context, connStr string) *WorkersHandler {
-	return &WorkersHandler{ctx, connStr}
+func NewWorkersHandler(ctx context.Context) *WorkersHandler {
+	return &WorkersHandler{ctx}
 }
 
-func (h *WorkersHandler) Get(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	q := r.URL.Query()
-	idFilter := q.Get("id")
-	parentIdFilter := q.Get("parent")
-	nameFilter := q.Get("name")
-	directoryFilter := q.Get("directory")
-	executableFilter := q.Get("executable")
-	statusFilter := q.Get("status")
+func (h *WorkersHandler) Get(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
-	var idsFilter []int64
-	var parentWorkerIDFilter *int64
-
+	idFilter := ps.ByName("id")
 	if len(idFilter) > 0 {
 		id, err := strconv.ParseInt(idFilter, 10, 64)
 		if err != nil {
-			errorhandling.HandleError(w, r, errorhandling.NewBadRequestError("invalid id parameter"), "SearchHandler.ServeHTTP")
+			errorhandling.HandleError(w, r, errorhandling.NewBadRequestError("invalid id parameter"), "WorkersHandler.Get")
 			return
 		}
-		idsFilter = []int64{id}
-	}
-	if len(parentIdFilter) > 0 {
-		pid, err := strconv.ParseInt(parentIdFilter, 10, 64)
-		if err != nil {
-			errorhandling.HandleError(w, r, errorhandling.NewBadRequestError("invalid parent parameter"), "SearchHandler.ServeHTTP")
-			return
-		}
-		parentWorkerIDFilter = &pid
+		h.getByID(w, r, id)
+		return
 	}
 
-	workers := fmt.Sprintf("%s%s%s%s", nameFilter, directoryFilter, executableFilter, statusFilter)
-	fmt.Println(idsFilter)
-	fmt.Println(parentWorkerIDFilter)
+	h.search(w, r)
+}
 
-	// workerRepo := data.NewWorkerRepo(h.connStr)
-	// workers, err := workerRepo.Search(h.ctx, idsFilter, parentWorkerIDFilter,
-	// 	nameFilter, directoryFilter, executableFilter, statusFilter)
-	// if err != nil {
-	// 	errorhandling.HandleError(w, r, errorhandling.NewInternalServerError(err.Error()), "SearchHandler.ServeHTTP")
-	// 	return
+func (h *WorkersHandler) search(w http.ResponseWriter, r *http.Request) {
+	// q := r.URL.Query()
+
+	// parentIdFilter := q.Get("parent")
+	// nameFilter := q.Get("name")
+	// directoryFilter := q.Get("directory")
+	// executableFilter := q.Get("executable")
+	// statusFilter := q.Get("status")
+
+	// var parentWorkerIDFilter *int64
+
+	// if len(parentIdFilter) > 0 {
+	// 	pid, err := strconv.ParseInt(parentIdFilter, 10, 64)
+	// 	if err != nil {
+	// 		errorhandling.HandleError(w, r, errorhandling.NewBadRequestError("invalid parent parameter"), "WorkersHandler.search")
+	// 		return
+	// 	}
+	// 	parentWorkerIDFilter = &pid
 	// }
-	json.NewEncoder(w).Encode(workers)
+
+	// // workerRepo := data.NewWorkerRepo(h.connStr)
+	// // workers, err := workerRepo.Search(h.ctx, idsFilter, parentWorkerIDFilter,
+	// // 	nameFilter, directoryFilter, executableFilter, statusFilter)
+	// // if err != nil {
+	// // 	errorhandling.HandleError(w, r, errorhandling.NewInternalServerError(err.Error()), "SearchHandler.ServeHTTP")
+	// // 	return
+	// // }
+	// json.NewEncoder(w).Encode(workers)
+}
+
+func (h *WorkersHandler) getByID(w http.ResponseWriter, r *http.Request, id int64) {
+
 }

@@ -9,6 +9,8 @@ import (
 	"time"
 
 	"jtenos.com/simplescheduler/internal/config"
+	"jtenos.com/simplescheduler/internal/ctxutil"
+	"jtenos.com/simplescheduler/internal/data"
 	"jtenos.com/simplescheduler/internal/emailer"
 )
 
@@ -17,6 +19,8 @@ var conf *config.Configuration
 func main() {
 	ctx := context.Background()
 	conf = config.LoadConfig()
+	ctxutil.SetDBFileName(&ctx, conf.DBFileName)
+	ctxutil.SetApiUrl(&ctx, conf.ApiUrl)
 
 	if len(conf.EmailFolder) > 0 {
 		emailer.SetEmailFolder(conf.EmailFolder)
@@ -29,7 +33,11 @@ func main() {
 		return
 	}
 
-	mux := newMux(ctx, newMuxParms(conf.ConnectionString, conf.ApiUrl, []byte(conf.Jwt.Key), conf.EnvironmentName, conf.WorkerPath))
+	if err := data.InitDB(ctx); err != nil {
+		log.Fatalf("Error initializing database: %v", err)
+	}
+
+	mux := newMux(ctx, newMuxParms(conf.ApiUrl, []byte(conf.Jwt.Key), conf.EnvironmentName, conf.WorkerPath))
 	port, ok := os.LookupEnv("PORT")
 	if !ok {
 		port = "8080"

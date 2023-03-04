@@ -1,5 +1,5 @@
 {
-    "connectionString":"Server=(localdb)\\MSSQLLocalDb;Database=SimpleSchedulerSqlServerDB;Integrated Security=SSPI;",
+    "dbFileName":"/mnt/c/Users/jtenos/source/repos/SimpleScheduler/data/scheduler.sqlite3",
     "pathBase": "/",
 
     "_emailFolder_": "If emailFolder is here, then all emails will write to a file instead of sending an actual email.",

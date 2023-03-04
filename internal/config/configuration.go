@@ -23,7 +23,7 @@ type Jwt struct {
 }
 
 type Configuration struct {
-	ConnectionString      string       `json:"connectionString"`
+	DBFileName            string       `json:"dbFileName"`
 	PathBase              string       `json:"pathBase"`
 	EmailFolder           string       `json:"emailFolder"`
 	MailSettings          MailSettings `json:"mailSettings"`

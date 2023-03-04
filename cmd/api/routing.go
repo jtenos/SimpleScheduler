@@ -22,7 +22,6 @@ type statusRecorder struct {
 }
 
 type muxParms struct {
-	connStr    string
 	apiUrl     string
 	jwtKey     []byte
 	envName    string
@@ -31,9 +30,8 @@ type muxParms struct {
 
 var printer = message.NewPrinter(language.English)
 
-func newMuxParms(connStr string, apiUrl string, jwtKey []byte, envName string, workerPath string) muxParms {
+func newMuxParms(apiUrl string, jwtKey []byte, envName string, workerPath string) muxParms {
 	return muxParms{
-		connStr,
 		apiUrl,
 		jwtKey,
 		envName,
@@ -59,12 +57,25 @@ func newMux(ctx context.Context, parms muxParms) *httprouter.Router {
 	mux.GET("/utcnow", withoutAuth(utcNowHandler.Get))
 	//////////////////////////////////////////////////////////////////////////////////////////
 
-	workersHandler := api.NewWorkersHandler(ctx, parms.connStr)
+	workersHandler := api.NewWorkersHandler(ctx)
 
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// GET /workers?id=&parent=&name=&directory=&executable=&status=
-	// Response:
+	// GET /workers?parent=&name=&directory=&executable=&status=
+	// Response: [{},{}]
 	mux.GET("/workers", withAuth(workersHandler.Get, parms.jwtKey))
+	//////////////////////////////////////////////////////////////////////////////////////////
+
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// GET /workers/:id
+	// Response: [{},{}]
+	mux.GET("/workers/:id", withAuth(workersHandler.Get, parms.jwtKey))
+	//////////////////////////////////////////////////////////////////////////////////////////
+
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// POST /workers
+	// Response: {"worker":{},"error":{}}
+	// Response:
+	// mux.POST("/workers", withAuth(workersHandler.Post, parms.jwtKey))
 	//////////////////////////////////////////////////////////////////////////////////////////
 
 	//////////////////////////////////////////////////////////////////////////////////////////

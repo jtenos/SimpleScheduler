@@ -2,18 +2,18 @@ package datamodels
 
 import "database/sql"
 
-// [app].[Workers] table
+// [workers] table
 type Worker struct {
-	ID                  int64  `db:"ID"`
-	IsActive            bool   `db:"IsActive"`
-	WorkerName          string `db:"WorkerName"`
-	DetailedDescription string `db:"DetailedDescription"`
-	EmailOnSuccess      string `db:"EmailOnSuccess"`
-	ParentWorkerID      *int64 `db:"ParentWorkerID"`
-	TimeoutMinutes      int32  `db:"TimeoutMinutes"`
-	DirectoryName       string `db:"DirectoryName"`
-	Executable          string `db:"Executable"`
-	ArgumentValues      string `db:"ArgumentValues"`
+	ID                  int64  `db:"id"`
+	IsActive            bool   `db:"is_active"`
+	WorkerName          string `db:"worker_name"`
+	DetailedDescription string `db:"detailed_description"`
+	EmailOnSuccess      string `db:"email_on_success"`
+	ParentWorkerID      *int64 `db:"parent_worker_id"`
+	TimeoutMinutes      int32  `db:"timeout_minutes"`
+	DirectoryName       string `db:"directory_name"`
+	Executable          string `db:"executable"`
+	ArgumentValues      string `db:"argument_values"`
 }
 
 func (w *Worker) Hydrate(rows *sql.Rows) error {
