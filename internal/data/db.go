@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 	"jtenos.com/simplescheduler/internal/ctxutil"
@@ -117,4 +118,8 @@ func open(ctx context.Context) (*sql.DB, error) {
 	}
 
 	return db, nil
+}
+
+func getFormattedUtcNow() string {
+	return time.Now().Format("2006-01-02T15:04:05.000")
 }

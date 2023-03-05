@@ -8,16 +8,20 @@ import (
 	"jtenos.com/simplescheduler/internal/datamodels"
 )
 
-type WorkerRepo struct{}
+type WorkerRepo struct{ ctx context.Context }
 
-func (r *WorkerRepo) GetByID(ctx context.Context, id int64) (*datamodels.Worker, error) {
-	db, err := open(ctx)
+func NewWorkerRepo(ctx context.Context) *WorkerRepo {
+	return &WorkerRepo{ctx}
+}
+
+func (repo *WorkerRepo) GetByID(id int64) (*datamodels.Worker, error) {
+	db, err := open(repo.ctx)
 	if err != nil {
 		return nil, err
 	}
 	defer db.Close()
 
-	rows, err := db.QueryContext(ctx, "SELECT * FROM [workers] WHERE [worker_id] = @worker_id;",
+	rows, err := db.QueryContext(repo.ctx, "SELECT * FROM [workers] WHERE [worker_id] = @worker_id;",
 		sql.Named("worker_id", id),
 	)
 	if err != nil {

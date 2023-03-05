@@ -1,72 +1,63 @@
 package data
 
-// import (
-// 	"context"
-// 	"database/sql"
-// )
+import (
+	"context"
+	"database/sql"
+	"strings"
 
-// type UserRepo struct {
-// 	connStr string
-// }
+	"github.com/google/uuid"
+	"jtenos.com/simplescheduler/internal/datamodels"
+)
 
-// func NewUserRepo(connStr string) UserRepo {
-// 	return UserRepo{connStr}
-// }
+type UserRepo struct{ ctx context.Context }
 
-// func (r UserRepo) GetAllUserEmails(ctx context.Context) (emails []string, err error) {
-// 	db, err := sql.Open("sqlserver", r.connStr)
-// 	if err != nil {
-// 		return
-// 	}
-// 	defer db.Close()
+func NewUserRepo(ctx context.Context) *UserRepo {
+	return &UserRepo{ctx}
+}
 
-// 	var users []datamodels.User
-// 	rows, err := db.QueryContext(ctx, "[app].[Users_SelectAll]")
-// 	if err != nil {
-// 		return
-// 	}
-// 	defer rows.Close()
-// 	var u datamodels.User
-// 	for rows.Next() {
-// 		if err = u.Hydrate(rows); err == nil {
-// 			return
-// 		}
-// 		users = append(users, u)
-// 	}
+func (repo *UserRepo) SubmitEmail(email string) (userFound bool, valCd string, err error) {
+	db, err := open(repo.ctx)
+	if err != nil {
+		return
+	}
+	defer db.Close()
 
-// 	for i := range users {
-// 		emails = append(emails, users[i].Email)
-// 	}
-// 	return
-// }
+	rows, err := db.QueryContext(repo.ctx, "SELECT * FROM [users] WHERE [email_address] = @email_address;",
+		sql.Named("email_address", email),
+	)
+	if err != nil {
+		return
+	}
+	defer rows.Close()
+	if !rows.Next() {
+		return
+	}
 
-// func (r UserRepo) SubmitEmail(ctx context.Context, email string) (valCd string, err error) {
-// 	db, err := sql.Open("sqlserver", r.connStr)
-// 	if err != nil {
-// 		return
-// 	}
-// 	defer db.Close()
+	var u datamodels.User
+	err = u.Hydrate(rows)
+	if err != nil {
+		return
+	}
 
-// 	var success bool
-// 	var valCdGuid mssql.UniqueIdentifier
-// 	row := db.QueryRowContext(ctx, "[app].[Users_SubmitLogin]", sql.Named("EmailAddress", email))
-// 	err = row.Scan(&success, &valCdGuid)
-// 	if err != nil {
-// 		return
-// 	}
+	userFound = true
 
-// 	valCd = valCdGuid.String()
-// 	return
-// }
+	valCd = strings.ReplaceAll(uuid.New().String(), "-", "")
 
-// func (r UserRepo) ValidateEmail(ctx context.Context, valCd string) (success bool, email string, notFound bool, expired bool, err error) {
-// 	db, err := sql.Open("sqlserver", r.connStr)
-// 	if err != nil {
-// 		return
-// 	}
-// 	defer db.Close()
+	_, err = db.ExecContext(repo.ctx, `
+		INSERT INTO [login_attempts] (
+			[submit_date_utc], [email_address], [validation_code]
+		) VALUES (
+			@submit_date_utc, @email_address, @validation_code
+		);
+		`,
+		sql.Named("submit_date_utc", getFormattedUtcNow()),
+		sql.Named("email_address", u.Email),
+		sql.Named("validation_code", valCd),
+	)
 
-// 	row := db.QueryRowContext(ctx, "[app].[Users_ValidateLogin]", sql.Named("ValidationCode", valCd))
-// 	err = row.Scan(&success, &email, &notFound, &expired)
-// 	return
-// }
+	if err != nil {
+		return
+	}
+
+	return
+}
