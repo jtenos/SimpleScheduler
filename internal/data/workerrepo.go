@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"errors"
 
-	"jtenos.com/simplescheduler/internal/datamodels"
+	"github.com/jtenos/simplescheduler/internal/datamodels"
 )
 
 type WorkerRepo struct{ ctx context.Context }

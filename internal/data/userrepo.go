@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
-	"jtenos.com/simplescheduler/internal/datamodels"
+	"github.com/jtenos/simplescheduler/internal/datamodels"
 )
 
 type UserRepo struct{ ctx context.Context }
@@ -22,7 +22,7 @@ func (repo *UserRepo) SubmitEmail(email string) (userFound bool, valCd string, e
 	}
 	defer db.Close()
 
-	rows, err := db.QueryContext(repo.ctx, "SELECT * FROM [users] WHERE [email_address] = @email_address;",
+	rows, err := db.QueryContext(repo.ctx, "SELECT [email_address] FROM [users] WHERE [email_address] = @email_address;",
 		sql.Named("email_address", email),
 	)
 	if err != nil {

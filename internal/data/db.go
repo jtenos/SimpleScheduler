@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/jtenos/simplescheduler/internal/ctxutil"
 	_ "github.com/mattn/go-sqlite3"
-	"jtenos.com/simplescheduler/internal/ctxutil"
 )
 
 func InitDB(ctx context.Context) error {

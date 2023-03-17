@@ -9,11 +9,11 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jtenos/simplescheduler/internal/api"
+	"github.com/jtenos/simplescheduler/internal/jwt"
 	"github.com/julienschmidt/httprouter"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
-	"jtenos.com/simplescheduler/internal/api"
-	"jtenos.com/simplescheduler/internal/jwt"
 )
 
 type statusRecorder struct {

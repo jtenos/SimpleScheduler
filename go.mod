@@ -1,4 +1,4 @@
-module jtenos.com/simplescheduler
+module github.com/jtenos/simplescheduler
 
 go 1.20
 

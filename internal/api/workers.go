@@ -2,11 +2,12 @@ package api
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"strconv"
 
+	"github.com/jtenos/simplescheduler/internal/api/errorhandling"
 	"github.com/julienschmidt/httprouter"
-	"jtenos.com/simplescheduler/internal/api/errorhandling"
 )
 
 type WorkersHandler struct {
@@ -23,7 +24,7 @@ func (h *WorkersHandler) Get(w http.ResponseWriter, r *http.Request, ps httprout
 	if len(idFilter) > 0 {
 		id, err := strconv.ParseInt(idFilter, 10, 64)
 		if err != nil {
-			errorhandling.HandleError(w, r, errorhandling.NewBadRequestError("invalid id parameter"), "WorkersHandler.Get")
+			errorhandling.HandleError(w, r, errors.New("invalid id parameter"), "WorkersHandler.Get", http.StatusBadRequest)
 			return
 		}
 		h.getByID(w, r, id)

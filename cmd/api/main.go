@@ -8,10 +8,10 @@ import (
 	"os"
 	"time"
 
-	"jtenos.com/simplescheduler/internal/config"
-	"jtenos.com/simplescheduler/internal/ctxutil"
-	"jtenos.com/simplescheduler/internal/data"
-	"jtenos.com/simplescheduler/internal/emailer"
+	"github.com/jtenos/simplescheduler/internal/config"
+	"github.com/jtenos/simplescheduler/internal/ctxutil"
+	"github.com/jtenos/simplescheduler/internal/data"
+	"github.com/jtenos/simplescheduler/internal/emailer"
 )
 
 var conf *config.Configuration
