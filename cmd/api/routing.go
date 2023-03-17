@@ -76,7 +76,11 @@ func newMux(ctx context.Context, parms muxParms) *httprouter.Router {
 
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// GET /workers/:id
-	// Response: [{},{}]
+	// Response: {
+	// "id":1,"isActive":true,"workerName":"Test","detailedDescription":"Test",
+	// "emailOnSuccess": "test@example.com","parentWorkerID":1,"timeoutMinutes":20
+	// "directoryName":"something","executable":"something.exe","argumentValues:"-x"}
+
 	mux.GET("/workers/:id", withAuth(workersHandler.Get, parms.jwtKey))
 	//////////////////////////////////////////////////////////////////////////////////////////
 

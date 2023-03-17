@@ -21,10 +21,6 @@ type UserEmailHandler struct {
 	tmpl *template.Template
 }
 
-type userEmailReply struct {
-	Success bool `json:"success"`
-}
-
 func NewUserEmailHandler(ctx context.Context) *UserEmailHandler {
 	tmpl, _ := template.New("UserEmail").Parse(`
 	<a href='{{.Url}}' target=_blank>Click here to log in</a>
@@ -38,6 +34,10 @@ func NewUserEmailHandler(ctx context.Context) *UserEmailHandler {
 }
 
 func (h *UserEmailHandler) Post(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+
+	type userEmailReply struct {
+		Success bool `json:"success"`
+	}
 
 	decoder := json.NewDecoder(r.Body)
 	var em struct {
