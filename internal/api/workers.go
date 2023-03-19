@@ -37,49 +37,40 @@ func (h *WorkersHandler) Get(w http.ResponseWriter, r *http.Request, ps httprout
 
 	idFilter := ps.ByName("id")
 	if len(idFilter) > 0 {
-		id, err := strconv.ParseInt(idFilter, 10, 64)
-		if err != nil {
-			errorhandling.HandleError(w, r, errors.New("invalid id parameter"), "WorkersHandler.Get", http.StatusBadRequest)
-			return
-		}
-		h.getByID(w, r, id)
+		h.getByID(w, r, idFilter)
 		return
 	}
 
-	h.search(w, r)
+	h.search(w, r, ps)
 }
 
-func (h *WorkersHandler) search(w http.ResponseWriter, r *http.Request) {
-	// q := r.URL.Query()
+func (h *WorkersHandler) search(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
-	// parentIdFilter := q.Get("parent")
-	// nameFilter := q.Get("name")
-	// directoryFilter := q.Get("directory")
-	// executableFilter := q.Get("executable")
-	// statusFilter := q.Get("status")
+	nameFilter := ps.ByName("name")
+	descFilter := ps.ByName("description")
+	dirFilter := ps.ByName("directory")
+	exeFilter := ps.ByName("executable")
+	activeFilter := ps.ByName("active")
+	parentFilter := ps.ByName("parent")
 
-	// var parentWorkerIDFilter *int64
+	workerRepo := data.NewWorkerRepo(h.ctx)
 
-	// if len(parentIdFilter) > 0 {
-	// 	pid, err := strconv.ParseInt(parentIdFilter, 10, 64)
-	// 	if err != nil {
-	// 		errorhandling.HandleError(w, r, errorhandling.NewBadRequestError("invalid parent parameter"), "WorkersHandler.search")
-	// 		return
-	// 	}
-	// 	parentWorkerIDFilter = &pid
-	// }
-
-	// // workerRepo := data.NewWorkerRepo(h.connStr)
-	// // workers, err := workerRepo.Search(h.ctx, idsFilter, parentWorkerIDFilter,
-	// // 	nameFilter, directoryFilter, executableFilter, statusFilter)
-	// // if err != nil {
-	// // 	errorhandling.HandleError(w, r, errorhandling.NewInternalServerError(err.Error()), "SearchHandler.ServeHTTP")
-	// // 	return
-	// // }
-	// json.NewEncoder(w).Encode(workers)
+	workers, err := workerRepo.Search(h.ctx, nameFilter, descFilter, dirFilter,
+		exeFilter, activeFilter, parentFilter)
+	if err != nil {
+		errorhandling.HandleError(w, r, err, "SearchHandler.ServeHTTP", http.StatusInternalServerError)
+		return
+	}
+	json.NewEncoder(w).Encode(workers)
 }
 
-func (h *WorkersHandler) getByID(w http.ResponseWriter, r *http.Request, id int64) {
+func (h *WorkersHandler) getByID(w http.ResponseWriter, r *http.Request, idFilter string) {
+
+	id, err := strconv.ParseInt(idFilter, 10, 64)
+	if err != nil {
+		errorhandling.HandleError(w, r, errors.New("invalid id parameter"), "WorkersHandler.Get", http.StatusBadRequest)
+		return
+	}
 
 	type getByIdReply struct {
 		workerModel

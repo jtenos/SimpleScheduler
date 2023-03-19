@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"strconv"
 
 	"github.com/jtenos/simplescheduler/internal/datamodels"
 )
@@ -189,121 +190,68 @@ func (repo *WorkerRepo) GetByID(id int64) (*datamodels.Worker, error) {
 // 	return
 // }
 
-// func (r WorkerRepo) Search(ctx context.Context, idsFilter []int64, parentWorkerIDFilter *int64,
-// 	nameFilter string, directoryFilter string, executableFilter string, statusFilter string) (workers []*models.Worker, err error) {
+func (repo WorkerRepo) Search(ctx context.Context, nameFilter string, descFilter string, dirFilter string,
+	exeFilter string, activeFilter string, parentFilter string) ([]*datamodels.Worker, error) {
 
-// 	db, err := sql.Open("sqlserver", r.connStr)
-// 	if err != nil {
-// 		return
-// 	}
-// 	defer db.Close()
+	db, err := open(repo.ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer db.Close()
 
-// 	activeOnly := strings.EqualFold(statusFilter, "active")
-// 	inactiveOnly := strings.EqualFold(statusFilter, "inactive")
+	args := []sql.NamedArg{}
 
-// 	var idsJson []byte
-// 	if idsFilter != nil {
-// 		idsJson, _ = json.Marshal(idsFilter)
-// 	}
+	query := " SELECT * FROM [workers] WHERE 1 = 1 "
 
-// 	var workerDMs []datamodels.Worker
-// 	rows, err := db.QueryContext(ctx, "[app].[Workers_Select]",
-// 		sql.Named("IDs", sql.NullString{String: string(idsJson), Valid: idsJson != nil}),
-// 		sql.Named("ParentWorkerID", parentWorkerIDFilter),
-// 		sql.Named("WorkerName", nameFilter),
-// 		sql.Named("DirectoryName", directoryFilter),
-// 		sql.Named("Executable", executableFilter),
-// 		sql.Named("ActiveOnly", activeOnly),
-// 		sql.Named("InactiveOnly", inactiveOnly),
-// 	)
-// 	if err != nil {
-// 		return
-// 	}
-// 	defer rows.Close()
-// 	for rows.Next() {
-// 		var w datamodels.Worker
-// 		err = w.Hydrate(rows)
-// 		if err != nil {
-// 			return
-// 		}
-// 		workerDMs = append(workerDMs, w)
-// 	}
+	if len(nameFilter) > 0 {
+		query += " AND [worker_name] LIKE '%' || @worker_name || '%' "
+		args = append(args, sql.Named("worker_name", nameFilter))
+	}
+	if len(descFilter) > 0 {
+		query += " AND [detailed_description] LIKE '%' || @detailed_description || '%' "
+		args = append(args, sql.Named("detailed_description", descFilter))
+	}
+	if len(dirFilter) > 0 {
+		query += " AND [directory_name] LIKE '%' || @directory_name || '%' "
+		args = append(args, sql.Named("directory_name", dirFilter))
+	}
+	if len(exeFilter) > 0 {
+		query += " AND [executable] LIKE '%' || @executable || '%' "
+	}
 
-// 	log.Printf("Num workerDMs: %d", len(workerDMs))
+	switch activeFilter {
+	case "0":
+		query += " AND [is_active] = 0 "
+	case "1":
+		query += " AND [is_active] = 1 "
+	default:
+		break
+	}
 
-// 	workerIDs := make([]int64, len(workerDMs))
-// 	for i := range workerDMs {
-// 		workerIDs[i] = workerDMs[i].ID
-// 	}
+	if len(parentFilter) > 0 {
+		pid, err := strconv.ParseInt(parentFilter, 10, 64)
+		if err == nil {
+			query += " AND [parent_worker_id] = @parent_worker_id "
+			args = append(args, sql.Named("parent_worker_id", pid))
+		}
+	}
 
-// 	workerIDsJson, _ := json.Marshal(workerIDs)
+	rows, err := db.QueryContext(repo.ctx, query, args)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
 
-// 	var scheduleDMs []datamodels.Schedule
-// 	rows, err = db.QueryContext(ctx, "[app].[Schedules_Select]",
-// 		sql.Named("WorkerIDs", string(workerIDsJson)),
-// 	)
-// 	if err != nil {
-// 		return
-// 	}
-// 	for rows.Next() {
-// 		var s datamodels.Schedule
-// 		err = s.Hydrate(rows)
-// 		if err != nil {
-// 			return
-// 		}
-// 		scheduleDMs = append(scheduleDMs, s)
-// 	}
+	workers := []*datamodels.Worker{}
 
-// 	log.Printf("Num scheduleDMs: %d", len(scheduleDMs))
+	for rows.Next() {
+		var w datamodels.Worker
+		err = w.Hydrate(rows)
+		if err != nil {
+			return nil, err
+		}
+		workers = append(workers, &w)
+	}
 
-// 	for i := range scheduleDMs {
-// 		log.Printf("%#v", scheduleDMs[i])
-// 	}
-
-// 	// WorkerID, Worker
-// 	workerMap := map[int64]*models.Worker{}
-
-// 	for i := range workerDMs {
-// 		workerMap[workerDMs[i].ID] = models.NewWorker(
-// 			workerDMs[i].ID,
-// 			workerDMs[i].IsActive,
-// 			workerDMs[i].WorkerName,
-// 			workerDMs[i].DetailedDescription,
-// 			workerDMs[i].EmailOnSuccess,
-// 			workerDMs[i].ParentWorkerID,
-// 			workerDMs[i].TimeoutMinutes,
-// 			workerDMs[i].DirectoryName,
-// 			workerDMs[i].Executable,
-// 			workerDMs[i].ArgumentValues,
-// 			[]*models.Schedule{},
-// 		)
-// 	}
-
-// 	for i := range scheduleDMs {
-// 		w := workerMap[scheduleDMs[i].WorkerID]
-// 		log.Printf("Looking up worker %d for schedule %d", scheduleDMs[i].WorkerID, scheduleDMs[i].ID)
-// 		w.Schedules = append(w.Schedules, models.NewSchedule(
-// 			scheduleDMs[i].ID,
-// 			scheduleDMs[i].IsActive,
-// 			scheduleDMs[i].WorkerID,
-// 			scheduleDMs[i].Sunday,
-// 			scheduleDMs[i].Monday,
-// 			scheduleDMs[i].Tuesday,
-// 			scheduleDMs[i].Wednesday,
-// 			scheduleDMs[i].Thursday,
-// 			scheduleDMs[i].Friday,
-// 			scheduleDMs[i].Saturday,
-// 			scheduleDMs[i].TimeOfDayUTC,
-// 			scheduleDMs[i].RecurTime,
-// 			scheduleDMs[i].RecurBetweenStartUTC,
-// 			scheduleDMs[i].RecurBetweenEndUTC,
-// 			scheduleDMs[i].OneTime,
-// 		))
-// 	}
-
-// 	for wid := range workerMap {
-// 		workers = append(workers, workerMap[wid])
-// 	}
-
-// 	return
-// }
+	return workers, nil
+}

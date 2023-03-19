@@ -69,7 +69,7 @@ func newMux(ctx context.Context, parms muxParms) *httprouter.Router {
 	workersHandler := api.NewWorkersHandler(ctx)
 
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// GET /workers?parent=&name=&directory=&executable=&status=
+	// GET /workers?name=hello&desc=something&directory=myapp&executable=myapp&active=1&parent=34
 	// Response: [{},{}]
 	mux.GET("/workers", withAuth(workersHandler.Get, parms.jwtKey))
 	//////////////////////////////////////////////////////////////////////////////////////////
