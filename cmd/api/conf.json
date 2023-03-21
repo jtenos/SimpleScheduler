@@ -23,7 +23,7 @@
         "audience": "http://localhost:8080"
     },
     "internalSecretAuthKey": "32 hex characters",
-    "allowLoginDropdown": false,
+    "allowLoginDropdown": true,
     "terminalLogLevel":"DEBUG",
     "fileLogLevel": "INFO",
     "logFileName": "/tmp/logs/scheduler-api-dev/log.txt"

@@ -21,6 +21,7 @@ func main() {
 	conf = config.LoadConfig()
 	ctxutil.SetDBFileName(&ctx, conf.DBFileName)
 	ctxutil.SetApiUrl(&ctx, conf.ApiUrl)
+	ctxutil.SetAllowLoginDropDown(&ctx, conf.AllowLoginDropdown)
 
 	if len(conf.EmailFolder) > 0 {
 		emailer.SetEmailFolder(conf.EmailFolder)

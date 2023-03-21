@@ -33,6 +33,20 @@ func NewUserEmailHandler(ctx context.Context) *UserEmailHandler {
 	return &UserEmailHandler{ctx, tmpl}
 }
 
+func (h *UserEmailHandler) Get(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	if !ctxutil.GetAllowLoginDropDown(h.ctx) {
+		fmt.Fprint(w, "[]")
+		return
+	}
+
+	userRepo := data.NewUserRepo(h.ctx)
+	userEmails, err := userRepo.GetUserEmailAddresses()
+	if err != nil {
+		errorhandling.HandleError(w, r, err, "UserEmailHandler.Get", http.StatusInternalServerError)
+	}
+	json.NewEncoder(w).Encode(userEmails)
+}
+
 func (h *UserEmailHandler) Post(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 	type userEmailReply struct {

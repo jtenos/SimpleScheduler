@@ -60,6 +60,13 @@ func newMux(ctx context.Context, parms muxParms) *httprouter.Router {
 	userEmailHandler := api.NewUserEmailHandler(ctx)
 
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// GET /useremail
+	// If the allowLoginDropdown config option is set to true, else empty
+	// Response: ["test@example.com","someoneelse@example.com"]
+	mux.GET("/useremail", withoutAuth(userEmailHandler.Get))
+	//////////////////////////////////////////////////////////////////////////////////////////
+
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// POST /useremail
 	// Body: {"email":"test@example.com"}
 	// Response: {"success":true}

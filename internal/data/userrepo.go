@@ -15,6 +15,33 @@ func NewUserRepo(ctx context.Context) *UserRepo {
 	return &UserRepo{ctx}
 }
 
+func (repo *UserRepo) GetUserEmailAddresses() ([]string, error) {
+	db, err := open(repo.ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer db.Close()
+
+	rows, err := db.QueryContext(repo.ctx, "SELECT [email_address] FROM [users];")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var result []string
+
+	for rows.Next() {
+		var u datamodels.User
+		err = u.Hydrate(rows)
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, u.Email)
+	}
+
+	return result, nil
+}
+
 func (repo *UserRepo) SubmitEmail(email string) (userFound bool, valCd string, err error) {
 	db, err := open(repo.ctx)
 	if err != nil {

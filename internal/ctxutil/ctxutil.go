@@ -9,6 +9,7 @@ type apiUrlKey struct{}
 // type tokenKey struct{}
 // type verboseKey struct{}
 type dbFileNameKey struct{}
+type allowLoginDropDownKey struct{}
 
 // func SetNoun(ctx *context.Context, noun string) {
 // 	*ctx = context.WithValue(*ctx, nounKey{}, noun)
@@ -62,4 +63,13 @@ func SetDBFileName(ctx *context.Context, dbFileName string) {
 func GetDBFileName(ctx context.Context) string {
 	dbFileName, _ := ctx.Value(dbFileNameKey{}).(string)
 	return dbFileName
+}
+
+func SetAllowLoginDropDown(ctx *context.Context, val bool) {
+	*ctx = context.WithValue(*ctx, allowLoginDropDownKey{}, val)
+}
+
+func GetAllowLoginDropDown(ctx context.Context) bool {
+	val, _ := ctx.Value(allowLoginDropDownKey{}).(bool)
+	return val
 }
