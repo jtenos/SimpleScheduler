@@ -69,7 +69,7 @@ func newMux(ctx context.Context, parms muxParms) *httprouter.Router {
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// POST /useremail
 	// Body: {"email":"test@example.com"}
-	// Response: {"success":true}
+	// Response: {}
 	mux.POST("/useremail", withoutAuth(userEmailHandler.Post))
 	//////////////////////////////////////////////////////////////////////////////////////////
 
@@ -77,7 +77,7 @@ func newMux(ctx context.Context, parms muxParms) *httprouter.Router {
 
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// GET /workers?name=hello&desc=something&directory=myapp&executable=myapp&active=1&parent=34
-	// Response: [{},{}]
+	// Response: [{"id":1...},{"id":2...}]
 	mux.GET("/workers", withAuth(workersHandler.Get, parms.jwtKey))
 	//////////////////////////////////////////////////////////////////////////////////////////
 
@@ -87,15 +87,31 @@ func newMux(ctx context.Context, parms muxParms) *httprouter.Router {
 	// "id":1,"isActive":true,"workerName":"Test","detailedDescription":"Test",
 	// "emailOnSuccess": "test@example.com","parentWorkerID":1,"timeoutMinutes":20
 	// "directoryName":"something","executable":"something.exe","argumentValues:"-x"}
-
 	mux.GET("/workers/:id", withAuth(workersHandler.Get, parms.jwtKey))
 	//////////////////////////////////////////////////////////////////////////////////////////
 
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// POST /workers
-	// Response: {"worker":{},"error":{}}
-	// Response:
-	// mux.POST("/workers", withAuth(workersHandler.Post, parms.jwtKey))
+	// Body: {"workerName":"the name","detailedDescription":"","emailOnSuccess":"",
+	//        "parentWorkerID":22,"timeoutMinutes":20,"directoryName":"DirName",
+	//        "executable":"Something.exe","argumentValues":""}
+	// Response: {}
+	mux.POST("/workers", withAuth(workersHandler.Post, parms.jwtKey))
+	//////////////////////////////////////////////////////////////////////////////////////////
+
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUT /workers
+	// Body: {"id":123,"workerName":"the name","detailedDescription":"","emailOnSuccess":"",
+	//        "parentWorkerID":22,"timeoutMinutes":20,"directoryName":"DirName",
+	//        "executable":"Something.exe","argumentValues":""}
+	// Response: {}
+	mux.PUT("/workers", withAuth(workersHandler.Put, parms.jwtKey))
+	//////////////////////////////////////////////////////////////////////////////////////////
+
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// DELETE /workers/:id
+	// Response: {}
+	mux.DELETE("/workers/:id", withAuth(workersHandler.Delete, parms.jwtKey))
 	//////////////////////////////////////////////////////////////////////////////////////////
 
 	//////////////////////////////////////////////////////////////////////////////////////////

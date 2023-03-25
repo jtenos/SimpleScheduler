@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"strconv"
+	"strings"
 
 	"github.com/jtenos/simplescheduler/internal/datamodels"
 )
@@ -51,52 +52,52 @@ func (repo *WorkerRepo) GetByID(id int64) (*datamodels.Worker, error) {
 // 	return err == nil
 // }
 
-// func (r WorkerRepo) Create(ctx context.Context, name string, description string, emailOnSuccess string, parentWorkerID *int64,
-// 	timeoutMinutes int32, directory string, executable string, args string, workerPath string) (err error) {
+func (r WorkerRepo) Create(ctx context.Context, name string, description string, emailOnSuccess string, parentWorkerID *int64,
+	timeoutMinutes int32, directory string, executable string, args string) (err error) {
 
-// 	if !isValidExec(directory, executable, workerPath) {
-// 		err = errors.New("invalid executable")
-// 		return
-// 	}
+	if !isValidExec(directory, executable, workerPath) {
+		err = errors.New("invalid executable")
+		return
+	}
 
-// 	db, err := sql.Open("sqlserver", r.connStr)
-// 	if err != nil {
-// 		return
-// 	}
-// 	defer db.Close()
+	existingWorkers, err := r.Search(ctx, name, "", "", "", "", "")
+	if err != nil {
+		return err
+	}
 
-// 	var id int64
-// 	var success bool
-// 	var nameAlreadyExists bool
-// 	var circularReference bool
+	for _, w := range existingWorkers {
+		if strings.ToLower(w.WorkerName) == strings.ToLower(name) {
+			return errors.New("worker name already exists")
+		}
+	}
 
-// 	row := db.QueryRowContext(ctx, "[app].[Workers_Insert]",
-// 		sql.Named("WorkerName", name),
-// 		sql.Named("DetailedDescription", description),
-// 		sql.Named("EmailOnSuccess", emailOnSuccess),
-// 		sql.Named("ParentWorkerID", parentWorkerID),
-// 		sql.Named("TimeoutMinutes", timeoutMinutes),
-// 		sql.Named("DirectoryName", directory),
-// 		sql.Named("Executable", executable),
-// 		sql.Named("ArgumentValues", args),
-// 	)
-// 	if err = row.Scan(&id, &success, &nameAlreadyExists, &circularReference); err != nil {
-// 		return
-// 	}
-// 	if circularReference {
-// 		err = errorhandling.NewBadRequestError("circular reference")
-// 		return
-// 	}
-// 	if nameAlreadyExists {
-// 		err = errorhandling.NewBadRequestError("name already exists")
-// 		return
-// 	}
-// 	if !success {
-// 		err = errors.New("unknown error")
-// 		return
-// 	}
-// 	return
-// }
+	db, err := open(r.ctx)
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+
+	query := `INSERT INTO [workers] (
+		 [worker_name], [detailed_description], [email_on_success], [parent_worker_id]
+		,[timeout_minutes], [directory_name], [executable], [argument_values]
+	) VALUES (
+		 @worker_name, @detailed_description, @email_on_success, @parent_worker_id
+		,@timeout_minutes, @directory_name, @executable, @argument_values
+	);`
+
+	_, err = db.ExecContext(r.ctx, query,
+		sql.Named("worker_name", name),
+		sql.Named("detailed_description", description),
+		sql.Named("email_on_success", emailOnSuccess),
+		sql.Named("parent_worker_id", parentWorkerID),
+		sql.Named("timeout_minutes", timeoutMinutes),
+		sql.Named("directory_name", directory),
+		sql.Named("executable", executable),
+		sql.Named("argument_values", args),
+	)
+
+	return err
+}
 
 // func (r WorkerRepo) Update(ctx context.Context, id int64, name string, description string,
 // 	emailOnSuccess string, parentWorkerID *int64, timeoutMinutes int32, directory string,

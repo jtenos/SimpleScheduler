@@ -44,6 +44,18 @@ func (h *WorkersHandler) Get(w http.ResponseWriter, r *http.Request, ps httprout
 	h.search(w, r, ps)
 }
 
+func (h *WorkersHandler) Post(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	panic("Not Implemented")
+}
+
+func (h *WorkersHandler) Put(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	panic("Not Implemented")
+}
+
+func (h *WorkersHandler) Delete(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	panic("Not Implemented")
+}
+
 func (h *WorkersHandler) search(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 	nameFilter := ps.ByName("name")

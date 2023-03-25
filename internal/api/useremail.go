@@ -95,5 +95,5 @@ func (h *UserEmailHandler) Post(w http.ResponseWriter, r *http.Request, _ httpro
 
 	emailer.SendEmail([]string{em.Email}, "Log In", bodyBuf.String())
 
-	json.NewEncoder(w).Encode(userEmailReply{Success: true})
+	fmt.Fprint(w, "{}")
 }

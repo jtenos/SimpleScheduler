@@ -27,7 +27,7 @@ func InitDB(ctx context.Context) error {
 		);
 
 		CREATE TABLE IF NOT EXISTS [login_attempts] (
-			 [id] INTEGER NOT NULL PRIMARY KEY
+			 [id] INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
 			,[submit_date_utc] TEXT NOT NULL
 			,[email_address] TEXT NOT NULL
 			,[validation_code] TEXT NOT NULL
@@ -38,7 +38,7 @@ func InitDB(ctx context.Context) error {
 		ON [login_attempts] ([validation_code]);
 
 		CREATE TABLE IF NOT EXISTS [workers] (
-			 [id] INTEGER NOT NULL PRIMARY KEY
+			 [id] INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
 			,[is_active] NOT NULL DEFAULT 1
 			,[worker_name] TEXT NOT NULL UNIQUE
 			,[detailed_description] TEXT NOT NULL
@@ -51,7 +51,7 @@ func InitDB(ctx context.Context) error {
 		);
 
 		CREATE TABLE IF NOT EXISTS [schedules] (
-			 [id] INTEGER NOT NULL PRIMARY KEY
+			 [id] INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
 			,[is_active] INTEGER NOT NULL DEFAULT 1
 			,[worker_id] INTEGER NOT NULL
 			,[sunday] INTEGER NOT NULL
@@ -72,7 +72,7 @@ func InitDB(ctx context.Context) error {
 		ON [schedules] ([worker_id]);
 
 		CREATE TABLE [jobs] (
-			 [id] INTEGER NOT NULL PRIMARY KEY
+			 [id] INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
 			,[schedule_id] INTEGER NOT NULL
 			,[insert_date_utc] TEXT NOT NULL
 			,[queue_date_utc] TEXT NOT NULL
