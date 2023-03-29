@@ -4,9 +4,13 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"os"
+	"path"
 	"strconv"
 	"strings"
 
+	"github.com/jtenos/simplescheduler/internal/ctxutil"
+	"github.com/jtenos/simplescheduler/internal/data/entity"
 	"github.com/jtenos/simplescheduler/internal/datamodels"
 )
 
@@ -16,7 +20,7 @@ func NewWorkerRepo(ctx context.Context) *WorkerRepo {
 	return &WorkerRepo{ctx}
 }
 
-func (repo *WorkerRepo) GetByID(id int64) (*datamodels.Worker, error) {
+func (repo *WorkerRepo) GetByID(id int64) (*entity.WorkerEntity, error) {
 	db, err := open(repo.ctx)
 	if err != nil {
 		return nil, err
@@ -33,7 +37,7 @@ func (repo *WorkerRepo) GetByID(id int64) (*datamodels.Worker, error) {
 	if !rows.Next() {
 		return nil, errors.New("worker not found")
 	}
-	var w datamodels.Worker
+	var w entity.WorkerEntity
 	err = w.Hydrate(rows)
 	if err != nil {
 		return nil, err
@@ -41,21 +45,21 @@ func (repo *WorkerRepo) GetByID(id int64) (*datamodels.Worker, error) {
 	return &w, nil
 }
 
-// func isValidExec(dir string, exe string, workerPath string) bool {
-// 	if strings.Contains(dir, "/") || strings.Contains(dir, "\\") || strings.Contains(exe, "/") || strings.Contains(exe, "\\") {
-// 		return false
-// 	}
+func isValidExec(dir string, exe string, workerPath string) bool {
+	if strings.Contains(dir, "/") || strings.Contains(dir, "\\") || strings.Contains(exe, "/") || strings.Contains(exe, "\\") {
+		return false
+	}
 
-// 	fullPath := path.Join(workerPath, dir, exe)
-// 	_, err := os.Lstat(fullPath)
+	fullPath := path.Join(workerPath, dir, exe)
+	_, err := os.Lstat(fullPath)
 
-// 	return err == nil
-// }
+	return err == nil
+}
 
 func (r WorkerRepo) Create(ctx context.Context, name string, description string, emailOnSuccess string, parentWorkerID *int64,
 	timeoutMinutes int32, directory string, executable string, args string) (err error) {
 
-	if !isValidExec(directory, executable, workerPath) {
+	if !isValidExec(directory, executable, ctxutil.GetWorkerPath(ctx)) {
 		err = errors.New("invalid executable")
 		return
 	}

@@ -68,12 +68,9 @@ func (h *UserEmailHandler) Post(w http.ResponseWriter, r *http.Request, _ httpro
 	}
 
 	userRepo := data.NewUserRepo(h.ctx)
-	userFound, valCd, err := userRepo.SubmitEmail(em.Email)
-	if err != nil {
-		errorhandling.HandleError(w, r, err, "UserEmailHandler.Post", http.StatusInternalServerError)
-		return
-	}
-	if !userFound {
+	valCd, err := userRepo.SubmitEmail(em.Email)
+
+	if _, ok := err.(*data.UserNotFoundError); ok {
 		errorhandling.HandleError(w, r,
 			errors.New("user not found"),
 			"UserEmailHandler.Post",
@@ -82,7 +79,12 @@ func (h *UserEmailHandler) Post(w http.ResponseWriter, r *http.Request, _ httpro
 		return
 	}
 
-	url := fmt.Sprintf("%s/security/validateEmail?cd=%s", ctxutil.GetApiUrl(h.ctx), valCd)
+	if err != nil {
+		errorhandling.HandleError(w, r, err, "UserEmailHandler.Post", http.StatusInternalServerError)
+		return
+	}
+
+	url := fmt.Sprintf("%s/uservalidation/%s", ctxutil.GetApiUrl(h.ctx), valCd)
 
 	var bodyBuf bytes.Buffer
 	h.tmpl.Execute(&bodyBuf, struct {

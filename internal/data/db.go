@@ -31,7 +31,7 @@ func InitDB(ctx context.Context) error {
 			,[submit_date_utc] TEXT NOT NULL
 			,[email_address] TEXT NOT NULL
 			,[validation_code] TEXT NOT NULL
-			,[validate_date_utc] TEXT NULL
+			,[validate_date_utc] TEXT NOT NULL
 		);
 
 		CREATE UNIQUE INDEX IF NOT EXISTS [ix_login_attempts_validation_code]
@@ -61,10 +61,10 @@ func InitDB(ctx context.Context) error {
 			,[thursday] INTEGER NOT NULL
 			,[friday] INTEGER NOT NULL
 			,[saturday] INTEGER NOT NULL
-			,[time_of_day_utc] TEXT NULL
-			,[recur_time] TEXT NULL
-			,[recur_between_start_utc] TEXT NULL
-			,[recur_between_end_utc] TEXT NULL
+			,[time_of_day_utc] TEXT NOT NULL
+			,[recur_time] TEXT NOT NULL
+			,[recur_between_start_utc] TEXT NOT NULL
+			,[recur_between_end_utc] TEXT NOT NULL
 			,[one_time] INTEGER NOT NULL DEFAULT 0
 		);
 
@@ -76,10 +76,10 @@ func InitDB(ctx context.Context) error {
 			,[schedule_id] INTEGER NOT NULL
 			,[insert_date_utc] TEXT NOT NULL
 			,[queue_date_utc] TEXT NOT NULL
-			,[complete_date_utc] TEXT NULL
+			,[complete_date_utc] TEXT NOT NULL
 			,[status_code] TEXT NOT NULL
 			,[acknowledgement_code] TEXT NOT NULL
-			,[acknowledgement_date] TEXT NULL
+			,[acknowledgement_date] TEXT NOT NULL
 			,[has_detailed_message] INTEGER NOT NULL DEFAULT 0
 		);
 
