@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/jtenos/simplescheduler/internal/api/dto"
 	"github.com/jtenos/simplescheduler/internal/api/errorhandling"
 	"github.com/jtenos/simplescheduler/internal/data"
 	"github.com/julienschmidt/httprouter"
@@ -32,11 +33,19 @@ func (h *WorkersHandler) Get(w http.ResponseWriter, r *http.Request, ps httprout
 }
 
 func (h *WorkersHandler) Post(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	// var worker models.Worker
-	// 	decoder := json.NewDecoder(r.Body)
-	// 	decoder.Decode(&worker)
+	var worker dto.WorkerDTO
+	decoder := json.NewDecoder(r.Body)
+	decoder.Decode(&worker)
 
-	panic("Not Implemented")
+	workerRepo := data.NewWorkerRepo(h.ctx)
+	workerID, err := workerRepo.Create(h.ctx, worker.WorkerName, worker.DetailedDescription,
+		worker.EmailOnSuccess, worker.ParentWorkerID, worker.TimeoutMinutes,
+		worker.DirectoryName, worker.Executable, worker.ArgumentValues)
+	if err != nil {
+		errorhandling.HandleError(w, r, err, "WorkersHandler.Post", http.StatusInternalServerError)
+	}
+	r.Response.StatusCode = http.StatusOK
+	json.NewEncoder(w).Encode(struct{ workerID int64 }{workerID: workerID})
 }
 
 func (h *WorkersHandler) Put(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {

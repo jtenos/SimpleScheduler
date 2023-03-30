@@ -56,27 +56,27 @@ func isValidExec(dir string, exe string, workerPath string) bool {
 }
 
 func (r *WorkerRepo) Create(ctx context.Context, name string, description string, emailOnSuccess string, parentWorkerID *int64,
-	timeoutMinutes int32, directory string, executable string, args string) (err error) {
+	timeoutMinutes int64, directory string, executable string, args string) (int64, error) {
 
 	if !isValidExec(directory, executable, ctxutil.GetWorkerPath(ctx)) {
-		err = errors.New("invalid executable")
-		return
+		err := errors.New("invalid executable")
+		return 0, err
 	}
 
 	existingWorkerNames, err := getWorkerNames(r.ctx)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
 	for _, w := range existingWorkerNames {
 		if strings.EqualFold(w, name) {
-			return errors.New("worker name already exists")
+			return 0, errors.New("worker name already exists")
 		}
 	}
 
 	db, err := open(r.ctx)
 	if err != nil {
-		return err
+		return 0, err
 	}
 	defer db.Close()
 
@@ -86,9 +86,10 @@ func (r *WorkerRepo) Create(ctx context.Context, name string, description string
 	) VALUES (
 		 @worker_name, @detailed_description, @email_on_success, @parent_worker_id
 		,@timeout_minutes, @directory_name, @executable, @argument_values
-	);`
+	);
+	SELECT last_insert_rowid()`
 
-	_, err = db.ExecContext(r.ctx, query,
+	row := db.QueryRowContext(r.ctx, query,
 		sql.Named("worker_name", name),
 		sql.Named("detailed_description", description),
 		sql.Named("email_on_success", emailOnSuccess),
@@ -99,7 +100,13 @@ func (r *WorkerRepo) Create(ctx context.Context, name string, description string
 		sql.Named("argument_values", args),
 	)
 
-	return err
+	var workerID int64
+	err = row.Scan(&workerID)
+	if err != nil {
+		return 0, err
+	}
+
+	return workerID, nil
 }
 
 // func (r WorkerRepo) Update(ctx context.Context, id int64, name string, description string,
