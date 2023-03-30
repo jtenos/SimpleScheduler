@@ -11,7 +11,6 @@ import (
 
 	"github.com/jtenos/simplescheduler/internal/ctxutil"
 	"github.com/jtenos/simplescheduler/internal/data/entity"
-	"github.com/jtenos/simplescheduler/internal/datamodels"
 )
 
 type WorkerRepo struct{ ctx context.Context }
@@ -56,7 +55,7 @@ func isValidExec(dir string, exe string, workerPath string) bool {
 	return err == nil
 }
 
-func (r WorkerRepo) Create(ctx context.Context, name string, description string, emailOnSuccess string, parentWorkerID *int64,
+func (r *WorkerRepo) Create(ctx context.Context, name string, description string, emailOnSuccess string, parentWorkerID *int64,
 	timeoutMinutes int32, directory string, executable string, args string) (err error) {
 
 	if !isValidExec(directory, executable, ctxutil.GetWorkerPath(ctx)) {
@@ -64,13 +63,13 @@ func (r WorkerRepo) Create(ctx context.Context, name string, description string,
 		return
 	}
 
-	existingWorkers, err := r.Search(ctx, name, "", "", "", "", "")
+	existingWorkerNames, err := getWorkerNames(r.ctx)
 	if err != nil {
 		return err
 	}
 
-	for _, w := range existingWorkers {
-		if strings.ToLower(w.WorkerName) == strings.ToLower(name) {
+	for _, w := range existingWorkerNames {
+		if strings.EqualFold(w, name) {
 			return errors.New("worker name already exists")
 		}
 	}
@@ -195,8 +194,36 @@ func (r WorkerRepo) Create(ctx context.Context, name string, description string,
 // 	return
 // }
 
-func (repo WorkerRepo) Search(ctx context.Context, nameFilter string, descFilter string, dirFilter string,
-	exeFilter string, activeFilter string, parentFilter string) ([]*datamodels.Worker, error) {
+func getWorkerNames(ctx context.Context) ([]string, error) {
+	db, err := open(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer db.Close()
+
+	const query = "SELECT [worker_name] FROM [workers];"
+	rows, err := db.QueryContext(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var names []string
+
+	for rows.Next() {
+		var name string
+		err = rows.Scan(&name)
+		if err != nil {
+			return nil, err
+		}
+		names = append(names, name)
+	}
+
+	return names, nil
+}
+
+func (repo *WorkerRepo) Search(ctx context.Context, nameFilter string, descFilter string, dirFilter string,
+	exeFilter string, activeFilter string, parentFilter string) ([]*entity.WorkerEntity, error) {
 
 	db, err := open(repo.ctx)
 	if err != nil {
@@ -247,10 +274,10 @@ func (repo WorkerRepo) Search(ctx context.Context, nameFilter string, descFilter
 	}
 	defer rows.Close()
 
-	workers := []*datamodels.Worker{}
+	workers := []*entity.WorkerEntity{}
 
 	for rows.Next() {
-		var w datamodels.Worker
+		var w entity.WorkerEntity
 		err = w.Hydrate(rows)
 		if err != nil {
 			return nil, err
