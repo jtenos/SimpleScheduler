@@ -120,8 +120,6 @@ func newMux(ctx context.Context, parms muxParms) *httprouter.Router {
 	//////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////////////////
 
-	// setHandling(mux, "/workers/create", "POST", workers.NewCreateHandler(ctx, parms.connStr, parms.workerPath), jwtKey)
-	// setHandling(mux, "/workers/delete", "POST", workers.NewDeleteHandler(ctx, parms.connStr), jwtKey)
 	// setHandling(mux, "/workers/reactivate", "POST", workers.NewReactivateHandler(ctx, parms.connStr), jwtKey)
 	// setHandling(mux, "/workers/run", "POST", workers.NewRunHandler(ctx, parms.connStr), jwtKey)
 	// setHandling(mux, "/workers/update", "POST", workers.NewUpdateHandler(ctx, parms.connStr, parms.workerPath), jwtKey)

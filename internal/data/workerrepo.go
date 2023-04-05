@@ -4,10 +4,12 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 	"os"
 	"path"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/jtenos/simplescheduler/internal/ctxutil"
 	"github.com/jtenos/simplescheduler/internal/data/entity"
@@ -162,18 +164,73 @@ func (r *WorkerRepo) Create(ctx context.Context, name string, description string
 // 	return
 // }
 
-// func (r WorkerRepo) Delete(ctx context.Context, id int64) (err error) {
-// 	db, err := sql.Open("sqlserver", r.connStr)
-// 	if err != nil {
-// 		return
-// 	}
-// 	defer db.Close()
+func (r WorkerRepo) Delete(ctx context.Context, id int64) (err error) {
+	db, err := open(r.ctx)
+	if err != nil {
+		return
+	}
+	defer db.Close()
 
-// 	_, err = db.ExecContext(ctx, "[app].[Workers_Deactivate]",
-// 		sql.Named("ID", id),
-// 	)
-// 	return
-// }
+	w, err := r.GetByID(id)
+	if err != nil {
+		return
+	}
+
+	formattedNow := time.Now().UTC().Format("20060102150405")
+	newName := fmt.Sprintf("INACTIVE: %s %s", formattedNow, w.WorkerName)
+
+	if len(newName) > 100 {
+		runes := []rune(newName)
+		newName = string(runes[0:100])
+	}
+
+	query := `
+		UPDATE [schedules] SET [is_active] = 0
+		WHERE [worker_id] = @worker_id;
+		UPDATE [workers] SET [is_active] = 0, [worker_name] = @worker_name]
+		WHERE [id] = @worker_id;
+	`
+
+	_, err = db.ExecContext(ctx, query,
+		sql.Named("worker_id", id),
+		sql.Named("worker_name", newName),
+	)
+	return
+}
+
+/*
+		DECLARE @WorkerName NVARCHAR(100);
+		SELECT @WorkerName = [WorkerName] FROM [app].[Workers] WHERE [ID] = @ID;
+
+		DECLARE @NewWorkerName NVARCHAR(150) = N'INACTIVE: ' + FORMAT(SYSUTCDATETIME(), 'yyyyMMddHHmmss')
+			+ ' ' + @WorkerName;
+
+		SET @NewWorkerName = LTRIM(RTRIM(LEFT(@NewWorkerName, 100)));
+
+		UPDATE [app].[Workers]
+		SET [IsActive] = 0, [WorkerName] = @NewWorkerName
+		WHERE [ID] = @ID;
+
+		DELETE j
+		FROM [app].[Jobs] j
+		JOIN [app].[Schedules] s ON j.[ScheduleID] = s.[ID]
+		WHERE s.[WorkerID] = @ID
+		AND j.[StatusCode] = 'NEW';
+
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION;
+		DECLARE @Msg NVARCHAR(2048) = ERROR_MESSAGE();
+		RAISERROR(@Msg, 16, 1);
+		RETURN 55555;
+	END CATCH;
+END;
+GO
+
+-- TODO: Move this into regular Update proc
+
+*/
 
 // func (r WorkerRepo) Reactivate(ctx context.Context, id int64) (err error) {
 // 	db, err := sql.Open("sqlserver", r.connStr)

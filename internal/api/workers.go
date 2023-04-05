@@ -53,7 +53,19 @@ func (h *WorkersHandler) Put(w http.ResponseWriter, r *http.Request, ps httprout
 }
 
 func (h *WorkersHandler) Delete(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	panic("Not Implemented")
+	idParm := ps.ByName("id")
+	if len(idParm) == 0 {
+		errorhandling.HandleError(w, r, errors.New("id parameter required"), "WorkersHandler.Delete", http.StatusBadRequest)
+		return
+	}
+
+	id, err := strconv.ParseInt(idParm, 10, 64)
+	if err != nil {
+		errorhandling.HandleError(w, r, err, "WorkersHandler.Delete", http.StatusBadRequest)
+		return
+	}
+	workerRepo := data.NewWorkerRepo(h.ctx)
+	workerRepo.Delete(h.ctx, id)
 }
 
 func (h *WorkersHandler) search(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -70,7 +82,7 @@ func (h *WorkersHandler) search(w http.ResponseWriter, r *http.Request, ps httpr
 	workers, err := workerRepo.Search(h.ctx, nameFilter, descFilter, dirFilter,
 		exeFilter, activeFilter, parentFilter)
 	if err != nil {
-		errorhandling.HandleError(w, r, err, "SearchHandler.ServeHTTP", http.StatusInternalServerError)
+		errorhandling.HandleError(w, r, err, "WorkersHandler.search", http.StatusInternalServerError)
 		return
 	}
 	json.NewEncoder(w).Encode(workers)
@@ -80,7 +92,7 @@ func (h *WorkersHandler) getByID(w http.ResponseWriter, r *http.Request, idFilte
 
 	id, err := strconv.ParseInt(idFilter, 10, 64)
 	if err != nil {
-		errorhandling.HandleError(w, r, errors.New("invalid id parameter"), "WorkersHandler.Get", http.StatusBadRequest)
+		errorhandling.HandleError(w, r, errors.New("invalid id parameter"), "WorkersHandler.getByID", http.StatusBadRequest)
 		return
 	}
 
@@ -91,9 +103,9 @@ func (h *WorkersHandler) getByID(w http.ResponseWriter, r *http.Request, idFilte
 		return
 	}
 
-	reply := workerModel{
+	reply := dto.WorkerDTO{
 		ID:                  dmWorker.ID,
-		IsActive:            dmWorker.IsActive,
+		IsActive:            dmWorker.IsActive == 1,
 		WorkerName:          dmWorker.WorkerName,
 		DetailedDescription: dmWorker.DetailedDescription,
 		EmailOnSuccess:      dmWorker.EmailOnSuccess,
