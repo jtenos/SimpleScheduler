@@ -71,15 +71,15 @@ func InitDB(ctx context.Context) error {
 		CREATE INDEX IF NOT EXISTS [ix_schedules_workerid]
 		ON [schedules] ([worker_id]);
 
-		CREATE TABLE [jobs] (
+		CREATE TABLE IF NOT EXISTS [jobs] (
 			 [id] INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
 			,[schedule_id] INTEGER NOT NULL
 			,[insert_date_utc] TEXT NOT NULL
 			,[queue_date_utc] TEXT NOT NULL
-			,[complete_date_utc] TEXT NOT NULL
-			,[status_code] TEXT NOT NULL
+			,[complete_date_utc] TEXT NOT NULL DEFAULT ''
+			,[status_code] TEXT NOT NULL DEFAULT 'NEW'
 			,[acknowledgement_code] TEXT NOT NULL
-			,[acknowledgement_date] TEXT NOT NULL
+			,[acknowledgement_date] TEXT NOT NULL DEFAULT ''
 			,[has_detailed_message] INTEGER NOT NULL DEFAULT 0
 		);
 
