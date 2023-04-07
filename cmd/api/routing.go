@@ -53,6 +53,7 @@ func newMux(ctx context.Context, parms muxParms) *httprouter.Router {
 
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// GET /utcnow
+	// Get the current formatted time in UTC
 	// Response: {"formattedDateTime":"Mar 02 2023, 02:39 (UTC)"}
 	mux.GET("/utcnow", withoutAuth(utcNowHandler.Get))
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -68,6 +69,7 @@ func newMux(ctx context.Context, parms muxParms) *httprouter.Router {
 
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// POST /useremail
+	// Start the log in process
 	// Body: {"email":"test@example.com"}
 	// Response: {}
 	mux.POST("/useremail", withoutAuth(userEmailHandler.Post))
@@ -77,12 +79,14 @@ func newMux(ctx context.Context, parms muxParms) *httprouter.Router {
 
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// GET /workers?name=hello&desc=something&directory=myapp&executable=myapp&active=1&parent=34
+	// Search for workers
 	// Response: [{"id":1...},{"id":2...}]
 	mux.GET("/workers", withAuth(workersHandler.Get, parms.jwtKey))
 	//////////////////////////////////////////////////////////////////////////////////////////
 
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// GET /workers/:id
+	// Get a single worker by ID
 	// Response: {
 	// "id":1,"isActive":true,"workerName":"Test","detailedDescription":"Test",
 	// "emailOnSuccess": "test@example.com","parentWorkerID":1,"timeoutMinutes":20
@@ -92,6 +96,7 @@ func newMux(ctx context.Context, parms muxParms) *httprouter.Router {
 
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// POST /workers
+	// Create a new worker
 	// Body: {"workerName":"the name","detailedDescription":"","emailOnSuccess":"",
 	//        "parentWorkerID":22,"timeoutMinutes":20,"directoryName":"DirName",
 	//        "executable":"Something.exe","argumentValues":""}
@@ -101,6 +106,7 @@ func newMux(ctx context.Context, parms muxParms) *httprouter.Router {
 
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUT /workers
+	// Update an existing worker
 	// Body: {"id":123,"workerName":"the name","detailedDescription":"","emailOnSuccess":"",
 	//        "parentWorkerID":22,"timeoutMinutes":20,"directoryName":"DirName",
 	//        "executable":"Something.exe","argumentValues":""}
@@ -110,6 +116,7 @@ func newMux(ctx context.Context, parms muxParms) *httprouter.Router {
 
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// DELETE /workers/:id
+	// Delete a worker
 	// Response: {}
 	mux.DELETE("/workers/:id", withAuth(workersHandler.Delete, parms.jwtKey))
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -118,10 +125,18 @@ func newMux(ctx context.Context, parms muxParms) *httprouter.Router {
 
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// POST /jobs
+	// Create a new job for a particular schedule
 	// Body: {"scheduleID":1234,"queueDateUTC":"2023-01-02T03:04:05Z"}
 	// Response: {"jobID":23456}
 	//////////////////////////////////////////////////////////////////////////////////////////
 	mux.POST("/jobs", withAuth(jobsHandler.Post, parms.jwtKey))
+	//////////////////////////////////////////////////////////////////////////////////////////
+
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// DELETE /jobs/:id
+	// Cancel a job, but it will only cancel if it's currently in NEW status
+	// Response: {}
+	mux.DELETE("/jobs/:id", withAuth(jobsHandler.Delete, parms.jwtKey))
 	//////////////////////////////////////////////////////////////////////////////////////////
 
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -38,7 +38,7 @@ func (h *WorkersHandler) Post(w http.ResponseWriter, r *http.Request, ps httprou
 	decoder.Decode(&worker)
 
 	workerRepo := data.NewWorkerRepo(h.ctx)
-	workerID, err := workerRepo.Create(h.ctx, worker.WorkerName, worker.DetailedDescription,
+	workerID, err := workerRepo.Create(worker.WorkerName, worker.DetailedDescription,
 		worker.EmailOnSuccess, worker.ParentWorkerID, worker.TimeoutMinutes,
 		worker.DirectoryName, worker.Executable, worker.ArgumentValues)
 	if err != nil {
@@ -65,7 +65,11 @@ func (h *WorkersHandler) Delete(w http.ResponseWriter, r *http.Request, ps httpr
 		return
 	}
 	workerRepo := data.NewWorkerRepo(h.ctx)
-	workerRepo.Delete(h.ctx, id)
+	err = workerRepo.Delete(id)
+	if err != nil {
+		errorhandling.HandleError(w, r, err, "WorkersHandler.Delete", http.StatusBadRequest)
+		return
+	}
 }
 
 func (h *WorkersHandler) search(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -79,7 +83,7 @@ func (h *WorkersHandler) search(w http.ResponseWriter, r *http.Request, ps httpr
 
 	workerRepo := data.NewWorkerRepo(h.ctx)
 
-	workers, err := workerRepo.Search(h.ctx, nameFilter, descFilter, dirFilter,
+	workers, err := workerRepo.Search(nameFilter, descFilter, dirFilter,
 		exeFilter, activeFilter, parentFilter)
 	if err != nil {
 		errorhandling.HandleError(w, r, err, "WorkersHandler.search", http.StatusInternalServerError)

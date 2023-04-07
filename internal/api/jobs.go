@@ -3,7 +3,10 @@ package api
 import (
 	"context"
 	"encoding/json"
+	"errors"
+	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/jtenos/simplescheduler/internal/api/errorhandling"
@@ -41,4 +44,23 @@ func (h *JobsHandler) Post(w http.ResponseWriter, r *http.Request, ps httprouter
 	}
 
 	json.NewEncoder(w).Encode(struct{ jobID int64 }{jobID: jobID})
+}
+
+func (h *JobsHandler) Delete(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	idParm := ps.ByName("id")
+	if len(idParm) == 0 {
+		errorhandling.HandleError(w, r, errors.New("id parameter required"), "JobsHandler.Delete", http.StatusBadRequest)
+		return
+	}
+
+	id, err := strconv.ParseInt(idParm, 10, 64)
+	if err != nil {
+		errorhandling.HandleError(w, r, err, "JobsHandler.Delete", http.StatusBadRequest)
+		return
+	}
+
+	jobRepo := data.NewJobRepo(h.ctx)
+	jobRepo.CancelJob(id)
+
+	fmt.Fprintf(w, "{}")
 }

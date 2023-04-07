@@ -42,3 +42,22 @@ func (repo *JobRepo) CreateJob(scheduleID int64, queueDateUTC time.Time) (jobID 
 
 	return
 }
+
+// Cancel a job only if it hasn't already started
+func (repo *JobRepo) CancelJob(jobID int64) error {
+	db, err := open(repo.ctx)
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+
+	query := `
+		UPDATE [jobs]
+		SET [status_code] = 'CAN'
+		WHERE [id] = @id
+		AND [status_code] = 'NEW';
+	`
+
+	_, err = db.ExecContext(repo.ctx, query, sql.Named("id", jobID))
+	return err
+}

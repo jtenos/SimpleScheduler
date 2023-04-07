@@ -57,10 +57,10 @@ func isValidExec(dir string, exe string, workerPath string) bool {
 	return err == nil
 }
 
-func (r *WorkerRepo) Create(ctx context.Context, name string, description string, emailOnSuccess string, parentWorkerID *int64,
+func (r *WorkerRepo) Create(name string, description string, emailOnSuccess string, parentWorkerID *int64,
 	timeoutMinutes int64, directory string, executable string, args string) (int64, error) {
 
-	if !isValidExec(directory, executable, ctxutil.GetWorkerPath(ctx)) {
+	if !isValidExec(directory, executable, ctxutil.GetWorkerPath(r.ctx)) {
 		err := errors.New("invalid executable")
 		return 0, err
 	}
@@ -164,7 +164,7 @@ func (r *WorkerRepo) Create(ctx context.Context, name string, description string
 // 	return
 // }
 
-func (r WorkerRepo) Delete(ctx context.Context, id int64) (err error) {
+func (r WorkerRepo) Delete(id int64) (err error) {
 	db, err := open(r.ctx)
 	if err != nil {
 		return
@@ -191,7 +191,7 @@ func (r WorkerRepo) Delete(ctx context.Context, id int64) (err error) {
 		WHERE [id] = @worker_id;
 	`
 
-	_, err = db.ExecContext(ctx, query,
+	_, err = db.ExecContext(r.ctx, query,
 		sql.Named("worker_id", id),
 		sql.Named("worker_name", newName),
 	)
@@ -286,7 +286,7 @@ func getWorkerNames(ctx context.Context) ([]string, error) {
 	return names, nil
 }
 
-func (repo *WorkerRepo) Search(ctx context.Context, nameFilter string, descFilter string, dirFilter string,
+func (repo *WorkerRepo) Search(nameFilter string, descFilter string, dirFilter string,
 	exeFilter string, activeFilter string, parentFilter string) ([]*entity.WorkerEntity, error) {
 
 	db, err := open(repo.ctx)
