@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Bogus;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using System.Data;
@@ -59,7 +60,7 @@ internal class Worker
                     ,[Executable]
                     ,[ArgumentValues]
                 ) VALUES (
-                    '{Faker.Company.Name().Replace("'", "")}'
+                    '{new Faker().Company.CompanyName().Replace("'", "")}'
                     ,''
                     ,''
                     ,20

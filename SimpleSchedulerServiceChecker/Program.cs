@@ -30,7 +30,7 @@ await Host.CreateDefaultBuilder()
             IEmailer emailer;
             if (!string.IsNullOrWhiteSpace(config["EmailFolder"]))
             {
-                emailer = new LogFileEmailer(config["EmailFolder"]);
+                emailer = new LogFileEmailer(config["EmailFolder"]!);
             }
             else
             {
@@ -52,7 +52,7 @@ await Host.CreateDefaultBuilder()
         });
 
         services.AddSingleton(sp => new ServiceClient(
-            httpClient: new HttpClient { BaseAddress = new Uri(sp.GetRequiredService<IConfiguration>()["ApiUrl"]) },
+            httpClient: new HttpClient { BaseAddress = new Uri(sp.GetRequiredService<IConfiguration>()["ApiUrl"]!) },
             tokenLookup: sp.GetRequiredService<ITokenLookup>(),
             () => { },
             sp.GetRequiredService<ILogger<ServiceClient>>()

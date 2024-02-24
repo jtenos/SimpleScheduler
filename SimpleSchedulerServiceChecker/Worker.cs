@@ -32,12 +32,12 @@ public class Worker
 
         _serviceNames = config.GetSection("ServiceNames")
             .GetChildren()
-            .Select(x => x.Value)
+            .Select(x => x.Value!)
             .ToArray();
         _logger = logger;
         _serviceClient = serviceClient;
         _emailer = emailer;
-        _appUrl = config["AppUrl"];
+        _appUrl = config["AppUrl"]!;
 
         int timerMinutes = config.GetValue<int>("TimerMinutes");
         if (timerMinutes <= 0) { timerMinutes = 20; }
@@ -75,7 +75,7 @@ public class Worker
                     }
                 }
 
-                _logger.LogInformation("Looking for overdue jobs", string.Join(",", _serviceNames));
+                _logger.LogInformation("Looking for overdue jobs {jobs}", string.Join(",", _serviceNames));
                 (Error? error, GetOverdueJobsReply? jobsReply) = await _serviceClient.PostAsync<GetOverdueJobsRequest, GetOverdueJobsReply>(
                     "Jobs/GetOverdueJobs",
                     new()

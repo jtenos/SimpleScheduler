@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -11,13 +11,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Blazored.LocalStorage" Version="4.2.0" />
+		<PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
 		<PackageReference Include="Blazored.Typeahead" Version="4.7.0" />
-		<PackageReference Include="Blazorise.Bootstrap5" Version="1.1.1" />
-		<PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.1.1" />
-		<PackageReference Include="CurrieTechnologies.Razor.SweetAlert2" Version="5.2.1" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.9" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.9" PrivateAssets="all" />
+		<PackageReference Include="Blazorise.Bootstrap5" Version="1.4.2" />
+		<PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.4.2" />
+		<PackageReference Include="CurrieTechnologies.Razor.SweetAlert2" Version="5.5.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.2" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.2" PrivateAssets="all" />
 	</ItemGroup>
 
 	<ItemGroup>

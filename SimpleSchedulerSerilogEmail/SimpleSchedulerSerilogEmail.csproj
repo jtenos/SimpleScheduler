@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<WarningsAsErrors />
@@ -10,7 +10,7 @@
 		<AssemblyVersion>6.0.0</AssemblyVersion>
 	</PropertyGroup>
 	<ItemGroup>
-	  <PackageReference Include="Serilog.Sinks.PeriodicBatching" Version="3.1.0" />
+	  <PackageReference Include="Serilog.Sinks.PeriodicBatching" Version="4.0.0" />
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\SimpleSchedulerEmail\SimpleSchedulerEmail.csproj" />

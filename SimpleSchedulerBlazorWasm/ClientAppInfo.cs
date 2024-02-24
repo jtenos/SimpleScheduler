@@ -7,6 +7,6 @@ public class ClientAppInfo
 
     public ClientAppInfo(IConfiguration config)
     {
-        EnvironmentName = config["EnvironmentName"];
+        EnvironmentName = config["EnvironmentName"]!;
     }
 }

@@ -36,7 +36,7 @@ builder.Services.AddSingleton<IWorkerManager, WorkerManager>();
 
 builder.Services.AddSingleton<SqlDatabase>(sp =>
 {
-    string connectionString = sp.GetRequiredService<IConfiguration>().GetConnectionString("SimpleScheduler");
+    string connectionString = sp.GetRequiredService<IConfiguration>().GetConnectionString("SimpleScheduler")!;
     AsyncRetryPolicy retryPolicy = sp.GetRequiredService<AsyncRetryPolicy>();
     return new SqlDatabase(connectionString, retryPolicy);
 });
@@ -65,7 +65,7 @@ builder.Services.AddSingleton<IEmailer>((sp) =>
     IEmailer emailer;
     if (!string.IsNullOrWhiteSpace(config["EmailFolder"]))
     {
-        emailer = new LogFileEmailer(config["EmailFolder"]);
+        emailer = new LogFileEmailer(config["EmailFolder"]!);
     }
     else
     {

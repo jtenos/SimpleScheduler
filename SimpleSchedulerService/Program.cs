@@ -22,7 +22,7 @@ await Host.CreateDefaultBuilder(args)
         });
 
         services.AddScoped(sp => new ServiceClient(
-            httpClient: new HttpClient { BaseAddress = new Uri(sp.GetRequiredService<IConfiguration>()["ApiUrl"]) },
+            httpClient: new HttpClient { BaseAddress = new Uri(sp.GetRequiredService<IConfiguration>()["ApiUrl"]!) },
             tokenLookup: sp.GetRequiredService<ITokenLookup>(),
             redirectToLogin: () => throw new ApplicationException("Unauthorized"),
             logger: sp.GetRequiredService<ILogger<ServiceClient>>()

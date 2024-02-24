@@ -10,14 +10,14 @@ public static class ConfigExtensions
         string? UserName,
         string? Password
         ) MailSettings(this IConfiguration config) => (
-            Port: config.GetValue<int>("MailSettings:Port"),
-            EmailFrom: config["MailSettings:EmailFrom"],
-            AdminEmail: config["MailSettings:AdminEmail"],
-            Host: config["MailSettings:Host"],
+            Port: config.GetValue<int>("MailSettings:Port")!,
+            EmailFrom: config["MailSettings:EmailFrom"]!,
+            AdminEmail: config["MailSettings:AdminEmail"]!,
+            Host: config["MailSettings:Host"]!,
             UserName: config["MailSettings:UserName"],
             Password: config["MailSettings:Password"]
         );
 
-    public static string EnvironmentName(this IConfiguration config) => config["EnvironmentName"];
+    public static string EnvironmentName(this IConfiguration config) => config["EnvironmentName"]!;
     public static Guid InternalSecretAuthKey(this IConfiguration config) => config.GetValue<Guid>("InternalSecretAuthKey");
 }

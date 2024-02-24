@@ -22,15 +22,20 @@ partial class Workers
     private NavigationManager Nav { get; set; } = default!;
 
     [Parameter]
-    public long? WorkerID
-    {
-        get => SearchCriteria?.WorkerID;
-        set { if (SearchCriteria is not null) { SearchCriteria.WorkerID = value; } }
-    }
+    public long? WorkerID { get; set; }
 
     private AsYouTypeInputText? SearchTextBox { get; set; } = default!;
 
-    private readonly SearchModel SearchCriteria = new();
+    private readonly SearchModel _searchCriteria = new();
+    private SearchModel SearchCriteria
+    {
+        get
+        {
+            _searchCriteria.WorkerID = WorkerID;
+            return _searchCriteria;
+        }
+    }
+
     private EditContext SearchEditContext { get; set; } = default!;
 
     private Wws[] FilteredWorkers { get; set; } = default!;

@@ -18,7 +18,7 @@ public sealed class RunnerWorker
     {
         _logger = serviceProvider.GetRequiredService<ILogger<RunnerWorker>>();
         _worker = worker;
-        _workingDirectory = new DirectoryInfo(Path.Combine(config["WorkerPath"], worker.DirectoryName)).FullName;
+        _workingDirectory = new DirectoryInfo(Path.Combine(config["WorkerPath"]!, worker.DirectoryName)).FullName;
         _executable = Path.Combine(_workingDirectory, worker.Executable);
     }
 

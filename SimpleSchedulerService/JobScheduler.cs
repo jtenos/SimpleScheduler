@@ -22,9 +22,9 @@ public sealed class JobScheduler
 
     public async Task StartSchedulerAsync()
     {
-        Directory.CreateDirectory(_config["WorkerPath"]);
-        _logger.LogInformation("WorkerPath={workerPath}", _config["WorkerPath"]);
-        _logger.LogInformation("ApiUrl={apiUrl}", _config["ApiUrl"]);
+        Directory.CreateDirectory(_config["WorkerPath"]!);
+        _logger.LogInformation("WorkerPath={workerPath}", _config["WorkerPath"]!);
+        _logger.LogInformation("ApiUrl={apiUrl}", _config["ApiUrl"]!);
 
         await _jobExecutor.RestartStuckAppsAsync();
 
