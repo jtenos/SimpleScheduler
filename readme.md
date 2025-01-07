@@ -52,6 +52,11 @@ You can publish from the Visual Studio `SimpleSchedulerSqlServerDB.publish.xml` 
 
 You'll need to add an email address to the Users table manually.
 
+Run this:
+```
+ALTER DATABASE [TheDatabaseName] SET ALLOW_SNAPSHOT_ISOLATION ON;
+```
+
 -- TODO: Provide instructions or at least a link for running SQL Server from Docker
 
 -- TODO: Make a better SQL Server install script
