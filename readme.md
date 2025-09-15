@@ -4,7 +4,7 @@ To build from command line (specifically PowerShell on Windows):
 
 `dotnet publish .\SimpleSchedulerAPI\ --configuration Release`
 
-This will put your output into ./bin/Release/net6.0/publish/
+This will put your output into ./bin/Release/net9.0/publish/
 
 Add this to IIS, and ensure its application pool is running under a user that has rights to the database (if you're using Windows Authentication for SQL Server), and rights to the filesystem for the workers directory.
 
@@ -14,7 +14,7 @@ Add this to IIS, and ensure its application pool is running under a user that ha
 
 `dotnet publish .\SimpleSchedulerBlazorWasm\ --configuration Release`
 
-This will put your output into ./bin/Release/net6.0/publish/
+This will put your output into ./bin/Release/net9.0/publish/
 
 This is a static WASM application, so you should be able to host this on any web server that you'd like, including a static site.
 
@@ -22,7 +22,7 @@ This is a static WASM application, so you should be able to host this on any web
 
 `dotnet publish .\SimpleSchedulerService\ --configuration Release`
 
-This will put your output into ./bin/Release/net6.0/publish/
+This will put your output into ./bin/Release/net9.0/publish/
 
 Copy the output to your server, and execute the following as administrator (This is for Windows):
 
@@ -36,7 +36,7 @@ Copy the output to your server, and execute the following as administrator (This
 
 `dotnet publish .\SimpleSchedulerServiceChecker\ --configuration Release`
 
-This will put your output into ./bin/Release/net6.0/publish/
+This will put your output into ./bin/Release/net9.0/publish/
 
 Copy the output to your server, and execute the following as administrator (This is for Windows):
 
