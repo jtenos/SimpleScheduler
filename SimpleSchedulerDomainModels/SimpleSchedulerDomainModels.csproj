@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net9.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<WarningsAsErrors />
 		<ImplicitUsings>enable</ImplicitUsings>
-		<Version>6.0.0</Version>
-		<AssemblyVersion>6.0.0</AssemblyVersion>
+		<Version>7.0.0</Version>
+		<AssemblyVersion>7.0.0</AssemblyVersion>
 	</PropertyGroup>
 </Project>

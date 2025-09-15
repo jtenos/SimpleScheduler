@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net9.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<WarningsAsErrors />
 		<ImplicitUsings>enable</ImplicitUsings>
 		<UserSecretsId>559df25f-a058-417c-b576-e9a5409a9118</UserSecretsId>
-		<Version>6.0.0</Version>
-		<AssemblyVersion>6.0.0</AssemblyVersion>
+		<Version>7.0.0</Version>
+		<AssemblyVersion>7.0.0</AssemblyVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
