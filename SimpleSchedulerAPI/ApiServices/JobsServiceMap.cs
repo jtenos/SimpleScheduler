@@ -20,9 +20,11 @@ public static class JobsServiceMap
     private static async Task<IResult> AcknowledgeErrorGetAsync(
         IJobManager jobManager, Guid acknowledgementCode)
     {
-        await jobManager.AcknowledgeErrorAsync(acknowledgementCode);
-        
-        string html = @"<!DOCTYPE html>
+        try
+        {
+            await jobManager.AcknowledgeErrorAsync(acknowledgementCode);
+            
+            string html = @"<!DOCTYPE html>
 <html>
 <head>
     <meta charset=""utf-8"" />
@@ -70,8 +72,62 @@ public static class JobsServiceMap
     </div>
 </body>
 </html>";
-        
-        return Results.Content(html, "text/html");
+            
+            return Results.Content(html, "text/html");
+        }
+        catch (Exception ex)
+        {
+            string errorHtml = $@"<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""utf-8"" />
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"" />
+    <title>Error</title>
+    <style>
+        body {{
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }}
+        .container {{
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 500px;
+        }}
+        .error-icon {{
+            color: #dc3545;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }}
+        h1 {{
+            color: #333;
+            margin: 0 0 0.5rem 0;
+            font-size: 1.5rem;
+        }}
+        p {{
+            color: #666;
+            margin: 0;
+        }}
+    </style>
+</head>
+<body>
+    <div class=""container"">
+        <div class=""error-icon"">✕</div>
+        <h1>Error</h1>
+        <p>{System.Web.HttpUtility.HtmlEncode(ex.Message)}</p>
+    </div>
+</body>
+</html>";
+            
+            return Results.Content(errorHtml, "text/html");
+        }
     }
 
     [Authorize]
