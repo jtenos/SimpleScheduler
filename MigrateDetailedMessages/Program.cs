@@ -34,7 +34,7 @@ class Worker
         }
         else
         {
-            throw new InvalidOperationException("Either JobResultMessagesPath or WorkerPath must be configured.");
+            throw new InvalidOperationException("Configuration missing: Either JobResultMessagesPath or WorkerPath must be specified in the application configuration.");
         }
     }
 
