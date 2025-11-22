@@ -17,11 +17,11 @@ class Worker
     : BackgroundService
 {
     private readonly string _connectionString;
-    private readonly string _workerPath;
+    private readonly string _jobResultMessagesPath;
     public Worker(IConfiguration config)
     {
         _connectionString = config.GetConnectionString("Sched");
-        _workerPath = config["WorkerPath"];
+        _jobResultMessagesPath = config["JobResultMessagesPath"] ?? Path.Combine(config["WorkerPath"]!, "__messages__");
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -35,7 +35,7 @@ class Worker
         {
             long jobID = rdr.GetInt64(0);
             string detailedMessage = rdr.GetString(1);
-            DirectoryInfo messageDir = new(Path.Combine(_workerPath, "__messages__"));
+            DirectoryInfo messageDir = new(_jobResultMessagesPath);
             messageDir.Create();
             messageDir.Refresh();
             FileInfo messageGZipFile = new(Path.Combine(messageDir.FullName, $"{jobID}.txt.gz"));

@@ -3,6 +3,7 @@
 public static class ConfigExtensions
 {
     public static string WorkerPath(this IConfiguration config) => config["WorkerPath"]!;
+    public static string JobResultMessagesPath(this IConfiguration config) => config["JobResultMessagesPath"]!;
 
     public static (
         int Port,

@@ -35,7 +35,7 @@ public static class JobsServiceMap
             adminEmail: config.MailSettings().AdminEmail,
             appUrl: config.WebUrl(),
             environmentName: config.EnvironmentName(),
-            workerPath: config.WorkerPath()
+            jobResultMessagesPath: config.JobResultMessagesPath()
         );
         return new();
     }
@@ -56,7 +56,7 @@ public static class JobsServiceMap
         IJobManager jobManager, IConfiguration config, GetDetailedMessageRequest request)
     {
         return new GetDetailedMessageReply(
-            await jobManager.GetDetailedMessageAsync(request.ID, config.WorkerPath())
+            await jobManager.GetDetailedMessageAsync(request.ID, config.JobResultMessagesPath())
         );
     }
 
