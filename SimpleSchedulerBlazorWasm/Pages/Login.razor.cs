@@ -15,6 +15,9 @@ partial class Login
     [Inject]
     private SweetAlertService Swal { get; set; } = default!;
 
+    [Parameter]
+    public string? Email { get; set; }
+
     private LoginModel Model { get; set; } = new();
 
     private bool Loading { get; set; }
@@ -41,6 +44,24 @@ partial class Login
         }
 
         AllEmails = reply.EmailAddresses;
+
+        // If email is provided via URL parameter, set it in the model and auto-submit
+        if (!string.IsNullOrWhiteSpace(Email))
+        {
+            Model.Email = Email;
+            
+            // Validate the email address before submitting
+            var validationContext = new ValidationContext(Model);
+            var validationResults = new List<ValidationResult>();
+            if (Validator.TryValidateObject(Model, validationContext, validationResults, true))
+            {
+                await HandleValidSubmit();
+            }
+            else
+            {
+                await Swal.FireAsync("Error", "Invalid email address provided in URL", SweetAlertIcon.Error);
+            }
+        }
 
         await base.OnParametersSetAsync();
     }
