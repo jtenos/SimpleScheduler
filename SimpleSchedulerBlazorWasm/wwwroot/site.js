@@ -33,7 +33,10 @@ window.Jobs.showLiveOutputModal = function (jobId, workerName, dotNetHelper) {
     // Set up interval to poll every 2 seconds
     const intervalId = setInterval(async () => {
         if (modal.classList.contains('show')) {
-            await window.Jobs.pollLiveOutput(jobId, dotNetHelper);
+            const shouldContinue = await window.Jobs.pollLiveOutput(jobId, dotNetHelper);
+            if (!shouldContinue) {
+                clearInterval(intervalId);
+            }
         } else {
             clearInterval(intervalId);
             // Clean up the helper when modal is closed
@@ -72,14 +75,18 @@ window.Jobs.pollLiveOutput = async function (jobId, dotNetHelper) {
             if (!response.isRunning) {
                 statusElem.textContent = "Job completed";
                 statusElem.style.color = "green";
+                return false; // Stop polling
             } else {
                 statusElem.textContent = "Running...";
                 statusElem.style.color = "blue";
+                return true; // Continue polling
             }
         }
+        return true; // Continue polling if no response
     } catch (error) {
         console.error("Error polling live output:", error);
         const outputElem = document.querySelector("#live-output-modal .modal-body");
         outputElem.textContent = "Error loading output: " + error.message;
+        return false; // Stop polling on error
     }
 };

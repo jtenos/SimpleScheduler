@@ -197,6 +197,8 @@ partial class Jobs
 	public async Task ShowLiveOutputModalAsync(long jobId, string workerName)
 	{
 		// Create a DotNetObjectReference to this instance
+		// Note: JavaScript is responsible for disposing this reference when the modal closes
+		// This is handled in the modal's 'hidden.bs.modal' event handler
 		var dotNetHelper = DotNetObjectReference.Create(this);
 		
 		// Call JavaScript to show modal and set up polling

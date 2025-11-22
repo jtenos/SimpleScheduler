@@ -11,6 +11,7 @@ public sealed class RunnerWorker
     private readonly string _executable;
     private readonly long _jobId;
     private readonly string _workerPath;
+    private readonly object _writerLock = new();
 
     public RunnerWorker(
         IServiceProvider serviceProvider,
@@ -68,13 +69,16 @@ public sealed class RunnerWorker
                 if (e.Data != null)
                 {
                     standardOutput.Add(e.Data);
-                    try
+                    lock (_writerLock)
                     {
-                        liveWriter.WriteLine(e.Data);
-                    }
-                    catch
-                    {
-                        // Ignore write errors to live file
+                        try
+                        {
+                            liveWriter.WriteLine(e.Data);
+                        }
+                        catch
+                        {
+                            // Ignore write errors to live file
+                        }
                     }
                 }
             };
@@ -85,13 +89,16 @@ public sealed class RunnerWorker
                 if (e.Data != null)
                 {
                     standardError.Add(e.Data);
-                    try
+                    lock (_writerLock)
                     {
-                        liveWriter.WriteLine($"ERROR: {e.Data}");
-                    }
-                    catch
-                    {
-                        // Ignore write errors to live file
+                        try
+                        {
+                            liveWriter.WriteLine($"ERROR: {e.Data}");
+                        }
+                        catch
+                        {
+                            // Ignore write errors to live file
+                        }
                     }
                 }
             };
@@ -108,26 +115,32 @@ public sealed class RunnerWorker
             exitCode = -1;
             string timeoutMsg = $"Timeout: {_worker.TimeoutMinutes} minutes";
             standardError.Add(timeoutMsg);
-            try
+            lock (_writerLock)
             {
-                liveWriter?.WriteLine($"ERROR: {timeoutMsg}");
-            }
-            catch
-            {
-                // Ignore write errors to live file
+                try
+                {
+                    liveWriter?.WriteLine($"ERROR: {timeoutMsg}");
+                }
+                catch
+                {
+                    // Ignore write errors to live file
+                }
             }
         }
         catch (Exception ex)
         {
             exitCode = -1;
             standardError.Add(ex.ToString());
-            try
+            lock (_writerLock)
             {
-                liveWriter?.WriteLine($"ERROR: {ex}");
-            }
-            catch
-            {
-                // Ignore write errors to live file
+                try
+                {
+                    liveWriter?.WriteLine($"ERROR: {ex}");
+                }
+                catch
+                {
+                    // Ignore write errors to live file
+                }
             }
         }
         finally
