@@ -54,6 +54,15 @@
                     </button>
                 </div>
             }
+            else if (Job.StatusCode == "ACK")
+            {
+                <div>
+                    <button class="btn btn-xs btn-outline-success" @onclick="RunJob">
+                        <i class="bi bi-play"></i>
+                        Re-run
+                    </button>
+                </div>
+            }
             else if (Job.StatusCode == "SUC")
             {
                 <div>
