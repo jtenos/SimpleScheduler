@@ -20,8 +20,22 @@ class Worker
     private readonly string _jobResultMessagesPath;
     public Worker(IConfiguration config)
     {
-        _connectionString = config.GetConnectionString("Sched");
-        _jobResultMessagesPath = config["JobResultMessagesPath"] ?? Path.Combine(config["WorkerPath"]!, "__messages__");
+        _connectionString = config.GetConnectionString("Sched")!;
+        // Use JobResultMessagesPath if configured, otherwise fall back to WorkerPath/__messages__ for backward compatibility
+        string? jobResultMessagesPath = config["JobResultMessagesPath"];
+        string? workerPath = config["WorkerPath"];
+        if (!string.IsNullOrEmpty(jobResultMessagesPath))
+        {
+            _jobResultMessagesPath = jobResultMessagesPath;
+        }
+        else if (!string.IsNullOrEmpty(workerPath))
+        {
+            _jobResultMessagesPath = Path.Combine(workerPath, "__messages__");
+        }
+        else
+        {
+            throw new InvalidOperationException("Either JobResultMessagesPath or WorkerPath must be configured.");
+        }
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
