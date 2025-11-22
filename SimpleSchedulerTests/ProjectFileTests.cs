@@ -7,7 +7,7 @@ namespace SimpleSchedulerTests;
 [TestClass]
 public class ProjectFileTests
 {
-    private const string TARGET_FRAMEWORK = "net9.0";
+    private const string TARGET_FRAMEWORK = "net10.0";
     private const string VERSION = "7.0.0";
 
     [TestMethod]
