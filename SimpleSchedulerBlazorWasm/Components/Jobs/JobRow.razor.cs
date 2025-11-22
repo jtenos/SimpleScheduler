@@ -131,6 +131,12 @@ partial class JobRow
             Worker.WorkerName, reply!.DetailedMessage);
     }
 
+    private async Task WatchLive()
+    {
+        // Show the modal and start polling
+        await JobsComponent.ShowLiveOutputModalAsync(Job.ID, Worker.WorkerName);
+    }
+
     private async Task AcknowledgeError()
     {
         Loading = true;

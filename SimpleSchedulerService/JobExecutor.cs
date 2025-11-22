@@ -68,7 +68,7 @@ public sealed class JobExecutor
                 {
                     _logger.LogInformation("Processing job {jobID}", job.ID);
 
-                    var worker = new RunnerWorker(_serviceProvider, _config, job.Worker);
+                    var worker = new RunnerWorker(_serviceProvider, _config, job.Worker, job.ID);
 
                     _logger.LogInformation("Executing job {JobID}", job.ID);
                     _logger.LogInformation("Worker={worker}", job.Worker.WorkerName);

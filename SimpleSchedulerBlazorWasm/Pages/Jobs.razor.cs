@@ -1,6 +1,7 @@
 ﻿using CurrieTechnologies.Razor.SweetAlert2;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.JSInterop;
 using SimpleSchedulerApiModels;
 using SimpleSchedulerApiModels.Reply.Jobs;
 using SimpleSchedulerApiModels.Reply.Workers;
@@ -36,6 +37,9 @@ partial class Jobs
 
 	[Inject]
 	private SweetAlertService Swal { get; set; } = default!;
+
+	[Inject]
+	private IJSRuntime JSRuntime { get; set; } = default!;
 
 	private JobWithWorkerID[] JobDetails { get; set; } = Array.Empty<JobWithWorkerID>();
 
@@ -188,5 +192,30 @@ partial class Jobs
 			}
 		}
 		public int PageNumber { get; set; } = 1;
+	}
+
+	public async Task ShowLiveOutputModalAsync(long jobId, string workerName)
+	{
+		// Create a DotNetObjectReference to this instance
+		var dotNetHelper = DotNetObjectReference.Create(this);
+		
+		// Call JavaScript to show modal and set up polling
+		await JSRuntime.InvokeVoidAsync("Jobs.showLiveOutputModal", jobId, workerName, dotNetHelper);
+	}
+
+	[JSInvokable]
+	public async Task<object> GetLiveOutputAsync(long jobId)
+	{
+		(Error? error, GetLiveOutputReply? reply) = await ServiceClient.PostAsync<GetLiveOutputRequest, GetLiveOutputReply>(
+			"Jobs/GetLiveOutput",
+			new(jobId)
+		);
+
+		if (error is not null)
+		{
+			return new { output = $"Error: {error.Message}", isRunning = false };
+		}
+
+		return new { output = reply!.Output, isRunning = reply.IsRunning };
 	}
 }

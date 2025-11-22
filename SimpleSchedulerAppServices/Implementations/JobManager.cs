@@ -67,6 +67,24 @@ public sealed class JobManager
             GZipTextFile(messageGZipFile, detailedMessage.Trim());
         }
 
+        // Clean up live output file
+        try
+        {
+            DirectoryInfo liveOutputDir = new(Path.Combine(workerPath, "__live_output__"));
+            if (liveOutputDir.Exists)
+            {
+                FileInfo liveOutputFile = new(Path.Combine(liveOutputDir.FullName, $"{id}.txt"));
+                if (liveOutputFile.Exists)
+                {
+                    liveOutputFile.Delete();
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Error cleaning up live output file for job {jobID}", id);
+        }
+
         DynamicParameters param = new DynamicParameters()
             .AddLongParam("@ID", id)
             .AddBitParam("@Success", success)
@@ -133,6 +151,45 @@ public sealed class JobManager
             return Task.FromResult("** MESSAGE EMPTY **");
         }
         return Task.FromResult(fileContents);
+    }
+
+    async Task<(string Output, bool IsRunning)> IJobManager.GetLiveOutputAsync(long id, string workerPath)
+    {
+        // Get the job status
+        Job job = await ((IJobManager)this).GetJobAsync(id).ConfigureAwait(false);
+        bool isRunning = job.StatusCode == Job.STATUS_RUNNING;
+
+        // Check for live output file
+        DirectoryInfo liveOutputDir = new(Path.Combine(workerPath, "__live_output__"));
+        liveOutputDir.Create();
+        liveOutputDir.Refresh();
+        FileInfo liveOutputFile = new(Path.Combine(liveOutputDir.FullName, $"{id}.txt"));
+        
+        if (!liveOutputFile.Exists)
+        {
+            return ("** No output yet **", isRunning);
+        }
+
+        // Read the file with proper handling for concurrent writes
+        string content;
+        try
+        {
+            using FileStream fileStream = new(liveOutputFile.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using StreamReader reader = new(fileStream, Encoding.UTF8);
+            content = await reader.ReadToEndAsync().ConfigureAwait(false);
+        }
+        catch (IOException)
+        {
+            // File might be being written to, return what we can
+            content = "** Output file is being written to, please try again **";
+        }
+
+        if (string.IsNullOrWhiteSpace(content))
+        {
+            return ("** No output yet **", isRunning);
+        }
+
+        return (content, isRunning);
     }
 
     private static string UnGZipTextFile(FileInfo messageGZipFile)
