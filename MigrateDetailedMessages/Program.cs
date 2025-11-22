@@ -17,11 +17,25 @@ class Worker
     : BackgroundService
 {
     private readonly string _connectionString;
-    private readonly string _workerPath;
+    private readonly string _jobResultMessagesPath;
     public Worker(IConfiguration config)
     {
-        _connectionString = config.GetConnectionString("Sched");
-        _workerPath = config["WorkerPath"];
+        _connectionString = config.GetConnectionString("Sched")!;
+        // Use JobResultMessagesPath if configured, otherwise fall back to WorkerPath/__messages__ for backward compatibility
+        string? jobResultMessagesPath = config["JobResultMessagesPath"];
+        string? workerPath = config["WorkerPath"];
+        if (!string.IsNullOrEmpty(jobResultMessagesPath))
+        {
+            _jobResultMessagesPath = jobResultMessagesPath;
+        }
+        else if (!string.IsNullOrEmpty(workerPath))
+        {
+            _jobResultMessagesPath = Path.Combine(workerPath, "__messages__");
+        }
+        else
+        {
+            throw new InvalidOperationException("Configuration missing: Either JobResultMessagesPath or WorkerPath must be specified in the application configuration.");
+        }
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -35,7 +49,7 @@ class Worker
         {
             long jobID = rdr.GetInt64(0);
             string detailedMessage = rdr.GetString(1);
-            DirectoryInfo messageDir = new(Path.Combine(_workerPath, "__messages__"));
+            DirectoryInfo messageDir = new(_jobResultMessagesPath);
             messageDir.Create();
             messageDir.Refresh();
             FileInfo messageGZipFile = new(Path.Combine(messageDir.FullName, $"{jobID}.txt.gz"));

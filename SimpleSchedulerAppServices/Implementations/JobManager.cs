@@ -55,11 +55,11 @@ public sealed class JobManager
     }
 
     async Task IJobManager.CompleteJobAsync(long id, bool success, string? detailedMessage,
-        string adminEmail, string appUrl, string environmentName, string workerPath)
+        string adminEmail, string appUrl, string environmentName, string jobResultMessagesPath)
     {
         if (!string.IsNullOrWhiteSpace(detailedMessage))
         {
-            DirectoryInfo messageDir = new(Path.Combine(workerPath, "__messages__"));
+            DirectoryInfo messageDir = new(jobResultMessagesPath);
             messageDir.Create();
             messageDir.Refresh();
             FileInfo messageGZipFile = new(Path.Combine(messageDir.FullName, $"{id}.txt.gz"));
@@ -116,9 +116,9 @@ public sealed class JobManager
         ).ConfigureAwait(false));
     }
 
-    Task<string> IJobManager.GetDetailedMessageAsync(long id, string workerPath)
+    Task<string> IJobManager.GetDetailedMessageAsync(long id, string jobResultMessagesPath)
     {
-        DirectoryInfo messageDir = new(Path.Combine(workerPath, "__messages__"));
+        DirectoryInfo messageDir = new(jobResultMessagesPath);
         messageDir.Create();
         messageDir.Refresh();
         FileInfo messageGZipFile = new(Path.Combine(messageDir.FullName, $"{id}.txt.gz"));
