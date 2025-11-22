@@ -162,7 +162,6 @@ public sealed class JobManager
         // Check for live output file
         DirectoryInfo liveOutputDir = new(Path.Combine(workerPath, "__live_output__"));
         liveOutputDir.Create();
-        liveOutputDir.Refresh();
         FileInfo liveOutputFile = new(Path.Combine(liveOutputDir.FullName, $"{id}.txt"));
         
         if (!liveOutputFile.Exists)

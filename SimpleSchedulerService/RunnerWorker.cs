@@ -69,15 +69,22 @@ public sealed class RunnerWorker
                 if (e.Data != null)
                 {
                     standardOutput.Add(e.Data);
-                    lock (_writerLock)
+                    if (liveWriter != null)
                     {
-                        try
+                        lock (_writerLock)
                         {
-                            liveWriter.WriteLine(e.Data);
-                        }
-                        catch
-                        {
-                            // Ignore write errors to live file
+                            try
+                            {
+                                liveWriter.WriteLine(e.Data);
+                            }
+                            catch (IOException)
+                            {
+                                // Ignore write errors to live file
+                            }
+                            catch (ObjectDisposedException)
+                            {
+                                // Writer was disposed, ignore
+                            }
                         }
                     }
                 }
@@ -89,15 +96,22 @@ public sealed class RunnerWorker
                 if (e.Data != null)
                 {
                     standardError.Add(e.Data);
-                    lock (_writerLock)
+                    if (liveWriter != null)
                     {
-                        try
+                        lock (_writerLock)
                         {
-                            liveWriter.WriteLine($"ERROR: {e.Data}");
-                        }
-                        catch
-                        {
-                            // Ignore write errors to live file
+                            try
+                            {
+                                liveWriter.WriteLine($"ERROR: {e.Data}");
+                            }
+                            catch (IOException)
+                            {
+                                // Ignore write errors to live file
+                            }
+                            catch (ObjectDisposedException)
+                            {
+                                // Writer was disposed, ignore
+                            }
                         }
                     }
                 }
@@ -115,15 +129,22 @@ public sealed class RunnerWorker
             exitCode = -1;
             string timeoutMsg = $"Timeout: {_worker.TimeoutMinutes} minutes";
             standardError.Add(timeoutMsg);
-            lock (_writerLock)
+            if (liveWriter != null)
             {
-                try
+                lock (_writerLock)
                 {
-                    liveWriter?.WriteLine($"ERROR: {timeoutMsg}");
-                }
-                catch
-                {
-                    // Ignore write errors to live file
+                    try
+                    {
+                        liveWriter.WriteLine($"ERROR: {timeoutMsg}");
+                    }
+                    catch (IOException)
+                    {
+                        // Ignore write errors to live file
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        // Writer was disposed, ignore
+                    }
                 }
             }
         }
@@ -131,15 +152,22 @@ public sealed class RunnerWorker
         {
             exitCode = -1;
             standardError.Add(ex.ToString());
-            lock (_writerLock)
+            if (liveWriter != null)
             {
-                try
+                lock (_writerLock)
                 {
-                    liveWriter?.WriteLine($"ERROR: {ex}");
-                }
-                catch
-                {
-                    // Ignore write errors to live file
+                    try
+                    {
+                        liveWriter.WriteLine($"ERROR: {ex}");
+                    }
+                    catch (IOException)
+                    {
+                        // Ignore write errors to live file
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        // Writer was disposed, ignore
+                    }
                 }
             }
         }

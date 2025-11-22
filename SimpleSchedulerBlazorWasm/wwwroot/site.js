@@ -54,7 +54,7 @@ window.Jobs.showLiveOutputModal = function (jobId, workerName, dotNetHelper) {
     modal.addEventListener('hidden.bs.modal', function () {
         if (modal.dataset.intervalId) {
             clearInterval(parseInt(modal.dataset.intervalId));
-            modal.dataset.intervalId = null;
+            delete modal.dataset.intervalId;
         }
         if (modal.dotNetHelper) {
             modal.dotNetHelper.dispose();
