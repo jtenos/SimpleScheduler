@@ -20,7 +20,7 @@ public class Worker
     private readonly IEmailer _emailer;
     private readonly string[] _serviceNames;
     private readonly ILogger<Worker> _logger;
-    private readonly string _appUrl;
+    private readonly string _apiUrl;
 
     public Worker(
         IEmailer emailer, // forces DI loading
@@ -37,7 +37,7 @@ public class Worker
         _logger = logger;
         _serviceClient = serviceClient;
         _emailer = emailer;
-        _appUrl = config["AppUrl"]!;
+        _apiUrl = config["ApiUrl"]!;
 
         int timerMinutes = config.GetValue<int>("TimerMinutes");
         if (timerMinutes <= 0) { timerMinutes = 20; }
@@ -135,7 +135,8 @@ public class Worker
                     if (job.StatusCode == "ERR")
                     {
                         Guid acknowledgementCode = job.AcknowledgementCode;
-                        string url = $"{_appUrl}acknowledge-error/{acknowledgementCode:N}";
+                        string apiUrl = _apiUrl.TrimEnd('/');
+                        string url = $"{apiUrl}/Jobs/AcknowledgeError/{acknowledgementCode:N}";
                         message.Append($"Acknowledge: <a href='{url}'>{url}</a><br>");
                     }
                     message.Append("-----------------------------------<br>");

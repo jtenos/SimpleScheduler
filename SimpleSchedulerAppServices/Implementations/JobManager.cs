@@ -365,14 +365,10 @@ public sealed class JobManager
             detailedMessage = (detailedMessage ?? "").Replace("\r\n", "<br>").Replace("\r", "<br>").Replace("\n", "<br>");
             string body = $"Job ID: {jobWithWorker.ID}<br><br>{detailedMessage}";
 
-            while (!appUrl.EndsWith("/"))
-            {
-                appUrl = $"{appUrl}/";
-            }
-            appUrl += $"acknowledge-error/{jobWithWorker.AcknowledgementCode:N}";
             if (!success)
             {
-                body = $"<a href='{appUrl}' target=_blank>Acknowledge error</a><br><br>{body}";
+                string acknowledgeUrl = $"{appUrl.TrimEnd('/')}/Jobs/AcknowledgeError/{jobWithWorker.AcknowledgementCode:N}";
+                body = $"<a href='{acknowledgeUrl}' target=_blank>Acknowledge error</a><br><br>{body}";
             }
 
             await _emailer.SendEmailAsync(toAddresses.ToArray(), subject, body);
