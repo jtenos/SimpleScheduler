@@ -8,29 +8,7 @@ namespace SimpleSchedulerAPI.ApiServices;
 
 public static class JobsServiceMap
 {
-    [AllowAnonymous]
-    private static async Task<AcknowledgeErrorReply> AcknowledgeErrorAsync(
-        IJobManager jobManager, AcknowledgeErrorRequest request)
-    {
-        await jobManager.AcknowledgeErrorAsync(request.AcknowledgementCode);
-        return new AcknowledgeErrorReply();
-    }
-
-    [AllowAnonymous]
-    private static async Task<IResult> AcknowledgeErrorGetAsync(
-        IJobManager jobManager, Guid acknowledgementCode)
-    {
-        try
-        {
-            await jobManager.AcknowledgeErrorAsync(acknowledgementCode);
-            
-            string html = @"<!DOCTYPE html>
-<html>
-<head>
-    <meta charset=""utf-8"" />
-    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"" />
-    <title>Error Acknowledged</title>
-    <style>
+    private const string CommonStyles = @"
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             display: flex;
@@ -48,10 +26,15 @@ public static class JobsServiceMap
             text-align: center;
             max-width: 500px;
         }
-        .success-icon {
-            color: #28a745;
+        .icon {
             font-size: 3rem;
             margin-bottom: 1rem;
+        }
+        .success-icon {
+            color: #28a745;
+        }
+        .error-icon {
+            color: #dc3545;
         }
         h1 {
             color: #333;
@@ -61,12 +44,35 @@ public static class JobsServiceMap
         p {
             color: #666;
             margin: 0;
-        }
-    </style>
+        }";
+
+    [AllowAnonymous]
+    private static async Task<AcknowledgeErrorReply> AcknowledgeErrorAsync(
+        IJobManager jobManager, AcknowledgeErrorRequest request)
+    {
+        await jobManager.AcknowledgeErrorAsync(request.AcknowledgementCode);
+        return new AcknowledgeErrorReply();
+    }
+
+    [AllowAnonymous]
+    private static async Task<IResult> AcknowledgeErrorGetAsync(
+        IJobManager jobManager, ILogger<IJobManager> logger, Guid acknowledgementCode)
+    {
+        try
+        {
+            await jobManager.AcknowledgeErrorAsync(acknowledgementCode);
+            
+            string html = $@"<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""utf-8"" />
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"" />
+    <title>Error Acknowledged</title>
+    <style>{CommonStyles}</style>
 </head>
 <body>
     <div class=""container"">
-        <div class=""success-icon"">✓</div>
+        <div class=""icon success-icon"">✓</div>
         <h1>Error Acknowledged</h1>
         <p>The error has been successfully acknowledged.</p>
     </div>
@@ -77,51 +83,21 @@ public static class JobsServiceMap
         }
         catch (Exception ex)
         {
+            logger.LogError(ex, "Error acknowledging job with acknowledgement code {AcknowledgementCode}", acknowledgementCode);
+            
             string errorHtml = $@"<!DOCTYPE html>
 <html>
 <head>
     <meta charset=""utf-8"" />
     <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"" />
     <title>Error</title>
-    <style>
-        body {{
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            background-color: #f5f5f5;
-        }}
-        .container {{
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            text-align: center;
-            max-width: 500px;
-        }}
-        .error-icon {{
-            color: #dc3545;
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }}
-        h1 {{
-            color: #333;
-            margin: 0 0 0.5rem 0;
-            font-size: 1.5rem;
-        }}
-        p {{
-            color: #666;
-            margin: 0;
-        }}
-    </style>
+    <style>{CommonStyles}</style>
 </head>
 <body>
     <div class=""container"">
-        <div class=""error-icon"">✕</div>
+        <div class=""icon error-icon"">✕</div>
         <h1>Error</h1>
-        <p>{System.Web.HttpUtility.HtmlEncode(ex.Message)}</p>
+        <p>Unable to acknowledge the error. The link may be invalid or the error may have already been acknowledged.</p>
     </div>
 </body>
 </html>";
