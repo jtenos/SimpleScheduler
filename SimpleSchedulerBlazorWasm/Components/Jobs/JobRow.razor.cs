@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using SimpleSchedulerApiModels;
 using SimpleSchedulerApiModels.Reply.Jobs;
+using SimpleSchedulerApiModels.Reply.Workers;
 using SimpleSchedulerApiModels.Request.Jobs;
+using SimpleSchedulerApiModels.Request.Workers;
 using SimpleSchedulerServiceClient;
 using Timer = System.Timers.Timer;
 
@@ -184,5 +186,23 @@ partial class JobRow
     {
         Nav.NavigateTo($"workers/filter/{Worker.ID}");
         return Task.CompletedTask;
+    }
+
+    private async Task RunJob()
+    {
+        Loading = true;
+        (Error? error, _) = await ServiceClient.PostAsync<RunNowRequest, RunNowReply>(
+            "Workers/RunNow",
+            new(Worker.ID)
+        );
+
+        if (error is not null)
+        {
+            await Swal.FireAsync("Error", error.Message, SweetAlertIcon.Error);
+            Loading = false;
+            return;
+        }
+
+        await ReloadJobAsync();
     }
 }
