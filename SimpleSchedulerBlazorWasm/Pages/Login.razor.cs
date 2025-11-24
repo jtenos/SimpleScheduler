@@ -15,10 +15,14 @@ partial class Login
     [Inject]
     private SweetAlertService Swal { get; set; } = default!;
 
+    [Parameter]
+    public string? Email { get; set; }
+
     private LoginModel Model { get; set; } = new();
 
     private bool Loading { get; set; }
     private bool SubmittedSuccessfully { get; set; }
+    private bool HasAutoSubmitted { get; set; }
 
     private string[] AllEmails { get; set; } = Array.Empty<string>();
 
@@ -41,6 +45,33 @@ partial class Login
         }
 
         AllEmails = reply.EmailAddresses;
+
+        // If email is provided via URL parameter, set it in the model and auto-submit
+        // Only auto-submit once to prevent race conditions
+        if (!string.IsNullOrWhiteSpace(Email) && !HasAutoSubmitted)
+        {
+            HasAutoSubmitted = true;
+            Model.Email = Email;
+            
+            // If AllEmails list is populated, validate that the email is in the allowed list
+            if (AllEmails.Any() && !AllEmails.Contains(Email, StringComparer.OrdinalIgnoreCase))
+            {
+                await Swal.FireAsync("Error", "Email address not found in allowed users list", SweetAlertIcon.Error);
+                return;
+            }
+            
+            // Validate the email address format before submitting
+            var validationContext = new ValidationContext(Model);
+            var validationResults = new List<ValidationResult>();
+            if (Validator.TryValidateObject(Model, validationContext, validationResults, true))
+            {
+                await HandleValidSubmit();
+            }
+            else
+            {
+                await Swal.FireAsync("Error", "Invalid email address provided in URL", SweetAlertIcon.Error);
+            }
+        }
 
         await base.OnParametersSetAsync();
     }
