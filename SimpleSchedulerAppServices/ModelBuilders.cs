@@ -112,7 +112,7 @@ internal static class ModelBuilders
         }
 
         return TimeSpan.FromSeconds(durationInSeconds.Value).Humanize(precision: 1,
-            maxUnit: Humanizer.Localisation.TimeUnit.Minute,
-            minUnit: Humanizer.Localisation.TimeUnit.Second);
+            maxUnit: TimeUnit.Minute,
+            minUnit: TimeUnit.Second);
     }
 }

@@ -62,7 +62,7 @@ public record class Emailer(
                 break;
         }
 
-        if (!string.IsNullOrWhiteSpace(UserName))
+        if (!string.IsNullOrWhiteSpace(UserName) && !string.IsNullOrWhiteSpace(Password))
         {
             await emailClient.AuthenticateAsync(UserName, Password).ConfigureAwait(false);
         }
@@ -106,7 +106,7 @@ public record class Emailer(
                 break;
         }
 
-        if (!string.IsNullOrWhiteSpace(UserName))
+        if (!string.IsNullOrWhiteSpace(UserName) && !string.IsNullOrWhiteSpace(Password))
         {
             emailClient.Authenticate(UserName, Password);
         }

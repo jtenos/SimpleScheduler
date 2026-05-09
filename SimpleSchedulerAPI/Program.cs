@@ -6,7 +6,7 @@ using Polly;
 using Polly.Retry;
 using SimpleSchedulerEmail;
 using SimpleSchedulerData;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using SimpleSchedulerSerilogEmail;
 using Serilog;
 using SimpleSchedulerAPI;
@@ -15,7 +15,13 @@ using SimpleSchedulerAPI.ApiServices;
 
 Serilog.Debugging.SelfLog.Enable(msg => System.Diagnostics.Debug.WriteLine(msg));
 
-WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(new WebApplicationOptions
+{
+    Args = args,
+    ContentRootPath = AppContext.BaseDirectory
+});
+
+builder.Host.UseWindowsService();
 
 builder.Services.AddHttpContextAccessor();
 
@@ -34,7 +40,7 @@ builder.Services.AddSingleton<IScheduleManager, ScheduleManager>();
 builder.Services.AddSingleton<IUserManager, UserManager>();
 builder.Services.AddSingleton<IWorkerManager, WorkerManager>();
 
-builder.Services.AddSingleton<SqlDatabase>(sp =>
+builder.Services.AddSingleton(sp =>
 {
     string connectionString = sp.GetRequiredService<IConfiguration>().GetConnectionString("SimpleScheduler")!;
     AsyncRetryPolicy retryPolicy = sp.GetRequiredService<AsyncRetryPolicy>();
@@ -111,7 +117,7 @@ WebApplication app = builder.Build();
 
 app.UsePathBase(app.Configuration["PathBase"]);
 
-app.UseMiddleware(typeof(ExceptionHandlingMiddleware));
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -124,8 +130,10 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    // ExceptionHandlingMiddleware (above) handles all unhandled exceptions globally.
+    // Don't add UseExceptionHandler("/Error") here — the path has no endpoint, so the
+    // re-execution lands on MapFallbackToFile("index.html"), which only allows GET/HEAD,
+    // and a thrown exception on a POST then surfaces as 405 Method Not Allowed.
     app.UseHsts();
 }
 

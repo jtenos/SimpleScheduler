@@ -13,16 +13,11 @@ await Host.CreateDefaultBuilder(args)
     .Build()
     .RunAsync();
 
-class Worker
+class Worker(IConfiguration config)
     : BackgroundService
 {
-    private readonly string _connectionString;
-    private readonly string _workerPath;
-    public Worker(IConfiguration config)
-    {
-        _connectionString = config.GetConnectionString("Sched");
-        _workerPath = config["WorkerPath"];
-    }
+    private readonly string _connectionString = config.GetConnectionString("Sched")!;
+    private readonly string _workerPath = config["WorkerPath"]!;
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -47,16 +42,12 @@ class Worker
     {
         using MemoryStream inputStream = new(Encoding.UTF8.GetBytes(contents));
         using FileStream fileStream = messageGZipFile.OpenWrite();
-        GZip.Compress(inputStream, fileStream);
+        Compress(inputStream, fileStream);
     }
-}
 
-public static class GZip
-{
-    private const int BUFFER_SIZE = 0x4000;
-
-    public static void Compress(Stream inputStream, Stream outputStream)
+    private static void Compress(Stream inputStream, Stream outputStream)
     {
+        const int BUFFER_SIZE = 0x4000;
         byte[] buffer = new byte[BUFFER_SIZE];
         using GZipStream gzip = new(outputStream, CompressionMode.Compress);
         int count;
