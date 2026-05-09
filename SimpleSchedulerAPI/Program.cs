@@ -6,7 +6,7 @@ using Polly;
 using Polly.Retry;
 using SimpleSchedulerEmail;
 using SimpleSchedulerData;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using SimpleSchedulerSerilogEmail;
 using Serilog;
 using SimpleSchedulerAPI;
@@ -34,7 +34,7 @@ builder.Services.AddSingleton<IScheduleManager, ScheduleManager>();
 builder.Services.AddSingleton<IUserManager, UserManager>();
 builder.Services.AddSingleton<IWorkerManager, WorkerManager>();
 
-builder.Services.AddSingleton<SqlDatabase>(sp =>
+builder.Services.AddSingleton(sp =>
 {
     string connectionString = sp.GetRequiredService<IConfiguration>().GetConnectionString("SimpleScheduler")!;
     AsyncRetryPolicy retryPolicy = sp.GetRequiredService<AsyncRetryPolicy>();
@@ -111,7 +111,7 @@ WebApplication app = builder.Build();
 
 app.UsePathBase(app.Configuration["PathBase"]);
 
-app.UseMiddleware(typeof(ExceptionHandlingMiddleware));
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
