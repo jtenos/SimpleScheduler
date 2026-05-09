@@ -1,6 +1,7 @@
 $PublishDir = "C:\Scheduler_Publish"
+# The API now references and bundles the BlazorWasm project, so it does not
+# need to be published separately.
 $DotNetProjects = "SimpleSchedulerAPI", "SimpleSchedulerService", "SimpleSchedulerServiceChecker"
-$WasmProject = "SimpleSchedulerBlazorWasm"
 
 $FrameworkDependentDir = Join-Path -Path $PublishDir -ChildPath "framework-dependent"
 $SelfContainedDir = Join-Path -Path $PublishDir -ChildPath "win-x64-self-contained"
@@ -27,10 +28,3 @@ foreach ($Project in $DotNetProjects) {
 	$DestDir = Join-Path -Path $SelfContainedDir -ChildPath $Project
 	Move-Item -Path ".\$($Project)\bin\Release\net10.0\win-x64\publish" -Destination $DestDir
 }
-
-# Build the WASM project (not a .NET project) and copy to both locations
-dotnet publish ".\$($WasmProject)" --configuration Release
-$DestDir = Join-Path -Path $FrameworkDependentDir -ChildPath $WasmProject
-Copy-Item -Path ".\$($WasmProject)\bin\Release\net10.0\publish" -Destination $DestDir -Recurse
-$DestDir = Join-Path -Path $SelfContainedDir -ChildPath $WasmProject
-Move-Item -Path ".\$($WasmProject)\bin\Release\net10.0\publish" -Destination $DestDir
