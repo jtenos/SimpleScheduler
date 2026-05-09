@@ -130,8 +130,10 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    // ExceptionHandlingMiddleware (above) handles all unhandled exceptions globally.
+    // Don't add UseExceptionHandler("/Error") here — the path has no endpoint, so the
+    // re-execution lands on MapFallbackToFile("index.html"), which only allows GET/HEAD,
+    // and a thrown exception on a POST then surfaces as 405 Method Not Allowed.
     app.UseHsts();
 }
 
