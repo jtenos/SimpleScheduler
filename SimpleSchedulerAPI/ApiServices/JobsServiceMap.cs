@@ -61,6 +61,14 @@ public static class JobsServiceMap
     }
 
     [Authorize]
+    private static async Task<GetLiveOutputReply> GetLiveOutputAsync(
+        IJobManager jobManager, IConfiguration config, GetLiveOutputRequest request)
+    {
+        (string output, bool isRunning) = await jobManager.GetLiveOutputAsync(request.ID, config.WorkerPath());
+        return new GetLiveOutputReply(output, isRunning);
+    }
+
+    [Authorize]
     private static async Task<GetJobReply> GetJobAsync(
         IJobManager jobManager, GetJobRequest request)
     {
@@ -119,6 +127,7 @@ public static class JobsServiceMap
         app.MapPost("/Jobs/GetDetailedMessage", GetDetailedMessageAsync);
         app.MapPost("/Jobs/GetJob", GetJobAsync);
         app.MapPost("/Jobs/GetJobs", GetJobsAsync);
+        app.MapPost("/Jobs/GetLiveOutput", GetLiveOutputAsync);
         app.MapPost("/Jobs/GetOverdueJobs", GetOverdueJobsAsync);
         app.MapPost("/Jobs/RestartStuckJobs", RestartStuckJobsAsync);
         app.MapPost("/Jobs/StartDueJobs", StartDueJobsAsync);

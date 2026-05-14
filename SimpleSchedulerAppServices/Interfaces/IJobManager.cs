@@ -14,6 +14,7 @@ public interface IJobManager
         string? statusCode, long? workerID, string? workerName, bool overdueOnly);
     Task<Job[]> GetOverdueJobsAsync();
     Task<string> GetDetailedMessageAsync(long id, string workerPath);
+    Task<(string Output, bool IsRunning)> GetLiveOutputAsync(long id, string workerPath);
     Task<JobWithWorker[]> DequeueScheduledJobsAsync();
     Task<int> StartDueJobsAsync();
 }

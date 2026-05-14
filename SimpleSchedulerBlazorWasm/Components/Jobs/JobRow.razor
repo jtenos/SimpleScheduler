@@ -45,6 +45,15 @@
                     </button>
                 </div>
             }
+            else if (Job.StatusCode == "RUN")
+            {
+                <div>
+                    <button class="btn btn-xs btn-outline-primary" @onclick="WatchLive">
+                        <i class="bi bi-play-circle"></i>
+                        Watch Live
+                    </button>
+                </div>
+            }
             else if (Job.StatusCode == "ERR")
             {
                 <div>
