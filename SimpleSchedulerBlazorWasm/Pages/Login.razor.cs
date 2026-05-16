@@ -19,8 +19,13 @@ partial class Login
 
     private bool Loading { get; set; }
     private bool SubmittedSuccessfully { get; set; }
+    private bool _autoSubmitted;
 
     private string[] AllEmails { get; set; } = Array.Empty<string>();
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "email")]
+    public string? Email { get; set; }
 
     private class LoginModel
     {
@@ -35,14 +40,19 @@ partial class Login
             "Login/GetAllUserEmails",
             new());
 
-        if (error is not null || reply?.EmailAddresses.Any() != true)
+        if (error is null && reply?.EmailAddresses.Any() == true)
         {
-            return;
+            AllEmails = reply.EmailAddresses;
         }
 
-        AllEmails = reply.EmailAddresses;
-
         await base.OnParametersSetAsync();
+
+        if (!_autoSubmitted && !string.IsNullOrWhiteSpace(Email))
+        {
+            _autoSubmitted = true;
+            Model.Email = Email;
+            await HandleValidSubmit();
+        }
     }
 
     private async Task HandleValidSubmit()
