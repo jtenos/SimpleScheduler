@@ -1,0 +1,33 @@
+@typeparam TValue
+
+<div class="dropdown @Class">
+    <button class="btn btn-outline-secondary dropdown-toggle text-start w-100"
+            type="button"
+            id="@Id"
+            data-bs-toggle="dropdown"
+            aria-expanded="false">
+        @(SelectedLabel ?? Placeholder)
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="@Id">
+        @if (IncludeEmpty)
+        {
+            <li>
+                <button type="button"
+                        class="dropdown-item @(IsSelected(default) ? "active" : null)"
+                        @onclick="() => SelectAsync(default)">
+                    @EmptyLabel
+                </button>
+            </li>
+        }
+        @foreach (BootstrapDropdownItem<TValue> item in Items)
+        {
+            <li>
+                <button type="button"
+                        class="dropdown-item @(IsSelected(item.Value) ? "active" : null)"
+                        @onclick="() => SelectAsync(item.Value)">
+                    @item.Label
+                </button>
+            </li>
+        }
+    </ul>
+</div>
