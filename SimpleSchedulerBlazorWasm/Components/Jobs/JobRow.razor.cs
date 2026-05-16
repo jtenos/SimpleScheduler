@@ -110,6 +110,7 @@ partial class JobRow
         }
 
         Job = reply!.Job;
+        JobsComponent.ReplaceJob(Job);
         Loading = false;
         StateHasChanged();
     }
