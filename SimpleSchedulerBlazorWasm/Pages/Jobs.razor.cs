@@ -14,15 +14,7 @@ partial class Jobs
 {
 	private EditContext SearchEditContext { get; set; } = default!;
 
-	private readonly SearchModel _searchCriteria = new();
-	private SearchModel SearchCriteria
-	{
-		get
-		{
-			_searchCriteria.WorkerID = WorkerID;
-			return _searchCriteria;
-		}
-	}
+	private SearchModel SearchCriteria { get; } = new();
 
 	private Worker[] AllWorkers { get; set; } = Array.Empty<Worker>();
 
@@ -43,6 +35,7 @@ partial class Jobs
 
 	protected override async Task OnInitializedAsync()
 	{
+		SearchCriteria.WorkerID = WorkerID;
 		SearchEditContext = new(SearchCriteria);
 		SearchEditContext.OnFieldChanged += async (sender, e) =>
 		{
