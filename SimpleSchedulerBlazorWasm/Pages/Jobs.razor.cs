@@ -130,6 +130,29 @@ partial class Jobs
 		SetLoadingOff();
 	}
 
+	public void ReplaceJob(Job updatedJob)
+	{
+		for (int i = 0; i < JobDetails.Length; i++)
+		{
+			if (JobDetails[i].ID == updatedJob.ID)
+			{
+				JobDetails[i] = JobDetails[i] with
+				{
+					ScheduleID = updatedJob.ScheduleID,
+					InsertDateUTC = updatedJob.InsertDateUTC,
+					QueueDateUTC = updatedJob.QueueDateUTC,
+					CompleteDateUTC = updatedJob.CompleteDateUTC,
+					StatusCode = updatedJob.StatusCode,
+					AcknowledgementCode = updatedJob.AcknowledgementCode,
+					AcknowledgementDate = updatedJob.AcknowledgementDate,
+					HasDetailedMessage = updatedJob.HasDetailedMessage,
+					FriendlyDuration = updatedJob.FriendlyDuration,
+				};
+				return;
+			}
+		}
+	}
+
 	private async Task LoadJobsAsync()
 	{
 		(Error? error, GetJobsReply? reply) = await ServiceClient.PostAsync<GetJobsRequest, GetJobsReply>(
