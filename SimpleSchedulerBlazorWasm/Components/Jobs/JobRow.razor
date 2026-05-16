@@ -14,6 +14,10 @@
                 <i class="bi bi-building"></i>
                 Worker
             </button>
+            <button class="btn btn-xs btn-outline-info" @onclick="FilterByThisWorker" title="Filter jobs by this worker">
+                <i class="bi bi-funnel"></i>
+                Filter
+            </button>
         </div>
     </div>
     <div class="queue-date-container" title="Inserted @Job.InsertDateUTC.FormatDate() @Job.InsertDateUTC.FormatTime()">

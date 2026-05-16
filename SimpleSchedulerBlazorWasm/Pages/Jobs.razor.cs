@@ -102,6 +102,14 @@ partial class Jobs
 		SetLoadingOff();
 	}
 
+	public async Task FilterByWorkerAsync(long workerId)
+	{
+		SearchCriteria.WorkerID = workerId;
+		SetLoadingOn();
+		await LoadJobsAsync();
+		SetLoadingOff();
+	}
+
 	private async Task LoadJobsAsync()
 	{
 		(Error? error, GetJobsReply? reply) = await ServiceClient.PostAsync<GetJobsRequest, GetJobsReply>(

@@ -185,4 +185,9 @@ partial class JobRow
         Nav.NavigateTo($"workers/filter/{Worker.ID}");
         return Task.CompletedTask;
     }
+
+    private async Task FilterByThisWorker()
+    {
+        await JobsComponent.FilterByWorkerAsync(Worker.ID);
+    }
 }
