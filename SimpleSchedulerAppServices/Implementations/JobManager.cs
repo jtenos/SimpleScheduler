@@ -369,7 +369,7 @@ public sealed class JobManager
             {
                 appUrl = $"{appUrl}/";
             }
-            appUrl += $"acknowledge-error/{jobWithWorker.AcknowledgementCode:N}";
+            appUrl += $"Jobs/AcknowledgeError/{jobWithWorker.AcknowledgementCode:N}";
             if (!success)
             {
                 body = $"<a href='{appUrl}' target=_blank>Acknowledge error</a><br><br>{body}";

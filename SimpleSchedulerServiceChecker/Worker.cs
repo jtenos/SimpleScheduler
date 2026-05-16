@@ -135,7 +135,7 @@ public class Worker
                     if (job.StatusCode == "ERR")
                     {
                         Guid acknowledgementCode = job.AcknowledgementCode;
-                        string url = $"{_appUrl}acknowledge-error/{acknowledgementCode:N}";
+                        string url = $"{_appUrl}Jobs/AcknowledgeError/{acknowledgementCode:N}";
                         message.Append($"Acknowledge: <a href='{url}'>{url}</a><br>");
                     }
                     message.Append("-----------------------------------<br>");
