@@ -1,7 +1,4 @@
 using Blazored.LocalStorage;
-using Blazorise;
-using Blazorise.Bootstrap5;
-using Blazorise.Icons.FontAwesome;
 using CurrieTechnologies.Razor.SweetAlert2;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
@@ -16,11 +13,6 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddBlazoredLocalStorage();
 
 builder.Services.AddSweetAlert2(options => options.Theme = SweetAlertTheme.Bootstrap4);
-
-builder.Services
-	.AddBlazorise(options => options.Immediate = true)
-	.AddBootstrap5Providers()
-	.AddFontAwesomeIcons();
 
 builder.Services.AddScoped<ITokenLookup, TokenLookup>();
 
