@@ -3,6 +3,7 @@ using CurrieTechnologies.Razor.SweetAlert2;
 using Microsoft.AspNetCore.Components;
 using SimpleSchedulerApiModels.Reply.Login;
 using SimpleSchedulerApiModels.Request.Login;
+using SimpleSchedulerBlazorWasm.Components;
 using SimpleSchedulerServiceClient;
 
 namespace SimpleSchedulerBlazorWasm.Pages;
@@ -22,6 +23,9 @@ partial class Login
     private bool _autoSubmitted;
 
     private string[] AllEmails { get; set; } = Array.Empty<string>();
+
+    private IEnumerable<BootstrapDropdownItem<string>> EmailDropdownItems =>
+        AllEmails.Select(e => new BootstrapDropdownItem<string>(e, e));
 
     [Parameter]
     [SupplyParameterFromQuery(Name = "email")]

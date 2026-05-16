@@ -20,13 +20,12 @@
                     <div class="input-group mb-3">
                         @if (AllEmails.Any())
                         {
-                            <InputSelect id="email-address" @bind-Value="Model.Email" class="form-select">
-                                <option></option>
-                                @foreach (string emailAddress in AllEmails)
-                                {
-                                    <option value="@emailAddress">@emailAddress</option>
-                                }
-                            </InputSelect>
+                            <BootstrapDropdown TValue="string"
+                                               Id="email-address"
+                                               @bind-Value="Model.Email"
+                                               Items="EmailDropdownItems"
+                                               Placeholder="Select email address"
+                                               EmptyLabel="(none)" />
                         }
                         else
                         {

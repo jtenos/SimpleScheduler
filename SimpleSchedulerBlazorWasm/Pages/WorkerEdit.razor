@@ -24,17 +24,11 @@
                 </div>
                 <div class="form-group">
                     <label>Parent Worker (this worker will run after the parent is successful)</label>
-                    <InputSelect TValue="long?" class="form-select" @bind-Value="Worker.ParentWorkerID">
-                        <option></option>
-                        @foreach (WorkerIDName w in AllWorkers.OrderBy(w => w.WorkerName))
-                        {
-                            if (w.ID == Worker.ID)
-                            {
-                                continue;
-                            }
-                            <option value="@w.ID">@w.WorkerName</option>
-                        }
-                    </InputSelect>
+                    <BootstrapDropdown TValue="long?"
+                                       @bind-Value="Worker.ParentWorkerID"
+                                       Items="ParentWorkerDropdownItems"
+                                       Placeholder="(no parent)"
+                                       EmptyLabel="(no parent)" />
                 </div>
                 <div class="form-group">
                     <label>Timeout (Minutes)</label>

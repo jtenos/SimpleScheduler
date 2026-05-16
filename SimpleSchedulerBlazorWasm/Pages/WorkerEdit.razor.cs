@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using SimpleSchedulerApiModels;
 using SimpleSchedulerApiModels.Reply.Workers;
 using SimpleSchedulerApiModels.Request.Workers;
+using SimpleSchedulerBlazorWasm.Components;
 using SimpleSchedulerServiceClient;
 
 namespace SimpleSchedulerBlazorWasm.Pages;
@@ -25,6 +26,12 @@ partial class WorkerEdit
     private bool Loading { get; set; } = true;
     private Worker Worker { get; set; } = new();
     private WorkerIDName[] AllWorkers { get; set; } = default!;
+
+    private IEnumerable<BootstrapDropdownItem<long?>> ParentWorkerDropdownItems =>
+        AllWorkers
+            .Where(w => w.ID != Worker.ID)
+            .OrderBy(w => w.WorkerName)
+            .Select(w => new BootstrapDropdownItem<long?>(w.ID, w.WorkerName));
 
     protected override async Task OnInitializedAsync()
     {

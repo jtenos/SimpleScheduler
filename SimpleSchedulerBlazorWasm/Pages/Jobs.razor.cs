@@ -1,18 +1,29 @@
 ﻿using CurrieTechnologies.Razor.SweetAlert2;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
 using SimpleSchedulerApiModels;
 using SimpleSchedulerApiModels.Reply.Jobs;
 using SimpleSchedulerApiModels.Reply.Workers;
 using SimpleSchedulerApiModels.Request.Jobs;
 using SimpleSchedulerApiModels.Request.Workers;
+using SimpleSchedulerBlazorWasm.Components;
 using SimpleSchedulerServiceClient;
 
 namespace SimpleSchedulerBlazorWasm.Pages;
 
 partial class Jobs
 {
-	private EditContext SearchEditContext { get; set; } = default!;
+	private static readonly BootstrapDropdownItem<string>[] StatusDropdownItems = new[]
+	{
+		new BootstrapDropdownItem<string>("NEW", "NEW"),
+		new BootstrapDropdownItem<string>("RUN", "RUN"),
+		new BootstrapDropdownItem<string>("SUC", "SUC"),
+		new BootstrapDropdownItem<string>("ERR", "ERR"),
+		new BootstrapDropdownItem<string>("ACK", "ACK"),
+		new BootstrapDropdownItem<string>("CAN", "CAN"),
+	};
+
+	private IEnumerable<BootstrapDropdownItem<long?>> WorkerDropdownItems =>
+		AllWorkers.Select(w => new BootstrapDropdownItem<long?>(w.ID, w.WorkerName));
 
 	private SearchModel SearchCriteria { get; } = new();
 
@@ -33,17 +44,26 @@ partial class Jobs
 
 	private readonly Dictionary<long, Worker> _allWorkersByID = new();
 
-	protected override async Task OnInitializedAsync()
+	protected override Task OnInitializedAsync()
 	{
 		SearchCriteria.WorkerID = WorkerID;
-		SearchEditContext = new(SearchCriteria);
-		SearchEditContext.OnFieldChanged += async (sender, e) =>
-		{
-			SetLoadingOn();
-			await LoadJobsAsync();
-			SetLoadingOff();
-		};
-		await Task.CompletedTask;
+		return Task.CompletedTask;
+	}
+
+	private async Task OnWorkerFilterChangedAsync(long? workerId)
+	{
+		SearchCriteria.WorkerID = workerId;
+		SetLoadingOn();
+		await LoadJobsAsync();
+		SetLoadingOff();
+	}
+
+	private async Task OnStatusFilterChangedAsync(string? statusCode)
+	{
+		SearchCriteria.StatusCode = statusCode;
+		SetLoadingOn();
+		await LoadJobsAsync();
+		SetLoadingOff();
 	}
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)

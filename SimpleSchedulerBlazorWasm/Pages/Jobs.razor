@@ -9,35 +9,33 @@
 else
 {
     <div class="container" style="margin-top: 25px;">
-        <EditForm EditContext="SearchEditContext" class="d-flex">
+        <div class="d-flex">
             <div class="form-group">
                 <label for="AllWorkersDropdown">Worker</label>
-                <InputSelect @bind-Value="SearchCriteria.WorkerID" class="form-select" id="AllWorkersDropdown">
-                    <option></option>
-                    @foreach (Worker worker in AllWorkers)
-                    {
-                    <option value="@worker.ID">@worker.WorkerName</option>
-                    }
-            </InputSelect>
+                <BootstrapDropdown TValue="long?"
+                                   Id="AllWorkersDropdown"
+                                   Value="SearchCriteria.WorkerID"
+                                   ValueChanged="OnWorkerFilterChangedAsync"
+                                   Items="WorkerDropdownItems"
+                                   Placeholder="(all workers)"
+                                   EmptyLabel="(all workers)" />
+            </div>
+            <div class="form-group">
+                <label for="StatusDropdown">Status</label>
+                <BootstrapDropdown TValue="string"
+                                   Id="StatusDropdown"
+                                   Value="SearchCriteria.StatusCode"
+                                   ValueChanged="OnStatusFilterChangedAsync"
+                                   Items="StatusDropdownItems"
+                                   Placeholder="(all statuses)"
+                                   EmptyLabel="(all statuses)" />
+            </div>
+            <div class="form-group">
+                <label>&nbsp;</label>
+                <button class="btn btn-primary form-control" @onclick="RefreshJobs">Refresh</button>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="StatusDropdown">Status</label>
-            <InputSelect @bind-Value="SearchCriteria.StatusCode" class="form-select" id="StatusDropdown">
-                <option></option>
-                <option value="NEW">NEW</option>
-                <option value="RUN">RUN</option>
-                <option value="SUC">SUC</option>
-                <option value="ERR">ERR</option>
-                <option value="ACK">ACK</option>
-                <option value="CAN">CAN</option>
-            </InputSelect>
-        </div>
-        <div class="form-group">
-            <label>&nbsp;</label>
-            <button class="btn btn-primary form-control" @onclick="RefreshJobs">Refresh</button>
-        </div>
-    </EditForm>
-</div>
+    </div>
 
     <div id="jobs-container">
         <div class="full-size-header job-container d-flex">
