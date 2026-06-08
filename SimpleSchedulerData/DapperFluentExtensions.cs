@@ -97,6 +97,14 @@ public static class DapperFluentExtensions
     public static DynamicParameters AddNullableXmlParam(this DynamicParameters dynamicParameters, string paramName, string? xml)
         => AddParameter(dynamicParameters, paramName, xml ?? (object)DBNull.Value, DbType.Xml);
 
+    // SQLite: pass the ids as a list so Dapper expands "WHERE ID IN @IDs" into ("@IDs1, @IDs2, ...").
+    // SQLite has no table-valued parameters, so this replaces AddBigIntArrayParam on the SQLite path.
+    public static DynamicParameters AddIdListParam(this DynamicParameters dynamicParameters, string paramName, long[] values)
+    {
+        dynamicParameters.Add(paramName, values);
+        return dynamicParameters;
+    }
+
     // [app].[BigIntArray]
     public static DynamicParameters AddBigIntArrayParam(this DynamicParameters dynamicParameters, string paramName, long[] values)
     {

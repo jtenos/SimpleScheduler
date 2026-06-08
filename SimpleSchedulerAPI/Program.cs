@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using SimpleSchedulerAppServices.Interfaces;
-using SimpleSchedulerAppServices.Implementations;
 using Polly;
 using Polly.Retry;
 using SimpleSchedulerEmail;
@@ -35,17 +34,45 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-builder.Services.AddSingleton<IJobManager, JobManager>();
-builder.Services.AddSingleton<IScheduleManager, ScheduleManager>();
-builder.Services.AddSingleton<IUserManager, UserManager>();
-builder.Services.AddSingleton<IWorkerManager, WorkerManager>();
-
-builder.Services.AddSingleton(sp =>
+// The database provider is selected via configuration (Database:Provider). It picks both the
+// IDatabase implementation and the matching set of managers (same class names, separate namespaces).
+string databaseProvider = builder.Configuration["Database:Provider"] ?? "SqlServer";
+if (string.Equals(databaseProvider, "Sqlite", StringComparison.OrdinalIgnoreCase))
 {
-    string connectionString = sp.GetRequiredService<IConfiguration>().GetConnectionString("SimpleScheduler")!;
-    AsyncRetryPolicy retryPolicy = sp.GetRequiredService<AsyncRetryPolicy>();
-    return new SqlDatabase(connectionString, retryPolicy);
-});
+    builder.Services.AddSingleton<IJobManager, SimpleSchedulerAppServices.Implementations.Sqlite.JobManager>();
+    builder.Services.AddSingleton<IScheduleManager, SimpleSchedulerAppServices.Implementations.Sqlite.ScheduleManager>();
+    builder.Services.AddSingleton<IUserManager, SimpleSchedulerAppServices.Implementations.Sqlite.UserManager>();
+    builder.Services.AddSingleton<IWorkerManager, SimpleSchedulerAppServices.Implementations.Sqlite.WorkerManager>();
+
+    builder.Services.AddSingleton<IDatabase>(sp =>
+    {
+        IConfiguration config = sp.GetRequiredService<IConfiguration>();
+        string sqlitePath = config["Database:SqlitePath"] is { Length: > 0 } configured
+            ? configured
+            : Path.Combine(AppContext.BaseDirectory, "SimpleScheduler.sqlite");
+        Microsoft.Data.Sqlite.SqliteConnectionStringBuilder csb = new()
+        {
+            DataSource = sqlitePath,
+            Mode = Microsoft.Data.Sqlite.SqliteOpenMode.ReadWriteCreate
+        };
+        AsyncRetryPolicy retryPolicy = sp.GetRequiredService<AsyncRetryPolicy>();
+        return new SqliteDatabase(csb.ToString(), retryPolicy);
+    });
+}
+else
+{
+    builder.Services.AddSingleton<IJobManager, SimpleSchedulerAppServices.Implementations.SqlServer.JobManager>();
+    builder.Services.AddSingleton<IScheduleManager, SimpleSchedulerAppServices.Implementations.SqlServer.ScheduleManager>();
+    builder.Services.AddSingleton<IUserManager, SimpleSchedulerAppServices.Implementations.SqlServer.UserManager>();
+    builder.Services.AddSingleton<IWorkerManager, SimpleSchedulerAppServices.Implementations.SqlServer.WorkerManager>();
+
+    builder.Services.AddSingleton<IDatabase>(sp =>
+    {
+        string connectionString = sp.GetRequiredService<IConfiguration>().GetConnectionString("SimpleScheduler")!;
+        AsyncRetryPolicy retryPolicy = sp.GetRequiredService<AsyncRetryPolicy>();
+        return new SqlServerDatabase(connectionString, retryPolicy);
+    });
+}
 
 builder.Services.AddSingleton<AsyncRetryPolicy>(Policy
     .Handle<Exception>()
