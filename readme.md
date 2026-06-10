@@ -1,5 +1,47 @@
 To build from command line (specifically PowerShell on Windows):
 
+## Quick publish (recommended): `Publish-Scheduler.ps1`
+
+The easiest way to publish everything is the `Publish-Scheduler.ps1` script in the
+repository root. From a PowerShell prompt in the repo root, run:
+
+```powershell
+.\Publish-Scheduler.ps1
+```
+
+This publishes the API (which bundles the Blazor WASM frontend), the Service, and
+the ServiceChecker in **Release** configuration, producing two flavors of each:
+
+- **framework-dependent** — smaller output that requires .NET 10.0 to be installed
+  on the target machine.
+- **self-contained (win-x64)** — larger output that bundles the .NET runtime, so the
+  target machine does not need .NET installed.
+
+The output is written to `C:\Scheduler_Publish`, laid out as:
+
+```
+C:\Scheduler_Publish\
+    framework-dependent\
+        SimpleSchedulerAPI\
+        SimpleSchedulerService\
+        SimpleSchedulerServiceChecker\
+    win-x64-self-contained\
+        SimpleSchedulerAPI\
+        SimpleSchedulerService\
+        SimpleSchedulerServiceChecker\
+```
+
+> **Note:** the script deletes and recreates `C:\Scheduler_Publish` on each run. To
+> publish to a different location, edit the `$PublishDir` variable at the top of the
+> script.
+
+Copy the project folder you want from the appropriate flavor to your server and
+install it as a Windows Service (see the per-project sections below for the
+`New-Service` / `sc.exe` commands).
+
+The sections below document publishing each project individually, which is useful
+for development or if you only need to deploy one piece.
+
 ## API (also hosts the Blazor WASM frontend):
 
 `dotnet publish .\SimpleSchedulerAPI\ --configuration Release`
