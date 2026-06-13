@@ -1,0 +1,22 @@
+CREATE TABLE IF NOT EXISTS Schedules (
+    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+    ,IsActive INTEGER NOT NULL DEFAULT (1)
+    ,WorkerID INTEGER NOT NULL REFERENCES Workers (ID)
+    ,Sunday INTEGER NOT NULL
+    ,Monday INTEGER NOT NULL
+    ,Tuesday INTEGER NOT NULL
+    ,Wednesday INTEGER NOT NULL
+    ,Thursday INTEGER NOT NULL
+    ,Friday INTEGER NOT NULL
+    ,Saturday INTEGER NOT NULL
+    ,TimeOfDayUTC TEXT NULL
+    ,RecurTime TEXT NULL
+    ,RecurBetweenStartUTC TEXT NULL
+    ,RecurBetweenEndUTC TEXT NULL
+    ,OneTime INTEGER NOT NULL DEFAULT (0)
+    ,CONSTRAINT CK_Schedules_Time CHECK (TimeOfDayUTC IS NOT NULL OR RecurTime IS NOT NULL)
+    ,CONSTRAINT CK_Schedules_RecurStart CHECK (RecurBetweenStartUTC IS NULL OR RecurTime IS NOT NULL)
+    ,CONSTRAINT CK_Schedules_RecurEnd CHECK (RecurBetweenEndUTC IS NULL OR RecurTime IS NOT NULL)
+);
+
+CREATE INDEX IF NOT EXISTS IX_Schedules_WorkerID ON Schedules (WorkerID);

@@ -114,6 +114,7 @@ public class ProjectFileTests
         yield return getFile("SimpleSchedulerBlazorWasm");
         yield return getFile("SimpleSchedulerData");
         yield return getFile("SimpleSchedulerDataEntities");
+        yield return getFile("SimpleSchedulerSqliteDB");
         yield return getFile("SimpleSchedulerDomainModels");
         yield return getFile("SimpleSchedulerEmail");
         yield return getFile("SimpleSchedulerSerilogEmail");

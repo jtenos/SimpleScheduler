@@ -1,0 +1,3 @@
+CREATE TABLE IF NOT EXISTS Users (
+    EmailAddress TEXT NOT NULL PRIMARY KEY
+);
