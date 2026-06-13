@@ -97,7 +97,7 @@ public class ProjectFileTests
     private static IEnumerable<FileInfo> GetCsprojFiles()
     {
         DirectoryInfo currentDir = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory!;
-        while (!currentDir.GetFiles("SimpleScheduler.sln").Any())
+        while (!currentDir.GetFiles("SimpleScheduler.slnx").Any())
         {
             currentDir = new(Path.Combine(currentDir.FullName, ".."));
             currentDir.Refresh();
