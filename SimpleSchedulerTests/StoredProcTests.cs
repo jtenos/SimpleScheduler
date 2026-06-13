@@ -10,7 +10,7 @@ public class StoredProcTests
 	public void TestProcedureFormat()
     {
 		DirectoryInfo currentDir = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory!;
-		while (!currentDir.GetFiles("SimpleScheduler.sln").Any())
+		while (!currentDir.GetFiles("SimpleScheduler.slnx").Any())
 		{
 			currentDir = new(Path.Combine(currentDir.FullName, ".."));
 			currentDir.Refresh();

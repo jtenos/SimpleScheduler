@@ -1,0 +1,48 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/API/">
+    <Project Path="SimpleSchedulerAPI/SimpleSchedulerAPI.csproj" />
+    <Project Path="SimpleSchedulerApiModels/SimpleSchedulerApiModels.csproj" />
+  </Folder>
+  <Folder Name="/Business/">
+    <Project Path="SimpleSchedulerAppServices/SimpleSchedulerAppServices.csproj" />
+    <Project Path="SimpleSchedulerDomainModels/SimpleSchedulerDomainModels.csproj" />
+    <Project Path="SimpleSchedulerSerilogEmail/SimpleSchedulerSerilogEmail.csproj" />
+  </Folder>
+  <Folder Name="/Client/">
+    <Project Path="SimpleSchedulerBlazorWasm/SimpleSchedulerBlazorWasm.csproj" />
+    <Project Path="SimpleSchedulerService/SimpleSchedulerService.csproj" />
+    <Project Path="SimpleSchedulerServiceChecker/SimpleSchedulerServiceChecker.csproj" />
+    <Project Path="SimpleSchedulerServiceClient/SimpleSchedulerServiceClient.csproj" />
+  </Folder>
+  <Folder Name="/Crosscutting/">
+    <Project Path="SimpleSchedulerEmail/SimpleSchedulerEmail.csproj" />
+  </Folder>
+  <Folder Name="/Data/">
+    <Project Path="SimpleSchedulerData/SimpleSchedulerData.csproj" />
+    <Project Path="SimpleSchedulerDataEntities/SimpleSchedulerDataEntities.csproj" />
+    <Project Path="SimpleSchedulerSqlServerDB/SimpleSchedulerSqlServerDB.sqlproj">
+      <Platform Solution="*|x64" Project="AnyCPU" />
+      <Build Solution="*|Any CPU" />
+      <Build Solution="*|x64" />
+      <Deploy Solution="*|Any CPU" />
+      <Deploy Solution="*|x64" />
+    </Project>
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="SimpleSchedulerTests/SimpleSchedulerTests.csproj" />
+  </Folder>
+  <Folder Name="/Utilities/">
+    <Project Path="KeyGen/KeyGen.csproj" />
+    <Project Path="MigrateDetailedMessages/MigrateDetailedMessages.csproj" />
+    <Project Path="SimpleSchedulerFakeData/SimpleSchedulerFakeData.csproj" />
+  </Folder>
+  <Project Path="SimpleSchedulerSqliteDB/SimpleSchedulerSqliteDB.csproj" />
+</Solution>
