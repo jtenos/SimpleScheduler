@@ -25,7 +25,7 @@
   <Folder Name="/Data/">
     <Project Path="SimpleSchedulerData/SimpleSchedulerData.csproj" />
     <Project Path="SimpleSchedulerDataEntities/SimpleSchedulerDataEntities.csproj" />
-    <Project Path="SimpleSchedulerSqlServerDB/SimpleSchedulerSqlServerDB.sqlproj">
+    <Project Path="SimpleSchedulerSqlServerDB/SimpleSchedulerSqlServerDB.sqlproj" Id="89d3f1cb-dab6-4493-b088-4b02b9e84948">
       <Platform Solution="*|x64" Project="AnyCPU" />
       <Build Solution="*|Any CPU" />
       <Build Solution="*|x64" />
