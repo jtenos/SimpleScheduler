@@ -5,17 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Scheduler</title>
-    <base />
-    <script>
-        var base = document.getElementsByTagName('base')[0];
-        var parts = window.location.pathname.split('/').filter(function (p) { return p.length > 0; });
-
-        if (parts.length === 0) {
-            base.setAttribute('href', '/');
-        } else {
-            base.setAttribute('href', '/' + parts[0] + '/');
-        }
-    </script>
+    <base href="/" />
     <link href="manifest.json" rel="manifest" />
     <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png" />
     <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png" />
