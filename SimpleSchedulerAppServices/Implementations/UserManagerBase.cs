@@ -78,9 +78,6 @@ public abstract class UserManagerBase : IUserManager
 
     async Task<string> IUserManager.LoginValidateAsync(Guid validationCode, Guid internalSecretAuthKey)
     {
-        _logger.LogDebug("internalSecretAuthKey: {authKey}", internalSecretAuthKey);
-        _logger.LogDebug("validationCode: {validationCode}", validationCode);
-
         if (validationCode == internalSecretAuthKey)
         {
             return "@@internal@@";
