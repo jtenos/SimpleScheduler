@@ -48,7 +48,6 @@ public class ServiceClient
         }
         try
         {
-            _logger.LogDebug("Token: {token}", token);
             _logger.LogDebug("URL: {baseAddress} | {requestUri}", _httpClient.BaseAddress, requestUri);
             _logger.LogDebug("Request: {request}", request);
 
